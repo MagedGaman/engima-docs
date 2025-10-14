@@ -1,0 +1,63 @@
+extends Node2D
+
+# المرحلة الحالية (0 = Level1)
+var current_level = 0
+
+# قائمة المراحل الـ40
+var levels = []
+
+func _ready():
+    # إنشاء المراحل برمجياً (يمكن تعديل الخلفيات والموسيقى حسب الحاجة)
+    for i in range(1, 41):
+        var lvl = {
+            "name": "Level" + str(i),
+            "correct_button": "Button" + str((i % 3) + 1), # مثال لأزرار صحيحة متغيرة
+            "bg_music": "res://Assets/bg" + str((i % 3)+1) + ".ogg",
+            "laugh_sound": "res://Assets/laugh.ogg",
+            "comment": "هههه غلط! جرب مرة ثانية 😂"
+        }
+        if i == 1:
+            lvl["presenter_audio"] = "res://Assets/presenter.ogg"
+        levels.append(lvl)
+    
+    load_level(current_level)
+
+# تحميل أي مرحلة
+func load_level(index):
+    var level = levels[index]
+    
+    # تغيير الخلفية (مثال افتراضي)
+    $Background.texture = load("res://Assets/" + level["name"] + "_bg.png")
+    
+    # تشغيل الموسيقى الخلفية
+    $BackgroundMusic.stream = load(level["bg_music"])
+    $BackgroundMusic.play()
+    
+    # إذا المرحلة الأولى، شغل صوت المقدم
+    if index == 0 and "presenter_audio" in level:
+        $PresenterAudio.stream = load(level["presenter_audio"])
+        $PresenterAudio.play()
+    
+    # إعداد الأزرار
+    for btn in $Buttons.get_children():
+        btn.connect("pressed", Callable(self, "_on_Button_pressed"), [btn.name])
+    
+    # مسح التعليقات القديمة
+    $Label.text = ""
+
+# عند ضغط أي زر
+func _on_Button_pressed(button_name):
+    var level = levels[current_level]
+    
+    if button_name == level["correct_button"]:
+        # صح → انتقل للمرحلة التالية
+        current_level += 1
+        if current_level < levels.size():
+            load_level(current_level)
+        else:
+            get_tree().change_scene("res://WinScreen.tscn")
+    else:
+        # خطأ → عرض التعليق وتشغيل صوت الضحك
+        $Label.text = level["comment"]
+        $LaughAudio.stream = load(level["laugh_sound"])
+        $LaughAudio.play()
