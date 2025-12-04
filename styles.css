@@ -1,0 +1,987 @@
+.nav-logo {
+    height: 3rem;
+}
+
+/* ============================================
+   Homepage Gemini-style Interface Styling
+   ============================================ */
+
+/* Hide all anchor links on the homepage */
+[data-radix-popper-content-wrapper]:has(span[id^="radix-"]) {
+  display: none !important;
+}
+
+/* Make buttons slightly smaller */
+.cloud-button, .cloud-button-secondary {
+  padding: 0.625rem 1.25rem !important;
+  font-size: 0.875rem !important;
+}
+
+/* Fix hero image cropping */
+.hero-aside {
+  overflow: visible !important;
+}
+
+.hero-aside > img {
+  min-width: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+/* ============================================
+   Gemini Style Interface Styling
+   ============================================ */
+
+/* Main container */
+.gemini-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* The big rectangular card */
+.gemini-display {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Light mode adjustments */
+html:not(.dark) .gemini-display {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Static header inside the card */
+.gemini-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  z-index: 10;
+}
+
+.gemini-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Typewriter effect */
+.typewriter-container {
+  display: inline-block;
+  position: relative;
+}
+
+.typewriter-text {
+  display: inline-block;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: currentColor;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Content viewport for sliding cards */
+.gemini-content-viewport {
+  position: relative;
+  flex: 1;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* Individual content cards */
+.gemini-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.gemini-card.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+  position: relative;
+}
+
+.gemini-card-inner {
+  height: 100%;
+}
+
+/* Search card content */
+.search-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.search-hero-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.125rem;
+  color: inherit;
+}
+
+html:not(.dark) .search-hero-btn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.search-hero-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+html:not(.dark) .search-hero-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero-action-shortcut {
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+html:not(.dark) .hero-action-shortcut {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Custom cards grid layout */
+.docs-tour-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .docs-tour-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .docs-tour-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual card styling */
+.docs-tour-card {
+  background-color: #faf9fb;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.docs-tour-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.dark .docs-tour-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .docs-tour-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Card image */
+.docs-tour-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Card content */
+.docs-tour-card-content {
+  padding: 1rem;
+}
+
+.docs-tour-card-content h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.docs-tour-card-content p {
+  margin: 0 0 0.75rem 0;
+  color: var(--grayscale-a11);
+  font-size: 0.875rem;
+}
+
+.docs-tour-card-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.docs-tour-card-content ul li {
+  margin-bottom: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.docs-tour-card-content ul li:last-child {
+  margin-bottom: 0;
+}
+
+.docs-tour-card-content a {
+  color: var(--accent-a10);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.docs-tour-card-content a:hover {
+  color: var(--accent-a11);
+  text-decoration: underline;
+}
+
+/* Use case grid */
+.use-case-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .use-case-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .use-case-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bottom navigation */
+.gemini-nav {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.gemini-nav-btn {
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  font-weight: 500;
+  color: inherit;
+}
+
+html:not(.dark) .gemini-nav-btn {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.gemini-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+html:not(.dark) .gemini-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.gemini-nav-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+html:not(.dark) .gemini-nav-btn.active {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Reduce padding on hero and sidekick sections on home page */
+.hero {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  align-items: center !important;
+  min-height: auto !important;
+  height: auto !important;
+  margin-bottom: 0 !important;
+  gap: 0 !important;
+}
+
+.hero h1 {
+  font-size: 2.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.hero h1 .tilted {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: 0.25rem;
+}
+
+.hero p {
+  margin-bottom: 1rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.hero-text {
+  justify-content: center !important;
+  flex: 0 0 33.333% !important;
+  max-width: 33.333% !important;
+  text-align: center !important;
+}
+
+.hero-aside {
+  justify-content: center !important;
+  align-items: center !important;
+  min-height: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  flex: 0 0 66.667% !important;
+  max-width: 66.667% !important;
+}
+
+.sidekick.divider {
+  padding-top: 0 !important;
+  padding-bottom: 1rem !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-top: none !important;
+}
+
+/* Add spacing between docs tour cards and next section */
+.docs-tour-cards {
+  margin-bottom: 2rem;
+}
+
+/* Product grid cards background */
+.product-item {
+  background-color: #faf9fb !important;
+}
+
+.dark .product-item {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Make product grid in hero section compact and square */
+.hero-aside .product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.hero-aside .product-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  height: 100px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.hero-aside .product-item img {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  max-width: 48px !important;
+  margin-bottom: 0.5rem;
+}
+
+.hero-aside .product-item h3 {
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+@media (max-width: 1024px) {
+  .hero-aside .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-aside .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Responsive adjustments for Gemini interface */
+@media (max-width: 768px) {
+  .gemini-display {
+    padding: 1.5rem;
+    min-height: 500px;
+  }
+
+  .gemini-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .search-hero-btn {
+    font-size: 1rem;
+  }
+
+  .gemini-nav-btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* ============================================
+   Page Title Alignment Fix
+   ============================================ */
+
+/* Parent container - make it a row layout */
+#page-title:has(+ #page-context-menu) {
+    align-self: flex-start !important;
+    width: auto !important;
+    text-align: left !important;
+}
+
+/* If they share a parent, make the parent a row */
+#page-title {
+    align-self: flex-start !important;
+    text-align: left !important;
+}
+
+/* Parent should be row layout with space between */
+#page-title:is(:first-child) {
+    flex: 1 !important;
+}
+
+#page-context-menu {
+    margin-left: auto !important;
+    align-self: center !important;
+}
+
+/* If parent contains both, make it row */
+:has(> #page-title):has(> #page-context-menu) {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding-bottom: 16px !important;
+}
+
+
+/* ============================================
+   Navigation Link Text Shadow
+   ============================================ */
+
+/* Light mode - remove green, use neutral colors */
+html:not(.dark) a.bg-primary\/10.text-primary,
+html:not(.dark) a[class*="bg-primary/10"][class*="text-primary"] {
+    text-shadow: -0.2px 0 0 #E6E7E9, 0.2px 0 0 #E6E7E9 !important;
+    color: #1f1f1c !important;
+    background-color: rgba(31, 31, 28, 0.08) !important;
+}
+
+/* Dark mode - remove green, use neutral colors */
+html.dark a.dark\:bg-primary-light\/10.dark\:text-primary-light,
+html.dark a[class*="dark:bg-primary-light/10"][class*="dark:text-primary-light"] {
+    text-shadow: -0.2px 0 0 #414141, 0.2px 0 0 #414141 !important;
+    color: #E6E7E9 !important;
+    background-color: rgba(230, 231, 233, 0.1) !important;
+}
+
+/* ============================================
+   Eyebrow Element Color Override
+   ============================================ */
+
+/* Light mode - neutral gray instead of green */
+html:not(.dark) .eyebrow {
+    color: #6B7280 !important;
+}
+
+/* Dark mode - neutral gray instead of green */
+html.dark .eyebrow {
+    color: #9CA3AF !important;
+}
+
+/* ============================================
+   Text Primary Color Override
+   ============================================ */
+
+/* Light mode - neutral dark gray instead of green */
+html:not(.dark) .text-primary {
+    color: #1f1f1c !important;
+}
+
+/* Dark mode - neutral light gray instead of green */
+html.dark .text-primary,
+html.dark .dark\:text-primary-light {
+    color: #E6E7E9 !important;
+}
+
+/* ============================================
+   Card Icon Color Override
+   ============================================ */
+
+/* Dark mode - ClickHouse yellow */
+html.dark [data-component-part="card-icon"] {
+    color: #FDFF75 !important;
+}
+
+/* ============================================
+   Background Primary Light Override
+   ============================================ */
+
+/* Light mode - subtle gray background like sidebar menu items */
+html:not(.dark) .bg-primary\/10,
+html:not(.dark) [class*="bg-primary/10"] {
+    background-color: rgba(31, 31, 28, 0.08) !important;
+}
+
+/* Dark mode - ClickHouse yellow background */
+html.dark .dark\:bg-primary-light,
+.dark\:bg-primary-light:is(.dark *) {
+    --tw-bg-opacity: 1 !important;
+    background-color: #FDFF75 !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================================
+   Card styling (Light & Dark Mode)
+   ============================================ */
+
+/* Override card hover border color in dark mode */
+.dark .card:hover {
+    border-color: #fdff75 !important;
+}
+
+/* Override topbar CTA button styling */
+
+/* Dark mode - #fdff75 background and black text */
+.dark #topbar-cta-button .bg-primary-dark {
+    background-color: #fdff75 !important;
+}
+
+.dark #topbar-cta-button span,
+.dark #topbar-cta-button svg {
+    color: black !important;
+}
+
+/* Light mode - #323232 background and white text */
+#topbar-cta-button .bg-primary-dark {
+    background-color: #323232 !important;
+}
+
+#topbar-cta-button span,
+#topbar-cta-button svg {
+    color: white !important;
+}
+
+/* ============================================
+   Product Icon Images (Light & Dark Mode)
+   ============================================ */
+
+/* Hide original img src and use background images instead */
+.nav-dropdown-products-selector-item img {
+    /* Hide the src attribute */
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+}
+
+/* Create a wrapper for background images */
+.nav-dropdown-products-selector-item {
+    position: relative !important;
+}
+
+.nav-dropdown-products-selector-item::before {
+    content: "" !important;
+    display: block !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    flex-shrink: 0 !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    margin-bottom: 0 !important;
+    /* Default fallback */
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/home-dark.svg") !important;
+}
+
+/* Home - Dark (1st item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(1) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(1) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/home-dark.svg") !important;
+}
+
+/* Cloud - Dark (2nd item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(2) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(2) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/cloud-dark.svg") !important;
+}
+
+/* Open Source - Dark (3rd item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(3) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(3) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/oss-dark.svg") !important;
+}
+
+/* ClickPipes - Dark (4th item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(4) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(4) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/clickpipes-dark.svg") !important;
+}
+
+/* ClickStack - Dark (5th item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(5) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(5) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/clickstack-dark.svg") !important;
+}
+
+/* chDB - Dark (6th item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(6) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(6) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/chdb-dark.svg") !important;
+}
+
+/* Integrations - Dark (7th item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(7) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(7) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/integrations-dark.svg") !important;
+}
+
+/* Reference - Dark (8th item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(8) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(8) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/reference-dark.svg") !important;
+}
+
+/* Support center - Dark (9th item) */
+:is(.dark) .nav-dropdown-products-selector-content>a:nth-child(9) .nav-dropdown-products-selector-item::before,
+:is([data-theme="dark"]) .nav-dropdown-products-selector-content>a:nth-child(9) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/support-dark.svg") !important;
+}
+
+/* Light mode product icons */
+
+/* Home - Light (1st item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(1) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/home-light.svg") !important;
+}
+
+/* Cloud - Light (2nd item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(2) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/cloud-light.svg") !important;
+}
+
+/* Open Source - Light (3rd item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(3) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/oss-light.svg") !important;
+}
+
+/* ClickPipes - Light (4th item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(4) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/clickpipes-light.svg") !important;
+}
+
+/* ClickStack - Light (5th item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(5) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/clickstack-light.svg") !important;
+}
+
+/* chDB - Light (6th item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(6) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/chdb-light.svg") !important;
+}
+
+/* Integrations - Light (7th item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(7) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/integrations-light.svg") !important;
+}
+
+/* Reference - Light (8th item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(8) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/reference-light.svg") !important;
+}
+
+/* Support center - Light (9th item) */
+html:not(.dark) .nav-dropdown-products-selector-content>a:nth-child(9) .nav-dropdown-products-selector-item::before {
+    background-image: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/support-light.svg") !important;
+}
+
+
+
+/* ============================================
+   Product Selector Menu Styling
+   Based on ClickHouse Fern Docs Design
+   ============================================ */
+
+/* Mintlify Product Selector Dropdown Container */
+.nav-dropdown-products-selector-content {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(180px, 1fr)) !important;
+    gap: 12px !important;
+    padding: 20px !important;
+    max-width: 700px !important;
+}
+
+/* Individual product item wrapper links */
+.nav-dropdown-products-selector-content>a.link {
+    display: block !important;
+    text-decoration: none !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Individual product item cards */
+.nav-dropdown-products-selector-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    text-align: left !important;
+
+    /* Glassmorphic styling */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+
+    /* Smooth transitions */
+    transition: all 0.2s ease-in-out !important;
+
+    /* Reset grid layout from Mintlify's default */
+    grid-template-columns: 1fr !important;
+}
+
+/* Product item hover state */
+.nav-dropdown-products-selector-content>a.link:hover .nav-dropdown-products-selector-item,
+.nav-dropdown-products-selector-item:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Product item active/pressed state */
+.nav-dropdown-products-selector-content>a.link:active .nav-dropdown-products-selector-item,
+.nav-dropdown-products-selector-item:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Product icon styling */
+.nav-dropdown-products-selector-item img,
+.nav-dropdown-products-selector-item .product-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    object-fit: contain !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+/* Product title and description container */
+.nav-dropdown-products-selector-item>div {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    flex: 1 !important;
+}
+
+/* Product title */
+.nav-dropdown-products-selector-item p:first-child {
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    color: inherit !important;
+}
+
+/* Product description */
+.nav-dropdown-products-selector-item p:last-child,
+.nav-dropdown-products-selector-item-description {
+    margin: 0 !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    opacity: 1 !important;
+    display: block !important;
+}
+
+/* Extra specific selector for dark mode description */
+html.dark .nav-dropdown-products-selector-item-description,
+.dark .nav-dropdown-products-selector-item-description,
+html.dark .nav-dropdown-products-selector-item p:last-child {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+
+/* Hide the arrow icon that Mintlify adds by default */
+.nav-dropdown-products-selector-item svg {
+    display: none !important;
+}
+
+/* Light mode adjustments */
+@media (prefers-color-scheme: light) {
+    .nav-dropdown-products-selector-item {
+        background-color: rgba(0, 0, 0, 0.02) !important;
+        border-color: rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .nav-dropdown-products-selector-content>a.link:hover .nav-dropdown-products-selector-item,
+    .nav-dropdown-products-selector-item:hover {
+        background-color: rgba(0, 0, 0, 0.04) !important;
+        border-color: rgba(0, 0, 0, 0.12) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .nav-dropdown-products-selector-item p:last-child,
+    .nav-dropdown-products-selector-item-description {
+        color: rgba(0, 0, 0, 0.5) !important;
+    }
+}
+
+/* Responsive design - 2 columns on tablets */
+@media (max-width: 1024px) {
+    .nav-dropdown-products-selector-content {
+        grid-template-columns: repeat(2, minmax(180px, 1fr)) !important;
+        max-width: 500px !important;
+    }
+}
+
+/* Responsive design - 1 column on mobile */
+@media (max-width: 640px) {
+    .nav-dropdown-products-selector-content {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        max-width: 360px !important;
+    }
+
+    .nav-dropdown-products-selector-item {
+        padding: 14px !important;
+    }
+}
+
+
+/* ============================================
+   Page Title Alignment
+   ============================================ */
+
+/* Left-align h1 elements with id="page-title" */
+#page-title,
+h1#page-title,
+h1[id="page-title"] {
+    text-align: left !important;
+}
+
+/* ============================================
+   ClickPipes Page Styling
+   ============================================ */
+
+/* Dark mode image swap for ClickPipes icons */
+:is(.dark) .product-item img[src*="clickpipes-light.svg"] {
+  content: url("https://ch-docs-product-selector.s3.eu-central-1.amazonaws.com/clickpipes-dark.svg") !important;
+}
+
+/* ClickPipes categories grid - 4 columns on desktop, 2 on mobile */
+.clickpipes-categories {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .clickpipes-categories {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .clickpipes-categories {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
