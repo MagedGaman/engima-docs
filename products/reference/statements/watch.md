@@ -7,7 +7,7 @@ title: WATCH statement
 doc_type: reference
 ---
 
-import DeprecatedBadge from '/snippets/components/Badges/DeprecatedBadge.jsx'
+import {DeprecatedBadge} from "../../../components/Badges/DeprecatedBadge"
 
 <DeprecatedBadge/>
 

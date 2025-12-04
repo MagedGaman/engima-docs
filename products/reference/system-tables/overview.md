@@ -44,7 +44,9 @@ An example:
         <table>query_log</table>
         <partition_by>toYYYYMM(event_date)</partition_by>
         <ttl>event_date + INTERVAL 30 DAY DELETE</ttl>
-        {/* {/* <engine>ENGINE = MergeTree PARTITION BY toYYYYMM(event_date) ORDER BY (event_date, event_time) SETTINGS index_granularity = 1024</engine> */} */}
+        {/* <!--
+        <engine>ENGINE = MergeTree PARTITION BY toYYYYMM(event_date) ORDER BY (event_date, event_time) SETTINGS index_granularity = 1024</engine>
+        --> */}
         <flush_interval_milliseconds>7500</flush_interval_milliseconds>
         <max_size_rows>1048576</max_size_rows>
         <reserved_size_rows>8192</reserved_size_rows>

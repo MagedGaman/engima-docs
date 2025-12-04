@@ -7,7 +7,7 @@ title: 'GRANT Statement'
 doc_type: 'reference'
 ---
 
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '../../../components/Badges/CloudNotSupportedBadge'
 
 - Grants [privileges](#privileges) to ClickHouse user accounts or roles.
 - Assigns roles to user accounts or to the other roles.

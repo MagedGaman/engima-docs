@@ -8,8 +8,8 @@ title: 'MergeTree table engine'
 doc_type: 'reference'
 ---
 
-import ExperimentalBadge from '/snippets/components/Badges/ExperimentalBadge.jsx'
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {ExperimentalBadge} from '../../../../../components/Badges/ExperimentalBadge'
+import {CloudNotSupportedBadge} from '../../../../../components/Badges/CloudNotSupportedBadge'
 
 # MergeTree table engine
 
@@ -794,7 +794,7 @@ Configuration structure:
 ```xml
 <storage_configuration>
     <disks>
-        <disk_name_1> {/* {/* disk name */} */}
+        <disk_name_1> {/* <!-- disk name --> */}
             <path>/mnt/fast_ssd/clickhouse/</path>
         </disk_name_1>
         <disk_name_2>
@@ -835,17 +835,17 @@ Storage policies configuration markup:
                     <load_balancing>round_robin</load_balancing>
                 </volume_name_1>
                 <volume_name_2>
-                    {/* {/* configuration */} */}
+                    {/* <!-- configuration --> */}
                 </volume_name_2>
-                {/* {/* more volumes */} */}
+                {/* <!-- more volumes --> */}
             </volumes>
             <move_factor>0.2</move_factor>
         </policy_name_1>
         <policy_name_2>
-            {/* {/* configuration */} */}
+            {/* <!-- configuration --> */}
         </policy_name_2>
 
-        {/* {/* more policies */} */}
+        {/* <!-- more policies --> */}
     </policies>
     ...
 </storage_configuration>
@@ -874,9 +874,9 @@ Configuration examples:
 <storage_configuration>
     ...
     <policies>
-        <hdd_in_order> {/* {/* policy name */} */}
+        <hdd_in_order> {/* <!-- policy name --> */}
             <volumes>
-                <single> {/* {/* volume name */} */}
+                <single> {/* <!-- volume name --> */}
                     <disk>disk1</disk>
                     <disk>disk2</disk>
                 </single>

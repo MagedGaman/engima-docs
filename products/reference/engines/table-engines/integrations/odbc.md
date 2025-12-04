@@ -7,7 +7,7 @@ title: 'ODBC table engine'
 doc_type: 'reference'
 ---
 
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '../../../../../components/Badges/CloudNotSupportedBadge'
 
 <CloudNotSupportedBadge/>
 

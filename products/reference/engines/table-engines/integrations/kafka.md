@@ -10,7 +10,7 @@ keywords: ['Kafka', 'table engine']
 doc_type: 'guide'
 ---
 
-import ExperimentalBadge from '/snippets/components/Badges/ExperimentalBadge.jsx'
+import {ExperimentalBadge} from '../../../../../components/Badges/ExperimentalBadge'
 
 <Tip>
 If you're on ClickHouse Cloud, we recommend using [ClickPipes](/integrations/clickpipes) instead. ClickPipes natively supports private network connections, scaling ingestion and cluster resources independently, and comprehensive monitoring for streaming Kafka data into ClickHouse.
@@ -185,7 +185,7 @@ Similar to GraphiteMergeTree, the Kafka engine supports extended configuration u
 
 ```xml
   <kafka>
-    {/* {/* Global configuration options for all tables of Kafka engine type */} */}
+    {/* <!-- Global configuration options for all tables of Kafka engine type --> */}
     <debug>cgrp</debug>
     <statistics_interval_ms>3000</statistics_interval_ms>
 
@@ -194,7 +194,7 @@ Similar to GraphiteMergeTree, the Kafka engine supports extended configuration u
         <statistics_interval_ms>4000</statistics_interval_ms>
     </kafka_topic>
 
-    {/* {/* Settings for consumer */} */}
+    {/* <!-- Settings for consumer --> */}
     <consumer>
         <auto_offset_reset>smallest</auto_offset_reset>
         <kafka_topic>
@@ -208,7 +208,7 @@ Similar to GraphiteMergeTree, the Kafka engine supports extended configuration u
         </kafka_topic>
     </consumer>
 
-    {/* {/* Settings for producer */} */}
+    {/* <!-- Settings for producer --> */}
     <producer>
         <kafka_topic>
             <name>logs</name>
@@ -233,7 +233,7 @@ ClickHouse is able to maintain Kerberos credentials using a keytab file. Conside
 Example:
 
 ```xml
-{/* {/* Kerberos-aware Kafka */} */}
+{/* <!-- Kerberos-aware Kafka --> */}
 <kafka>
   <security_protocol>SASL_PLAINTEXT</security_protocol>
   <sasl_kerberos_keytab>/home/kafkauser/kafkauser.keytab</sasl_kerberos_keytab>

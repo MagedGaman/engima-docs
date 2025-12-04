@@ -103,7 +103,7 @@ Clusters are configured in the [server configuration file](../../../operations/c
 ```xml
 <remote_servers>
     <logs>
-        {/* {/* Inter-server per-cluster secret for Distributed queries
+        {/* <!-- Inter-server per-cluster secret for Distributed queries
              default: no secret (no authentication will be performed)
 
              If set, then Distributed queries will be validated on shards, so at least:
@@ -111,21 +111,22 @@ Clusters are configured in the [server configuration file](../../../operations/c
              - such cluster should have the same secret.
 
              And also (and which is more important), the initial_user will
-             be used as current user for the query. */} */}
-        {/* {/* <secret></secret> */} */}
+             be used as current user for the query.
+        --> */}
+        {/* <!-- <secret></secret> --> */}
         
-        {/* {/* Optional. Whether distributed DDL queries (ON CLUSTER clause) are allowed for this cluster. Default: true (allowed). */} */}        
-        {/* {/* <allow_distributed_ddl_queries>true</allow_distributed_ddl_queries> */} */}
+        {/* <!-- Optional. Whether distributed DDL queries (ON CLUSTER clause) are allowed for this cluster. Default: true (allowed). --> */}        
+        {/* <!-- <allow_distributed_ddl_queries>true</allow_distributed_ddl_queries> --> */}
         
         <shard>
-            {/* {/* Optional. Shard weight when writing data. Default: 1. */} */}
+            {/* <!-- Optional. Shard weight when writing data. Default: 1. --> */}
             <weight>1</weight>
-            {/* {/* Optional. The shard name.  Must be non-empty and unique among shards in the cluster. If not specified, will be empty. */} */}
+            {/* <!-- Optional. The shard name.  Must be non-empty and unique among shards in the cluster. If not specified, will be empty. --> */}
             <name>shard_01</name>
-            {/* {/* Optional. Whether to write data to just one of the replicas. Default: false (write data to all replicas). */} */}
+            {/* <!-- Optional. Whether to write data to just one of the replicas. Default: false (write data to all replicas). --> */}
             <internal_replication>false</internal_replication>
             <replica>
-                {/* {/* Optional. Priority of the replica for load balancing (see also load_balancing setting). Default: 1 (less value has more priority). */} */}
+                {/* <!-- Optional. Priority of the replica for load balancing (see also load_balancing setting). Default: 1 (less value has more priority). --> */}
                 <priority>1</priority>
                 <host>example01-01-1</host>
                 <port>9000</port>

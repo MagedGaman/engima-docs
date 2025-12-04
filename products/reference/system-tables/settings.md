@@ -134,7 +134,7 @@ Using of `WHERE changed` can be useful, for example, when you want to check:
 - Whether settings in configuration files are loaded correctly and are in use.
 - Settings that changed in the current session.
 
-{/* {/*  */} */}
+{/* <!-- --> */}
 
 ```sql
 SELECT * FROM system.settings WHERE changed AND name='load_balancing'

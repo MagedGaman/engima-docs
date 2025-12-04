@@ -8,8 +8,8 @@ title: 'hdfs'
 doc_type: 'reference'
 ---
 
-import ExperimentalBadge from '/snippets/components/Badges/ExperimentalBadge.jsx'
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {ExperimentalBadge} from '../../../../components/Badges/ExperimentalBadge'
+import {CloudNotSupportedBadge} from '../../../../components/Badges/CloudNotSupportedBadge'
 
 # hdfs Table Function
 
@@ -75,7 +75,7 @@ Constructions with `{}` are similar to the [remote](remote.md) and [file](file.m
 
 2.  Query the amount of rows in these files:
 
-{/* {/*  */} */}
+{/* <!-- --> */}
 
 ```sql
 SELECT count(*)
@@ -84,7 +84,7 @@ FROM hdfs('hdfs://hdfs1:9000/{some,another}_dir/some_file_{1..3}', 'TSV', 'name 
 
 3.  Query the amount of rows in all files of these two directories:
 
-{/* {/*  */} */}
+{/* <!-- --> */}
 
 ```sql
 SELECT count(*)

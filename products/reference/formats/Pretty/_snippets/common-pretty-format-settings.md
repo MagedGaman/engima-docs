@@ -1,4 +1,4 @@
-{/* {/* Note: This file is used as a snippet in all files that import it */} */} 
+{/* <!-- Note: This file is used as a snippet in all files that import it --> */} 
 
 The following settings are common to all `Pretty` formats:
 

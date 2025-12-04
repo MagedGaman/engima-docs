@@ -27,7 +27,7 @@ The following operations with [partitions](/engines/table-engines/mergetree-fami
 - [DELETE IN PARTITION](#delete-in-partition) — Delete data inside the partition by condition.
 - [REWRITE PARTS](#rewrite-parts) — Rewrite parts in the table (or specific partition) completely.
 
-{/* {/*  */} */}
+{/* <!-- --> */}
 
 ## DETACH PARTITION\|PART [#detach-partitionpart]
 

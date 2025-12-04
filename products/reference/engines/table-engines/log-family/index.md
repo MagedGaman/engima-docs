@@ -7,7 +7,7 @@ title: 'Log engine family'
 doc_type: 'guide'
 ---
 
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '../../../../../components/Badges/CloudNotSupportedBadge'
 
 # Log table engine family
 

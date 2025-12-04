@@ -38,9 +38,9 @@ SELECT * FROM system.asynchronous_metrics LIMIT 10
 └─────────────────────────────────────────┴────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-{/* {/* - Unlike with system.events and system.metrics, the asynchronous metrics are not gathered in a simple list in a source code file - they
+{/* <!--- Unlike with system.events and system.metrics, the asynchronous metrics are not gathered in a simple list in a source code file - they
       are mixed with logic in src/Interpreters/ServerAsynchronousMetrics.cpp.
-      Listing them here explicitly for reader convenience. - */} */}
+      Listing them here explicitly for reader convenience. ---> */}
 
 ## Metric descriptions [#metric-descriptions]
 

@@ -1,4 +1,4 @@
-{/* {/* Note: This snippet is reused in any file it is imported by */} */}
+{/* <!-- Note: This snippet is reused in any file it is imported by --> */}
 
 The following settings are common to all `RowBinary` type formats.
 

@@ -9,7 +9,7 @@ title: 'CapnProto <Badge intent="success">Input</Badge> <Badge intent="success">
 doc_type: 'reference'
 ---
 
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '../../../components/Badges/CloudNotSupportedBadge'
 
 <CloudNotSupportedBadge/>
 

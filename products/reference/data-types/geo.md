@@ -159,7 +159,7 @@ Result:
    └───────┘
 ```
 
-{/* {/*  */} */}
+{/* <!-- --> */}
 
 ```sql
 CREATE TABLE IF NOT EXISTS geo_dst (geom Geometry) ENGINE = Memory();

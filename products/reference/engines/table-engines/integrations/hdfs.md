@@ -7,7 +7,7 @@ title: HDFS table engine
 doc_type: reference
 ---
 
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '../../../../../components/Badges/CloudNotSupportedBadge'
 
 <CloudNotSupportedBadge/>
 
@@ -93,7 +93,7 @@ Constructions with `{}` are similar to the [remote](../../../sql-reference/table
    - 'hdfs\://hdfs1:9000/another\_dir/some\_file\_3'
 2. There are several ways to make a table consisting of all six files:
 
-{/* {/*  */} */}
+{/* <!-- --> */}
 
 ```sql
 CREATE TABLE table_with_range (name String, value UInt32) ENGINE = HDFS('hdfs://hdfs1:9000/{some,another}_dir/some_file_{1..3}', 'TSV')
@@ -128,14 +128,14 @@ CREATE TABLE big_table (name String, value UInt32) ENGINE = HDFS('hdfs://hdfs1:9
 Similar to GraphiteMergeTree, the HDFS engine supports extended configuration using the ClickHouse config file. There are two configuration keys that you can use: global (`hdfs`) and user-level (`hdfs_*`). The global configuration is applied first, and then the user-level configuration is applied (if it exists).
 
 ```xml
-{/* {/* Global configuration options for HDFS engine type */} */}
+{/* <!-- Global configuration options for HDFS engine type --> */}
 <hdfs>
   <hadoop_kerberos_keytab>/tmp/keytab/clickhouse.keytab</hadoop_kerberos_keytab>
   <hadoop_kerberos_principal>clickuser@TEST.CLICKHOUSE.TECH</hadoop_kerberos_principal>
   <hadoop_security_authentication>kerberos</hadoop_security_authentication>
 </hdfs>
 
-{/* {/* Configuration specific for user "root" */} */}
+{/* <!-- Configuration specific for user "root" --> */}
 <hdfs_root>
   <hadoop_kerberos_principal>root@TEST.CLICKHOUSE.TECH</hadoop_kerberos_principal>
 </hdfs_root>

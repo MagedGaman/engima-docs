@@ -363,7 +363,7 @@ The path to the directory with the schemes for the input data, such as schemas f
 **Example**
 
 ```xml
-{/* {/* Directory containing schema files for various input formats. */} */}
+{/* <!-- Directory containing schema files for various input formats. --> */}
 <format_schema_path>format_schemas/</format_schema_path>
 ```
 
@@ -991,8 +991,8 @@ To enable JSON logging support, use the following snippet:
 <logger>
     <formatting>
         <type>json</type>
-        {/* {/* Can be configured on a per-channel basis (log, errorlog, console, syslog), or globally for all channels (then just omit it). */} */}
-        {/* {/* <channel></channel> */} */}
+        {/* <!-- Can be configured on a per-channel basis (log, errorlog, console, syslog), or globally for all channels (then just omit it). --> */}
+        {/* <!-- <channel></channel> --> */}
         <names>
             <date_time>date_time</date_time>
             <thread_name>thread_name</thread_name>
@@ -1075,10 +1075,10 @@ Storage configuration follows the structure:
 ```xml
 <storage_configuration>
     <disks>
-        {/* {/* configuration */} */}
+        {/* <!-- configuration --> */}
     </disks>
     <policies>
-        {/* {/* configuration */} */}
+        {/* <!-- configuration --> */}
     </policies>
 </storage_configuration>
 ```
@@ -1332,10 +1332,10 @@ Keys for server/client settings:
 ```xml
 <openSSL>
     <server>
-        {/* {/* openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout /etc/clickhouse-server/server.key -out /etc/clickhouse-server/server.crt */} */}
+        {/* <!-- openssl req -subj "/CN=localhost" -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout /etc/clickhouse-server/server.key -out /etc/clickhouse-server/server.crt --> */}
         <certificateFile>/etc/clickhouse-server/server.crt</certificateFile>
         <privateKeyFile>/etc/clickhouse-server/server.key</privateKeyFile>
-        {/* {/* openssl dhparam -out /etc/clickhouse-server/dhparam.pem 4096 */} */}
+        {/* <!-- openssl dhparam -out /etc/clickhouse-server/dhparam.pem 4096 --> */}
         <dhParamsFile>/etc/clickhouse-server/dhparam.pem</dhParamsFile>
         <verificationMode>none</verificationMode>
         <loadDefaultCAFile>true</loadDefaultCAFile>
@@ -1348,9 +1348,9 @@ Keys for server/client settings:
         <cacheSessions>true</cacheSessions>
         <disableProtocols>sslv2,sslv3</disableProtocols>
         <preferServerCiphers>true</preferServerCiphers>
-        {/* {/* Use for self-signed: <verificationMode>none</verificationMode> */} */}
+        {/* <!-- Use for self-signed: <verificationMode>none</verificationMode> --> */}
         <invalidCertificateHandler>
-            {/* {/* Use for self-signed: <name>AcceptCertificateHandler</name> */} */}
+            {/* <!-- Use for self-signed: <name>AcceptCertificateHandler</name> --> */}
             <name>RejectCertificateHandler</name>
         </invalidCertificateHandler>
     </client>
@@ -1435,7 +1435,7 @@ Settings:
     <listen_host>0.0.0.0</listen_host>
     <http_port>8123</http_port>
     <tcp_port>9000</tcp_port>
-    {/* {/* highlight-start */} */}
+    {/* <!-- highlight-start --> */}
     <prometheus>
         <endpoint>/metrics</endpoint>
         <port>9363</port>
@@ -1444,7 +1444,7 @@ Settings:
         <asynchronous_metrics>true</asynchronous_metrics>
         <errors>true</errors>
     </prometheus>
-    {/* {/* highlight-end */} */}
+    {/* <!-- highlight-end --> */}
 </clickhouse>
 ```
 
@@ -1617,7 +1617,7 @@ Additionally:
         <reserved_size_rows>8192</reserved_size_rows>
         <buffer_size_rows_flush_threshold>524288</buffer_size_rows_flush_threshold>
         <flush_on_crash>false</flush_on_crash>
-        {/* {/* <partition_by>event_date</partition_by> */} */}
+        {/* <!-- <partition_by>event_date</partition_by> --> */}
         <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine>
     </text_log>
 </clickhouse>
@@ -1664,7 +1664,7 @@ Settings for the [asynchronous_insert_log](/operations/system-tables/asynchronou
         <reserved_size_rows>8192</reserved_size_rows>
         <buffer_size_rows_flush_threshold>524288</buffer_size_rows_flush_threshold>
         <flush_on_crash>false</flush_on_crash>
-        {/* {/* <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine> */} */}
+        {/* <!-- <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine> --> */}
     </asynchronous_insert_log>
 </clickhouse>
 ```
@@ -1744,7 +1744,7 @@ Settings for the [backup_log](../../operations/system-tables/backup_log.md) syst
         <reserved_size_rows>8192</reserved_size_rows>
         <buffer_size_rows_flush_threshold>524288</buffer_size_rows_flush_threshold>
         <flush_on_crash>false</flush_on_crash>
-        {/* {/* <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine> */} */}
+        {/* <!-- <engine>Engine = MergeTree PARTITION BY event_date ORDER BY event_time TTL event_date + INTERVAL 30 day</engine> --> */}
     </backup_log>
 </clickhouse>
 ```
@@ -2101,11 +2101,11 @@ There is also the `zookeeper_load_balancing` setting (optional) which lets you s
     </node>
     <session_timeout_ms>30000</session_timeout_ms>
     <operation_timeout_ms>10000</operation_timeout_ms>
-    {/* {/* Optional. Chroot suffix. Should exist. */} */}
+    {/* <!-- Optional. Chroot suffix. Should exist. --> */}
     <root>/path/to/zookeeper/node</root>
-    {/* {/* Optional. Zookeeper digest ACL string. */} */}
+    {/* <!-- Optional. Zookeeper digest ACL string. --> */}
     <identity>user:password</identity>
-    {/* {/* <zookeeper_load_balancing>random / in_order / nearest_hostname / hostname_levenshtein_distance / first_or_random / round_robin</zookeeper_load_balancing> */} */}
+    {/* <!--<zookeeper_load_balancing>random / in_order / nearest_hostname / hostname_levenshtein_distance / first_or_random / round_robin</zookeeper_load_balancing>--> */}
     <zookeeper_load_balancing>random</zookeeper_load_balancing>
 </zookeeper>
 ```
@@ -2161,24 +2161,26 @@ The configurable settings within `<distributed_ddl>` include:
 
 ```xml
 <distributed_ddl>
-    {/* {/* Path in ZooKeeper to queue with DDL queries */} */}
+    {/* <!-- Path in ZooKeeper to queue with DDL queries --> */}
     <path>/clickhouse/task_queue/ddl</path>
 
-    {/* {/* Settings from this profile will be used to execute DDL queries */} */}
+    {/* <!-- Settings from this profile will be used to execute DDL queries --> */}
     <profile>default</profile>
 
-    {/* {/* Controls how much ON CLUSTER queries can be run simultaneously. */} */}
+    {/* <!-- Controls how much ON CLUSTER queries can be run simultaneously. --> */}
     <pool_size>1</pool_size>
 
-    {/* {/* Cleanup settings (active tasks will not be removed) */} */}
+    {/* <!--
+         Cleanup settings (active tasks will not be removed)
+    --> */}
 
-    {/* {/* Controls task TTL (default 1 week) */} */}
+    {/* <!-- Controls task TTL (default 1 week) --> */}
     <task_max_lifetime>604800</task_max_lifetime>
 
-    {/* {/* Controls how often cleanup should be performed (in seconds) */} */}
+    {/* <!-- Controls how often cleanup should be performed (in seconds) --> */}
     <cleanup_delay_period>60</cleanup_delay_period>
 
-    {/* {/* Controls how many tasks could be in the queue */} */}
+    {/* <!-- Controls how many tasks could be in the queue --> */}
     <max_tasks_in_queue>1000</max_tasks_in_queue>
 </distributed_ddl>
 ```
@@ -2353,7 +2355,6 @@ one proxy server for a protocol and the list of proxy servers doesn't change.
 ```
 Select a parent field in the tabs below to view their children:
 
-
 <Tabs>
   <Tab title="<proxy>">
 
@@ -2405,7 +2406,6 @@ ClickHouse will use it to form the proxy URI using the following template: `\{pr
 ```
 
 Select a parent field in the tabs below to view their children:
-
 
 <Tabs>
   <Tab title="<proxy>">

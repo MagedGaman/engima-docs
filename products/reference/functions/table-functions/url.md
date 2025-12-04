@@ -7,8 +7,8 @@ title: 'url'
 doc_type: 'reference'
 ---
 
-import ExperimentalBadge from '/snippets/components/Badges/ExperimentalBadge.jsx'
-import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {ExperimentalBadge} from '../../../../components/Badges/ExperimentalBadge'
+import {CloudNotSupportedBadge} from '../../../../components/Badges/CloudNotSupportedBadge'
 
 # url Table Function
 
