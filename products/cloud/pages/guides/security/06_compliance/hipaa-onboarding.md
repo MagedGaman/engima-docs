@@ -7,8 +7,8 @@ doc_type: 'guide'
 keywords: ['hipaa', 'compliance', 'healthcare', 'security', 'data protection']
 ---
 
-import {BetaBadge} from '../../../../../../components/Badges/BetaBadge'
-import {EnterprisePlanFeatureBadge} from '../../../../../../components/Badges/EnterprisePlanFeatureBadge'
+import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
+import EnterprisePlanFeatureBadge from '/snippets/components/Badges/EnterprisePlanFeatureBadge.jsx'
 
 <EnterprisePlanFeatureBadge feature="HIPAA"/>
 

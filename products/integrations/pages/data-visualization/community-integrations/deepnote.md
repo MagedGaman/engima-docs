@@ -12,7 +12,7 @@ integration:
   - website: 'https://deepnote.com/launch?template=ClickHouse%20and%20Deepnote'
 ---
 
-import {CommunityMaintainedBadge} from "@site/components/Badges/CommunityMaintainedBadge"
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

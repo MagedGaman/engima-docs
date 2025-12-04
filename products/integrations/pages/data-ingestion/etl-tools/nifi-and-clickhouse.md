@@ -11,7 +11,7 @@ integration:
   - category: 'data_ingestion'
 ---
 
-import {CommunityMaintainedBadge} from '../../../../../components/Badges/CommunityMaintained'
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintained.jsx'
 
 <CommunityMaintainedBadge/>
 

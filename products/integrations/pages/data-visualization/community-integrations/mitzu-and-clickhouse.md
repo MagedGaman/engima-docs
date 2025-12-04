@@ -10,7 +10,7 @@ integration:
   - category: 'data_visualization'
 ---
 
-import {CommunityMaintainedBadge} from "@site/components/Badges/CommunityMaintainedBadge"
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

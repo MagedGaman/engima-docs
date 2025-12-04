@@ -13,7 +13,7 @@ integration:
   - website: 'https://github.com/clickhouse/metabase-clickhouse-driver'
 ---
 
-import {PartnerBadge} from '../../../../../components/Badges/PartnerBadge'
+import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
 <PartnerBadge/>
 

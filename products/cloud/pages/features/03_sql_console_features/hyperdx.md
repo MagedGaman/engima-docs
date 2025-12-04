@@ -7,7 +7,7 @@ doc_type: 'guide'
 keywords: ['hyperdx', 'observability', 'integration', 'cloud features', 'monitoring']
 ---
 
-import {PrivatePreviewBadge} from '../../../../../components/Badges/PrivatePreviewBadge'
+import PrivatePreviewBadge from '/snippets/components/Badges/PrivatePreviewBadge.jsx'
 
 <PrivatePreviewBadge/>
 

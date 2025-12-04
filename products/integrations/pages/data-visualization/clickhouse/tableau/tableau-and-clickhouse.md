@@ -12,7 +12,7 @@ integration:
   - website: 'https://github.com/analytikaplus/clickhouse-tableau-connector-jdbc'
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 

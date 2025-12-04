@@ -8,7 +8,7 @@ title: 'Integrate Rocket BI with ClickHouse'
 doc_type: 'guide'
 ---
 
-import {CommunityMaintainedBadge} from "@site/components/Badges/CommunityMaintainedBadge"
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

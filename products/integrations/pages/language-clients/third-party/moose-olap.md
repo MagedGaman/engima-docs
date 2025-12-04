@@ -8,7 +8,7 @@ keywords: ['Moose']
 doc_type: 'guide'
 ---
 
-import {CommunityMaintainedBadge} from '../../../../../components/Badges/CommunityMaintainedBadge'
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

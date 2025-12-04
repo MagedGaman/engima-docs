@@ -13,7 +13,7 @@ integration:
 keywords: ['Grafana', 'data visualization', 'dashboard', 'plugin', 'data source']
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 

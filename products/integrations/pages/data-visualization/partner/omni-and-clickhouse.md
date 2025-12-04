@@ -7,7 +7,7 @@ title: 'Omni'
 doc_type: 'guide'
 ---
 
-import {PartnerBadge} from '../../../../../../components/Badges/PartnerBadge'
+import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
 <PartnerBadge/>
 

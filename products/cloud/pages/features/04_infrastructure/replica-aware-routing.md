@@ -6,7 +6,7 @@ keywords: ['cloud', 'sticky endpoints', 'sticky', 'endpoints', 'sticky routing',
 doc_type: 'guide'
 ---
 
-import {PrivatePreviewBadge} from '../../../../../components/Badges/PrivatePreviewBadge'
+import PrivatePreviewBadge from '/snippets/components/Badges/PrivatePreviewBadge.jsx'
 
 # Replica-aware routing
 

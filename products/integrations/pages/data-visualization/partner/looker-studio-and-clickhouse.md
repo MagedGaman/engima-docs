@@ -10,7 +10,7 @@ integration:
   - category: 'data_visualization'
 ---
 
-import {PartnerBadge} from '../../../../../components/Badges/PartnerBadge'
+import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
 <PartnerBadge/>
 

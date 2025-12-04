@@ -7,7 +7,7 @@ title: 'Connecting Embeddable to ClickHouse'
 doc_type: 'guide'
 ---
 
-import {CommunityMaintainedBadge} from "@site/components/Badges/CommunityMaintainedBadge"
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

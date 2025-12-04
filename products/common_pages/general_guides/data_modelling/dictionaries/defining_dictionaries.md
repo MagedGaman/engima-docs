@@ -7,7 +7,7 @@ title: 'Dictionaries'
 doc_type: 'reference'
 ---
 
-import {CloudNotSupportedBadge} from '../../../../components/Badges/CloudNotSupportedBadge'
+import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
 
 A dictionary is a mapping (`key -> attributes`) that is convenient for various types of reference lists.
 

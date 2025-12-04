@@ -7,7 +7,7 @@ doc_type: 'guide'
 keywords: ['qstudio', 'sql client', 'database tool', 'query tool', 'ide']
 ---
 
-import {CommunityMaintainedBadge} from '../../../../../components/Badges/CommunityMaintainedBadge'
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

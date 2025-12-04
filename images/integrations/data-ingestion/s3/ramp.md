@@ -1177,9 +1177,13 @@ SELECT
 FROM applied_ai.transaction_canonical_embeddings
 FORMAT `Null`
 
+```
 c-magenta-qd-44-server-28gf258-0
 c-magenta-qd-44-server-i14soiy-0
 c-magenta-qd-44-server-1lvhe31-0
+```
+
+```sql
 WITH
     'applied_ai' AS db_name,
     'transaction_canonical_embeddings' AS table_name,
@@ -1201,6 +1205,7 @@ SELECT sum(CurrentMetric_Merge) AS merges
 FROM clusterAllReplicas(default, system.metric_log)
 WHERE event_time >= start_time AND event_time <= insert_end_time
 SETTINGS skip_unavailable_shards = 1;
+```
 
 
 

@@ -8,7 +8,7 @@ doc_type: 'guide'
 keywords: ['Grafana plugin configuration', 'data source settings', 'connection parameters', 'authentication setup', 'plugin options']
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 
 <ClickHouseSupportedBadge/>

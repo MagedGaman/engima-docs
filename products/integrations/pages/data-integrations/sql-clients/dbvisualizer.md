@@ -10,7 +10,7 @@ integration:
   - category: 'sql_client'
 ---
 
-import {CommunityMaintainedBadge} from '../../../../../components/Badges/CommunityMaintainedBadge'
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

@@ -13,7 +13,7 @@ integration:
 keywords: ['vector', 'log collection', 'observability', 'data ingestion', 'pipeline']
 ---
 
-import {PartnerBadge} from '../../../../../components/Badges/PartnerBadge'
+import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
 <PartnerBadge/>
 

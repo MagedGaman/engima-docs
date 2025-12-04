@@ -11,7 +11,7 @@ integration:
   - category: 'data_ingestion'
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 

@@ -8,7 +8,7 @@ doc_type: 'guide'
 keywords: ['grafana', 'query builder', 'visualization', 'dashboards', 'plugin']
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 

@@ -9,7 +9,7 @@ doc_type: 'guide'
 keywords: ['ClickStack Helm chart', 'Helm ClickHouse deployment', 'HyperDX Helm installation', 'Kubernetes observability stack', 'ClickStack Kubernetes deployment']
 ---
 
-import {BetaBadge} from '../../../../components/Badges/BetaBadge'
+import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
 
 The helm chart for HyperDX can be found [here](https://github.com/hyperdxio/helm-charts) and is the **recommended** method for production deployments.
 

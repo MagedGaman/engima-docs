@@ -19,14 +19,8 @@
       {
         "product": "Home",
         "description": "ClickHouse docs",
-        "tabs": [
-          {
-            "tab": "Home",
-            "icon": "house",
-            "pages": [
-              "products/common_pages/home"
-            ]
-          }
+        "pages": [
+          "products/common_pages/home"
         ]
       },
       {
@@ -395,63 +389,185 @@
         ]
       },
       {
-        "product": "chDB",
-        "description": "Fast, reliable, and scalable in-process database",
+        "product": "Open Source",
+        "description": "Open Source ClickHouse",
         "tabs": [
           {
             "tab": "Home",
             "icon": "house",
             "pages": [
-              "products/chdb/pages/chdb_home"
+              "products/oss/pages/oss_home"
             ]
           },
           {
             "tab": "Get started",
             "icon": "rocket",
-            "pages": [
-              "products/chdb/pages/index",
-              "products/chdb/pages/getting-started"
+            "groups": [
+              {
+                "group": "About ClickHouse",
+                "collapsed": true,
+                "pages": [
+                  "products/oss/pages/get_started/about/intro",
+                  "products/oss/pages/get_started/about/olap",
+                  "products/oss/pages/get_started/about/why-clickhouse-is-so-fast",
+                  "products/oss/pages/get_started/about/distinctive-features",
+                  "products/oss/pages/get_started/about/deployment-modes"
+                ]
+              },
+              {
+                "group": "Starter guides",
+                "collapsed": true,
+                "pages": [
+                  "products/oss/pages/get_started/oss",
+                  "products/oss/pages/get_started/starter_guides/creating-tables",
+                  "products/oss/pages/get_started/starter_guides/inserting-data",
+                  "products/oss/pages/get_started/starter_guides/writing-queries",
+                  "products/oss/pages/get_started/starter_guides/mutations",
+                  "products/oss/pages/get_started/starter_guides/generating-test-data",
+                  "products/oss/pages/get_started/starter_guides/troubleshooting"
+                ]
+              },
+              {
+                "group": "Install",
+                "collapsed": true,
+                "pages": [
+                  "products/oss/pages/get_started/install/install",
+                  "products/oss/pages/get_started/install/debian_ubuntu",
+                  "products/oss/pages/get_started/install/redhat",
+                  "products/oss/pages/get_started/install/other_linux",
+                  "products/oss/pages/get_started/install/macos",
+                  "products/oss/pages/get_started/install/windows",
+                  "products/oss/pages/get_started/install/docker",
+                  "products/oss/pages/get_started/install/quick-install-curl",
+                  "products/oss/pages/get_started/install/advanced"
+                ]
+              }
             ]
           },
           {
-            "tab": "Language integrations",
-            "icon": "laptop-code",
+            "tab": "Concepts",
+            "icon": "lightbulb",
             "pages": [
-              "products/chdb/pages/install/python",
-              "products/chdb/pages/install/nodejs",
-              "products/chdb/pages/install/go",
-              "products/chdb/pages/install/rust",
-              "products/chdb/pages/install/bun",
-              "products/chdb/pages/install/c"
+              "products/common_pages/concepts/glossary",
+              "products/common_pages/concepts/parts",
+              "products/common_pages/concepts/partitions",
+              "products/common_pages/concepts/merges",
+              "products/common_pages/concepts/primary-indexes",
+              "products/common_pages/concepts/query-parallelism",
+              "products/common_pages/concepts/academic_overview"
             ]
           },
           {
-            "tab": "Developer guides",
+            "tab": "Guides",
             "icon": "book",
-            "pages": [
-              "products/chdb/pages/guides/jupysql",
-              "products/chdb/pages/guides/querying-pandas",
-              "products/chdb/pages/guides/querying-apache-arrow",
-              "products/chdb/pages/guides/querying-s3-bucket",
-              "products/chdb/pages/guides/querying-parquet",
-              "products/chdb/pages/guides/query-remote-clickhouse",
-              "products/chdb/pages/guides/clickhouse-local"
+            "groups": [
+              {
+                "group": "Best practices",
+                "collapsed": true,
+                "pages": [
+                  "products/common_pages/best_practices/choosing_a_primary_key",
+                  "products/common_pages/best_practices/select_data_type",
+                  "products/common_pages/best_practices/use_materialized_views",
+                  "products/common_pages/best_practices/minimize_optimize_joins",
+                  "products/common_pages/best_practices/partitioning_keys",
+                  "products/common_pages/best_practices/selecting_an_insert_strategy",
+                  "products/common_pages/best_practices/using_data_skipping_indices",
+                  "products/common_pages/best_practices/avoid_mutations",
+                  "products/common_pages/best_practices/avoid_optimize_final",
+                  "products/common_pages/best_practices/avoidnullablecolumns",
+                  "products/common_pages/best_practices/json_type"
+                ]
+              },
+              {
+                "group": "OSS best practices",
+                "collapsed": true,
+                "pages": [
+                  "products/oss/pages/oss_specific_guides/best_practices/sizing-and-hardware-recommendations",
+                  "products/oss/pages/oss_specific_guides/best_practices/tips"
+                ]
+              },
+              {
+                "group": "Data modelling",
+                "collapsed": true,
+                "pages": [
+                  "products/common_pages/general_guides/data_modelling/schema-design",
+                  "products/common_pages/general_guides/data_modelling/sparse-primary-indexes",
+                  "products/common_pages/general_guides/data_modelling/materialized-views-versus-projections",
+                  "products/common_pages/general_guides/data_modelling/denormalization",
+                  "products/common_pages/general_guides/data_modelling/backfilling"
+                ]
+              }
             ]
           },
           {
-            "tab": "Technical reference",
-            "icon": "gears",
-            "pages": [
-              "products/chdb/pages/reference/data-formats",
-              "products/chdb/pages/reference/sql-reference",
-              "products/chdb/pages/api/python"
+            "tab": "Development",
+            "icon": "brackets-curly",
+            "groups": [
+              {
+                "group": "Introduction",
+                "pages": [
+                  "products/oss/pages/development/developer-instruction",
+                  "products/oss/pages/development/architecture"
+                ]
+              },
+              {
+                "group": "Building",
+                "pages": [
+                  "products/oss/pages/development/build",
+                  "products/oss/pages/development/build-osx",
+                  "products/oss/pages/development/build-cross-osx",
+                  "products/oss/pages/development/build-cross-arm",
+                  "products/oss/pages/development/build-cross-riscv",
+                  "products/oss/pages/development/build-cross-s390x",
+                  "products/oss/pages/development/build-cross-loongarch"
+                ]
+              },
+              {
+                "group": "Contributing",
+                "pages": [
+                  "products/oss/pages/development/tests",
+                  "products/oss/pages/development/continuous-integration",
+                  "products/oss/pages/development/contrib",
+                  "products/oss/pages/development/style",
+                  "products/oss/pages/development/building_and_benchmarking_deflate_qpl",
+                  "products/oss/pages/development/integrating_rust_libraries",
+                  "products/oss/pages/development/profile-guided-optimization"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Changelog",
+            "icon": "code-merge",
+            "groups": [
+              {
+                "group": "Changelog",
+                "pages": [
+                  "products/oss/pages/changelogs/2025",
+                  "products/oss/pages/changelogs/2024",
+                  "products/oss/pages/changelogs/2023",
+                  "products/oss/pages/changelogs/2022",
+                  "products/oss/pages/changelogs/2021",
+                  "products/oss/pages/changelogs/2020",
+                  "products/oss/pages/changelogs/2019",
+                  "products/oss/pages/changelogs/2018",
+                  "products/oss/pages/changelogs/2017"
+                ]
+              },
+              {
+                "group": "Other",
+                "pages": [
+                  "products/oss/pages/changelogs/security-changelog",
+                  "products/oss/pages/changelogs/roadmap"
+                ]
+              }
             ]
           }
         ]
       },
       {
         "product": "ClickPipes",
-        "description": "Managed CDC",
+        "description": "Managed integration platform for data ingestion",
         "tabs": [
           {
             "tab": "Home",
@@ -721,6 +837,316 @@
               },
               "products/clickstack/pages/production",
               "products/clickstack/pages/ttl"
+            ]
+          }
+        ]
+      },
+      {
+        "product": "chDB",
+        "description": "Fast, reliable, and scalable in-process database",
+        "tabs": [
+          {
+            "tab": "Home",
+            "icon": "house",
+            "pages": [
+              "products/chdb/pages/chdb_home"
+            ]
+          },
+          {
+            "tab": "Get started",
+            "icon": "rocket",
+            "pages": [
+              "products/chdb/pages/index",
+              "products/chdb/pages/getting-started"
+            ]
+          },
+          {
+            "tab": "Language integrations",
+            "icon": "laptop-code",
+            "pages": [
+              "products/chdb/pages/install/python",
+              "products/chdb/pages/install/nodejs",
+              "products/chdb/pages/install/go",
+              "products/chdb/pages/install/rust",
+              "products/chdb/pages/install/bun",
+              "products/chdb/pages/install/c"
+            ]
+          },
+          {
+            "tab": "Developer guides",
+            "icon": "book",
+            "pages": [
+              "products/chdb/pages/guides/jupysql",
+              "products/chdb/pages/guides/querying-pandas",
+              "products/chdb/pages/guides/querying-apache-arrow",
+              "products/chdb/pages/guides/querying-s3-bucket",
+              "products/chdb/pages/guides/querying-parquet",
+              "products/chdb/pages/guides/query-remote-clickhouse",
+              "products/chdb/pages/guides/clickhouse-local"
+            ]
+          },
+          {
+            "tab": "Technical reference",
+            "icon": "gears",
+            "pages": [
+              "products/chdb/pages/reference/data-formats",
+              "products/chdb/pages/reference/sql-reference",
+              "products/chdb/pages/api/python"
+            ]
+          }
+        ]
+      },
+      {
+        "product": "Integrations",
+        "description": "100+ ClickHouse integrations",
+        "tabs": [
+          {
+            "tab": "Home",
+            "icon": "house",
+            "pages": [
+              "products/integrations/pages/integrations_home"
+            ]
+          },
+          {
+            "tab": "Language clients",
+            "icon": "laptop-code",
+            "pages": [
+              "products/integrations/pages/language-clients/go/index",
+              "products/integrations/pages/language-clients/js",
+              {
+                "group": "Python",
+                "pages": [
+                  "products/integrations/pages/language-clients/python/index",
+                  "products/integrations/pages/language-clients/python/driver-api",
+                  "products/integrations/pages/language-clients/python/additional-options",
+                  "products/integrations/pages/language-clients/python/advanced-querying",
+                  "products/integrations/pages/language-clients/python/advanced-inserting",
+                  "products/integrations/pages/language-clients/python/advanced-usage",
+                  "products/integrations/pages/language-clients/python/sqlalchemy"
+                ]
+              },
+              "products/integrations/pages/language-clients/rust",
+              "products/integrations/pages/language-clients/csharp",
+              "products/integrations/pages/language-clients/cpp"
+            ]
+          },
+          {
+            "tab": "Data ingestion",
+            "icon": "arrows-to-dot",
+            "groups": [
+              {
+                "group": "AWS",
+                "collapsed": true,
+                "pages": [
+                  "products/integrations/pages/data-ingestion/AWS/integrating-s3-with-clickhouse",
+                  "products/integrations/pages/data-ingestion/AWS/performance",
+                  "products/integrations/pages/data-ingestion/AWS/glue"
+                ]
+              },
+              {
+                "group": "Kafka",
+                "collapsed": true,
+                "pages": [
+                  "products/integrations/pages/data-ingestion/kafka/index",
+                  "products/integrations/pages/data-ingestion/kafka/kafka-clickhouse-connect-sink",
+                  "products/integrations/pages/data-ingestion/kafka/kafka-table-engine"
+                ]
+              },
+              {
+                "group": "ETL tools",
+                "collapsed": true,
+                "pages": [
+                  "products/integrations/pages/data-ingestion/etl-tools/airbyte-and-clickhouse",
+                  "products/integrations/pages/data-ingestion/etl-tools/apache-beam",
+                  "products/integrations/pages/data-ingestion/etl-tools/dlt-and-clickhouse",
+                  "products/integrations/pages/data-ingestion/etl-tools/vector-to-clickhouse"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Data visualization",
+            "icon": "chart-simple",
+            "pages": [
+              "products/integrations/pages/data-visualization/clickhouse/powerbi-and-clickhouse",
+              "products/integrations/pages/data-visualization/clickhouse/superset-and-clickhouse",
+              {
+                "group": "Grafana",
+                "collapsed": true,
+                "pages": [
+                  "products/integrations/pages/data-visualization/clickhouse/grafana/index",
+                  "products/integrations/pages/data-visualization/clickhouse/grafana/query-builder",
+                  "products/integrations/pages/data-visualization/clickhouse/grafana/config"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "SQL clients",
+            "icon": "database",
+            "pages": [
+              "products/integrations/pages/data-integrations/sql-clients/datagrip",
+              "products/integrations/pages/data-integrations/sql-clients/dbeaver",
+              "products/integrations/pages/data-integrations/sql-clients/dbvisualizer",
+              "products/integrations/pages/data-integrations/sql-clients/jupysql"
+            ]
+          }
+        ]
+      },
+      {
+        "product": "Reference",
+        "description": "Reference docs",
+        "tabs": [
+          {
+            "tab": "Home",
+            "icon": "house",
+            "pages": [
+              "products/reference/reference_home"
+            ]
+          },
+          {
+            "tab": "SQL Reference",
+            "icon": "terminal",
+            "groups": [
+              {
+                "group": "Syntax",
+                "pages": [
+                  "products/reference/syntax"
+                ]
+              },
+              {
+                "group": "Statements",
+                "collapsed": true,
+                "pages": [
+                  "products/reference/statements/index",
+                  "products/reference/statements/select/index",
+                  "products/reference/statements/insert-into",
+                  "products/reference/statements/create/table",
+                  "products/reference/statements/alter/index",
+                  "products/reference/statements/drop"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Data Types",
+            "icon": "file-brackets-curly",
+            "groups": [
+              {
+                "group": "Numeric types",
+                "pages": [
+                  "products/reference/data-types/int-uint",
+                  "products/reference/data-types/float",
+                  "products/reference/data-types/decimal",
+                  "products/reference/data-types/boolean"
+                ]
+              },
+              {
+                "group": "String types",
+                "pages": [
+                  "products/reference/data-types/string",
+                  "products/reference/data-types/fixedstring"
+                ]
+              },
+              {
+                "group": "Date and time types",
+                "pages": [
+                  "products/reference/data-types/date",
+                  "products/reference/data-types/date32",
+                  "products/reference/data-types/datetime",
+                  "products/reference/data-types/datetime64"
+                ]
+              },
+              {
+                "group": "Composite types",
+                "pages": [
+                  "products/reference/data-types/array",
+                  "products/reference/data-types/tuple",
+                  "products/reference/data-types/map"
+                ]
+              },
+              {
+                "group": "Semi-structured types",
+                "pages": [
+                  "products/reference/data-types/newjson",
+                  "products/reference/data-types/dynamic",
+                  "products/reference/data-types/variant"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Engines",
+            "icon": "engine",
+            "groups": [
+              {
+                "group": "Table Engines",
+                "collapsed": true,
+                "pages": [
+                  "products/reference/engines/table-engines/index",
+                  {
+                    "group": "MergeTree Family",
+                    "pages": [
+                      "products/reference/engines/table-engines/mergetree-family/index",
+                      "products/reference/engines/table-engines/mergetree-family/mergetree",
+                      "products/reference/engines/table-engines/mergetree-family/replication"
+                    ]
+                  },
+                  {
+                    "group": "Integrations",
+                    "pages": [
+                      "products/reference/engines/table-engines/integrations/index",
+                      "products/reference/engines/table-engines/integrations/kafka",
+                      "products/reference/engines/table-engines/integrations/s3"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Database Engines",
+                "collapsed": true,
+                "pages": [
+                  "products/reference/engines/database-engines/index",
+                  "products/reference/engines/database-engines/atomic",
+                  "products/reference/engines/database-engines/replicated"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Functions",
+            "icon": "function",
+            "groups": [
+              {
+                "group": "Regular functions",
+                "collapsed": true,
+                "pages": [
+                  "products/reference/functions/regular-functions/overview",
+                  "products/reference/functions/regular-functions/arithmetic-functions",
+                  "products/reference/functions/regular-functions/array-functions",
+                  "products/reference/functions/regular-functions/string-functions",
+                  "products/reference/functions/regular-functions/date-time-functions"
+                ]
+              },
+              {
+                "group": "Aggregate Functions",
+                "collapsed": true,
+                "pages": [
+                  "products/reference/functions/aggregate-functions/index",
+                  "products/reference/functions/aggregate-functions/reference/count",
+                  "products/reference/functions/aggregate-functions/reference/sum",
+                  "products/reference/functions/aggregate-functions/reference/avg"
+                ]
+              }
+            ]
+          },
+          {
+            "tab": "Settings",
+            "icon": "sliders",
+            "pages": [
+              "products/reference/settings/server-settings/settings",
+              "products/reference/settings/session-settings",
+              "products/reference/settings/merge-tree-settings"
             ]
           }
         ]

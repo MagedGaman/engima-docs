@@ -7,7 +7,7 @@ keywords: ['TimescaleDB']
 doc_type: 'guide'
 ---
 
-import {BetaBadge} from '../../../../../../components/Badges/BetaBadge'
+import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
 
 <BetaBadge/>
 

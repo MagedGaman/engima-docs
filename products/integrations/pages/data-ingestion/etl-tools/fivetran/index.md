@@ -11,7 +11,7 @@ integration:
 keywords: ['fivetran', 'data movement', 'etl', 'clickhouse destination', 'automated data platform']
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 
 <ClickHouseSupportedBadge/>

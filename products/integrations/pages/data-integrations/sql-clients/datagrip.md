@@ -11,7 +11,7 @@ integration:
 keywords: ['DataGrip', 'database IDE', 'JetBrains', 'SQL client', 'integrated development environment']
 ---
 
-import {CommunityMaintainedBadge} from '../../../../../components/Badges/CommunityMaintainedBadge'
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
 <CommunityMaintainedBadge/>
 

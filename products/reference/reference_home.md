@@ -4,7 +4,6 @@ slug: reference
 title: 'Reference docs'
 doc_type: 'reference'
 hide-toolbar: true
-mode: "custom"
 ---
 
 <CardGroup cols={2}>

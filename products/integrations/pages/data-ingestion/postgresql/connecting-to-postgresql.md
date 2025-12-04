@@ -7,8 +7,8 @@ show_related_blogs: true
 doc_type: 'guide'
 ---
 
-import {CloudNotSupportedBadge} from '../../../../../components/Badges/CloudNotSupportedBadge'
-import {ExperimentalBadge} from '../../../../../components/Badges/ExperimentalBadge'
+import CloudNotSupportedBadge from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import ExperimentalBadge from '/snippets/components/Badges/ExperimentalBadge.jsx'
 
 
 This page covers following options for integrating PostgreSQL with ClickHouse:

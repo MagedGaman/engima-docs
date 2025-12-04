@@ -7,7 +7,7 @@ title: 'Bringing Azure Data into ClickHouse'
 doc_type: 'guide'
 ---
 
-import {ClickHouseSupportedBadge} from '../../../../../../components/Badges/ClickHouseSupported'
+import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 
