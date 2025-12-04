@@ -1,6 +1,6 @@
 ---
 description: 'This engine provides an integration with Azure Blob Storage ecosystem.'
-sidebar_label: 'Azure Blob Storage table engine'
+sidebarTitle: 'Azure Blob Storage table engine'
 sidebar_position: 10
 slug: /engines/table-engines/integrations/azureBlobStorage
 title: 'AzureBlobStorage table engine'

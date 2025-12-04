@@ -1,7 +1,7 @@
 ---
 description: 'Documentation for the QBit data type in ClickHouse, which allows fine-grained quantization for approximate vector search'
 keywords: ['qbit', 'data type']
-sidebar_label: 'QBit'
+sidebarTitle: 'QBit'
 sidebar_position: 64
 slug: /sql-reference/data-types/qbit
 title: 'QBit Data Type'

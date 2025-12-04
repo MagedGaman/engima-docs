@@ -1,6 +1,6 @@
 ---
 slug: /guides/developer/mutations
-sidebar_label: 'Updating and deleting data'
+sidebarTitle: 'Updating and deleting data'
 sidebar_position: 1
 keywords: ['UPDATE', 'DELETE', 'mutations']
 title: 'Updating and deleting ClickHouse data'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Loading JSON'
+sidebarTitle: 'Loading JSON'
 sidebar_position: 20
 title: 'Working with JSON'
 slug: /integrations/data-formats/json/loading

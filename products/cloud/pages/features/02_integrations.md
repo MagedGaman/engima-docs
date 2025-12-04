@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Integrations'
+sidebarTitle: 'Integrations'
 slug: /manage/integrations
 title: 'Integrations'
 description: 'Integrations for ClickHouse'

@@ -1,6 +1,6 @@
 ---
 description: 'Over 150M customer reviews of Amazon products'
-sidebar_label: 'Amazon customer reviews'
+sidebarTitle: 'Amazon customer reviews'
 slug: /getting-started/example-datasets/amazon-reviews
 title: 'Amazon Customer Review'
 doc_type: 'guide'

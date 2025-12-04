@@ -1,7 +1,7 @@
 ---
 description: 'caching mechanism that allows for caching of 
 data in in-process memory rather than relying on the OS page cache.'
-sidebar_label: 'Userspace page cache'
+sidebarTitle: 'Userspace page cache'
 sidebar_position: 65
 slug: /operations/userspace-page-cache
 title: 'Userspace page cache'

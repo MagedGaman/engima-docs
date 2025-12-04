@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Deepnote'
+sidebarTitle: 'Deepnote'
 sidebar_position: 11
 slug: /integrations/deepnote
 keywords: ['clickhouse', 'Deepnote', 'connect', 'integrate', 'notebook']
@@ -13,6 +13,8 @@ integration:
 ---
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -32,7 +34,7 @@ If you would like to explore an interactive example of querying ClickHouse from 
 <img src="/images/integrations/data-visualization/deepnote_01.png" alt="ClickHouse integration tile" />
 
 2. Provide the connection details for your ClickHouse instance:
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
    <img src="/images/integrations/data-visualization/deepnote_02.png" alt="ClickHouse details dialog" />
 

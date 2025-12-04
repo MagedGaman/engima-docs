@@ -1,7 +1,7 @@
 ---
 description: 'Displays the dictionary data as a ClickHouse table. Works the same way
   as the Dictionary engine.'
-sidebar_label: 'dictionary'
+sidebarTitle: 'dictionary'
 sidebar_position: 47
 slug: /sql-reference/table-functions/dictionary
 title: 'dictionary'

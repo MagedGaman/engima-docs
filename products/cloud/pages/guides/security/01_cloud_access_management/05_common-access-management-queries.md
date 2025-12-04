@@ -1,11 +1,13 @@
 ---
-sidebar_label: 'Common access management queries'
+sidebarTitle: 'Common access management queries'
 title: 'Common access management queries'
 slug: /cloud/security/common-access-management-queries
 description: 'This article shows the basics of defining SQL users and roles and applying those privileges and permissions to databases, tables, rows, and columns.'
 keywords: ['ClickHouse Cloud', 'access management']
 doc_type: 'guide'
 ---
+
+import UsersAndRolesCommon from '/snippets/_users-and-roles-common.mdx';
 
 <Tip title="Self-managed">
 If you are working with self-managed ClickHouse please see [SQL users and roles](/guides/sre/user-management/index.md).
@@ -64,4 +66,4 @@ GRANT sql_console_sa_role to `sql-console-role:jake@clickhouse.com`;
 GRANT sql_console_pm_role to `sql-console-role:zach@clickhouse.com`;
 ```
 
-<Markdown src="/snippets/_users-and-roles-common.md" />
+<UsersAndRolesCommon />

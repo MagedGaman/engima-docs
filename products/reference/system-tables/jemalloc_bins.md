@@ -7,7 +7,9 @@ title: 'system.jemalloc_bins'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about memory allocations done via jemalloc allocator in different size classes (bins) aggregated from all arenas.
 These statistics might not be absolutely accurate because of thread local caching in jemalloc.

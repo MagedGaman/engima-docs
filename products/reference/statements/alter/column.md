@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Column'
-sidebar_label: 'COLUMN'
+sidebarTitle: 'COLUMN'
 sidebar_position: 37
 slug: /sql-reference/statements/alter/column
 title: 'Column Manipulations'

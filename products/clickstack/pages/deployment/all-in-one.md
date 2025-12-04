@@ -9,6 +9,8 @@ doc_type: 'guide'
 keywords: ['ClickStack', 'observability', 'all-in-one', 'deployment']
 ---
 
+import JsonSupport from '/snippets/_json_support.mdx';
+
 This comprehensive Docker image bundles all ClickStack components:
 
 * **ClickHouse**
@@ -111,7 +113,7 @@ On connecting to the HyperDX UI, navigate to [`Team Settings`](http://localhost:
 
 The OTel collector configuration can be modified if required - see ["Modifying configuration"](/use-cases/observability/clickstack/ingesting-data/otel-collector#modifying-otel-collector-configuration).
 
-<Markdown src="/snippets/_json_support.md"/>
+<JsonSupport />
 
 For example:
 

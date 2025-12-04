@@ -1,7 +1,7 @@
 ---
 description: 'Allows to connect to SQLite databases and perform `INSERT` and `SELECT`
   queries to exchange data between ClickHouse and SQLite.'
-sidebar_label: 'SQLite database engine'
+sidebarTitle: 'SQLite database engine'
 sidebar_position: 55
 slug: /engines/database-engines/sqlite
 title: 'SQLite'

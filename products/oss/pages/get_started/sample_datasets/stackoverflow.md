@@ -1,6 +1,6 @@
 ---
 description: 'Analyzing Stack Overflow data with ClickHouse'
-sidebar_label: 'Stack Overflow'
+sidebarTitle: 'Stack Overflow'
 slug: /getting-started/example-datasets/stackoverflow
 title: 'Analyzing Stack Overflow data with ClickHouse'
 keywords: ['StackOverflow']

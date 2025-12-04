@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Rust'
+sidebarTitle: 'Rust'
 sidebar_position: 5
 keywords: ['clickhouse', 'rs', 'rust', 'cargo', 'crate', 'http', 'client', 'connect', 'integrate']
 slug: /integrations/rust

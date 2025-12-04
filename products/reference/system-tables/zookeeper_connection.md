@@ -7,7 +7,9 @@ title: 'system.zookeeper_connection'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 This table does not exist if ZooKeeper is not configured. The 'system.zookeeper_connection' table shows current connections to ZooKeeper (including auxiliary ZooKeepers). Each row shows information about one connection.
 

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'ClickPipes for Amazon Kinesis'
+sidebarTitle: 'ClickPipes for Amazon Kinesis'
 description: 'Seamlessly connect your Amazon Kinesis data sources to ClickHouse Cloud.'
 slug: /integrations/clickpipes/kinesis
 title: 'Integrating Amazon Kinesis with ClickHouse Cloud'

@@ -10,6 +10,7 @@ keywords: ['HyperDX standalone deployment', 'HyperDX ClickHouse integration', 'd
 ---
 
 import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
+import JsonSupport from '/snippets/_json_support.mdx';
 
 This option is designed for users who already have a running ClickHouse instance populated with observability or event data.
 
@@ -71,7 +72,7 @@ Even if you are managing your own OpenTelemetry collector, independent of the ot
 
 For details on deploying and configuring a standalone collector see ["Ingesting with OpenTelemetry"](/use-cases/observability/clickstack/ingesting-data/otel-collector#modifying-otel-collector-configuration).
 
-<Markdown src="/snippets/_json_support.md"/>
+<JsonSupport />
 
 For the HyperDX-only image, users only need to set the `BETA_CH_OTEL_JSON_SCHEMA_ENABLED=true` parameter e.g.
 

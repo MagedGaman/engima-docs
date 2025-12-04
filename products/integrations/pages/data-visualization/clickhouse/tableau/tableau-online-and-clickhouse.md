@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Tableau Online'
+sidebarTitle: 'Tableau Online'
 sidebar_position: 2
 slug: /integrations/tableau-online
 keywords: ['clickhouse', 'tableau', 'online', 'mysql', 'connect', 'integrate', 'ui']
@@ -8,15 +8,18 @@ title: 'Tableau Online'
 doc_type: 'guide'
 ---
 
+import ClickhouseMysqlCloudSetup from '/snippets/_clickhouse_mysql_cloud_setup.mdx';
+import ClickhouseMysqlOnPremiseSetup from '/snippets/_clickhouse_mysql_on_premise_setup.mdx';
+
 Tableau Online can connect to ClickHouse Cloud or on-premise ClickHouse setup via MySQL interface using the official MySQL data source.
 
 ## ClickHouse Cloud setup [#clickhouse-cloud-setup]
 
-<Markdown src="/snippets/_clickhouse_mysql_cloud_setup.mdx" />
+<ClickhouseMysqlCloudSetup />
 
 ## On-premise ClickHouse server setup [#on-premise-clickhouse-server-setup]
 
-<Markdown src="/snippets/_clickhouse_mysql_on_premise_setup.mdx" />
+<ClickhouseMysqlOnPremiseSetup />
 
 ## Connecting Tableau Online to ClickHouse (on-premise without SSL) [#connecting-tableau-online-to-clickhouse-on-premise-without-ssl]
 

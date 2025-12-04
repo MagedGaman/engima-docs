@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Rocket BI'
+sidebarTitle: 'Rocket BI'
 sidebar_position: 131
 slug: /integrations/rocketbi
 keywords: ['clickhouse', 'RocketBI', 'connect', 'integrate', 'ui']

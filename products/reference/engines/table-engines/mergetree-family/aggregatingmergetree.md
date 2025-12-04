@@ -3,7 +3,7 @@ description: 'Replaces all rows with the same primary key (or more accurately, w
   the same [sorting key](../../../engines/table-engines/mergetree-family/mergetree.md))
   with a single row (within a single data part) that stores a combination of states
   of aggregate functions.'
-sidebar_label: 'AggregatingMergeTree'
+sidebarTitle: 'AggregatingMergeTree'
 sidebar_position: 60
 slug: /engines/table-engines/mergetree-family/aggregatingmergetree
 title: 'AggregatingMergeTree table engine'

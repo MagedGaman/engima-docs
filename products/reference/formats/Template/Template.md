@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Template']
 output_format: true
 slug: /interfaces/formats/Template
-title: 'Template <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'Template'
 doc_type: 'guide'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

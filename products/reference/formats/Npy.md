@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Npy']
 output_format: true
 slug: /interfaces/formats/Npy
-title: 'Npy <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'Npy'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

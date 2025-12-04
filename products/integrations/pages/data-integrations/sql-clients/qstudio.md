@@ -1,6 +1,6 @@
 ---
 slug: /integrations/qstudio
-sidebar_label: 'QStudio'
+sidebarTitle: 'QStudio'
 description: 'QStudio is a free SQL tool.'
 title: 'Connect QStudio to ClickHouse'
 doc_type: 'guide'
@@ -8,6 +8,8 @@ keywords: ['qstudio', 'sql client', 'database tool', 'query tool', 'ide']
 ---
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -24,7 +26,7 @@ QStudio uses JDBC over HTTP(S) to connect to ClickHouse; you need:
 - username
 - password
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Download QStudio [#2-download-qstudio]
 

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the ClickHouse command-line client interface'
-sidebar_label: 'ClickHouse Client'
+sidebarTitle: 'ClickHouse Client'
 sidebar_position: 17
 slug: /interfaces/cli
 title: 'ClickHouse Client'

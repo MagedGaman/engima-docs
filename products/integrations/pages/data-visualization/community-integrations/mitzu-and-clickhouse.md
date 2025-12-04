@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Mitzu'
+sidebarTitle: 'Mitzu'
 slug: /integrations/mitzu
 keywords: ['clickhouse', 'Mitzu', 'connect', 'integrate', 'ui']
 description: 'Mitzu is a no-code warehouse-native product analytics application.'

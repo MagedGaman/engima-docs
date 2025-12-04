@@ -9,6 +9,8 @@ doc_type: 'guide'
 keywords: ['clickstack', 'example data', 'sample dataset', 'logs', 'observability']
 ---
 
+import Demo from '/snippets/_demo.mdx';
+
 **The following guide assumes you have deployed ClickStack using the [instructions for the all-in-one image](/use-cases/observability/clickstack/getting-started), or [Local Mode Only](/use-cases/observability/clickstack/deployment/local-mode-only) and completed initial user creation. Alternatively, users can skip all local setup and simply connect to our ClickStack hosted demo [play-clickstack.clickhouse.com](https://play-clickstack.clickhouse.com) which uses this dataset.**
 
 This guide uses a sample dataset hosted on the public ClickHouse playground at [sql.clickhouse.com](https://sql.clickhpouse.com), which you can connect to from your local ClickStack deployment.
@@ -35,7 +37,7 @@ Using HyperDX, the SRE team will analyze logs, traces, and metrics to diagnose a
 
 This demo uses a [ClickStack maintained fork](https://github.com/ClickHouse/opentelemetry-demo) of the official OpenTelemetry demo.
 
-<Markdown src="/snippets/_demo.md"/>
+<Demo />
 
 ## Demo steps [#demo-steps]
 

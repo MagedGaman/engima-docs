@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for rounding functions'
-sidebar_label: 'Rounding'
+sidebarTitle: 'Rounding'
 slug: /sql-reference/functions/rounding-functions
 title: 'Rounding functions'
 doc_type: 'reference'

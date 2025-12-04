@@ -1,7 +1,7 @@
 ---
 description: 'An extension to the paimon table function which allows processing files
   from Apache Paimon in parallel from many nodes in a specified cluster.'
-sidebar_label: 'paimonCluster'
+sidebarTitle: 'paimonCluster'
 sidebar_position: 91
 slug: /sql-reference/table-functions/paimonCluster
 title: 'paimonCluster'

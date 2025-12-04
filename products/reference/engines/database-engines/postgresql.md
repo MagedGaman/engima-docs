@@ -1,6 +1,6 @@
 ---
 description: 'Allows to connect to databases on a remote PostgreSQL server.'
-sidebar_label: 'PostgreSQL database engine'
+sidebarTitle: 'PostgreSQL database engine'
 sidebar_position: 40
 slug: /engines/database-engines/postgresql
 title: 'PostgreSQL'

@@ -5,9 +5,11 @@ input_format: true
 keywords: ['TSKV']
 output_format: true
 slug: /interfaces/formats/TSKV
-title: 'TSKV <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'TSKV'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

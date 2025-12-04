@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for EXECUTE AS Statement'
-sidebar_label: 'EXECUTE AS'
+sidebarTitle: 'EXECUTE AS'
 sidebar_position: 53
 slug: /sql-reference/statements/execute_as
 title: 'EXECUTE AS Statement'

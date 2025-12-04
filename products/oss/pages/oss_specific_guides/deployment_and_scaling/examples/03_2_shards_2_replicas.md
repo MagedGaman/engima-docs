@@ -1,12 +1,21 @@
 ---
 slug: /architecture/cluster-deployment
-sidebar_label: 'Replication + Scaling'
+sidebarTitle: 'Replication + Scaling'
 sidebar_position: 100
 title: 'Replication + Scaling'
 description: 'By going through this tutorial, you will learn how to set up a simple ClickHouse cluster.'
 doc_type: 'guide'
 keywords: ['cluster deployment', 'replication', 'sharding', 'high availability', 'scalability']
 ---
+
+import DedicatedKeeperServers from '/snippets/_dedicated_keeper_servers.mdx';
+import WorkingExample from '/snippets/_working_example.mdx';
+import ConfigExplanation from '/snippets/_config_explanation.mdx';
+import ListenHost from '/snippets/_listen_host.mdx';
+import KeeperConfig from '/snippets/_keeper_config.mdx';
+import KeeperExplanation from '/snippets/_keeper_explanation.mdx';
+import CloudTip from '/snippets/_cloud_tip.mdx';
+import VerifyKeeperUsingMntr from '/snippets/_verify_keeper_using_mntr.mdx';
 
 
 > In this example, you'll learn how to set up a simple ClickHouse cluster which
@@ -18,7 +27,7 @@ The architecture of the cluster you will be setting up is shown below:
 
 <img src="/images/deployment-guides/replication-sharding-examples/both.png" alt="Architecture diagram for 2 shards and 1 replica"/>
 
-<Markdown src="/snippets/_dedicated_keeper_servers.mdx" />
+<DedicatedKeeperServers />
 
 ## Prerequisites [#prerequisites]
 
@@ -30,7 +39,7 @@ The architecture of the cluster you will be setting up is shown below:
 
 ## Set up directory structure and test environment [#set-up]
 
-<Markdown src="/snippets/_working_example.mdx" />
+<WorkingExample />
 
 In this tutorial, you will use [Docker compose](https://docs.docker.com/compose/) to
 set up the ClickHouse cluster. This setup could be modified to work
@@ -158,7 +167,7 @@ for i in {01..04}; do
 done
 ```
 
-<Markdown src="/snippets/_config_explanation.mdx" />
+<ConfigExplanation />
 
 ## Configure ClickHouse nodes [#configure-clickhouse-servers]
 
@@ -253,7 +262,7 @@ Each section of the above configuration file is explained in more detail below.
 
 #### Networking and logging [#networking]
 
-<Markdown src="/snippets/_listen_host.mdx" />
+<ListenHost />
 
 Logging configuration is defined in the `<logger>` block. This example configuration gives
 you a debug log that will roll over at 1000M three times:
@@ -421,7 +430,7 @@ Next you will configure ClickHouse Keeper, which is used for coordination.
 
 ### Keeper setup [#configuration-explanation]
 
-<Markdown src="/snippets/_keeper_config.mdx" />
+<KeeperConfig />
 
 | Directory                                                        | File                                                                                                                                                                                         |
 |------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -429,9 +438,9 @@ Next you will configure ClickHouse Keeper, which is used for coordination.
 | `fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper` | [`keeper_config.xml`](https://github.com/ClickHouse/examples/blob/main/docker-compose-recipes/recipes/cluster_2S_2R/fs/volumes/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml) |
 | `fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper` | [`keeper_config.xml`](https://github.com/ClickHouse/examples/blob/main/docker-compose-recipes/recipes/cluster_2S_2R/fs/volumes/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml) |
 
-<Markdown src="/snippets/_keeper_explanation.mdx" />
+<KeeperExplanation />
 
-<Markdown src="/snippets/_cloud_tip.mdx" />
+<CloudTip />
 
 ## Test the setup [#test-the-setup]
 
@@ -511,7 +520,7 @@ WHERE path IN ('/', '/clickhouse')
    └────────────┴───────┴─────────────┘
 ```
 
-<Markdown src="/snippets/_verify_keeper_using_mntr.mdx" />
+<VerifyKeeperUsingMntr />
 
 With this, you have successfully set up a ClickHouse cluster with two shards and two replicas.
 In the next step, you will create a table in the cluster.

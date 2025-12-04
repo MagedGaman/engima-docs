@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Dot'
+sidebarTitle: 'Dot'
 slug: /integrations/dot
 keywords: ['clickhouse', 'dot', 'ai', 'chatbot', 'mysql', 'integrate', 'ui', 'virtual assistant']
 description: 'AI Chatbot | Dot is an intelligent virtual data assistant that answers business data questions, retrieves definitions and relevant data assets, and can even assist with data modelling, powered by ClickHouse.'

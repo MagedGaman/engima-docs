@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for string replacement functions'
-sidebar_label: 'String replacement'
+sidebarTitle: 'String replacement'
 slug: /sql-reference/functions/string-replace-functions
 title: 'Functions for string replacement'
 doc_type: 'reference'

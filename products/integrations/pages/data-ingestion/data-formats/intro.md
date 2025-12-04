@@ -1,6 +1,6 @@
 ---
 slug: /integrations/data-formats
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 1
 keywords: ['clickhouse', 'CSV', 'TSV', 'Parquet', 'clickhouse-client', 'clickhouse-local']
 title: 'Importing from various data formats to ClickHouse'

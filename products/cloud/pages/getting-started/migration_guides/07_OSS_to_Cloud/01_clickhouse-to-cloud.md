@@ -1,10 +1,12 @@
 ---
-sidebar_label: 'ClickHouse OSS'
+sidebarTitle: 'ClickHouse OSS'
 slug: /cloud/migration/clickhouse-to-cloud
 title: 'Migrating between self-managed ClickHouse and ClickHouse Cloud'
 description: 'Page describing how to migrate between self-managed ClickHouse and ClickHouse Cloud'
 doc_type: 'guide'
 ---
+
+import AddRemoteIpAccessListDetail from '/snippets/_add_remote_ip_access_list_detail.mdx';
 
 <img src="/images/integrations/migration/self-managed-01.png" alt="Migrating Self-managed ClickHouse"/>
 
@@ -92,7 +94,7 @@ If the source system is not available from outside networks then you can push th
 In order for the `remoteSecure` function to connect to your ClickHouse Cloud service the IP Address of the remote system will need to be allowed by the IP Access List.  Expand **Manage your IP Access List** below this tip for more information.
 </Tip>
 
-<Markdown src="/snippets/_add_remote_ip_access_list_detail.md" />
+<AddRemoteIpAccessListDetail />
 
 ```sql
 INSERT INTO FUNCTION

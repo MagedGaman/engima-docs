@@ -1,6 +1,6 @@
 ---
 slug: /integrations/prometheus
-sidebar_label: 'Prometheus'
+sidebarTitle: 'Prometheus'
 title: 'Prometheus'
 description: 'Export ClickHouse metrics to Prometheus'
 keywords: ['prometheus', 'grafana', 'monitoring', 'metrics', 'exporter']

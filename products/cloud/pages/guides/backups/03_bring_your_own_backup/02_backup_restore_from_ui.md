@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Backup or restore using UI'
+sidebarTitle: 'Backup or restore using UI'
 slug: /cloud/manage/backups/backup-restore-via-ui
 title: 'Take a backup or restore a backup from the UI'
 description: 'Page describing how to take a backup or restore a backup from the UI with your own bucket'

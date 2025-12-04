@@ -1,7 +1,7 @@
 ---
 description: 'Allows processing files from Azure Blob storage in parallel with many
   nodes in a specified cluster.'
-sidebar_label: 'azureBlobStorageCluster'
+sidebarTitle: 'azureBlobStorageCluster'
 sidebar_position: 15
 slug: /sql-reference/table-functions/azureBlobStorageCluster
 title: 'azureBlobStorageCluster'

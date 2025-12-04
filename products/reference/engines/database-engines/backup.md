@@ -1,7 +1,7 @@
 ---
 description: 'Allows to instantly attach table/database from backups in read-only
   mode.'
-sidebar_label: 'Backup database engine'
+sidebarTitle: 'Backup database engine'
 sidebar_position: 60
 slug: /engines/database-engines/backup
 title: 'Backup'

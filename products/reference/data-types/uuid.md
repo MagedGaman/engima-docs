@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the UUID data type in ClickHouse'
-sidebar_label: 'UUID'
+sidebarTitle: 'UUID'
 sidebar_position: 24
 slug: /sql-reference/data-types/uuid
 title: 'UUID'

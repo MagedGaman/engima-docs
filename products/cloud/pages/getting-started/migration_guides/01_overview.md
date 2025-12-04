@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 1
 slug: /integrations/migration/overview
 keywords: ['clickhouse', 'migrate', 'migration', 'migrating', 'data']

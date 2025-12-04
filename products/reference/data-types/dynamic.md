@@ -1,7 +1,7 @@
 ---
 description: 'Documentation for the Dynamic data type in ClickHouse, which can store
   values of different types in a single column'
-sidebar_label: 'Dynamic'
+sidebarTitle: 'Dynamic'
 sidebar_position: 62
 slug: /sql-reference/data-types/dynamic
 title: 'Dynamic'

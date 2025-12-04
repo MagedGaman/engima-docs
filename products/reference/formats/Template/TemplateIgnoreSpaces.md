@@ -5,9 +5,11 @@ input_format: true
 keywords: ['TemplateIgnoreSpaces']
 output_format: false
 slug: /interfaces/formats/TemplateIgnoreSpaces
-title: 'TemplateIgnoreSpaces <Badge intent="success">Input</Badge>'
+title: 'TemplateIgnoreSpaces'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

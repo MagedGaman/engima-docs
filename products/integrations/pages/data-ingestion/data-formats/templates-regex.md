@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Regexp and templates'
+sidebarTitle: 'Regexp and templates'
 sidebar_position: 3
 slug: /integrations/data-formats/templates-regexp
 title: 'Importing and exporting custom text data using Templates and Regex in ClickHouse'

@@ -1,6 +1,6 @@
 ---
 title: 'chDB for Bun'
-sidebar_label: 'Bun'
+sidebarTitle: 'Bun'
 slug: /chdb/install/bun
 description: 'How to install and use chDB with Bun runtime'
 keywords: ['chdb', 'bun', 'javascript', 'typescript', 'embedded', 'clickhouse', 'sql', 'olap']

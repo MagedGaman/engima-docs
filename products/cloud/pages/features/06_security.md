@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Security'
+sidebarTitle: 'Security'
 slug: /cloud/security
 title: 'Security'
 description: 'Learn more about securing ClickHouse Cloud and BYOC'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Power BI'
+sidebarTitle: 'Power BI'
 slug: /integrations/powerbi
 keywords: ['clickhouse', 'Power BI', 'connect', 'integrate', 'ui']
 description: 'Microsoft Power BI is an interactive data visualization software product developed by Microsoft with a primary focus on business intelligence.'

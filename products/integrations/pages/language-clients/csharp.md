@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'C#'
+sidebarTitle: 'C#'
 sidebar_position: 6
 keywords: ['clickhouse', 'cs', 'c#', '.net', 'dotnet', 'csharp', 'client', 'driver', 'connect', 'integrate']
 slug: /integrations/csharp

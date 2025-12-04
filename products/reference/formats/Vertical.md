@@ -5,9 +5,11 @@ input_format: false
 keywords: ['Vertical']
 output_format: true
 slug: /interfaces/formats/Vertical
-title: 'Vertical <Badge intent="success">Output</Badge>'
+title: 'Vertical'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

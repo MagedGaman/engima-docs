@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'MinIO'
+sidebarTitle: 'MinIO'
 sidebar_position: 6
 slug: /integrations/minio
 description: 'Page describing how to use MinIO with ClickHouse'
@@ -11,7 +11,9 @@ integration:
 keywords: ['s3', 'minio', 'object storage', 'data loading', 'compatible storage']
 ---
 
-<Markdown src="/snippets/_self_managed_only_no_roadmap.md" />
+import SelfManagedOnlyNoRoadmap from '/snippets/_self_managed_only_no_roadmap.mdx';
+
+<SelfManagedOnlyNoRoadmap />
 
 All S3 functions and tables and compatible with [MinIO](https://min.io/). Users may experience superior throughput on self-hosted MinIO stores, especially in the event of optimal network locality.
 

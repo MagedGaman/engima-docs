@@ -2,7 +2,7 @@
 title: 'Controlling the Syncing of a Postgres ClickPipe'
 description: 'Doc for controlling the sync a Postgres ClickPipe'
 slug: /integrations/clickpipes/postgres/sync_control
-sidebar_label: 'Controlling syncs'
+sidebarTitle: 'Controlling syncs'
 keywords: ['sync control', 'postgres', 'clickpipes', 'batch size', 'sync interval']
 doc_type: 'guide'
 ---

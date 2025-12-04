@@ -7,7 +7,9 @@ title: 'system.query_metric_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains a history of memory and metric values from table `system.events` for individual queries, periodically flushed to disk.
 

@@ -1,6 +1,6 @@
 ---
 description: 'Page describing the `Shared` database engine, available in ClickHouse Cloud'
-sidebar_label: 'Shared database engine'
+sidebarTitle: 'Shared database engine'
 sidebar_position: 10
 slug: /engines/database-engines/shared
 title: 'Shared database engine'

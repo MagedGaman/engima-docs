@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Embeddable'
+sidebarTitle: 'Embeddable'
 slug: /integrations/embeddable
 keywords: ['clickhouse', 'Embeddable', 'connect', 'integrate', 'ui']
 description: 'Embeddable is a developer toolkit for building fast, interactive, fully-custom analytics experiences directly into your app.'
@@ -8,6 +8,8 @@ doc_type: 'guide'
 ---
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -18,7 +20,7 @@ The end result is the ability to deliver fast, interactive customer-facing analy
 Built-in row-level security means that every user only ever sees exactly the data they're allowed to see. And two levels of fully-configurable caching mean you can deliver fast, real time analytics at scale.
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Create a ClickHouse connection type [#2-create-a-clickhouse-connection-type]
 

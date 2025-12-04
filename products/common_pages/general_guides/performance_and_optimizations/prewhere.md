@@ -1,6 +1,6 @@
 ---
 slug: /optimize/prewhere
-sidebar_label: 'PREWHERE optimization'
+sidebarTitle: 'PREWHERE optimization'
 sidebar_position: 21
 description: 'PREWHERE reduces I/O by avoiding reading unnecessary column data.'
 title: 'How does the PREWHERE optimization work?'

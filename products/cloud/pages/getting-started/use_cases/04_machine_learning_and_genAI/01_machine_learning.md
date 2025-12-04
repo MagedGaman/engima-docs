@@ -3,7 +3,7 @@ slug: /cloud/get-started/cloud/use-cases/AI_ML
 title: 'Machine learning'
 description: 'Learn how ClickHouse powers machine learning applications across the ML pipeline.'
 keywords: ['use cases', 'Machine Learning', 'Generative AI']
-sidebar_label: 'Machine learning'
+sidebarTitle: 'Machine learning'
 doc_type: 'guide'
 ---
 

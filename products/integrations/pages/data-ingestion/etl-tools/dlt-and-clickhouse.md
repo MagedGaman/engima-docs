@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'dlt'
+sidebarTitle: 'dlt'
 keywords: ['clickhouse', 'dlt', 'connect', 'integrate', 'etl', 'data integration']
 description: 'Load data into Clickhouse using dlt integration'
 title: 'Connect dlt to ClickHouse'

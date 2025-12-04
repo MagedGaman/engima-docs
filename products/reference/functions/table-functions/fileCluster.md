@@ -4,7 +4,7 @@ description: 'Enables simultaneous processing of files matching a specified path
   nodes, expands globs in the file path, and delegates file-reading tasks to worker
   nodes. Each worker node is querying the initiator for the next file to process,
   repeating until all tasks are completed (all files are read).'
-sidebar_label: 'fileCluster'
+sidebarTitle: 'fileCluster'
 sidebar_position: 61
 slug: /sql-reference/table-functions/fileCluster
 title: 'fileCluster'

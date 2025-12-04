@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Manage my account'
+sidebarTitle: 'Manage my account'
 slug: /cloud/security/manage-my-account
 title: 'Manage my account'
 description: 'This page describes how users can accept invitations, manage MFA settings, and reset passwords'

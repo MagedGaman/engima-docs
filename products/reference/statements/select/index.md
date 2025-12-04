@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for SELECT Query'
-sidebar_label: 'SELECT'
+sidebarTitle: 'SELECT'
 sidebar_position: 32
 slug: /sql-reference/statements/select/
 title: 'SELECT Query'

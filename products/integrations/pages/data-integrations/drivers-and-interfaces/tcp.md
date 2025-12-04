@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the native TCP interface in ClickHouse'
-sidebar_label: 'Native interface (TCP)'
+sidebarTitle: 'Native interface (TCP)'
 sidebar_position: 18
 slug: /interfaces/tcp
 title: 'Native interface (TCP)'

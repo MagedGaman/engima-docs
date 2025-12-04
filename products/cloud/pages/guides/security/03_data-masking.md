@@ -1,6 +1,6 @@
 ---
 slug: /cloud/guides/data-masking
-sidebar_label: 'Data masking'
+sidebarTitle: 'Data masking'
 title: 'Data masking in ClickHouse'
 description: 'A guide to data masking in ClickHouse'
 keywords: ['data masking']

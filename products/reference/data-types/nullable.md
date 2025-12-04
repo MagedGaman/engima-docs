@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the Nullable data type modifier in ClickHouse'
-sidebar_label: 'Nullable(T)'
+sidebarTitle: 'Nullable(T)'
 sidebar_position: 44
 slug: /sql-reference/data-types/nullable
 title: 'Nullable(T)'

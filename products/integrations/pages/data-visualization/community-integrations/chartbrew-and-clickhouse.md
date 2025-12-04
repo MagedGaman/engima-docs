@@ -1,6 +1,6 @@
 ---
 title: 'Connecting Chartbrew to ClickHouse'
-sidebar_label: 'Chartbrew'
+sidebarTitle: 'Chartbrew'
 sidebar_position: 131
 slug: /integrations/chartbrew-and-clickhouse
 keywords: ['ClickHouse', 'Chartbrew', 'connect', 'integrate', 'visualization']

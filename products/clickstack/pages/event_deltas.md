@@ -1,7 +1,7 @@
 ---
 slug: /use-cases/observability/clickstack/event_deltas
 title: 'Event Deltas with ClickStack'
-sidebar_label: 'Event Deltas'
+sidebarTitle: 'Event Deltas'
 pagination_prev: null
 pagination_next: null
 description: 'Event Deltas with ClickStack'

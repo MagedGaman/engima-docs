@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Java Runner'
+sidebarTitle: 'Java Runner'
 slug: /integrations/google-dataflow/java-runner
 sidebar_position: 2
 description: 'Users can ingest data into ClickHouse using Google Dataflow Java Runner'

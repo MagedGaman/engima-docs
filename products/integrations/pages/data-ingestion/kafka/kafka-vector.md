@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Vector with Kafka'
+sidebarTitle: 'Vector with Kafka'
 sidebar_position: 3
 slug: /integrations/kafka/kafka-vector
 description: 'Using Vector with Kafka and ClickHouse'
@@ -7,6 +7,8 @@ title: 'Using Vector with Kafka and ClickHouse'
 doc_type: 'guide'
 keywords: ['kafka', 'vector', 'log collection', 'observability', 'integration']
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 ## Using Vector with Kafka and ClickHouse [#using-vector-with-kafka-and-clickhouse]
 
@@ -24,7 +26,7 @@ Note that the current implementation of the ClickHouse sink utilizes the HTTP in
 Vector is distributed under the [MPL-2.0 License](https://github.com/vectordotdev/vector/blob/master/LICENSE)
 
 ### Gather your connection details [#gather-your-connection-details]
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ### Steps [#steps]
 

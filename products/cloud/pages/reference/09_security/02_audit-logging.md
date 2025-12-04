@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Console audit log events'
+sidebarTitle: 'Console audit log events'
 slug: /cloud/security/audit-logging
 title: 'Console audit log events'
 description: 'This page describes the events that are recorded to the console audit log.'

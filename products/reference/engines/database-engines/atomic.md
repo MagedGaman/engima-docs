@@ -2,7 +2,7 @@
 description: 'The `Atomic` engine supports non-blocking `DROP TABLE` and `RENAME TABLE`
   queries, and atomic `EXCHANGE TABLES`queries. The `Atomic` database engine is used
   by default.'
-sidebar_label: 'Atomic'
+sidebarTitle: 'Atomic'
 sidebar_position: 10
 slug: /engines/database-engines/atomic
 title: 'Atomic database engine'

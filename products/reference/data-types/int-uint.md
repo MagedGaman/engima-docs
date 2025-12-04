@@ -1,7 +1,7 @@
 ---
 description: 'Documentation for signed and unsigned integer data types in ClickHouse,
   ranging from 8-bit to 256-bit'
-sidebar_label: 'Int | UInt'
+sidebarTitle: 'Int | UInt'
 sidebar_position: 2
 slug: /sql-reference/data-types/int-uint
 title: 'Int | UInt Types'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for User'
-sidebar_label: 'USER'
+sidebarTitle: 'USER'
 sidebar_position: 45
 slug: /sql-reference/statements/alter/user
 title: 'ALTER USER'

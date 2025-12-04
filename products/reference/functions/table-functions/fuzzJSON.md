@@ -1,6 +1,6 @@
 ---
 description: 'Perturbs a JSON string with random variations.'
-sidebar_label: 'fuzzJSON'
+sidebarTitle: 'fuzzJSON'
 sidebar_position: 75
 slug: /sql-reference/table-functions/fuzzJSON
 title: 'fuzzJSON'

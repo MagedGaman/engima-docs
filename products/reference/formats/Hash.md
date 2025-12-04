@@ -5,9 +5,11 @@ input_format: false
 keywords: ['hash', 'format']
 output_format: true
 slug: /interfaces/formats/Hash
-title: 'Hash <Badge intent="success">Output</Badge>'
+title: 'Hash'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

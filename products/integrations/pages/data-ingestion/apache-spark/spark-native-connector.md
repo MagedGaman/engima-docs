@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Spark Native Connector'
+sidebarTitle: 'Spark Native Connector'
 sidebar_position: 2
 slug: /integrations/apache-spark/spark-native-connector
 description: 'Introduction to Apache Spark with ClickHouse'

@@ -5,9 +5,11 @@ input_format: true
 keywords: ['AvroConfluent']
 output_format: false
 slug: /interfaces/formats/AvroConfluent
-title: 'AvroConfluent <Badge intent="success">Input</Badge>'
+title: 'AvroConfluent'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 import DataTypesMatching from './_snippets/data-types-matching.md'
 

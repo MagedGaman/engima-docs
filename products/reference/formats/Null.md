@@ -5,9 +5,11 @@ input_format: false
 keywords: ['Null', 'format']
 output_format: true
 slug: /interfaces/formats/Null
-title: 'Null <Badge intent="success">Output</Badge>'
+title: 'Null'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

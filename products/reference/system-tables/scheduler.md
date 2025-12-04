@@ -7,7 +7,9 @@ title: 'system.scheduler'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about and status of [scheduling nodes](/operations/workload-scheduling.md/#hierarchy) residing on the local server.
 This table can be used for monitoring. The table contains a row for every scheduling node.

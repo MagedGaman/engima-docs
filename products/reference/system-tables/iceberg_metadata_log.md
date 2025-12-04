@@ -7,6 +7,8 @@ title: 'system.iceberg_metadata_log'
 doc_type: 'reference'
 ---
 
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
 The `system.iceberg_metadata_log` table records metadata access and parsing events for Iceberg tables read by ClickHouse. It provides detailed information about each metadata file or entry processed, which is useful for debugging, auditing, and understanding Iceberg table structure evolution.
 
 ## Purpose [#purpose]
@@ -39,7 +41,7 @@ This table is primarily intended for debugging purposes.
 - `ManifestFileMetadata`: Manifest file metadata.
 - `ManifestFileEntry`: Entry in a manifest file.
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+<SystemTableCloud />
 
 ## Controlling log verbosity [#controlling-log-verbosity]
 

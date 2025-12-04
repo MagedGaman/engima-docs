@@ -1,13 +1,16 @@
 ---
 slug: /best-practices/selecting-an-insert-strategy
 sidebar_position: 10
-sidebar_label: 'Selecting an insert strategy'
+sidebarTitle: 'Selecting an insert strategy'
 title: 'Selecting an insert strategy'
 description: 'Page describing how to choose an insert strategy in ClickHouse'
 keywords: ['INSERT', 'asynchronous inserts', 'compression', 'batch inserts']
 show_related_blogs: true
 doc_type: 'guide'
 ---
+
+import BulkInserts from '/snippets/_bulk_inserts.mdx';
+import AsyncInserts from '/snippets/_async_inserts.mdx';
 
 Efficient data ingestion forms the basis of high-performance ClickHouse deployments. Selecting the right insert strategy can dramatically impact throughput, cost, and reliability. This section outlines best practices, tradeoffs, and configuration options to help you make the right decision for your workload.
 
@@ -47,7 +50,7 @@ Using the values from that formatted data and the target table's [DDL](/sql-refe
 
 ### Batch inserts if synchronous [#batch-inserts-if-synchronous]
 
-<Markdown src="/snippets/_bulk_inserts.md" />
+<BulkInserts />
 
 ### Ensure idempotent retries [#ensure-idempotent-retries]
 
@@ -122,7 +125,7 @@ When data arrives pre-sorted, ClickHouse can skip or simplify the internal sorti
 
 ## Asynchronous inserts [#asynchronous-inserts]
 
-<Markdown src="/snippets/_async_inserts.md" />
+<AsyncInserts />
 
 ## Choose an interface—HTTP or native [#choose-an-interface]
 

@@ -7,7 +7,9 @@ title: 'system.trace_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains stack traces collected by the [sampling query profiler](../../operations/optimizing-performance/sampling-query-profiler.md).
 

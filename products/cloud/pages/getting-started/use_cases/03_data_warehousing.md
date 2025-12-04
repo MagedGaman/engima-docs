@@ -3,7 +3,7 @@ slug: /cloud/get-started/cloud/use-cases/data_lake_and_warehouse
 title: 'Data Lakehouse'
 description: 'Build modern data warehousing architectures with ClickHouse Cloud combining the flexibility of data lakes with database performance'
 keywords: ['use cases', 'data lake and warehouse']
-sidebar_label: 'Data warehousing'
+sidebarTitle: 'Data warehousing'
 doc_type: 'guide'
 ---
 

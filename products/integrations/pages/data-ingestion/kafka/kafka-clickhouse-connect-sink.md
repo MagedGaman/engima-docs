@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'ClickHouse Kafka Connect Sink'
+sidebarTitle: 'ClickHouse Kafka Connect Sink'
 sidebar_position: 2
 slug: /integrations/kafka/clickhouse-kafka-connect-sink
 description: 'The official Kafka connector from ClickHouse.'
@@ -7,6 +7,8 @@ title: 'ClickHouse Kafka Connect Sink'
 doc_type: 'guide'
 keywords: ['ClickHouse Kafka Connect Sink', 'Kafka connector ClickHouse', 'official ClickHouse connector', 'ClickHouse Kafka integration']
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <Note>
 If you need any help, please [file an issue in the repository](https://github.com/ClickHouse/clickhouse-kafka-connect/issues) or raise a question in [ClickHouse public Slack](https://clickhouse.com/slack).
@@ -40,7 +42,7 @@ The [Kafka Connect](https://docs.confluent.io/platform/current/connect/index.htm
 
 #### Gather your connection details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 #### General installation instructions [#general-installation-instructions]
 

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Offset'
-sidebar_label: 'OFFSET'
+sidebarTitle: 'OFFSET'
 slug: /sql-reference/statements/select/offset
 title: 'OFFSET FETCH Clause'
 doc_type: 'reference'

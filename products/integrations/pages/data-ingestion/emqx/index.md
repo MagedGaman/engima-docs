@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'EMQX'
+sidebarTitle: 'EMQX'
 sidebar_position: 1
 slug: /integrations/emqx
 description: 'Introduction to EMQX with ClickHouse'

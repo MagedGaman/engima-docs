@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Manage database users'
+sidebarTitle: 'Manage database users'
 slug: /cloud/security/manage-database-users
 title: 'Manage database users'
 description: 'This page describes how administrators can add database users, manage assignments, and remove database users'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Kill'
-sidebar_label: 'KILL'
+sidebarTitle: 'KILL'
 sidebar_position: 46
 slug: /sql-reference/statements/kill
 title: 'KILL Statements'

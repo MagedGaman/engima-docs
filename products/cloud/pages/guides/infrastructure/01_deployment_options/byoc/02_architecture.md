@@ -1,7 +1,7 @@
 ---
 title: 'Architecture'
 slug: /cloud/reference/byoc/architecture
-sidebar_label: 'Architecture'
+sidebarTitle: 'Architecture'
 keywords: ['BYOC', 'cloud', 'bring your own cloud']
 description: 'Deploy ClickHouse on your own cloud infrastructure'
 doc_type: 'reference'

@@ -2,7 +2,7 @@
 description: 'The Kafka Table Engine can be used to publish works with Apache Kafka and lets you publish or subscribe
   to data flows, organize fault-tolerant storage, and process streams as they become
   available.'
-sidebar_label: 'Kafka table engine'
+sidebarTitle: 'Kafka table engine'
 sidebar_position: 110
 slug: /engines/table-engines/integrations/kafka
 title: 'Kafka table engine'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Kafka Connector Sink on Confluent Cloud'
+sidebarTitle: 'Kafka Connector Sink on Confluent Cloud'
 sidebar_position: 2
 slug: /integrations/kafka/cloud/confluent/sink-connector
 description: 'Guide to using the fully managed ClickHouse Connector Sinkon Confluent Cloud'
@@ -11,6 +11,8 @@ integration:
   - category: 'data_ingestion'
   - website: 'https://clickhouse.com/cloud/clickpipes'
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 
 <div class='vimeo-container'>
@@ -42,7 +44,7 @@ Creating a topic on Confluent Cloud is fairly simple, and there are detailed ins
 
 #### Gather your connection details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 #### Install Connector [#install-connector]
 Install the fully managed ClickHouse Sink Connector on Confluent Cloud following the [official documentation](https://docs.confluent.io/cloud/current/connectors/cc-clickhouse-sink-connector/cc-clickhouse-sink.html).

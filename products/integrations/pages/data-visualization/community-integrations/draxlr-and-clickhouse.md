@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Draxlr'
+sidebarTitle: 'Draxlr'
 sidebar_position: 131
 slug: /integrations/draxlr
 keywords: ['clickhouse', 'Draxlr', 'connect', 'integrate', 'ui']
@@ -13,12 +13,14 @@ integration:
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <CommunityMaintainedBadge/>
 
 Draxlr offers an intuitive interface for connecting to your ClickHouse database, enabling your team to explore, visualize, and publish insights within minutes. This guide will walk you through the steps to establish a successful connection.
 
 ## 1. Get your ClickHouse credentials [#1-get-your-clickhouse-credentials]
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2.  Connect Draxlr to ClickHouse [#2--connect-draxlr-to-clickhouse]
 

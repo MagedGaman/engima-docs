@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for time window functions'
-sidebar_label: 'Time window'
+sidebarTitle: 'Time window'
 slug: /sql-reference/functions/time-window-functions
 title: 'Time window functions'
 doc_type: 'reference'

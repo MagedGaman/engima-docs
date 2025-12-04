@@ -1,6 +1,6 @@
 ---
 slug: /guides/developer/on-the-fly-mutations
-sidebar_label: 'On-the-fly mutation'
+sidebarTitle: 'On-the-fly mutation'
 title: 'On-the-fly Mutations'
 keywords: ['On-the-fly mutation']
 description: 'Provides a description of on-the-fly mutations'

@@ -6,7 +6,9 @@ title: 'system.dictionaries'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about [dictionaries](../../sql-reference/dictionaries/index.md).
 

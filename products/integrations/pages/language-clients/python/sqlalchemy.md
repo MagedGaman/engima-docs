@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'SQLAlchemy'
+sidebarTitle: 'SQLAlchemy'
 sidebar_position: 7
 keywords: ['clickhouse', 'python', 'sqlalchemy', 'integrate']
 description: 'ClickHouse SQLAlchemy Support'

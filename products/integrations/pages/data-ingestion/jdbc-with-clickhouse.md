@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'JDBC'
+sidebarTitle: 'JDBC'
 sidebar_position: 2
 keywords: ['clickhouse', 'jdbc', 'connect', 'integrate']
 slug: /integrations/jdbc/jdbc-with-clickhouse

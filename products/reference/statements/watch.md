@@ -1,6 +1,6 @@
 ---
 description: Documentation for WATCH Statement
-sidebar_label: WATCH
+sidebarTitle: WATCH
 sidebar_position: 53
 slug: /sql-reference/statements/watch
 title: WATCH statement

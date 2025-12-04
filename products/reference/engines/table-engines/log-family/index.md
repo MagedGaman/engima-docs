@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the Log engine family'
-sidebar_label: 'Log family'
+sidebarTitle: 'Log family'
 sidebar_position: 20
 slug: /engines/table-engines/log-family/
 title: 'Log engine family'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Workload Scheduling'
-sidebar_label: 'Workload scheduling'
+sidebarTitle: 'Workload scheduling'
 sidebar_position: 69
 slug: /operations/workload-scheduling
 title: 'Workload scheduling'

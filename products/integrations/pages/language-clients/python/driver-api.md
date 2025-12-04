@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Driver API'
+sidebarTitle: 'Driver API'
 sidebar_position: 2
 keywords: ['clickhouse', 'python', 'driver', 'api', 'client']
 description: 'ClickHouse Connect Driver API'

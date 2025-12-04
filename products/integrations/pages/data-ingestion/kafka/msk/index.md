@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Amazon MSK with Kafka Connector Sink'
+sidebarTitle: 'Amazon MSK with Kafka Connector Sink'
 sidebar_position: 1
 slug: /integrations/kafka/cloud/amazon-msk/
 description: 'The official Kafka connector from ClickHouse with Amazon MSK'
@@ -10,6 +10,8 @@ integration:
   - support_level: 'community'
   - category: 'data_ingestion'
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <div class='vimeo-container'>
   <iframe src="//www.youtube.com/embed/6lKI_WlQ3-s"
@@ -34,7 +36,7 @@ We assume:
 
 ### Gather your connection details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ### Steps [#steps]
 1. Make sure you're familiar with the [ClickHouse Connector Sink](../kafka-clickhouse-connect-sink.md)

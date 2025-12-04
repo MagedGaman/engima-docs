@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Database audit log'
+sidebarTitle: 'Database audit log'
 slug: /cloud/security/audit-logging/database-audit-log
 title: 'Database audit log'
 description: 'This page describes how users can review the database audit log'

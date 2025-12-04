@@ -2,7 +2,7 @@
 description: 'Table function `remote` allows to access remote servers on-the-fly,
   i.e. without creating a distributed table. Table function `remoteSecure` is same
   as `remote` but over a secure connection.'
-sidebar_label: 'remote'
+sidebarTitle: 'remote'
 sidebar_position: 175
 slug: /sql-reference/table-functions/remote
 title: 'remote, remoteSecure'

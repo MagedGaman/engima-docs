@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 1
 keywords: ['ClickHouse', 'connect', 'Luzmo', 'Explo', 'Fabi.ai', 'Tableau', 'Grafana', 'Metabase', 'Mitzu', 'superset', 'Databrain','Deepnote', 'Draxlr', 'RocketBI', 'Omni', 'bi', 'visualization', 'tool', 'lightdash']
 title: 'Visualizing Data in ClickHouse'

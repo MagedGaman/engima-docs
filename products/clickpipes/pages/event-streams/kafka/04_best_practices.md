@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Best practices'
+sidebarTitle: 'Best practices'
 description: 'Details best practices to follow when working with Kafka ClickPipes'
 slug: /integrations/clickpipes/kafka/best-practices
 sidebar_position: 1

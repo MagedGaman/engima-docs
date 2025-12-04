@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Integrate with a schema registry'
+sidebarTitle: 'Integrate with a schema registry'
 description: 'How to integrate for ClickPipes with a schema registry for schema management'
 slug: /integrations/clickpipes/kafka/schema-registries
 sidebar_position: 1

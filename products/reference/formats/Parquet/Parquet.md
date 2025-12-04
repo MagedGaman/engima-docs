@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Parquet']
 output_format: true
 slug: /interfaces/formats/Parquet
-title: 'Parquet <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'Parquet'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

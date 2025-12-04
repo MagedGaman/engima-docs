@@ -7,7 +7,9 @@ title: 'system.asynchronous_metric_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains the historical values for `system.asynchronous_metrics`, which are saved once per time interval (one second by default). Enabled by default.
 

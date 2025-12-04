@@ -1,7 +1,7 @@
 ---
 description: 'A comprehensive overview of ClickHouse architecture and its column-oriented
   design'
-sidebar_label: 'Architecture Overview'
+sidebarTitle: 'Architecture Overview'
 sidebar_position: 50
 slug: /development/architecture
 title: 'Architecture Overview'

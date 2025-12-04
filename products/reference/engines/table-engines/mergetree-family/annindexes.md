@@ -1,7 +1,7 @@
 ---
 description: 'Documentation for Exact and Approximate Vector Search'
 keywords: ['vector similarity search', 'ann', 'knn', 'hnsw', 'indices', 'index', 'nearest neighbor', 'vector search']
-sidebar_label: 'Exact and Approximate Vector Search'
+sidebarTitle: 'Exact and Approximate Vector Search'
 slug: /engines/table-engines/mergetree-family/annindexes
 title: 'Exact and Approximate Vector Search'
 doc_type: 'guide'

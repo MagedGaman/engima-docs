@@ -1,7 +1,7 @@
 ---
 description: 'Dataset with over 100 million records containing information about places on a map, such as shops, 
 restaurants, parks, playgrounds, and monuments.'
-sidebar_label: 'Foursquare places'
+sidebarTitle: 'Foursquare places'
 slug: /getting-started/example-datasets/foursquare-places
 title: 'Foursquare places'
 keywords: ['visualizing']

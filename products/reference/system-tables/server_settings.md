@@ -7,7 +7,9 @@ title: 'system.server_settings'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about global settings for the server, which are specified in `config.xml`.
 Currently, the table shows only settings from the first layer of `config.xml` and doesn't support nested configs (e.g. [logger](../../operations/server-configuration-parameters/settings.md#logger)).

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Manage cloud users'
+sidebarTitle: 'Manage cloud users'
 slug: /cloud/security/manage-cloud-users
 title: 'Manage cloud users'
 description: 'This page describes how administrators can add users, manage assignments, and remove users'

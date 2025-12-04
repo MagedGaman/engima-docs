@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Configure backup schedules'
+sidebarTitle: 'Configure backup schedules'
 slug: /cloud/manage/backups/configurable-backups
 description: 'Guide showing how to configure backups'
 title: 'Configure backup schedules'

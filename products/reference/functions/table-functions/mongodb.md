@@ -1,7 +1,7 @@
 ---
 description: 'Allows `SELECT` queries to be performed on data that is stored on a
   remote MongoDB server.'
-sidebar_label: 'mongodb'
+sidebarTitle: 'mongodb'
 sidebar_position: 135
 slug: /sql-reference/table-functions/mongodb
 title: 'mongodb'

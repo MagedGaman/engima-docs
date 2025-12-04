@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Protobuf']
 output_format: true
 slug: /interfaces/formats/Protobuf
-title: 'Protobuf <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'Protobuf'
 doc_type: 'guide'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

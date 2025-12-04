@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the EXCEPT clause which returns only those rows that result from the first query without the second.'
-sidebar_label: 'EXCEPT'
+sidebarTitle: 'EXCEPT'
 slug: /sql-reference/statements/select/except
 title: 'EXCEPT clause'
 keywords: ['EXCEPT', 'clause']

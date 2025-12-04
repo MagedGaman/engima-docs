@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Templates'
+sidebarTitle: 'Templates'
 slug: /integrations/google-dataflow/templates
 sidebar_position: 3
 description: 'Users can ingest data into ClickHouse using Google Dataflow Templates'

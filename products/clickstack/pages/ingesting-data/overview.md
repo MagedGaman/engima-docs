@@ -1,7 +1,7 @@
 ---
 slug: /use-cases/observability/clickstack/ingesting-data/overview
 title: 'Ingesting data into ClickStack'
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 0
 pagination_prev: null
 pagination_next: use-cases/observability/clickstack/ingesting-data/opentelemetry

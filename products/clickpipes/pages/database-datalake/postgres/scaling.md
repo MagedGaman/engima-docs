@@ -2,7 +2,7 @@
 title: 'Scaling DB ClickPipes via OpenAPI'
 description: 'Doc for scaling DB ClickPipes via OpenAPI'
 slug: /integrations/clickpipes/postgres/scaling
-sidebar_label: 'Scaling'
+sidebarTitle: 'Scaling'
 doc_type: 'guide'
 keywords: ['clickpipes', 'postgresql', 'cdc', 'data ingestion', 'real-time sync']
 ---

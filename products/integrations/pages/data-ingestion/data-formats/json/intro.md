@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 10
 title: 'Working with JSON'
 slug: /integrations/data-formats/json/overview

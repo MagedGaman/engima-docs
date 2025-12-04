@@ -1,6 +1,6 @@
 ---
 description: Documentation for CREATE VIEW
-sidebar_label: VIEW
+sidebarTitle: VIEW
 sidebar_position: 37
 slug: /sql-reference/statements/create/view
 title: CREATE VIEW

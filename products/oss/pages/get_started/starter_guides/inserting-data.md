@@ -2,7 +2,7 @@
 title: 'Inserting ClickHouse data'
 description: 'How to insert data into ClickHouse'
 keywords: ['INSERT', 'Batch Insert']
-sidebar_label: 'Inserting ClickHouse data'
+sidebarTitle: 'Inserting ClickHouse data'
 slug: /guides/inserting-data
 show_related_blogs: true
 doc_type: 'guide'

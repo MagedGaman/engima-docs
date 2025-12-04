@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Data encryption'
+sidebarTitle: 'Data encryption'
 slug: /cloud/security/cmek
 title: 'Data encryption'
 description: 'Learn more about data encryption in ClickHouse Cloud'

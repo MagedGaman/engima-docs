@@ -1,6 +1,6 @@
 ---
 description: Documentation for PREWHERE Clause
-sidebar_label: PREWHERE
+sidebarTitle: PREWHERE
 slug: /sql-reference/statements/select/prewhere
 title: PREWHERE clause
 doc_type: reference

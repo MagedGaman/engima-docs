@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Binary and Native'
+sidebarTitle: 'Binary and Native'
 slug: /integrations/data-formats/binary-native
 title: 'Using native and binary formats in ClickHouse'
 description: 'Page describing how to use native and binary formats in ClickHouse'

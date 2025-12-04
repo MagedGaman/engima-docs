@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Retool'
+sidebarTitle: 'Retool'
 slug: /integrations/retool
 keywords: ['clickhouse', 'retool', 'connect', 'integrate', 'ui', 'admin', 'panel', 'dashboard', 'nocode', 'no-code']
 description: 'Quickly build web and mobile apps with rich user interfaces, automate complex tasks, and integrate AI—all powered by your data.'
@@ -12,11 +12,13 @@ integration:
 
 import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <PartnerBadge/>
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Create a ClickHouse resource [#2-create-a-clickhouse-resource]
 

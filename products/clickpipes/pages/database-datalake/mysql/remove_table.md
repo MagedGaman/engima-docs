@@ -1,7 +1,7 @@
 ---
 title: 'Removing specific tables from a ClickPipe'
 description: 'Removing specific tables from a ClickPipe'
-sidebar_label: 'Remove table'
+sidebarTitle: 'Remove table'
 slug: /integrations/clickpipes/mysql/removing_tables
 doc_type: 'guide'
 keywords: ['clickpipes', 'mysql', 'cdc', 'data ingestion', 'real-time sync']

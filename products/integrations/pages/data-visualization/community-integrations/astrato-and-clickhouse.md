@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Astrato'
+sidebarTitle: 'Astrato'
 sidebar_position: 131
 slug: /integrations/astrato
 keywords: ['clickhouse', 'Power BI', 'connect', 'integrate', 'ui', 'data apps', 'data viz', 'embedded analytics', 'Astrato']
@@ -13,6 +13,8 @@ integration:
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <CommunityMaintainedBadge/>
 
 Astrato uses Pushdown SQL to query ClickHouse Cloud or on-premise deployments directly. This means you can access all of the data you need, powered by the industry-leading performance of ClickHouse.
@@ -25,7 +27,7 @@ When setting up your data connection, you'll need to know:
 
 - Database Credentials: Username, Password
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## Creating the data connection to ClickHouse [#creating-the-data-connection-to-clickhouse]
 

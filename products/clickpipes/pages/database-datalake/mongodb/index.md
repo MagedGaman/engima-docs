@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Ingesting Data from MongoDB to ClickHouse'
+sidebarTitle: 'Ingesting Data from MongoDB to ClickHouse'
 description: 'Describes how to seamlessly connect your MongoDB to ClickHouse Cloud.'
 slug: /integrations/clickpipes/mongodb
 title: 'Ingesting data from MongoDB to ClickHouse (using CDC)'

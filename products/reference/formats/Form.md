@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Form']
 output_format: false
 slug: /interfaces/formats/Form
-title: 'Form <Badge intent="success">Input</Badge>'
+title: 'Form'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

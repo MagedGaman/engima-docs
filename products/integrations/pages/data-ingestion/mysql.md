@@ -1,6 +1,6 @@
 ---
 slug: /integrations/mysql
-sidebar_label: 'MySQL'
+sidebarTitle: 'MySQL'
 title: 'MySQL'
 hide_title: true
 description: 'Page describing MySQL integration'

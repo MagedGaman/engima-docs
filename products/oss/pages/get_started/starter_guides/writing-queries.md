@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-sidebar_label: 'Selecting data'
+sidebarTitle: 'Selecting data'
 title: 'Selecting ClickHouse Data'
 slug: /guides/writing-queries
 description: 'Learn about Selecting ClickHouse Data'

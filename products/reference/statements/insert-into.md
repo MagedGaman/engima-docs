@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for INSERT INTO Statement'
-sidebar_label: 'INSERT INTO'
+sidebarTitle: 'INSERT INTO'
 sidebar_position: 33
 slug: /sql-reference/statements/insert-into
 title: 'INSERT INTO Statement'

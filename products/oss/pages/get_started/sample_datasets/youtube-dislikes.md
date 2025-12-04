@@ -1,6 +1,6 @@
 ---
 description: 'A collection of dislikes of YouTube videos.'
-sidebar_label: 'YouTube dislikes'
+sidebarTitle: 'YouTube dislikes'
 slug: /getting-started/example-datasets/youtube-dislikes
 title: 'YouTube dataset of dislikes'
 doc_type: 'guide'

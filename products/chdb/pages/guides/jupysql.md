@@ -1,6 +1,6 @@
 ---
 title: 'JupySQL and chDB'
-sidebar_label: 'JupySQL'
+sidebarTitle: 'JupySQL'
 slug: /chdb/guides/jupysql
 description: 'How to install chDB for Bun'
 keywords: ['chdb', 'JupySQL']

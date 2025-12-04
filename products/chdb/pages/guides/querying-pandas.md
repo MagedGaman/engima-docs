@@ -1,6 +1,6 @@
 ---
 title: 'How to query Pandas DataFrames with chDB'
-sidebar_label: 'Querying Pandas'
+sidebarTitle: 'Querying Pandas'
 slug: /chdb/guides/pandas
 description: 'Learn how to query Pandas DataFrames with chDB'
 keywords: ['chDB', 'Pandas']

@@ -1,7 +1,7 @@
 ---
 title: 'Pausing and Resuming a MySQL ClickPipe'
 description: 'Pausing and Resuming a MySQL ClickPipe'
-sidebar_label: 'Pause table'
+sidebarTitle: 'Pause table'
 slug: /integrations/clickpipes/mysql/pause_and_resume
 doc_type: 'guide'
 keywords: ['clickpipes', 'mysql', 'cdc', 'data ingestion', 'real-time sync']

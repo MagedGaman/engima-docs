@@ -5,9 +5,11 @@ input_format: true
 keywords: ['RowBinary']
 output_format: true
 slug: /interfaces/formats/RowBinary
-title: 'RowBinary <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'RowBinary'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 import RowBinaryFormatSettings from './_snippets/common-row-binary-format-settings.md'
 

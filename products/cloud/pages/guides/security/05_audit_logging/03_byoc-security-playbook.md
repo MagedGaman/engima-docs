@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'BYOC security playbook'
+sidebarTitle: 'BYOC security playbook'
 slug: /cloud/security/audit-logging/byoc-security-playbook
 title: 'BYOC security playbook'
 description: 'This page illustrates methods customers can use to identify potential security events'

@@ -7,7 +7,9 @@ title: 'system.query_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Stores metadata and statistics about executed queries, such as start time, duration, error messages, resource usage, and other execution details. It does not store the results of queries. 
 

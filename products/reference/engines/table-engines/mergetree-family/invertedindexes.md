@@ -1,7 +1,7 @@
 ---
 description: 'Quickly find search terms in text.'
 keywords: ['full-text search', 'text index', 'index', 'indices']
-sidebar_label: 'Full-text Search using Text Indexes'
+sidebarTitle: 'Full-text Search using Text Indexes'
 slug: /engines/table-engines/mergetree-family/invertedindexes
 title: 'Full-text Search using Text Indexes'
 doc_type: 'reference'

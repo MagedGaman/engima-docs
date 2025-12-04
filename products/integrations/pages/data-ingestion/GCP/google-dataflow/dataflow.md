@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Integrating Dataflow with ClickHouse'
+sidebarTitle: 'Integrating Dataflow with ClickHouse'
 slug: /integrations/google-dataflow/dataflow
 sidebar_position: 1
 description: 'Users can ingest data into ClickHouse using Google Dataflow'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Upgrades'
+sidebarTitle: 'Upgrades'
 slug: /manage/updates
 title: 'Upgrades'
 description: 'With ClickHouse Cloud you never have to worry about patching and upgrades. We roll out upgrades that include fixes, new features and performance improvements on a periodic basis.'

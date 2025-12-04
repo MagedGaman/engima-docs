@@ -1,11 +1,13 @@
 ---
-sidebar_label: 'Streaming and object storage'
+sidebarTitle: 'Streaming and object storage'
 slug: /cloud/reference/billing/clickpipes/streaming-and-object-storage
 title: 'ClickPipes for streaming and object storage'
 description: 'Overview of billing for streaming and object storage ClickPipes'
 doc_type: 'reference'
 keywords: ['billing', 'clickpipes', 'streaming pricing', 'costs', 'pricing']
 ---
+
+import ClickpipesFaq from '/snippets/_clickpipes_faq.mdx';
 
 This section outlines the pricing model of ClickPipes for streaming and object storage.
 
@@ -79,4 +81,4 @@ effective data transfer is assumed by the underlying Clickhouse Service_
 
 ## FAQ for streaming and object storage ClickPipes [#faq-streaming-and-object-storage]
 
-<Markdown src="/snippets/_clickpipes_faq.md" />
+<ClickpipesFaq />

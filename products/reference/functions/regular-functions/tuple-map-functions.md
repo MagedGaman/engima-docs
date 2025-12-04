@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Tuple Map Functions'
-sidebar_label: 'Maps'
+sidebarTitle: 'Maps'
 slug: /sql-reference/functions/tuple-map-functions
 title: 'Map Functions'
 doc_type: 'reference'

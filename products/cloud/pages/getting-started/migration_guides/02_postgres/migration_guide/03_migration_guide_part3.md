@@ -4,7 +4,7 @@ title: 'Data modeling techniques'
 description: 'Part 3 of a guide on migrating from PostgreSQL to ClickHouse'
 keywords: ['postgres', 'postgresql']
 show_related_blogs: true
-sidebar_label: 'Part 3'
+sidebarTitle: 'Part 3'
 doc_type: 'guide'
 ---
 

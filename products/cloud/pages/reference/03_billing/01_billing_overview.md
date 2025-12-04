@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 slug: /cloud/manage/billing/overview
 title: 'Pricing'
 description: 'Overview page for ClickHouse Cloud pricing'

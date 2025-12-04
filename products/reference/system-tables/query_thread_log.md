@@ -7,7 +7,9 @@ title: 'system.query_thread_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about threads that execute queries, for example, thread name, thread start time, duration of query processing.
 

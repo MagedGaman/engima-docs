@@ -1,7 +1,7 @@
 ---
 description: 'SummingMergeTree inherits from the MergeTree engine. Its key feature
   is the ability to automatically sum numeric data during part merges.'
-sidebar_label: 'SummingMergeTree'
+sidebarTitle: 'SummingMergeTree'
 sidebar_position: 50
 slug: /engines/table-engines/mergetree-family/summingmergetree
 title: 'SummingMergeTree table engine'

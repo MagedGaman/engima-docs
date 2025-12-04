@@ -7,7 +7,9 @@ title: 'system.dimensional_metrics'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 This table contains dimensional metrics that can be calculated instantly and exported in the Prometheus format. It is always up to date.
 

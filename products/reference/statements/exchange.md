@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for EXCHANGE Statement'
-sidebar_label: 'EXCHANGE'
+sidebarTitle: 'EXCHANGE'
 sidebar_position: 49
 slug: /sql-reference/statements/exchange
 title: 'EXCHANGE Statement'

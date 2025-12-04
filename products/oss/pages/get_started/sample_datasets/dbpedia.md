@@ -1,6 +1,6 @@
 ---
 description: 'Dataset containing 1 million articles from Wikipedia and their vector embeddings'
-sidebar_label: 'dbpedia dataset'
+sidebarTitle: 'dbpedia dataset'
 slug: /getting-started/example-datasets/dbpedia-dataset
 title: 'dbpedia dataset'
 keywords: ['semantic search', 'vector similarity', 'approximate nearest neighbours', 'embeddings']

@@ -1,6 +1,6 @@
 ---
 slug: /cloud/guides/sql-console/manage-sql-console-role-assignments
-sidebar_label: 'Manage SQL console role assignments'
+sidebarTitle: 'Manage SQL console role assignments'
 title: 'Configuring SQL console role assignments'
 description: 'Guide showing how to manage SQL console role assignments'
 doc_type: 'guide'

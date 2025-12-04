@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Additional Options'
+sidebarTitle: 'Additional Options'
 sidebar_position: 3
 keywords: ['clickhouse', 'python', 'options', 'settings']
 description: 'Additional Options for ClickHouse Connect'

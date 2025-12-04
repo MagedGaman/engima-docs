@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Using the azureBlobStorage table function'
+sidebarTitle: 'Using the azureBlobStorage table function'
 slug: /integrations/azure-data-factory/table-function
 description: 'Using ClickHouse''s azureBlobStorage table function'
 keywords: ['azure data factory', 'azure', 'microsoft', 'data', 'azureBlobStorage']

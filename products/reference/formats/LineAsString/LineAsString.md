@@ -5,9 +5,11 @@ input_format: true
 keywords: ['LineAsString']
 output_format: true
 slug: /interfaces/formats/LineAsString
-title: 'LineAsString <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'LineAsString'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

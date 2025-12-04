@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Backups'
+sidebarTitle: 'Backups'
 slug: /cloud/features/backups
 title: 'Backups'
 keywords: ['backups', 'cloud backups', 'restore']

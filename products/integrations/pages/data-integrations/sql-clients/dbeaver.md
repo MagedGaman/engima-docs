@@ -1,6 +1,6 @@
 ---
 slug: /integrations/dbeaver
-sidebar_label: 'DBeaver'
+sidebarTitle: 'DBeaver'
 description: 'DBeaver is a multi-platform database tool.'
 title: 'Connect DBeaver to ClickHouse'
 doc_type: 'guide'

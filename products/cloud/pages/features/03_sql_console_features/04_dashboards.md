@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Dashboards'
+sidebarTitle: 'Dashboards'
 slug: /cloud/manage/dashboards
 title: 'Dashboards'
 description: 'The SQL Console''s dashboards feature allows you to collect and share visualizations from saved queries.'

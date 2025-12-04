@@ -2,7 +2,7 @@
 description: 'Overview of what system tables are and why they are useful.'
 keywords: ['system tables', 'overview']
 pagination_next: operations/system-tables/asynchronous_metric_log
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 52
 slug: /operations/system-tables/
 title: 'System Tables'

@@ -2,9 +2,11 @@
 description: 'Documentation for the CustomSeparatedIgnoreSpacesWithNames format'
 keywords: ['CustomSeparatedIgnoreSpacesWithNames']
 slug: /interfaces/formats/CustomSeparatedIgnoreSpacesWithNames
-title: 'CustomSeparatedIgnoreSpacesWithNames <Badge intent="success">Input</Badge>'
+title: 'CustomSeparatedIgnoreSpacesWithNames'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Primary indexes'
+sidebarTitle: 'Primary indexes'
 sidebar_position: 1
 description: 'In this guide we are going to do a deep dive into ClickHouse indexing.'
 title: 'A practical introduction to primary indexes in ClickHouse'

@@ -2,7 +2,7 @@
 description: 'Advanced dashboard in ClickHouse Cloud'
 keywords: ['monitoring', 'observability', 'advanced dashboard', 'dashboard', 'observability
     dashboard']
-sidebar_label: 'Advanced dashboard'
+sidebarTitle: 'Advanced dashboard'
 sidebar_position: 45
 slug: /cloud/manage/monitor/advanced-dashboard
 title: 'Advanced dashboard in ClickHouse Cloud'

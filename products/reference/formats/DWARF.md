@@ -5,9 +5,11 @@ input_format: true
 keywords: ['DWARF']
 output_format: false
 slug: /interfaces/formats/DWARF
-title: 'DWARF <Badge intent="success">Input</Badge>'
+title: 'DWARF'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

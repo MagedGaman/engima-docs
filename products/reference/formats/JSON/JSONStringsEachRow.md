@@ -5,9 +5,11 @@ input_format: false
 keywords: ['JSONStringsEachRow']
 output_format: true
 slug: /interfaces/formats/JSONStringsEachRow
-title: 'JSONStringsEachRow <Badge intent="success">Output</Badge>'
+title: 'JSONStringsEachRow'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

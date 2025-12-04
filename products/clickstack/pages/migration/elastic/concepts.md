@@ -3,7 +3,7 @@ slug: /use-cases/observability/clickstack/migration/elastic/concepts
 title: 'Equivalent concepts in ClickStack and Elastic'
 pagination_prev: null
 pagination_next: null
-sidebar_label: 'Equivalent concepts'
+sidebarTitle: 'Equivalent concepts'
 sidebar_position: 1
 description: 'Equivalent concepts - ClickStack and Elastic'
 show_related_blogs: true

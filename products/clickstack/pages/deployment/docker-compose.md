@@ -10,6 +10,7 @@ keywords: ['ClickStack Docker Compose', 'Docker Compose ClickHouse', 'HyperDX Do
 ---
 
 import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
+import JsonSupport from '/snippets/_json_support.mdx';
 
 All ClickStack components are distributed separately as individual Docker images:
 
@@ -151,7 +152,7 @@ This distribution can be used with ClickHouse Cloud. Users should:
 
 - On connecting to the HyperDX UI and creating a connection to ClickHouse, use your Cloud credentials.
 
-<Markdown src="/snippets/_json_support.md"/>
+<JsonSupport />
 
 To set these, modify the relevant services in the `docker-compose.yaml`:
 

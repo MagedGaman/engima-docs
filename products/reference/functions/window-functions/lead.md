@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the lead window function'
-sidebar_label: 'lead'
+sidebarTitle: 'lead'
 sidebar_position: 10
 slug: /sql-reference/window-functions/lead
 title: 'lead'

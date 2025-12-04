@@ -2,7 +2,7 @@
 description: 'The engine is based on the Atomic engine. It supports replication of
   metadata via DDL log being written to ZooKeeper and executed on all of the replicas
   for a given database.'
-sidebar_label: 'Replicated database engine'
+sidebarTitle: 'Replicated database engine'
 sidebar_position: 30
 slug: /engines/database-engines/replicated
 title: 'Replicated'

@@ -1,7 +1,7 @@
 ---
 title: 'Bring Your Own Cloud'
 slug: /cloud/reference/byoc/overview
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 keywords: ['BYOC', 'cloud', 'bring your own cloud']
 description: 'Deploy ClickHouse on your own cloud infrastructure'
 doc_type: 'reference'

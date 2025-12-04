@@ -1,12 +1,17 @@
 ---
 description: 'Learn how to load OpenCelliD data into ClickHouse, connect Apache Superset
   to ClickHouse and build a dashboard based on data'
-sidebar_label: 'Cell towers'
+sidebarTitle: 'Cell towers'
 slug: /getting-started/example-datasets/cell-towers
 title: 'Geo Data using the Cell Tower Dataset'
 keywords: ['cell tower data', 'geo data', 'OpenCelliD', 'geospatial dataset', 'getting started']
 doc_type: 'guide'
 ---
+
+import ServiceActionsMenu from '/snippets/_service_actions_menu.mdx';
+import LaunchSqlConsole from '/snippets/_launch_sql_console.mdx';
+import AddSupersetDetail from '/snippets/_add_superset_detail.mdx';
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 ## Goal [#goal]
 
@@ -35,7 +40,7 @@ OpenCelliD Project is licensed under a Creative Commons Attribution-ShareAlike 4
 
 ClickHouse Cloud provides an easy-button for uploading this dataset from S3.  Log in to your ClickHouse Cloud organization, or create a free trial at [ClickHouse.cloud](https://clickhouse.cloud).
 
-<Markdown src="/snippets/_service_actions_menu.md"/>
+<ServiceActionsMenu />
 
 Choose the **Cell Towers** dataset from the **Sample data** tab, and **Load data**:
 
@@ -46,7 +51,7 @@ Choose the **Cell Towers** dataset from the **Sample data** tab, and **Load data
 DESCRIBE TABLE cell_towers
 ```
 
-<Markdown src="/snippets/_launch_sql_console.md" />
+<LaunchSqlConsole />
 
 This is the output of `DESCRIBE`.  Down further in this guide the field type choices will be described.
 ```response
@@ -270,7 +275,7 @@ None of the other fields are used in the queries or visualizations in this guide
 
 Superset is easy to run from Docker.  If you already have Superset running, all you need to do is add ClickHouse Connect with `pip install clickhouse-connect`.  If you need to install Superset open the **Launch Apache Superset in Docker** directly below.
 
-<Markdown src="/snippets/_add_superset_detail.md" />
+<AddSupersetDetail />
 
 To build a Superset dashboard using the OpenCelliD dataset you should:
 - Add your ClickHouse service as a Superset **database**
@@ -280,7 +285,7 @@ To build a Superset dashboard using the OpenCelliD dataset you should:
 
 ### Add your ClickHouse service as a Superset database [#add-your-clickhouse-service-as-a-superset-database]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
   In Superset a database can be added by choosing the database type, and then providing the connection details.  Open Superset and look for the **+**, it has a menu with **Data** and then **Connect database** options.
 

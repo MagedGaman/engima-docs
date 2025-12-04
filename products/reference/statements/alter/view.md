@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for ALTER TABLE ... MODIFY QUERY Statement'
-sidebar_label: 'VIEW'
+sidebarTitle: 'VIEW'
 sidebar_position: 50
 slug: /sql-reference/statements/alter/view
 title: 'ALTER TABLE ... MODIFY QUERY Statement'

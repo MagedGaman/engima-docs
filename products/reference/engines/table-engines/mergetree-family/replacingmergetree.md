@@ -1,7 +1,7 @@
 ---
 description: 'differs from MergeTree in that it removes duplicate entries with the
   same sorting key value (`ORDER BY` table section, not `PRIMARY KEY`).'
-sidebar_label: 'ReplacingMergeTree'
+sidebarTitle: 'ReplacingMergeTree'
 sidebar_position: 40
 slug: /engines/table-engines/mergetree-family/replacingmergetree
 title: 'ReplacingMergeTree table engine'

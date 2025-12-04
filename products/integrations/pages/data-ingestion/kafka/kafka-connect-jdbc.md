@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Kafka Connect JDBC Connector'
+sidebarTitle: 'Kafka Connect JDBC Connector'
 sidebar_position: 4
 slug: /integrations/kafka/kafka-connect-jdbc
 description: 'Using JDBC Connector Sink with Kafka Connect and ClickHouse'
@@ -7,6 +7,8 @@ title: 'JDBC Connector'
 doc_type: 'guide'
 keywords: ['kafka', 'kafka connect', 'jdbc', 'integration', 'data pipeline']
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <Note>
 This connector should only be used if your data is simple and consists of primitive data types e.g., int. ClickHouse specific types such as maps are not supported.
@@ -23,7 +25,7 @@ The JDBC Connector is distributed under the [Confluent Community License](https:
 
 ### Steps [#steps]
 #### Gather your connection details [#gather-your-connection-details]
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 #### 1. Install Kafka Connect and Connector [#1-install-kafka-connect-and-connector]
 

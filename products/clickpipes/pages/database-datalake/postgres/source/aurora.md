@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Amazon Aurora Postgres'
+sidebarTitle: 'Amazon Aurora Postgres'
 description: 'Set up Amazon Aurora Postgres as a source for ClickPipes'
 slug: /integrations/clickpipes/postgres/source/aurora
 title: 'Aurora Postgres source setup guide'

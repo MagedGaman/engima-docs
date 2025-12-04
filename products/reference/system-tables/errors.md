@@ -7,7 +7,9 @@ title: 'system.errors'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains error codes with the number of times they have been triggered.
 

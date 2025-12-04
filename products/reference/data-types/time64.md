@@ -3,7 +3,7 @@ description: 'Documentation for the Time64 data type in ClickHouse, which stores
   the time range with sub-second precision'
 slug: /sql-reference/data-types/time64
 sidebar_position: 17
-sidebar_label: 'Time64'
+sidebarTitle: 'Time64'
 title: 'Time64'
 doc_type: 'reference'
 ---

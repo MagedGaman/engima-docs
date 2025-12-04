@@ -5,9 +5,11 @@ input_format: false
 keywords: ['PrettyJSONEachRow', 'PrettyJSONLines', 'PrettyNDJSON']
 output_format: true
 slug: /interfaces/formats/PrettyJSONEachRow
-title: 'PrettyJSONEachRow <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `PrettyJSONLines`, `PrettyNDJSON`</Badge>'
+title: 'PrettyJSONEachRow'
 doc_type: 'guide'
 ---
+
+<Badge intent="success">Output</Badge> <Badge intent="info">Alias: `PrettyJSONLines`, `PrettyNDJSON`</Badge>
 
 ## Description [#description]
 

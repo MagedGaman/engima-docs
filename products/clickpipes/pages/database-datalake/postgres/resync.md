@@ -2,7 +2,7 @@
 title: 'Resyncing a Database ClickPipe'
 description: 'Doc for resyncing a database ClickPipe'
 slug: /integrations/clickpipes/postgres/resync
-sidebar_label: 'Resync ClickPipe'
+sidebarTitle: 'Resync ClickPipe'
 doc_type: 'guide'
 keywords: ['clickpipes', 'postgresql', 'cdc', 'data ingestion', 'real-time sync']
 ---

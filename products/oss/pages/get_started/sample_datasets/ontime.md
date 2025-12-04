@@ -1,6 +1,6 @@
 ---
 description: 'Dataset containing the on-time performance of airline flights'
-sidebar_label: 'OnTime airline flight data'
+sidebarTitle: 'OnTime airline flight data'
 slug: /getting-started/example-datasets/ontime
 title: 'OnTime'
 doc_type: 'guide'

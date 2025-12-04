@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Export backups'
+sidebarTitle: 'Export backups'
 slug: /cloud/manage/backups/export-backups-to-own-cloud-account
 title: 'Export Backups to your Own Cloud Account'
 description: 'Describes how to export backups to your own Cloud account'

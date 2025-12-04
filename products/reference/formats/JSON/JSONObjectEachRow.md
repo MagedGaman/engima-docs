@@ -5,9 +5,11 @@ input_format: true
 keywords: ['JSONObjectEachRow']
 output_format: true
 slug: /interfaces/formats/JSONObjectEachRow
-title: 'JSONObjectEachRow <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'JSONObjectEachRow'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

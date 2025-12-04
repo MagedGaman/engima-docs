@@ -1,7 +1,7 @@
 ---
 slug: /use-cases/observability/clickstack/ttl
 title: 'Managing TTL'
-sidebar_label: 'Managing TTL'
+sidebarTitle: 'Managing TTL'
 pagination_prev: null
 pagination_next: null
 description: 'Managing TTL with ClickStack'

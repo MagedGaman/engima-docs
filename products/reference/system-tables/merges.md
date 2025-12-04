@@ -7,7 +7,9 @@ title: 'system.merges'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about merges and part mutations currently in process for tables in the MergeTree family.
 

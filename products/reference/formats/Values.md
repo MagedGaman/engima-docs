@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Values']
 output_format: true
 slug: /interfaces/formats/Values
-title: 'Values <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'Values'
 doc_type: 'guide'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

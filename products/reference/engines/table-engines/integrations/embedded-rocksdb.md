@@ -1,6 +1,6 @@
 ---
 description: 'This engine allows integrating ClickHouse with RocksDB'
-sidebar_label: 'EmbeddedRocksDB table engine'
+sidebarTitle: 'EmbeddedRocksDB table engine'
 sidebar_position: 50
 slug: /engines/table-engines/integrations/embedded-rocksdb
 title: 'EmbeddedRocksDB table engine'

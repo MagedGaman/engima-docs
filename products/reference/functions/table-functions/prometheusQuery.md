@@ -1,6 +1,6 @@
 ---
 description: 'Evaluates a prometheus query using data from a TimeSeries table.'
-sidebar_label: 'prometheusQuery'
+sidebarTitle: 'prometheusQuery'
 sidebar_position: 145
 slug: /sql-reference/table-functions/prometheusQuery
 title: 'prometheusQuery'

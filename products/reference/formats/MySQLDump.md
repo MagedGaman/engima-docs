@@ -5,9 +5,11 @@ input_format: true
 keywords: ['MySQLDump']
 output_format: false
 slug: /interfaces/formats/MySQLDump
-title: 'MySQLDump <Badge intent="success">Input</Badge>'
+title: 'MySQLDump'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

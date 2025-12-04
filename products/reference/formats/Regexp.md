@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Regexp']
 output_format: false
 slug: /interfaces/formats/Regexp
-title: 'Regexp <Badge intent="success">Input</Badge>'
+title: 'Regexp'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

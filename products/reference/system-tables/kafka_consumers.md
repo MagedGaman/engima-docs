@@ -6,7 +6,9 @@ title: 'system.kafka_consumers'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about Kafka consumers.
 Applicable for [Kafka table engine](../../engines/table-engines/integrations/kafka) (native ClickHouse integration)

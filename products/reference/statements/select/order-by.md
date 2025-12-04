@@ -1,6 +1,6 @@
 ---
 description: Documentation for ORDER BY Clause
-sidebar_label: ORDER BY
+sidebarTitle: ORDER BY
 slug: /sql-reference/statements/select/order-by
 title: ORDER BY clause
 doc_type: reference

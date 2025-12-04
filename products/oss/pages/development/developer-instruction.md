@@ -1,6 +1,6 @@
 ---
 description: 'Prerequisites and setup instructions for ClickHouse development'
-sidebar_label: 'Prerequisites'
+sidebarTitle: 'Prerequisites'
 sidebar_position: 5
 slug: /development/developer-instruction
 title: 'Developer Prerequisites'

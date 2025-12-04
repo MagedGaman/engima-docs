@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Amazon RDS MySQL'
+sidebarTitle: 'Amazon RDS MySQL'
 description: 'Step-by-step guide on how to set up Amazon RDS MySQL as a source for ClickPipes'
 slug: /integrations/clickpipes/mysql/source/rds
 title: 'RDS MySQL source setup guide'

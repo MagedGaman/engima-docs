@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Azure Synapse'
+sidebarTitle: 'Azure Synapse'
 slug: /integrations/azure-synapse
 description: 'Introduction to Azure Synapse with ClickHouse'
 keywords: ['clickhouse', 'azure synapse', 'azure', 'synapse', 'microsoft', 'azure spark', 'data']

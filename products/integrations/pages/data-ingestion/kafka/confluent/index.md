@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Confluent Platform'
+sidebarTitle: 'Confluent Platform'
 sidebar_position: 1
 slug: /integrations/kafka/cloud/confluent
 description: 'Kafka Connectivity with Confluent Cloud'

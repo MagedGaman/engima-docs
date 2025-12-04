@@ -5,9 +5,11 @@ input_format: true
 keywords: ['CustomSeparatedWithNamesAndTypes']
 output_format: true
 slug: /interfaces/formats/CustomSeparatedWithNamesAndTypes
-title: 'CustomSeparatedWithNamesAndTypes <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'CustomSeparatedWithNamesAndTypes'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

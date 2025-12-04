@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Neon Postgres'
+sidebarTitle: 'Neon Postgres'
 description: 'Set up Neon Postgres instance as a source for ClickPipes'
 slug: /integrations/clickpipes/postgres/source/neon-postgres
 title: 'Neon Postgres source setup guide'

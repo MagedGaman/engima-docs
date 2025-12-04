@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Lightdash'
+sidebarTitle: 'Lightdash'
 sidebar_position: 131
 slug: /integrations/lightdash
 keywords: ['clickhouse', 'lightdash', 'data visualization', 'BI', 'semantic layer', 'dbt', 'self-serve analytics', 'connect']
@@ -12,6 +12,8 @@ integration:
 ---
 
 import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <PartnerBadge/>
 
@@ -44,7 +46,7 @@ When setting up your connection between Lightdash and ClickHouse, you’ll need 
 - **Retries:** Number of times Lightdash retries failed ClickHouse queries (default: `3`)  
 - **Start of week:** Choose which day your reporting week starts; defaults to your warehouse setting
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ---
 

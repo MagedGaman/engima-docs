@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Databrain'
+sidebarTitle: 'Databrain'
 sidebar_position: 131
 slug: /integrations/databrain
 keywords: ['clickhouse', 'Databrain', 'connect', 'integrate', 'ui', 'analytics', 'embedded', 'dashboard', 'visualization']
@@ -9,6 +9,8 @@ doc_type: 'guide'
 ---
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -30,7 +32,7 @@ This guide will walk you through the steps to connect Databrain with your ClickH
 
 ### 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ### 2. Allow Databrain IP addresses (if required) [#2-allow-databrain-ip-addresses]
 

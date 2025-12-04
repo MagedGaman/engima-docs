@@ -1,7 +1,7 @@
 ---
 title: 'Pausing and Resuming a MongoDB ClickPipe'
 description: 'Pausing and Resuming a MongoDB ClickPipe'
-sidebar_label: 'Pause table'
+sidebarTitle: 'Pause table'
 slug: /integrations/clickpipes/mongodb/pause_and_resume
 doc_type: 'guide'
 keywords: ['clickpipes', 'mongodb', 'cdc', 'data ingestion', 'real-time sync']

@@ -1,7 +1,7 @@
 ---
 description: 'Documentation for ALTER TABLE ... MODIFY COMMENT which allow
 adding, modifying, or removing table comments'
-sidebar_label: 'ALTER TABLE ... MODIFY COMMENT'
+sidebarTitle: 'ALTER TABLE ... MODIFY COMMENT'
 sidebar_position: 51
 slug: /sql-reference/statements/alter/comment
 title: 'ALTER TABLE ... MODIFY COMMENT'

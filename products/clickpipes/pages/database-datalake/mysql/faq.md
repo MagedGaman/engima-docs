@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'FAQ'
+sidebarTitle: 'FAQ'
 description: 'Frequently asked questions about ClickPipes for MySQL.'
 slug: /integrations/clickpipes/mysql/faq
 sidebar_position: 2

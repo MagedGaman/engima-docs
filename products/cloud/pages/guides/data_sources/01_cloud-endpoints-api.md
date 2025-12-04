@@ -1,6 +1,6 @@
 ---
 slug: /manage/data-sources/cloud-endpoints-api
-sidebar_label: 'Cloud IP addresses'
+sidebarTitle: 'Cloud IP addresses'
 title: 'Cloud IP addresses'
 description: 'This page documents the Cloud Endpoints API security features within ClickHouse. It details how to secure your ClickHouse deployments by managing access through authentication and authorization mechanisms.'
 doc_type: 'reference'

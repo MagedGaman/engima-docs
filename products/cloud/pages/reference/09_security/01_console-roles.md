@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Console roles and permissions'
+sidebarTitle: 'Console roles and permissions'
 slug: /cloud/security/console-roles
 title: 'Console roles and permissions'
 description: 'This page describes the standard roles and associated permissions in ClickHouse Cloud console'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'AWS PrivateLink for ClickPipes'
+sidebarTitle: 'AWS PrivateLink for ClickPipes'
 description: 'Establish a secure connection between ClickPipes and a data source using AWS PrivateLink.'
 slug: /integrations/clickpipes/aws-privatelink
 title: 'AWS PrivateLink for ClickPipes'

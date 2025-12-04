@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'SAML SSO setup'
+sidebarTitle: 'SAML SSO setup'
 slug: /cloud/security/saml-setup
 title: 'SAML SSO setup'
 description: 'How to set up SAML SSO with ClickHouse Cloud'

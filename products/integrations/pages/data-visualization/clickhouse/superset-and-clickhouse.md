@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Superset'
+sidebarTitle: 'Superset'
 sidebar_position: 198
 slug: /integrations/superset
 keywords: ['superset']
@@ -14,6 +14,8 @@ integration:
 ---
 
 import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <ClickHouseSupportedBadge/>
 
@@ -31,7 +33,7 @@ If you do not have a dataset to work with you can add one of the examples. This 
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Install the Driver [#2-install-the-driver]
 

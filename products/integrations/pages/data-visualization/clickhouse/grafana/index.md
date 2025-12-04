@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Quick Start'
+sidebarTitle: 'Quick Start'
 sidebar_position: 1
 slug: /integrations/grafana
 description: 'Introduction to using ClickHouse with Grafana'
@@ -14,6 +14,8 @@ keywords: ['Grafana', 'data visualization', 'dashboard', 'plugin', 'data source'
 ---
 
 import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
+
+import GatherYourDetailsNative from '/snippets/_gather_your_details_native.mdx';
 
 <ClickHouseSupportedBadge/>
 
@@ -34,7 +36,7 @@ Grafana requires a plugin to connect to ClickHouse, which is easily installed wi
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_native.md" />
+<GatherYourDetailsNative />
 
 ## 2. Making a read-only user [#2-making-a-read-only-user]
 

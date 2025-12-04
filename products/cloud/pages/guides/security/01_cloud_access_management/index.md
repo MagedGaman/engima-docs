@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Cloud access management'
+sidebarTitle: 'Cloud access management'
 slug: /cloud/security/cloud_access_management
 title: 'Cloud access management'
 description: 'Learn more about cloud access management'

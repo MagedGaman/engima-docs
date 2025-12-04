@@ -1,6 +1,6 @@
 ---
 slug: /integrations/marimo
-sidebar_label: 'marimo'
+sidebarTitle: 'marimo'
 description: 'marimo is a next-generation Python notebook for interacting with data'
 title: 'Using marimo with ClickHouse'
 doc_type: 'guide'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for EXISTS Statement'
-sidebar_label: 'EXISTS'
+sidebarTitle: 'EXISTS'
 sidebar_position: 45
 slug: /sql-reference/statements/exists
 title: 'EXISTS statement'

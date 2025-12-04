@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'MongoDB Atlas'
+sidebarTitle: 'MongoDB Atlas'
 description: 'Step-by-step guide on how to set up MongoDB Atlas as a source for ClickPipes'
 slug: /integrations/clickpipes/mongodb/source/atlas
 title: 'MongoDB Atlas source setup guide'

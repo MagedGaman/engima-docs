@@ -1,7 +1,7 @@
 ---
 description: 'Represents the contents of index and marks files of MergeTree tables.
   It can be used for introspection.'
-sidebar_label: 'mergeTreeIndex'
+sidebarTitle: 'mergeTreeIndex'
 sidebar_position: 77
 slug: /sql-reference/table-functions/mergeTreeIndex
 title: 'mergeTreeIndex'

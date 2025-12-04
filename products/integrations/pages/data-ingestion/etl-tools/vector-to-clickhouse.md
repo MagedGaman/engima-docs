@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Vector'
+sidebarTitle: 'Vector'
 sidebar_position: 220
 slug: /integrations/vector
 description: 'How to tail a log file into ClickHouse using Vector'

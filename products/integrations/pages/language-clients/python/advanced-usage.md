@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Advanced Usage'
+sidebarTitle: 'Advanced Usage'
 sidebar_position: 6
 keywords: ['clickhouse', 'python', 'advanced', 'raw', 'async', 'threading']
 description: 'Advanced Usage with ClickHouse Connect'

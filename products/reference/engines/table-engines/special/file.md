@@ -1,7 +1,7 @@
 ---
 description: 'The File table engine keeps the data in a file in one of the supported
   file formats (`TabSeparated`, `Native`, etc.).'
-sidebar_label: 'File'
+sidebarTitle: 'File'
 sidebar_position: 40
 slug: /engines/table-engines/special/file
 title: 'File table engine'

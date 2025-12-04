@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Parquet'
+sidebarTitle: 'Parquet'
 sidebar_position: 3
 slug: /integrations/data-formats/parquet
 title: 'Working with Parquet in ClickHouse'

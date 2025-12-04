@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Payment thresholds'
+sidebarTitle: 'Payment thresholds'
 slug: /cloud/billing/payment-thresholds
 title: 'Payment thresholds'
 description: 'Payment thresholds and automatic invoicing for ClickHouse Cloud.'

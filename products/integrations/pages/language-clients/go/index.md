@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Go'
+sidebarTitle: 'Go'
 sidebar_position: 1
 keywords: ['clickhouse', 'go', 'client', 'golang']
 slug: integrations/go
@@ -11,13 +11,15 @@ integration:
   - category: 'language_client'
 ---
 
+import GatherYourDetailsNative from '/snippets/gather_your_details_native.mdx';
+
 ## A simple example [#a-simple-example]
 
 Let's Go with a simple example.  This will connect to ClickHouse and select from the system database.  To get started you will need your connection details.
 
 ### Connection details [#connection-details]
 
-<Markdown src="/snippets/gather_your_details_native.mdx"/>
+<GatherYourDetailsNative />
 
 ### Initialize a module [#initialize-a-module]
 

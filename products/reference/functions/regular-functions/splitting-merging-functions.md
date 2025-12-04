@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for functions for splitting strings'
-sidebar_label: 'String splitting'
+sidebarTitle: 'String splitting'
 slug: /sql-reference/functions/splitting-merging-functions
 title: 'Functions for splitting strings'
 doc_type: 'reference'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Airbyte'
+sidebarTitle: 'Airbyte'
 sidebar_position: 11
 keywords: ['clickhouse', 'Airbyte', 'connect', 'integrate', 'etl', 'data integration']
 slug: /integrations/airbyte

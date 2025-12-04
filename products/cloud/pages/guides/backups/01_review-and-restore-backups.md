@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Review and restore backups'
+sidebarTitle: 'Review and restore backups'
 sidebar_position: 0
 slug: /cloud/manage/backups/overview
 title: 'Review and restore backups'

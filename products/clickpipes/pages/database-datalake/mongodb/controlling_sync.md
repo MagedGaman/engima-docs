@@ -2,7 +2,7 @@
 title: 'Controlling the Syncing of a MongoDB ClickPipe'
 description: 'Doc for controllling the sync a MongoDB ClickPipe'
 slug: /integrations/clickpipes/mongodb/sync_control
-sidebar_label: 'Controlling syncs'
+sidebarTitle: 'Controlling syncs'
 doc_type: 'guide'
 keywords: ['clickpipes', 'mongodb', 'cdc', 'data ingestion', 'real-time sync']
 ---

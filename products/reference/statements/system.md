@@ -1,6 +1,6 @@
 ---
 description: Documentation for SYSTEM Statements
-sidebar_label: SYSTEM
+sidebarTitle: SYSTEM
 sidebar_position: 36
 slug: /sql-reference/statements/system
 title: SYSTEM Statements

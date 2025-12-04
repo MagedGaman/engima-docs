@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Apache Beam'
+sidebarTitle: 'Apache Beam'
 slug: /integrations/apache-beam
 description: 'Users can ingest data into ClickHouse using Apache Beam'
 title: 'Integrating Apache Beam and ClickHouse'

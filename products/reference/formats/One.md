@@ -5,9 +5,11 @@ input_format: true
 keywords: ['One']
 output_format: false
 slug: /interfaces/formats/One
-title: 'One <Badge intent="success">Input</Badge>'
+title: 'One'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

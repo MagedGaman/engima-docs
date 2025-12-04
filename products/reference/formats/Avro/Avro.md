@@ -5,9 +5,11 @@ input_format: true
 keywords: ['Avro']
 output_format: true
 slug: /interfaces/formats/Avro
-title: 'Avro <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'Avro'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 import DataTypeMapping from './_snippets/data-types-matching.md'
 

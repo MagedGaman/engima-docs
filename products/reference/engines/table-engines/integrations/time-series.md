@@ -1,7 +1,7 @@
 ---
 description: 'A table engine storing time series, i.e. a set of values associated
   with timestamps and tags (or labels).'
-sidebar_label: 'TimeSeries table engine'
+sidebarTitle: 'TimeSeries table engine'
 sidebar_position: 60
 slug: /engines/table-engines/special/time_series
 title: 'TimeSeries table engine'

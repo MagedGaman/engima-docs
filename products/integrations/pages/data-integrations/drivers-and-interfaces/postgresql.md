@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the PostgreSQL wire protocol interface in ClickHouse'
-sidebar_label: 'PostgreSQL Interface'
+sidebarTitle: 'PostgreSQL Interface'
 sidebar_position: 20
 slug: /interfaces/postgresql
 title: 'PostgreSQL Interface'

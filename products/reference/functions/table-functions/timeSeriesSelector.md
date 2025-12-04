@@ -1,6 +1,6 @@
 ---
 description: 'Reads time series from a TimeSeries table filtered by a selector and with timestamps in a specified interval.'
-sidebar_label: 'timeSeriesSelector'
+sidebarTitle: 'timeSeriesSelector'
 sidebar_position: 145
 slug: /sql-reference/table-functions/timeSeriesSelector
 title: 'timeSeriesSelector'

@@ -9,6 +9,8 @@ doc_type: 'guide'
 keywords: ['clickstack', 'kubernetes', 'logs', 'observability', 'container monitoring']
 ---
 
+import Demo from '/snippets/_demo.mdx';
+
 This guide allows you to collect logs and metrics from your Kubernetes system, sending them to **ClickStack** for visualization and analysis.
 For demo data, we optionally use the ClickStack fork of the official Open Telemetry demo.
 
@@ -149,7 +151,7 @@ valkey-cart-5f7b667bb7-gl5v4         1/1     Running   0          13m
 ```
 
 
-<Markdown src="/snippets/_demo.md"/>
+<Demo />
 
 
 </Step>

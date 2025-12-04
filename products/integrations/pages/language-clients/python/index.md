@@ -10,6 +10,8 @@ integration:
   - website: 'https://github.com/ClickHouse/clickhouse-connect'
 ---
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 
 ClickHouse Connect is a core database driver providing interoperability with a wide range of Python applications.
 
@@ -62,7 +64,7 @@ Please update to the latest version of ClickHouse Connect before reporting any i
 
 ### Gather your connection details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ### Establish a connection [#establish-a-connection]
 

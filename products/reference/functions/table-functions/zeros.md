@@ -1,7 +1,7 @@
 ---
 description: 'Used for test purposes as the fastest method to generate many rows.
   Similar to the `system.zeros` and `system.zeros_mt` system tables.'
-sidebar_label: 'zeros'
+sidebarTitle: 'zeros'
 sidebar_position: 145
 slug: /sql-reference/table-functions/zeros
 title: 'zeros'

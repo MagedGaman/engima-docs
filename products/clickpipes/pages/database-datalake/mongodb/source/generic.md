@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Generic MongoDB'
+sidebarTitle: 'Generic MongoDB'
 description: 'Set up any MongoDB instance as a source for ClickPipes'
 slug: /integrations/clickpipes/mongodb/source/generic
 title: 'Generic MongoDB source setup guide'

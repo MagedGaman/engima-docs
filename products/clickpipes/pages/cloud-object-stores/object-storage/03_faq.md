@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'FAQ'
+sidebarTitle: 'FAQ'
 description: 'FAQ for object storage ClickPipes'
 slug: /integrations/clickpipes/object-storage/faq
 sidebar_position: 1

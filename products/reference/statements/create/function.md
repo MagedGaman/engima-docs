@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Function'
-sidebar_label: 'FUNCTION'
+sidebarTitle: 'FUNCTION'
 sidebar_position: 38
 slug: /sql-reference/statements/create/function
 title: 'CREATE FUNCTION -user defined function (UDF)'

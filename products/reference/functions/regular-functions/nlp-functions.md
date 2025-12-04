@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Natural Language Processing (NLP) functions'
-sidebar_label: 'NLP'
+sidebarTitle: 'NLP'
 slug: /sql-reference/functions/nlp-functions
 title: 'Natural Language Processing (NLP) Functions'
 doc_type: 'reference'

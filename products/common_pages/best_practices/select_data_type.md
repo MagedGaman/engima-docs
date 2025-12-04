@@ -1,12 +1,14 @@
 ---
 slug: /best-practices/select-data-types
 sidebar_position: 10
-sidebar_label: 'Selecting data types'
+sidebarTitle: 'Selecting data types'
 title: 'Selecting data types'
 description: 'Page describing how to choose data types in ClickHouse'
 keywords: ['data types']
 doc_type: 'reference'
 ---
+
+import AvoidNullableColumns from '/snippets/_avoid_nullable_columns.mdx';
 
 One of the core reasons for ClickHouse's query performance is its efficient data compression. Less data on disk results in faster queries and inserts by minimizing I/O overhead. ClickHouse's column-oriented architecture naturally arranges similar data adjacently, enabling compression algorithms and codecs to reduce data size dramatically. To maximize these compression benefits, it's essential to carefully choose appropriate data types.
 
@@ -135,4 +137,4 @@ ORDER BY tuple()
 
 ## Avoid nullable columns [#avoid-nullable-columns]
 
-<Markdown src="/snippets/_avoid_nullable_columns.md" />
+<AvoidNullableColumns />

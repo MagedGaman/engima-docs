@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the `WHERE` clause in ClickHouse'
-sidebar_label: 'WHERE'
+sidebarTitle: 'WHERE'
 slug: /sql-reference/statements/select/where
 title: 'WHERE clause'
 doc_type: 'reference'

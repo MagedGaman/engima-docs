@@ -5,9 +5,11 @@ input_format: true
 keywords: ['JSONColumns']
 output_format: true
 slug: /interfaces/formats/JSONColumns
-title: 'JSONColumns <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'JSONColumns'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

@@ -7,7 +7,9 @@ title: 'system.quota_usage'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Quota usage by the current user: how much is used and how much is left.
 

@@ -1,7 +1,7 @@
 ---
 description: 'timeSeriesTags table function returns the tags table use by table `db_name.time_series_table`
   whose table engine is the TimeSeries engine.'
-sidebar_label: 'timeSeriesTags'
+sidebarTitle: 'timeSeriesTags'
 sidebar_position: 145
 slug: /sql-reference/table-functions/timeSeriesTags
 title: 'timeSeriesTags'

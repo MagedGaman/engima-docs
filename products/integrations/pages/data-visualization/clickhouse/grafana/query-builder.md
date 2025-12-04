@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Query Builder'
+sidebarTitle: 'Query Builder'
 sidebar_position: 2
 slug: /integrations/grafana/query-builder
 description: 'Using the Query Builder in the ClickHouse Grafana plugin'

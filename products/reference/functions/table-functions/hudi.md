@@ -1,7 +1,7 @@
 ---
 description: 'Provides a read-only table-like interface to Apache Hudi tables in Amazon
   S3.'
-sidebar_label: 'hudi'
+sidebarTitle: 'hudi'
 sidebar_position: 85
 slug: /sql-reference/table-functions/hudi
 title: 'hudi'

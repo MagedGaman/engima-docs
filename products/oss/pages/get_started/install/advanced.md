@@ -1,7 +1,7 @@
 ---
 description: 'Instructions for compiling ClickHouse from source or installing a CI-generated binary'
 keywords: ['ClickHouse', 'install', 'advanced', 'compile from source', 'CI generated binary']
-sidebar_label: 'Advanced install'
+sidebarTitle: 'Advanced install'
 slug: /install/advanced
 title: 'Advanced installation methods'
 hide_title: false

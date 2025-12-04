@@ -1,10 +1,15 @@
 ---
 description: 'Overview of ClickHouse backup and restore'
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 slug: /operations/backup/overview
 title: 'Backup and Restore in ClickHouse'
 doc_type: 'reference'
 ---
+
+import Syntax from '/snippets/_syntax.mdx';
+import GenericSettings from '/snippets/_generic_settings.mdx';
+import S3Settings from '/snippets/_s3_settings.mdx';
+import AzureSettings from '/snippets/_azure_settings.mdx';
 
 
 > This section broadly covers backups and restores in ClickHouse. For a more 
@@ -162,7 +167,7 @@ are not included in backups and cannot be restored through this method.
 
 ## General syntax [#syntax]
 
-<Markdown src="/snippets/_syntax.md" />
+<Syntax />
 
 ### Command summary [#command-summary]
 
@@ -193,15 +198,15 @@ Each of the commands above is detailed below:
 
 **Generic backup/restore settings**
 
-<Markdown src="/snippets/_generic_settings.md" />
+<GenericSettings />
 
 **S3 specific settings**
 
-<Markdown src="/snippets/_s3_settings.md" />
+<S3Settings />
 
 **Azure specific settings**
 
-<Markdown src="/snippets/_azure_settings.md" />
+<AzureSettings />
 
 ## Administration and troubleshooting [#check-the-status-of-backups]
 

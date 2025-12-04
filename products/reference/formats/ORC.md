@@ -5,9 +5,11 @@ input_format: true
 keywords: ['ORC']
 output_format: true
 slug: /interfaces/formats/ORC
-title: 'ORC <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'ORC'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

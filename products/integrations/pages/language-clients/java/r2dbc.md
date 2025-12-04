@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'R2DBC Driver'
+sidebarTitle: 'R2DBC Driver'
 sidebar_position: 5
 keywords: ['clickhouse', 'java', 'driver', 'integrate', 'r2dbc']
 description: 'ClickHouse R2DBC Driver'

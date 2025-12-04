@@ -7,7 +7,9 @@ title: 'system.asynchronous_metrics'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains metrics that are calculated periodically in the background. For example, the amount of RAM in use.
 

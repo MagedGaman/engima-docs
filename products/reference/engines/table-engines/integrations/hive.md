@@ -1,7 +1,7 @@
 ---
 description: 'The Hive engine allows you to perform `SELECT` queries on HDFS Hive
   table.'
-sidebar_label: 'Hive table engine'
+sidebarTitle: 'Hive table engine'
 sidebar_position: 84
 slug: /engines/table-engines/integrations/hive
 title: 'Hive table engine'

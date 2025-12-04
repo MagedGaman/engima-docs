@@ -5,9 +5,11 @@ input_format: true
 keywords: ['CapnProto']
 output_format: true
 slug: /interfaces/formats/CapnProto
-title: 'CapnProto <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'CapnProto'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 import {CloudNotSupportedBadge} from '../../../components/Badges/CloudNotSupportedBadge'
 

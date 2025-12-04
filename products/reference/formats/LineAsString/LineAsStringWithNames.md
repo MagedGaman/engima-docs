@@ -5,9 +5,11 @@ input_format: true
 keywords: ['LineAsStringWithNames']
 output_format: true
 slug: /interfaces/formats/LineAsStringWithNames
-title: 'LineAsStringWithNames <Badge intent="success">Output</Badge>'
+title: 'LineAsStringWithNames'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

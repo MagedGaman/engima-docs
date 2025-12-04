@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Configuring settings'
+sidebarTitle: 'Configuring settings'
 slug: /manage/settings
 title: 'Configuring settings'
 description: 'How to configure settings for your ClickHouse Cloud service for a specific user or role'

@@ -1,6 +1,6 @@
 ---
 slug: /cloud/reference/shared-catalog
-sidebar_label: 'Shared catalog'
+sidebarTitle: 'Shared catalog'
 title: 'Shared catalog and shared database engine'
 keywords: ['SharedCatalog', 'SharedDatabaseEngine']
 description: 'Describes the Shared Catalog component and the Shared database engine in ClickHouse Cloud'

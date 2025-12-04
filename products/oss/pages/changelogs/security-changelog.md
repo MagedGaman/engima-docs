@@ -1,7 +1,7 @@
 ---
 slug: /whats-new/security-changelog
 sidebar_position: 20
-sidebar_label: 'Security changelog'
+sidebarTitle: 'Security changelog'
 title: 'Security changelog'
 description: 'Security changelog detailing security related updates and changes'
 doc_type: 'changelog'

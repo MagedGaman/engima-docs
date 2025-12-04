@@ -1,7 +1,7 @@
 ---
 description: 'Queries data to/from a remote HTTP/HTTPS server. This engine is similar
   to the File engine.'
-sidebar_label: 'URL'
+sidebarTitle: 'URL'
 sidebar_position: 80
 slug: /engines/table-engines/special/url
 title: 'URL table engine'

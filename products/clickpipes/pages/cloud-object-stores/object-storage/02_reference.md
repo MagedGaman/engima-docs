@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Reference'
+sidebarTitle: 'Reference'
 description: 'Details supported formats, exactly-once semantics, view-support, scaling, limitations, authentication with object storage ClickPipes'
 slug: /integrations/clickpipes/object-storage/reference
 sidebar_position: 1

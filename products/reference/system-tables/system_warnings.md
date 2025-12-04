@@ -6,7 +6,9 @@ title: 'system.warnings'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 This table shows warnings about the ClickHouse server.
 Warnings of the same type are combined into a single warning.

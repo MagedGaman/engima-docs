@@ -1,14 +1,16 @@
 ---
 description: 'Guide to configuring secure SSL/TLS communication between ClickHouse
   and ZooKeeper'
-sidebar_label: 'Secured Communication with Zookeeper'
+sidebarTitle: 'Secured Communication with Zookeeper'
 sidebar_position: 45
 slug: /operations/ssl-zookeeper
 title: 'Optional secured communication between ClickHouse and Zookeeper'
 doc_type: 'guide'
 ---
 
-<Markdown src="/snippets/_self_managed_only_automated.md" />
+import SelfManagedOnlyAutomated from '/snippets/_self_managed_only_automated.mdx';
+
+<SelfManagedOnlyAutomated />
 
 You should specify `ssl.keyStore.location`, `ssl.keyStore.password` and `ssl.trustStore.location`, `ssl.trustStore.password` for communication with ClickHouse client over SSL. These options are available from Zookeeper version 3.5.2.
 

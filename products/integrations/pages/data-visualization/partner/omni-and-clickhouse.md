@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Omni'
+sidebarTitle: 'Omni'
 slug: /integrations/omni
 keywords: ['clickhouse', 'Omni', 'connect', 'integrate', 'ui']
 description: 'Omni is an enterprise platform for BI, data applications, and embedded analytics that helps you explore and share insights in real time.'
@@ -9,13 +9,15 @@ doc_type: 'guide'
 
 import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <PartnerBadge/>
 
 Omni can connect to ClickHouse Cloud or on-premise deployment via the official ClickHouse data source.
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Create a ClickHouse data source [#2-create-a-clickhouse-data-source]
 

@@ -1,6 +1,6 @@
 ---
 description: Documentation for Show
-sidebar_label: SHOW
+sidebarTitle: SHOW
 sidebar_position: 37
 slug: /sql-reference/statements/show
 title: SHOW statements

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Attach'
-sidebar_label: 'ATTACH'
+sidebarTitle: 'ATTACH'
 sidebar_position: 40
 slug: /sql-reference/statements/attach
 title: 'ATTACH Statement'

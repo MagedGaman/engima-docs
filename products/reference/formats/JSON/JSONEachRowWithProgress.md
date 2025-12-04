@@ -5,9 +5,11 @@ input_format: false
 keywords: ['JSONEachRowWithProgress']
 output_format: true
 slug: /interfaces/formats/JSONEachRowWithProgress
-title: 'JSONEachRowWithProgress <Badge intent="success">Output</Badge>'
+title: 'JSONEachRowWithProgress'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

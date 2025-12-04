@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Loading data'
+sidebarTitle: 'Loading data'
 title: 'Loading data from BigQuery to ClickHouse'
 slug: /migrations/bigquery/loading-data
 description: 'How to load data from BigQuery to ClickHouse'

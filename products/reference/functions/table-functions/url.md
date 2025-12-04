@@ -1,6 +1,6 @@
 ---
 description: 'Creates a table from the `URL` with given `format` and `structure`'
-sidebar_label: 'url'
+sidebarTitle: 'url'
 sidebar_position: 200
 slug: /sql-reference/table-functions/url
 title: 'url'

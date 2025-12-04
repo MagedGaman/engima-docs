@@ -2,9 +2,11 @@
 description: 'Documentation for the TabSeparatedWithNamesAndTypes format'
 keywords: ['TabSeparatedWithNamesAndTypes']
 slug: /interfaces/formats/TabSeparatedWithNamesAndTypes
-title: 'TabSeparatedWithNamesAndTypes <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `TSVWithNamesAndTypes`, `RawWithNamesAndTypes`</Badge>'
+title: 'TabSeparatedWithNamesAndTypes'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `TSVWithNamesAndTypes`, `RawWithNamesAndTypes`</Badge>
 
 ## Description [#description]
 

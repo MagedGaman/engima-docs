@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 1
 title: 'ClickHouse Cloud API'
 slug: /cloud/manage/api/api-overview

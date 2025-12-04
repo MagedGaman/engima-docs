@@ -1,6 +1,6 @@
 ---
 slug: /deployment-modes
-sidebar_label: 'Deployment modes'
+sidebarTitle: 'Deployment modes'
 description: 'ClickHouse offers four deployment options that all use the same powerful database engine, just packaged differently to suit your specific needs.'
 title: 'Deployment modes'
 keywords: ['Deployment Modes', 'chDB']

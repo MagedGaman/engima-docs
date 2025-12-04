@@ -1,7 +1,7 @@
 ---
 description: 'Overview of domain types in ClickHouse, which extend base types with
   additional features'
-sidebar_label: 'Domains'
+sidebarTitle: 'Domains'
 sidebar_position: 56
 slug: /sql-reference/data-types/domains/
 title: 'Domains'

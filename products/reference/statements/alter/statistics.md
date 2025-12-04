@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Manipulating Column Statistics'
-sidebar_label: 'STATISTICS'
+sidebarTitle: 'STATISTICS'
 sidebar_position: 45
 slug: /sql-reference/statements/alter/statistics
 title: 'Manipulating Column Statistics'

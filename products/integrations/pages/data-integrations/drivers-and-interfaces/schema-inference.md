@@ -1,6 +1,6 @@
 ---
 description: 'Page describing automatic schema inference from input data in ClickHouse'
-sidebar_label: 'Schema inference'
+sidebarTitle: 'Schema inference'
 slug: /interfaces/schema-inference
 title: 'Automatic schema inference from input data'
 doc_type: 'reference'

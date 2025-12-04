@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Advanced Querying'
+sidebarTitle: 'Advanced Querying'
 sidebar_position: 4
 keywords: ['clickhouse', 'python', 'query', 'advanced']
 description: 'Advanced Querying with ClickHouse Connect'

@@ -3,7 +3,7 @@ slug: /use-cases/observability/clickstack/migration/elastic/migrating-data
 title: 'Migrating data to ClickStack from Elastic'
 pagination_prev: null
 pagination_next: null
-sidebar_label: 'Migrating data'
+sidebarTitle: 'Migrating data'
 sidebar_position: 4
 description: 'Migrating data to ClickHouse Observability Stack from Elastic'
 show_related_blogs: true

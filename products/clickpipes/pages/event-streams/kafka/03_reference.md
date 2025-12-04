@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Reference'
+sidebarTitle: 'Reference'
 description: 'Details supported formats, sources, delivery semantics, authentication and experimental features supported by Kafka ClickPipes'
 slug: /integrations/clickpipes/kafka/reference
 sidebar_position: 1

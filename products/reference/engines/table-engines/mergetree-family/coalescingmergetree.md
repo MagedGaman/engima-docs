@@ -1,7 +1,7 @@
 ---
 description: 'CoalescingMergeTree inherits from the MergeTree engine. Its key feature
   is the ability to automatically store last non-null value of each column during part merges.'
-sidebar_label: 'CoalescingMergeTree'
+sidebarTitle: 'CoalescingMergeTree'
 sidebar_position: 50
 slug: /engines/table-engines/mergetree-family/coalescingmergetree
 title: 'CoalescingMergeTree table engine'

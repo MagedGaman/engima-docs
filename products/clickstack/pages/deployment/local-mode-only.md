@@ -10,6 +10,7 @@ keywords: ['clickstack', 'deployment', 'setup', 'configuration', 'observability'
 ---
 
 import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
+import JsonSupport from '/snippets/_json_support.mdx';
 
 Similar to the [all-in-one image](/use-cases/observability/clickstack/deployment/docker-compose), this comprehensive Docker image bundles all ClickStack components:
 
@@ -55,7 +56,7 @@ Create a source, retain all default values, and complete the `Table` field with 
 
 </Steps>
 
-<Markdown src="/snippets/_json_support.md"/>
+<JsonSupport />
 
 For the local mode only image, users only need to set the `BETA_CH_OTEL_JSON_SCHEMA_ENABLED=true` parameter e.g.
 

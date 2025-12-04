@@ -1,11 +1,13 @@
 ---
-sidebar_label: 'Using clickhouse-local'
+sidebarTitle: 'Using clickhouse-local'
 keywords: ['clickhouse', 'migrate', 'migration', 'migrating', 'data', 'etl', 'elt', 'clickhouse-local', 'clickhouse-client']
 slug: /cloud/migration/clickhouse-local
 title: 'Migrating to ClickHouse using clickhouse-local'
 description: 'Guide showing how to migrate to ClickHouse using clickhouse-local'
 doc_type: 'guide'
 ---
+
+import AddRemoteIpAccessListDetail from '/snippets/_add_remote_ip_access_list_detail.mdx';
 
 # Migrating to ClickHouse using clickhouse-local
 
@@ -76,7 +78,7 @@ To run `clickhouse-local` on a Mac, use `./clickhouse local`.
 In order for the `remoteSecure` function to connect to your ClickHouse Cloud service, the IP address of the remote system needs to be allowed by the IP Access List.  Expand **Manage your IP Access List** below this tip for more information.
 </Tip>
 
-  <Markdown src="/snippets/_add_remote_ip_access_list_detail.md" />
+  <AddRemoteIpAccessListDetail />
 
 ## Example 1: Migrating from MySQL to ClickHouse Cloud with an Integration engine [#example-1-migrating-from-mysql-to-clickhouse-cloud-with-an-integration-engine]
 

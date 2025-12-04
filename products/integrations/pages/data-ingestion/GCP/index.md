@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Google Cloud Storage (GCS)'
+sidebarTitle: 'Google Cloud Storage (GCS)'
 sidebar_position: 4
 slug: /integrations/gcs
 description: 'Google Cloud Storage (GCS) Backed MergeTree'
@@ -7,6 +7,8 @@ title: 'Integrate Google Cloud Storage with ClickHouse'
 doc_type: 'guide'
 keywords: ['Google Cloud Storage ClickHouse', 'GCS ClickHouse integration', 'GCS backed MergeTree', 'ClickHouse GCS storage', 'Google Cloud ClickHouse']
 ---
+
+import GcsAuthenticationAndBucket from '/snippets/_GCS_authentication_and_bucket.mdx';
 
 <Note>
 If you are using ClickHouse Cloud on [Google Cloud](https://cloud.google.com), this page does not apply as your services will already be using [Google Cloud Storage](https://cloud.google.com/storage). If you are looking to `SELECT` or `INSERT` data from GCS, please see the [`gcs` table function](/sql-reference/table-functions/gcs).
@@ -232,7 +234,7 @@ In **Cloud Storage > Buckets** choose **CREATE BUCKET**. For this tutorial two b
 
 If you need step-by-step instructions to create buckets and an HMAC key, then expand **Create GCS buckets and an HMAC key** and follow along:
 
-<Markdown src="/snippets/_GCS_authentication_and_bucket.md" />
+<GcsAuthenticationAndBucket />
 
 ### Configure ClickHouse Keeper [#configure-clickhouse-keeper]
 

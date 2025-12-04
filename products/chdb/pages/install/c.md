@@ -1,6 +1,6 @@
 ---
 title: 'chDB for C and C++'
-sidebar_label: 'C and C++'
+sidebarTitle: 'C and C++'
 slug: /chdb/install/c
 description: 'How to install and use chDB with C and C++'
 keywords: ['chdb', 'c', 'cpp', 'embedded', 'clickhouse', 'sql', 'olap', 'api']

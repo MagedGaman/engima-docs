@@ -6,7 +6,9 @@ title: 'system.text_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains logging entries. The logging level which goes to this table can be limited to the `text_log.level` server setting.
 

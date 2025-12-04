@@ -1,6 +1,6 @@
 ---
 title: 'chDB Python API Reference'
-sidebar_label: 'Python API'
+sidebarTitle: 'Python API'
 slug: /chdb/api/python
 description: 'Complete Python API reference for chDB'
 keywords: ['chdb', 'embedded', 'clickhouse-lite', 'python', 'api', 'reference']

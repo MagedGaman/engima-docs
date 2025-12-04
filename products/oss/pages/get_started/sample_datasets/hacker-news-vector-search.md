@@ -1,6 +1,6 @@
 ---
 description: 'Dataset containing 28+ million Hacker News postings & their vector embeddings'
-sidebar_label: 'Hacker News vector search dataset'
+sidebarTitle: 'Hacker News vector search dataset'
 slug: /getting-started/example-datasets/hackernews-vector-search-dataset
 title: 'Hacker News vector search dataset'
 keywords: ['semantic search', 'vector similarity', 'approximate nearest neighbours', 'embeddings']

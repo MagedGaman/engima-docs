@@ -1,6 +1,6 @@
 ---
 slug: /cloud/reference/shared-merge-tree
-sidebar_label: 'SharedMergeTree'
+sidebarTitle: 'SharedMergeTree'
 title: 'SharedMergeTree'
 keywords: ['SharedMergeTree']
 description: 'Describes the SharedMergeTree table engine'

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'ODBC'
+sidebarTitle: 'ODBC'
 sidebar_position: 1
 title: 'ODBC'
 slug: /integrations/data-ingestion/dbms/odbc-with-clickhouse
@@ -9,4 +9,6 @@ hide_title: true
 keywords: ['odbc', 'database connection', 'integration', 'external data', 'driver']
 ---
 
-<Markdown src="/engines/table-engines/integrations/odbc.md" />
+import Odbc from '/snippets/engines/table-engines/integrations/odbc.mdx';
+
+<Odbc />

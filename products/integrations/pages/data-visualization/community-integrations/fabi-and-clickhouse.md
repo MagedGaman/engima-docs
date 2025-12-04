@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Fabi.ai'
+sidebarTitle: 'Fabi.ai'
 slug: /integrations/fabi.ai
 keywords: ['clickhouse', 'Fabi.ai', 'connect', 'integrate', 'notebook', 'ui', 'analytics']
 description: 'Fabi.ai is an all-in-one collaborate data analysis platform. You can leverage SQL, Python, AI, and no-code to build dashboard and data workflows faster than ever before'
@@ -9,6 +9,8 @@ doc_type: 'guide'
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <CommunityMaintainedBadge/>
 
 <a href="https://www.fabi.ai/" target="_blank">Fabi.ai</a> is an all-in-one collaborate data analysis platform. You can leverage SQL, Python, AI, and no-code to build dashboard and data workflows faster than ever before. Combined with the scale and power of ClickHouse, you can build and share your first highly performant dashboard on a massive dataset in minutes.
@@ -17,7 +19,7 @@ import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaint
 
 ## Gather Your Connection Details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## Create your Fabi.ai account and connect ClickHouse [#connect-to-clickhouse]
 

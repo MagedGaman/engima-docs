@@ -1,6 +1,6 @@
 ---
 title: 'Installing chDB for Python'
-sidebar_label: 'Python'
+sidebarTitle: 'Python'
 slug: /chdb/install/python
 description: 'How to install chDB for Python'
 keywords: ['chdb', 'embedded', 'clickhouse-lite', 'python', 'install']

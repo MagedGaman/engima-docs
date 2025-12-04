@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for DISTINCT Clause'
-sidebar_label: 'DISTINCT'
+sidebarTitle: 'DISTINCT'
 slug: /sql-reference/statements/select/distinct
 title: 'DISTINCT Clause'
 doc_type: 'reference'

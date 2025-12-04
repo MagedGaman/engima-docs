@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'BladePipe'
+sidebarTitle: 'BladePipe'
 sidebar_position: 20
 keywords: ['clickhouse', 'BladePipe', 'connect', 'integrate', 'cdc', 'etl', 'data integration']
 slug: /integrations/bladepipe

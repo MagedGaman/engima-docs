@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Tableau Desktop'
+sidebarTitle: 'Tableau Desktop'
 sidebar_position: 1
 slug: /integrations/tableau
 keywords: ['clickhouse', 'tableau', 'connect', 'integrate', 'ui']
@@ -14,6 +14,8 @@ integration:
 
 import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <ClickHouseSupportedBadge/>
 
 ClickHouse offers an official Tableau Connector, featured on
@@ -27,7 +29,7 @@ follow the setup guide below.
 
 1. Gather your connection details
 
-   <Markdown src="/snippets/_gather_your_details_http.mdx" />
+   <GatherYourDetailsHttp />
 
 2. Download and install  <a href="https://www.tableau.com/products/desktop/download" target="_blank">Tableau
    desktop</a>.

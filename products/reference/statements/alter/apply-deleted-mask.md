@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Apply mask of deleted rows'
-sidebar_label: 'APPLY DELETED MASK'
+sidebarTitle: 'APPLY DELETED MASK'
 sidebar_position: 46
 slug: /sql-reference/statements/alter/apply-deleted-mask
 title: 'Apply mask of deleted rows'

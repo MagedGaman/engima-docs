@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Bitmap Functions'
-sidebar_label: 'Bitmap'
+sidebarTitle: 'Bitmap'
 slug: /sql-reference/functions/bitmap-functions
 title: 'Bitmap Functions'
 doc_type: 'reference'

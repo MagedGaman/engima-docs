@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Ordering keys'
+sidebarTitle: 'Ordering keys'
 description: 'How to define custom ordering keys.'
 slug: /integrations/clickpipes/postgres/ordering_keys
 title: 'Ordering Keys'

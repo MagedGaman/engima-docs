@@ -1,13 +1,15 @@
 ---
 slug: /use-cases/observability/clickstack/dashboards
 title: 'Visualizations and Dashboards with ClickStack'
-sidebar_label: 'Dashboards'
+sidebarTitle: 'Dashboards'
 pagination_prev: null
 pagination_next: null
 description: 'Visualizations and Dashboards with ClickStack'
 doc_type: 'guide'
 keywords: ['clickstack', 'dashboards', 'visualization', 'monitoring', 'observability']
 ---
+
+import ClickstackTagging from '/snippets/_clickstack_tagging.mdx';
 
 ClickStack supports visualizing events, with built-in support for charting in HyperDX.
 These charts can be added to dashboards for sharing with other users.
@@ -172,7 +174,7 @@ Dashboards are accessible from the left-hand menu, with built-in search to quick
 
 ## Dashboards - Tagging [#tagging]
 
-<Markdown src="/snippets/_clickstack_tagging.mdx" />
+<ClickstackTagging />
 
 ## Presets [#presets]
 

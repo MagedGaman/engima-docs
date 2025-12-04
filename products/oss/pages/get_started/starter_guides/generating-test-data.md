@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Generating random test data'
+sidebarTitle: 'Generating random test data'
 title: 'Generating random test data in ClickHouse'
 slug: /guides/generating-test-data
 description: 'Learn about Generating Random Test Data in ClickHouse'

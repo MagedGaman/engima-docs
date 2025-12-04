@@ -7,7 +7,9 @@ title: 'system.blob_storage_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains logging entries with information about various blob storage operations such as uploads and deletes.
 

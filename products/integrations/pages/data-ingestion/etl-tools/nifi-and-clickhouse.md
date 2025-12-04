@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'NiFi'
+sidebarTitle: 'NiFi'
 sidebar_position: 12
 keywords: ['clickhouse', 'NiFi', 'connect', 'integrate', 'etl', 'data integration']
 slug: /integrations/nifi
@@ -11,7 +11,8 @@ integration:
   - category: 'data_ingestion'
 ---
 
-import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintained.jsx'
+import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -21,7 +22,7 @@ import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaint
 
 ## Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## Download and run Apache NiFi [#2-download-and-run-apache-nifi]
 

@@ -1,6 +1,6 @@
 ---
 description: 'How to build Clickhouse and run benchmark with DEFLATE_QPL Codec'
-sidebar_label: 'Building and Benchmarking DEFLATE_QPL'
+sidebarTitle: 'Building and Benchmarking DEFLATE_QPL'
 sidebar_position: 73
 slug: /development/building_and_benchmarking_deflate_qpl
 title: 'Run Benchmark with DEFLATE_QPL'

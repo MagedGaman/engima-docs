@@ -1,7 +1,7 @@
 ---
 description: 'Allows processing files from URL in parallel from many nodes in a specified
   cluster.'
-sidebar_label: 'urlCluster'
+sidebarTitle: 'urlCluster'
 sidebar_position: 201
 slug: /sql-reference/table-functions/urlCluster
 title: 'urlCluster'

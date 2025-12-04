@@ -3,7 +3,7 @@ description: 'You can monitor the utilization of hardware resources and also Cli
   server metrics.'
 keywords: ['monitoring', 'observability', 'advanced dashboard', 'dashboard', 'observability
     dashboard']
-sidebar_label: 'Monitoring'
+sidebarTitle: 'Monitoring'
 sidebar_position: 45
 slug: /operations/monitoring
 title: 'Monitoring'

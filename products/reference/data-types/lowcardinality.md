@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the LowCardinality optimization for string columns'
-sidebar_label: 'LowCardinality(T)'
+sidebarTitle: 'LowCardinality(T)'
 sidebar_position: 42
 slug: /sql-reference/data-types/lowcardinality
 title: 'LowCardinality(T)'

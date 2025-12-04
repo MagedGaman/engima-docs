@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for GRANT Statement'
-sidebar_label: 'GRANT'
+sidebarTitle: 'GRANT'
 sidebar_position: 38
 slug: /sql-reference/statements/grant
 title: 'GRANT Statement'

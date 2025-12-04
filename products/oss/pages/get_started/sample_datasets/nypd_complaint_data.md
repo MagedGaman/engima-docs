@@ -1,6 +1,6 @@
 ---
 description: 'Ingest and query Tab Separated Value data in 5 steps'
-sidebar_label: 'NYPD complaint data'
+sidebarTitle: 'NYPD complaint data'
 slug: /getting-started/example-datasets/nypd_complaint_data
 title: 'NYPD Complaint Data'
 doc_type: 'guide'

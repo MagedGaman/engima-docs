@@ -1,13 +1,15 @@
 ---
 description: 'Page describing usage recommendations for open-source ClickHouse'
-sidebar_label: 'OSS usage recommendations'
+sidebarTitle: 'OSS usage recommendations'
 sidebar_position: 58
 slug: /operations/tips
 title: 'OSS usage recommendations'
 doc_type: 'guide'
 ---
 
-<Markdown src="/snippets/_self_managed_only_automated.md" />
+import SelfManagedOnlyAutomated from '/snippets/_self_managed_only_automated.mdx';
+
+<SelfManagedOnlyAutomated />
 
 ## CPU Scaling Governor [#cpu-scaling-governor]
 

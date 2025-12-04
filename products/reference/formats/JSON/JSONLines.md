@@ -3,9 +3,11 @@ alias: ['JSONEachRow', 'NDJSON']
 description: 'Documentation for the JSONLines format'
 keywords: ['JSONLines']
 slug: /interfaces/formats/JSONLines
-title: 'JSONLines <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `JSONEachRow`, `NDJSON`</Badge>'
+title: 'JSONLines'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `JSONEachRow`, `NDJSON`</Badge>
 
 ## Description [#description]
 

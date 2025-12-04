@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Personal data access'
+sidebarTitle: 'Personal data access'
 slug: /cloud/manage/personal-data-access
 title: 'Personal data access'
 description: 'As a registered user, ClickHouse allows you to view and manage your personal account data, including contact information.'

@@ -5,9 +5,11 @@ input_format: false
 keywords: ['Prometheus']
 output_format: true
 slug: /interfaces/formats/Prometheus
-title: 'Prometheus <Badge intent="success">Output</Badge>'
+title: 'Prometheus'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

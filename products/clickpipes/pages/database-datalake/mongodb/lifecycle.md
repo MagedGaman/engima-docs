@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Lifecycle of a MongoDB ClickPipe'
+sidebarTitle: 'Lifecycle of a MongoDB ClickPipe'
 description: 'Various pipe statuses and their meanings'
 slug: /integrations/clickpipes/mongodb/lifecycle
 title: 'Lifecycle of a MongoDB ClickPipe'

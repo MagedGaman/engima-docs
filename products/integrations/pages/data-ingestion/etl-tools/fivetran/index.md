@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Fivetran'
+sidebarTitle: 'Fivetran'
 slug: /integrations/fivetran
 sidebar_position: 2
 description: 'Users can transform and model their data in ClickHouse using dbt'

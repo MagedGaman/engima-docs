@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Check Table'
-sidebar_label: 'CHECK TABLE'
+sidebarTitle: 'CHECK TABLE'
 sidebar_position: 41
 slug: /sql-reference/statements/check-table
 title: 'CHECK TABLE Statement'

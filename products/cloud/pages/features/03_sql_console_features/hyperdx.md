@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'HyperDX'
+sidebarTitle: 'HyperDX'
 slug: /cloud/manage/hyperdx
 title: 'HyperDX'
 description: 'Provides HyperDX, the UI for ClickStack - a  production-grade observability platform built on ClickHouse and OpenTelemetry (OTel), unifying logs, traces, metrics, and sessions in a single high-performance scalable solution.'

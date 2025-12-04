@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Console audit log'
+sidebarTitle: 'Console audit log'
 slug: /cloud/security/audit-logging/console-audit-log
 title: 'Console audit log'
 description: 'This page describes how users can review the cloud audit log'

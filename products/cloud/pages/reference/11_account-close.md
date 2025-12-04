@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Account closure'
+sidebarTitle: 'Account closure'
 slug: /cloud/manage/close_account
 title: 'Account closure and deletion'
 description: 'We know there are circumstances that sometimes necessitate account closure. This guide will help you through the process.'

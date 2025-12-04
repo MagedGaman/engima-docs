@@ -1,6 +1,6 @@
 ---
 description: 'Page detailing allocation profiling in ClickHouse'
-sidebar_label: 'Allocation profiling'
+sidebarTitle: 'Allocation profiling'
 slug: /operations/allocation-profiling
 title: 'Allocation profiling'
 doc_type: 'guide'

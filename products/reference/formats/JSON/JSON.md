@@ -5,9 +5,11 @@ input_format: true
 keywords: ['JSON']
 output_format: true
 slug: /interfaces/formats/JSON
-title: 'JSON <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'JSON'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

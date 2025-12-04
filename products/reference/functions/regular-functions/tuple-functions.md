@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Tuple functions'
-sidebar_label: 'Tuples'
+sidebarTitle: 'Tuples'
 slug: /sql-reference/functions/tuple-functions
 title: 'Tuple functions'
 doc_type: 'reference'

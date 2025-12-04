@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Amazon Glue'
+sidebarTitle: 'Amazon Glue'
 sidebar_position: 1
 slug: /integrations/glue
 description: 'Integrate ClickHouse and Amazon Glue'

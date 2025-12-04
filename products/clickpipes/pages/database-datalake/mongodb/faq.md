@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'FAQ'
+sidebarTitle: 'FAQ'
 description: 'Frequently asked questions about ClickPipes for MongoDB.'
 slug: /integrations/clickpipes/mongodb/faq
 sidebar_position: 2

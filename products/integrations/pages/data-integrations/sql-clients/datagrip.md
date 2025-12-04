@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'DataGrip'
+sidebarTitle: 'DataGrip'
 slug: /integrations/datagrip
 description: 'DataGrip is a database IDE that supports ClickHouse out of the box.'
 title: 'Connecting DataGrip to ClickHouse'
@@ -13,6 +13,8 @@ keywords: ['DataGrip', 'database IDE', 'JetBrains', 'SQL client', 'integrated de
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <CommunityMaintainedBadge/>
 
 ## Start or download DataGrip [#start-or-download-datagrip]
@@ -21,7 +23,7 @@ DataGrip is available at https://www.jetbrains.com/datagrip/
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Load the ClickHouse driver [#2-load-the-clickhouse-driver]
 

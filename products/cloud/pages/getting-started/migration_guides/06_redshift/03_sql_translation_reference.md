@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'SQL translation reference'
+sidebarTitle: 'SQL translation reference'
 slug: /migrations/redshift/sql-translation-reference
 description: 'SQL translation reference for Amazon Redshift to ClickHouse'
 keywords: ['Redshift']

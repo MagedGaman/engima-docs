@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Manipulating Constraints'
-sidebar_label: 'CONSTRAINT'
+sidebarTitle: 'CONSTRAINT'
 sidebar_position: 43
 slug: /sql-reference/statements/alter/constraint
 title: 'Manipulating Constraints'

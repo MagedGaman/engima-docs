@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Spark JDBC'
+sidebarTitle: 'Spark JDBC'
 sidebar_position: 3
 slug: /integrations/apache-spark/spark-jdbc
 description: 'Introduction to Apache Spark with ClickHouse'

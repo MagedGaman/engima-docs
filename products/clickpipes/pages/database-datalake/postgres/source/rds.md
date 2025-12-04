@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Amazon RDS Postgres'
+sidebarTitle: 'Amazon RDS Postgres'
 description: 'Set up Amazon RDS Postgres as a source for ClickPipes'
 slug: /integrations/clickpipes/postgres/source/rds
 title: 'RDS Postgres source setup guide'

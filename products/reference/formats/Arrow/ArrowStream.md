@@ -5,9 +5,11 @@ input_format: true
 keywords: ['ArrowStream']
 output_format: true
 slug: /interfaces/formats/ArrowStream
-title: 'ArrowStream <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'ArrowStream'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

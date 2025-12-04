@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'JavaScript'
+sidebarTitle: 'JavaScript'
 sidebar_position: 4
 keywords: ['clickhouse', 'js', 'JavaScript', 'NodeJS', 'web', 'browser', 'Cloudflare', 'workers', 'client', 'connect', 'integrate']
 slug: integrations/javascript
@@ -11,6 +11,8 @@ integration:
   - category: 'language_client'
   - website: 'https://github.com/ClickHouse/clickhouse-js'
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 The official JS client for connecting to ClickHouse.
 The client is written in TypeScript and provides typings for the client public API.
@@ -185,7 +187,7 @@ createClient({
 
 #### Gather your connection details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 #### Connection overview [#connection-overview]
 

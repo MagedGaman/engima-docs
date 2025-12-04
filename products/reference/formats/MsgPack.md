@@ -5,9 +5,11 @@ input_format: true
 keywords: ['MsgPack']
 output_format: true
 slug: /interfaces/formats/MsgPack
-title: 'MsgPack <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'MsgPack'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

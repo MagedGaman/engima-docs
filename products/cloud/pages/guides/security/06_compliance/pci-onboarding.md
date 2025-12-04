@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'PCI onboarding'
+sidebarTitle: 'PCI onboarding'
 slug: /cloud/security/compliance/pci-onboarding
 title: 'PCI onboarding'
 description: 'Learn more about how to onboard to PCI compliant services'

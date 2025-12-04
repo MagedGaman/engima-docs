@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Advanced Inserting'
+sidebarTitle: 'Advanced Inserting'
 sidebar_position: 5
 keywords: ['clickhouse', 'python', 'insert', 'advanced']
 description: 'Advanced Inserting with ClickHouse Connect'

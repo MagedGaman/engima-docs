@@ -1,7 +1,7 @@
 ---
 description: 'Lightweight updates simplify the process of updating data in the database using patch parts.'
 keywords: ['update']
-sidebar_label: 'UPDATE'
+sidebarTitle: 'UPDATE'
 sidebar_position: 39
 slug: /sql-reference/statements/update
 title: 'The Lightweight UPDATE Statement'

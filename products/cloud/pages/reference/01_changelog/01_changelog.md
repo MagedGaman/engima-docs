@@ -1,6 +1,6 @@
 ---
 slug: /whats-new/cloud
-sidebar_label: 'Cloud changelog'
+sidebarTitle: 'Cloud changelog'
 title: 'Cloud Changelog'
 description: 'ClickHouse Cloud changelog providing descriptions of what is new in each ClickHouse Cloud release'
 doc_type: 'changelog'

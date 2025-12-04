@@ -5,9 +5,11 @@ input_format: false
 keywords: ['SQLInsert']
 output_format: true
 slug: /interfaces/formats/SQLInsert
-title: 'SQLInsert <Badge intent="success">Output</Badge>'
+title: 'SQLInsert'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

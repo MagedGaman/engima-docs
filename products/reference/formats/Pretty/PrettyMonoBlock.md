@@ -5,9 +5,11 @@ input_format: false
 keywords: ['PrettyMonoBlock']
 output_format: true
 slug: /interfaces/formats/PrettyMonoBlock
-title: 'PrettyMonoBlock <Badge intent="success">Output</Badge>'
+title: 'PrettyMonoBlock'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 import PrettyFormatSettings from './_snippets/common-pretty-format-settings.md';
 

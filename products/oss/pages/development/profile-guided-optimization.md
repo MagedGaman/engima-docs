@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for profile guided optimization'
-sidebar_label: 'Profile guided optimization (PGO)'
+sidebarTitle: 'Profile guided optimization (PGO)'
 sidebar_position: 54
 slug: /operations/optimizing-performance/profile-guided-optimization
 title: 'Profile guided optimization'

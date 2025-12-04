@@ -2,7 +2,7 @@
 description: 'Provides a table-like interface to select/insert files in Azure Blob
   Storage. Similar to the s3 function.'
 keywords: ['azure blob storage']
-sidebar_label: 'azureBlobStorage'
+sidebarTitle: 'azureBlobStorage'
 sidebar_position: 10
 slug: /sql-reference/table-functions/azureBlobStorage
 title: 'azureBlobStorage table function'

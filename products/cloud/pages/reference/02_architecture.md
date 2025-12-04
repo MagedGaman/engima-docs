@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Architecture'
+sidebarTitle: 'Architecture'
 slug: /cloud/reference/architecture
 title: 'ClickHouse Cloud architecture'
 description: 'This page describes the architecture of ClickHouse Cloud'

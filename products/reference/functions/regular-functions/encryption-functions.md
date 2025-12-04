@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for encryption functions'
-sidebar_label: 'Encryption'
+sidebarTitle: 'Encryption'
 slug: /sql-reference/functions/encryption-functions
 title: 'Encryption functions'
 keywords: ['encryption', 'regular functions', 'encrypt', 'decrypt']

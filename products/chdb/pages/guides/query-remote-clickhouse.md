@@ -1,6 +1,6 @@
 ---
 title: 'How to query a remote ClickHouse server'
-sidebar_label: 'Querying remote ClickHouse'
+sidebarTitle: 'Querying remote ClickHouse'
 slug: /chdb/guides/query-remote-clickhouse
 description: 'In this guide, we will learn how to query a remote ClickHouse server from chDB.'
 keywords: ['chdb', 'clickhouse']

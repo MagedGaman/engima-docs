@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for financial functions'
-sidebar_label: 'Financial'
+sidebarTitle: 'Financial'
 slug: /sql-reference/functions/financial-functions
 title: 'Financial functions'
 keywords: ['Financial', 'rate of return', 'net present value']

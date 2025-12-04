@@ -5,9 +5,11 @@ input_format: true
 keywords: ['JSONCompactStringsEachRowWithNames']
 output_format: true
 slug: /interfaces/formats/JSONCompactStringsEachRowWithNames
-title: 'JSONCompactStringsEachRowWithNames <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'JSONCompactStringsEachRowWithNames'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

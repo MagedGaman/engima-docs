@@ -2,7 +2,7 @@
 title: 'Handling other JSON formats'
 slug: /integrations/data-formats/json/other-formats
 description: 'Handling other JSON formats'
-sidebar_label: 'Handling other formats'
+sidebarTitle: 'Handling other formats'
 keywords: ['json', 'formats', 'json formats']
 doc_type: 'guide'
 ---

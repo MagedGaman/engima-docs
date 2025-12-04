@@ -2,7 +2,7 @@
 description: 'This engine provides integration with the Amazon S3 ecosystem and allows
   streaming imports. Similar to the Kafka and RabbitMQ engines, but provides S3-specific
   features.'
-sidebar_label: 'S3Queue table engine'
+sidebarTitle: 'S3Queue table engine'
 sidebar_position: 181
 slug: /engines/table-engines/integrations/s3queue
 title: 'S3Queue table engine'

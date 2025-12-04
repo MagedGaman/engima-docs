@@ -3,7 +3,7 @@ description: 'Overview of network interfaces, drivers, and tools for connecting 
   ClickHouse'
 keywords: ['clickhouse', 'network', 'interfaces', 'http', 'tcp', 'grpc', 'command-line',
   'client', 'jdbc', 'odbc', 'driver']
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 slug: /interfaces/overview
 title: 'Drivers and Interfaces'
 doc_type: 'reference'

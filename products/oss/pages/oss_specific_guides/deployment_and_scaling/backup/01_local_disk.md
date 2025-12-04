@@ -1,14 +1,17 @@
 ---
 description: 'Details backup/restore to or from a local disk'
-sidebar_label: 'Local disk / S3 disk'
+sidebarTitle: 'Local disk / S3 disk'
 slug: /operations/backup/disk
 title: 'Backup and Restore in ClickHouse'
 doc_type: 'guide'
 ---
 
+import Syntax from '/snippets/_syntax.mdx';
+import ExampleSetup from '/snippets/_example_setup.mdx';
+
 ## Syntax [#syntax]
 
-<Markdown src="/snippets/_syntax.md" />
+<Syntax />
 
 ## Configure backup destinations for disk [#configure-backup-destinations-for-disk]
 
@@ -98,7 +101,7 @@ the `BACKUP ... TO S3(<endpoint>)` syntax for this use-case.
 
 ### Backup and restore a table [#backup-and-restore-a-table]
 
-<Markdown src="/snippets/_example_setup.md" />
+<ExampleSetup />
 
 To backup the table you can run:
 

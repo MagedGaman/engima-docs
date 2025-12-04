@@ -1,6 +1,6 @@
 ---
 description: 'Returns the table that is connected via ODBC.'
-sidebar_label: 'odbc'
+sidebarTitle: 'odbc'
 sidebar_position: 150
 slug: /sql-reference/table-functions/odbc
 title: 'odbc'

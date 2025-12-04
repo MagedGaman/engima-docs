@@ -1,6 +1,6 @@
 ---
 description: 'Perturbs the given query string with random variations.'
-sidebar_label: 'fuzzQuery'
+sidebarTitle: 'fuzzQuery'
 sidebar_position: 75
 slug: /sql-reference/table-functions/fuzzQuery
 title: 'fuzzQuery'

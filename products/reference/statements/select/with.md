@@ -1,6 +1,6 @@
 ---
 description: Documentation for WITH Clause
-sidebar_label: WITH
+sidebarTitle: WITH
 slug: /sql-reference/statements/select/with
 title: WITH clause
 doc_type: reference

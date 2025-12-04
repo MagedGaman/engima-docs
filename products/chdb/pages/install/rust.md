@@ -1,6 +1,6 @@
 ---
 title: 'Installing chDB for Rust'
-sidebar_label: 'Rust'
+sidebarTitle: 'Rust'
 slug: /chdb/install/rust
 description: 'How to install and use chDB Rust bindingsd'
 keywords: ['chdb', 'embedded', 'clickhouse-lite', 'rust', 'install', 'ffi', 'bindings']

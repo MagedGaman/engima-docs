@@ -1,7 +1,7 @@
 ---
 description: 'Documentation for Syntax'
 displayed_sidebar: 'sqlreference'
-sidebar_label: 'Syntax'
+sidebarTitle: 'Syntax'
 sidebar_position: 2
 slug: sql-reference/syntax
 title: 'Syntax'

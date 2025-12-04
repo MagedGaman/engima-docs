@@ -1,6 +1,6 @@
 ---
 description: 'The DataLakeCatalog database engine enables you to connect ClickHouse to external data catalogs and query open table format data'
-sidebar_label: 'DataLakeCatalog'
+sidebarTitle: 'DataLakeCatalog'
 slug: /engines/database-engines/datalakecatalog
 title: 'DataLakeCatalog database engine'
 doc_type: 'reference'

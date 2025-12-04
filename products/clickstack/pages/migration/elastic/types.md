@@ -3,7 +3,7 @@ slug: /use-cases/observability/clickstack/migration/elastic/types
 title: 'Mapping types'
 pagination_prev: null
 pagination_next: null
-sidebar_label: 'Types'
+sidebarTitle: 'Types'
 sidebar_position: 2
 description: 'Mapping types in ClickHouse and Elasticsearch'
 show_related_blogs: true

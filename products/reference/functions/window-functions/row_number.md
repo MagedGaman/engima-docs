@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the row_number window function'
-sidebar_label: 'row_number'
+sidebarTitle: 'row_number'
 sidebar_position: 2
 slug: /sql-reference/window-functions/row_number
 title: 'row_number'

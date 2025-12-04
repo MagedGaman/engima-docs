@@ -1,7 +1,7 @@
 ---
 slug: /use-cases/observability/clickstack/event_patterns
 title: 'Event Patterns with ClickStack'
-sidebar_label: 'Event Patterns'
+sidebarTitle: 'Event Patterns'
 pagination_prev: null
 pagination_next: null
 description: 'Event Patterns with ClickStack'

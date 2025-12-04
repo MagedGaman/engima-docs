@@ -5,9 +5,11 @@ input_format: false
 keywords: ['JSONCompactStrings']
 output_format: true
 slug: /interfaces/formats/JSONCompactStrings
-title: 'JSONCompactStrings <Badge intent="success">Output</Badge>'
+title: 'JSONCompactStrings'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

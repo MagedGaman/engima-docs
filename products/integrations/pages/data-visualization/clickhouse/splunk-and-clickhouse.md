@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Splunk'
+sidebarTitle: 'Splunk'
 sidebar_position: 198
 slug: /integrations/splunk
 keywords: ['Splunk', 'integration', 'data visualization']

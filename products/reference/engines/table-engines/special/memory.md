@@ -2,7 +2,7 @@
 description: 'The Memory engine stores data in RAM, in uncompressed form. Data is
   stored in exactly the same form as it is received when read. In other words, reading
   from this table is completely free.'
-sidebar_label: 'Memory'
+sidebarTitle: 'Memory'
 sidebar_position: 110
 slug: /engines/table-engines/special/memory
 title: 'Memory table engine'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for highlight-next-line'
-sidebar_label: 'External disks for storing data'
+sidebarTitle: 'External disks for storing data'
 sidebar_position: 68
 slug: /operations/storing-data
 title: 'External disks for storing data'

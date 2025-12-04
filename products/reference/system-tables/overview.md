@@ -1,7 +1,7 @@
 ---
 description: 'Overview of what system tables are and why they are useful.'
 keywords: ['system tables', 'overview']
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 52
 slug: /operations/system-tables/overview
 title: 'System Tables Overview'

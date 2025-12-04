@@ -5,9 +5,11 @@ input_format: true
 keywords: ['ProtobufList']
 output_format: true
 slug: /interfaces/formats/ProtobufList
-title: 'ProtobufList <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'ProtobufList'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 import {CloudNotSupportedBadge} from '../../../../components/Badges/CloudNotSupportedBadge'
 

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for UNDROP TABLE'
-sidebar_label: 'UNDROP'
+sidebarTitle: 'UNDROP'
 slug: /sql-reference/statements/undrop
 title: 'UNDROP TABLE'
 doc_type: 'reference'

@@ -1,6 +1,6 @@
 ---
 description: Documentation for Table Settings Manipulations
-sidebar_label: SETTING
+sidebarTitle: SETTING
 sidebar_position: 38
 slug: /sql-reference/statements/alter/setting
 title: Table settings manipulations

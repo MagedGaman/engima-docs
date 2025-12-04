@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'SQL translation reference'
+sidebarTitle: 'SQL translation reference'
 slug: /migrations/snowflake-translation-reference
 description: 'SQL translation reference'
 keywords: ['Snowflake']

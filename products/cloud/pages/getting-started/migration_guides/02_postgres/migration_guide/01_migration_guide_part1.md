@@ -4,7 +4,7 @@ title: 'Migrating data'
 description: 'Dataset example to migrate from PostgreSQL to ClickHouse'
 keywords: ['Postgres']
 show_related_blogs: true
-sidebar_label: 'Part 1'
+sidebarTitle: 'Part 1'
 doc_type: 'guide'
 ---
 

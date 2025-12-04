@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Role'
-sidebar_label: 'ROLE'
+sidebarTitle: 'ROLE'
 sidebar_position: 40
 slug: /sql-reference/statements/create/role
 title: 'CREATE ROLE'

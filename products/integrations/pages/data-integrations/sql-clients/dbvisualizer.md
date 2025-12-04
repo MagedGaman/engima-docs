@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'DbVisualizer'
+sidebarTitle: 'DbVisualizer'
 slug: /integrations/dbvisualizer
 description: 'DbVisualizer is a database tool with extended support for ClickHouse.'
 title: 'Connecting DbVisualizer to ClickHouse'
@@ -12,6 +12,8 @@ integration:
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <CommunityMaintainedBadge/>
 
 ## Start or download DbVisualizer [#start-or-download-dbvisualizer]
@@ -20,7 +22,7 @@ DbVisualizer is available at https://www.dbvis.com/download/
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2. Built-in JDBC driver management [#2-built-in-jdbc-driver-management]
 

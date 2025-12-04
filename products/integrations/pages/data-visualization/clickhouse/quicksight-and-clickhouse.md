@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'QuickSight'
+sidebarTitle: 'QuickSight'
 slug: /integrations/quicksight
 keywords: ['clickhouse', 'aws', 'amazon', 'QuickSight', 'mysql', 'connect', 'integrate', 'ui']
 description: 'Amazon QuickSight powers data-driven organizations with unified business intelligence (BI).'

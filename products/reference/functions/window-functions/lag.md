@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the lag window function'
-sidebar_label: 'lag'
+sidebarTitle: 'lag'
 sidebar_position: 9
 slug: /sql-reference/window-functions/lag
 title: 'lag'

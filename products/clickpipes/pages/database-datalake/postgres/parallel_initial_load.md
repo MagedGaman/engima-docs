@@ -2,7 +2,7 @@
 title: 'Parallel Snapshot In The Postgres ClickPipe'
 description: 'Doc for explaining parallel snapshot in the Postgres ClickPipe'
 slug: /integrations/clickpipes/postgres/parallel_initial_load
-sidebar_label: 'How parallel snapshot works'
+sidebarTitle: 'How parallel snapshot works'
 doc_type: 'guide'
 keywords: ['clickpipes', 'postgresql', 'cdc', 'data ingestion', 'real-time sync']
 ---

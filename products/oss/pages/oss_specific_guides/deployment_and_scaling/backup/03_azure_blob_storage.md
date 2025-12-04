@@ -1,14 +1,16 @@
 ---
 description: 'Details backup/restore to or from an Azure Blob Storage endpoint'
-sidebar_label: 'AzureBlobStorage'
+sidebarTitle: 'AzureBlobStorage'
 slug: /operations/backup/azure
 title: 'Backup and restore to/from Azure Blob Storage'
 doc_type: 'guide'
 ---
 
+import Syntax from '/snippets/_syntax.mdx';
+
 ## Syntax [#syntax]
 
-<Markdown src="/snippets/_syntax.md" />
+<Syntax />
 
 ## Configuring BACKUP / RESTORE to use an AzureBlobStorage endpoint [#configuring-backuprestore-to-use-an-azureblobstorage-endpoint]
 

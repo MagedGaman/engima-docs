@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for ALTER NAMED COLLECTION'
-sidebar_label: 'NAMED COLLECTION'
+sidebarTitle: 'NAMED COLLECTION'
 slug: /sql-reference/statements/alter/named-collection
 title: 'ALTER NAMED COLLECTION'
 doc_type: 'reference'

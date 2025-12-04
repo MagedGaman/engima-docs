@@ -1,6 +1,6 @@
 ---
 description: 'Guide for integrating Rust libraries into ClickHouse'
-sidebar_label: 'Rust Libraries'
+sidebarTitle: 'Rust Libraries'
 slug: /development/integrating_rust_libraries
 title: 'Integrating Rust Libraries'
 doc_type: 'guide'

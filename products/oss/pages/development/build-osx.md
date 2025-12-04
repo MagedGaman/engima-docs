@@ -1,6 +1,6 @@
 ---
 description: 'Guide for building ClickHouse from source on macOS systems'
-sidebar_label: 'Build on macOS for macOS'
+sidebarTitle: 'Build on macOS for macOS'
 sidebar_position: 15
 slug: /development/build-osx
 title: 'Build on macOS for macOS'

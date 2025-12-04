@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Splunk'
+sidebarTitle: 'Splunk'
 slug: /integrations/audit-splunk
 keywords: ['clickhouse', 'Splunk', 'audit', 'cloud']
 description: 'Store ClickHouse Cloud audit logs into Splunk.'

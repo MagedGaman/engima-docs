@@ -1,11 +1,13 @@
 ---
 description: 'Install ClickHouse on MacOS'
 keywords: ['ClickHouse', 'install', 'MacOS']
-sidebar_label: 'MacOS'
+sidebarTitle: 'MacOS'
 slug: /install/macOS
 title: 'Install ClickHouse using Homebrew'
 hide_title: true
 doc_type: 'guide'
 ---
 
-<Markdown src="/snippets/_macos.md" />
+import Macos from '/snippets/_macos.mdx';
+
+<Macos />

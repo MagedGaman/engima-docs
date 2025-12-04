@@ -3,7 +3,7 @@ slug: /use-cases/observability/clickstack/migration/elastic/search
 title: 'Searching in ClickStack and Elastic'
 pagination_prev: null
 pagination_next: null
-sidebar_label: 'Search'
+sidebarTitle: 'Search'
 sidebar_position: 3
 description: 'Searching in ClickStack and Elastic'
 doc_type: 'guide'

@@ -5,9 +5,11 @@ input_format: false
 keywords: ['XML']
 output_format: true
 slug: /interfaces/formats/XML
-title: 'XML <Badge intent="success">Output</Badge>'
+title: 'XML'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

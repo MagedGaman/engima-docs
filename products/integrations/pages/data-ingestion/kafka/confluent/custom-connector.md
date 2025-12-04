@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Kafka Connector Sink on Confluent Platform'
+sidebarTitle: 'Kafka Connector Sink on Confluent Platform'
 sidebar_position: 3
 slug: /integrations/kafka/cloud/confluent/custom-connector
 description: 'Using ClickHouse Connector Sink with Kafka Connect and ClickHouse'
@@ -7,6 +7,8 @@ title: 'Integrating Confluent Cloud with ClickHouse'
 keywords: ['Confluent ClickHouse integration', 'ClickHouse Kafka connector', 'Kafka Connect ClickHouse sink', 'Confluent Platform ClickHouse', 'custom connector Confluent']
 doc_type: 'guide'
 ---
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 
 <div class='vimeo-container'>
@@ -55,7 +57,7 @@ Example:
 
 #### Gather your connection details [#gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 #### Configure the connector [#configure-the-connector]
 Navigate to `Connectors` -> `Add Connector` and use the following settings (note that the values are examples only):

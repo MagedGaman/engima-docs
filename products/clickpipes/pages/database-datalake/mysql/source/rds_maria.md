@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Amazon RDS MariaDB'
+sidebarTitle: 'Amazon RDS MariaDB'
 description: 'Step-by-step guide on how to set up Amazon RDS MariaDB as a source for ClickPipes'
 slug: /integrations/clickpipes/mysql/source/rds_maria
 title: 'RDS MariaDB source setup guide'

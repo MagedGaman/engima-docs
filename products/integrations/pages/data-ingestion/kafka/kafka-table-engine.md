@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Kafka Table Engine'
+sidebarTitle: 'Kafka Table Engine'
 sidebar_position: 5
 slug: /integrations/kafka/kafka-table-engine
 description: 'Using the Kafka Table Engine'

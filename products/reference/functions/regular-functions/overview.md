@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Regular Functions'
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 sidebar_position: 1
 slug: /sql-reference/functions/overview
 title: 'Regular Functions'

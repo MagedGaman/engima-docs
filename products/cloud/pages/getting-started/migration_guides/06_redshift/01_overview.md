@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 slug: /migrations/redshift-overview
 description: 'Migrating from Amazon Redshift to ClickHouse'
 keywords: ['Redshift']

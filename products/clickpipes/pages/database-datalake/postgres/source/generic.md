@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Generic Postgres'
+sidebarTitle: 'Generic Postgres'
 description: 'Set up any Postgres instance as a source for ClickPipes'
 slug: /integrations/clickpipes/postgres/source/generic
 title: 'Generic Postgres source setup guide'

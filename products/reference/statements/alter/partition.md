@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Partition'
-sidebar_label: 'PARTITION'
+sidebarTitle: 'PARTITION'
 sidebar_position: 38
 slug: /sql-reference/statements/alter/partition
 title: 'Manipulating Partitions and Parts'

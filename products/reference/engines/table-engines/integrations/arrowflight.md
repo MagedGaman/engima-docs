@@ -1,6 +1,6 @@
 ---
 description: 'The engine allows querying remote datasets via Apache Arrow Flight.'
-sidebar_label: 'ArrowFlight table engine'
+sidebarTitle: 'ArrowFlight table engine'
 sidebar_position: 186
 slug: /engines/table-engines/integrations/arrowflight
 title: 'ArrowFlight table engine'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the "other" functions category'
-sidebar_label: 'Other'
+sidebarTitle: 'Other'
 slug: /sql-reference/functions/other-functions
 title: 'Other functions'
 doc_type: 'reference'

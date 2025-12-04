@@ -1,7 +1,7 @@
 ---
 slug: /use-cases/observability/clickstack/alerts
 title: 'Search with ClickStack'
-sidebar_label: 'Alerts'
+sidebarTitle: 'Alerts'
 pagination_prev: null
 pagination_next: null
 description: 'Alerts with ClickStack'

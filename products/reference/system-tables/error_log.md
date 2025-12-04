@@ -7,7 +7,9 @@ title: 'system.error_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains history of error values from table `system.errors`, periodically flushed to disk.
 

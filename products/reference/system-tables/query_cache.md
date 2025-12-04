@@ -6,7 +6,9 @@ title: 'system.query_cache'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Shows the content of the [query cache](../query-cache.md).
 

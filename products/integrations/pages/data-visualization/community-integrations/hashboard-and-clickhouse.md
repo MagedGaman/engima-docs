@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Hashboard'
+sidebarTitle: 'Hashboard'
 sidebar_position: 132
 slug: /integrations/hashboard
 keywords: ['clickhouse', 'Hashboard', 'connect', 'integrate', 'ui', 'analytics']
@@ -9,6 +9,8 @@ doc_type: 'guide'
 ---
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+
+import GatherYourDetailsNative from '/snippets/_gather_your_details_native.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -29,7 +31,7 @@ This guide will walk you through the steps to connect Hashboard with your ClickH
 
 ### 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_native.md" />
+<GatherYourDetailsNative />
 
 ### 2. Add a new database connection in Hashboard [#2-add-a-new-database-connection-in-hashboard]
 

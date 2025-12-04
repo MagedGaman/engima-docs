@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Migration guide'
+sidebarTitle: 'Migration guide'
 slug: /migrations/snowflake
 description: 'Migrating from Snowflake to ClickHouse'
 keywords: ['Snowflake']

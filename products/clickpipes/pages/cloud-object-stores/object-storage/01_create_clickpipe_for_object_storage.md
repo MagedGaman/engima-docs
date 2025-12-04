@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Create your first object storage ClickPipe'
+sidebarTitle: 'Create your first object storage ClickPipe'
 description: 'Seamlessly connect your object storage to ClickHouse Cloud.'
 slug: /integrations/clickpipes/object-storage
 title: 'Creating your first object storage ClickPipe'

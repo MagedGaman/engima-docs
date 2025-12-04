@@ -7,7 +7,9 @@ title: 'system.stack_trace'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains stack traces of all server threads. Allows developers to introspect the server state.
 

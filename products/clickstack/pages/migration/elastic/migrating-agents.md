@@ -3,7 +3,7 @@ slug: /use-cases/observability/clickstack/migration/elastic/migrating-agents
 title: 'Migrating agents from Elastic'
 pagination_prev: null
 pagination_next: null
-sidebar_label: 'Migrating agents'
+sidebarTitle: 'Migrating agents'
 sidebar_position: 5
 description: 'Migrating agents from Elastic'
 show_related_blogs: true

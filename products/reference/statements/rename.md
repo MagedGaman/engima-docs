@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for RENAME Statement'
-sidebar_label: 'RENAME'
+sidebarTitle: 'RENAME'
 sidebar_position: 48
 slug: /sql-reference/statements/rename
 title: 'RENAME Statement'

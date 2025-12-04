@@ -1,7 +1,7 @@
 ---
 slug: /guides/sre/keeper/clickhouse-keeper
 
-sidebar_label: 'Configuring ClickHouse Keeper'
+sidebarTitle: 'Configuring ClickHouse Keeper'
 sidebar_position: 10
 keywords: ['Keeper', 'ZooKeeper', 'clickhouse-keeper']
 description: 'ClickHouse Keeper, or clickhouse-keeper, replaces ZooKeeper and provides replication and coordination.'
@@ -9,7 +9,9 @@ title: 'ClickHouse Keeper'
 doc_type: 'guide'
 ---
 
-<Markdown src="/snippets/_self_managed_only_automated.md"/>
+import SelfManagedOnlyAutomated from '/snippets/_self_managed_only_automated.mdx';
+
+<SelfManagedOnlyAutomated />
 
 ClickHouse Keeper provides the coordination system for data [replication](/engines/table-engines/mergetree-family/replication.md) and [distributed DDL](/sql-reference/distributed-ddl.md) queries execution. ClickHouse Keeper is compatible with ZooKeeper.
 

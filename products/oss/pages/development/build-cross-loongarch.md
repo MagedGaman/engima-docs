@@ -1,6 +1,6 @@
 ---
 description: 'Guide for building ClickHouse from source for the LoongArch64 architecture'
-sidebar_label: 'Build on Linux for LoongArch64'
+sidebarTitle: 'Build on Linux for LoongArch64'
 sidebar_position: 35
 slug: /development/build-cross-loongarch
 title: 'Build on Linux for LoongArch64'

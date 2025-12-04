@@ -1,7 +1,7 @@
 ---
 description: 'Page detailing the ClickHouse query analyzer'
 keywords: ['analyzer']
-sidebar_label: 'Analyzer'
+sidebarTitle: 'Analyzer'
 slug: /operations/analyzer
 title: 'Analyzer'
 doc_type: 'reference'

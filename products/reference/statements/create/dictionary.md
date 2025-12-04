@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Dictionary'
-sidebar_label: 'DICTIONARY'
+sidebarTitle: 'DICTIONARY'
 sidebar_position: 38
 slug: /sql-reference/statements/create/dictionary
 title: 'CREATE DICTIONARY'

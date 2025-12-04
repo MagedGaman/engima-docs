@@ -1,7 +1,7 @@
 ---
 description: 'Provides a read-only table-like interface to Apache Paimon tables in
   Amazon S3, Azure, HDFS or locally stored.'
-sidebar_label: 'paimon'
+sidebarTitle: 'paimon'
 sidebar_position: 90
 slug: /sql-reference/table-functions/paimon
 title: 'paimon'

@@ -1,7 +1,7 @@
 ---
 description: 'timeSeriesMetrics returns the metrics table used by table `db_name.time_series_table`
   whose table engine is the TimeSeries engine.'
-sidebar_label: 'timeSeriesMetrics'
+sidebarTitle: 'timeSeriesMetrics'
 sidebar_position: 145
 slug: /sql-reference/table-functions/timeSeriesMetrics
 title: 'timeSeriesMetrics'

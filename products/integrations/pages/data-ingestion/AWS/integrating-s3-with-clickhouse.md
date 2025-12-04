@@ -1,7 +1,7 @@
 ---
 slug: /integrations/s3
 sidebar_position: 1
-sidebar_label: 'Integrating S3 with ClickHouse'
+sidebarTitle: 'Integrating S3 with ClickHouse'
 title: 'Integrating S3 with ClickHouse'
 description: 'Page describing how to integrate S3 with ClickHouse'
 keywords: ['Amazon S3', 'object storage', 'cloud storage', 'data lake', 'S3 integration']
@@ -10,6 +10,8 @@ integration:
   - support_level: 'core'
   - category: 'data_ingestion'
 ---
+
+import S3AuthenticationAndBucket from '/snippets/_S3_authentication_and_bucket.mdx';
 
 You can insert data from S3 into ClickHouse and also use S3 as an export destination, thus allowing interaction with "Data Lake" architectures. Furthermore, S3 can provide "cold" storage tiers and assist with separating storage and compute. In the sections below we use the New York City taxi dataset to demonstrate the process of moving data between S3 and ClickHouse, as well as identifying key configuration parameters and providing hints on optimizing performance.
 
@@ -680,7 +682,7 @@ The following notes cover the implementation of S3 interactions with ClickHouse.
 
 If you need step-by-step instructions to create buckets and an IAM role, then expand **Create S3 buckets and an IAM role** and follow along:
 
-<Markdown src="/snippets/_S3_authentication_and_bucket.md" />
+<S3AuthenticationAndBucket />
 
 ### Configure ClickHouse to use the S3 bucket as a disk [#configure-clickhouse-to-use-the-s3-bucket-as-a-disk]
 The following example is based on a Linux Deb package installed as a service with default ClickHouse directories.

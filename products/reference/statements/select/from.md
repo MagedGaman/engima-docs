@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for FROM Clause'
-sidebar_label: 'FROM'
+sidebarTitle: 'FROM'
 slug: /sql-reference/statements/select/from
 title: 'FROM Clause'
 doc_type: 'reference'

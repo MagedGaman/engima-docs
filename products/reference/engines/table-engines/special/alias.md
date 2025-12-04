@@ -1,6 +1,6 @@
 ---
 description: 'The Alias table engine creates a transparent proxy to another table. All operations are forwarded to the target table while the alias itself stores no data.'
-sidebar_label: 'Alias'
+sidebarTitle: 'Alias'
 sidebar_position: 5
 slug: /engines/table-engines/special/alias
 title: 'Alias table engine'

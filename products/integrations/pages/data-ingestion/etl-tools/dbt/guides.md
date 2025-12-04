@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Guides'
+sidebarTitle: 'Guides'
 slug: /integrations/dbt/guides
 sidebar_position: 2
 description: 'Guides for using dbt with ClickHouse'

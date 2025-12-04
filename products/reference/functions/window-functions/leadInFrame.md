@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the leadInFrame window function'
-sidebar_label: 'leadInFrame'
+sidebarTitle: 'leadInFrame'
 sidebar_position: 10
 slug: /sql-reference/window-functions/leadInFrame
 title: 'leadInFrame'

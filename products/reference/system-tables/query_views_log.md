@@ -7,7 +7,9 @@ title: 'system.query_views_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 Contains information about the dependent views executed when running a query, for example, the view type or the execution time.
 

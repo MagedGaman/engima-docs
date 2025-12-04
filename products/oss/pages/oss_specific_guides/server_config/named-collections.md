@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Named collections'
-sidebar_label: 'Named collections'
+sidebarTitle: 'Named collections'
 sidebar_position: 69
 slug: /operations/named-collections
 title: 'Named collections'

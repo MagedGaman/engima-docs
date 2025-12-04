@@ -5,9 +5,11 @@ input_format: true
 keywords: ['JSONAsString']
 output_format: false
 slug: /interfaces/formats/JSONAsString
-title: 'JSONAsString <Badge intent="success">Input</Badge>'
+title: 'JSONAsString'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge>
 
 ## Description [#description]
 

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for the Prometheus protocol support in ClickHouse'
-sidebar_label: 'Prometheus protocols'
+sidebarTitle: 'Prometheus protocols'
 sidebar_position: 19
 slug: /interfaces/prometheus
 title: 'Prometheus Protocols'

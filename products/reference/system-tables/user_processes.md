@@ -7,7 +7,9 @@ title: 'system.user_processes'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 This system table can be used to get overview of memory usage and ProfileEvents of users.
 

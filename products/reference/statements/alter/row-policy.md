@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for ALTER ROW POLICY'
-sidebar_label: 'ROW POLICY'
+sidebarTitle: 'ROW POLICY'
 sidebar_position: 47
 slug: /sql-reference/statements/alter/row-policy
 title: 'ALTER ROW POLICY'

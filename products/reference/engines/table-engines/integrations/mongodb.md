@@ -1,7 +1,7 @@
 ---
 description: 'MongoDB engine is read-only table engine which allows to read data from
   a remote collection.'
-sidebar_label: 'MongoDB table engine'
+sidebarTitle: 'MongoDB table engine'
 sidebar_position: 135
 slug: /engines/table-engines/integrations/mongodb
 title: 'MongoDB table engine'

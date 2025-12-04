@@ -6,7 +6,9 @@ title: 'system.zookeeper_connection_log'
 doc_type: 'reference'
 ---
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
+<SystemTableCloud />
 
 The 'system.zookeeper_connection_log' table shows the history of ZooKeeper connections (including auxiliary ZooKeepers). Each row shows information about one event regarding connections.
 

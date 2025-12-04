@@ -5,9 +5,11 @@ input_format: true
 keywords: ['BSONEachRow']
 output_format: true
 slug: /interfaces/formats/BSONEachRow
-title: 'BSONEachRow <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'BSONEachRow'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

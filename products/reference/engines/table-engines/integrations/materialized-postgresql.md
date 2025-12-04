@@ -1,7 +1,7 @@
 ---
 description: 'Creates a ClickHouse table with an initial data dump of a PostgreSQL
   table and starts the replication process.'
-sidebar_label: 'MaterializedPostgreSQL table engine'
+sidebarTitle: 'MaterializedPostgreSQL table engine'
 sidebar_position: 130
 slug: /engines/table-engines/integrations/materialized-postgresql
 title: 'MaterializedPostgreSQL table engine'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for ALTER'
-sidebar_label: 'ALTER'
+sidebarTitle: 'ALTER'
 sidebar_position: 35
 slug: /sql-reference/statements/alter/
 title: 'ALTER'

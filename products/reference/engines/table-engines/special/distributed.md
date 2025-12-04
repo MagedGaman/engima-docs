@@ -3,7 +3,7 @@ description: 'Tables with Distributed engine do not store any data of their own,
   allow distributed query processing on multiple servers. Reading is automatically
   parallelized. During a read, the table indexes on remote servers are used, if there
   are any.'
-sidebar_label: 'Distributed'
+sidebarTitle: 'Distributed'
 sidebar_position: 10
 slug: /engines/table-engines/special/distributed
 title: 'Distributed table engine'

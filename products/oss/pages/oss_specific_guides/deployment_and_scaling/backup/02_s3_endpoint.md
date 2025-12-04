@@ -1,17 +1,19 @@
 ---
 description: 'Overview of ClickHouse backup and restore'
-sidebar_label: 'S3 endpoint'
+sidebarTitle: 'S3 endpoint'
 slug: /operations/backup/s3_endpoint
 title: 'Backup and restore to/from an S3 endpoint'
 doc_type: 'guide'
 ---
+
+import Syntax from '/snippets/_syntax.mdx';
 
 This article covers backing up or restoring backups to/from an S3 bucket
 via an S3 endpoint.
 
 ## Syntax [#syntax]
 
-<Markdown src="/snippets/_syntax.md" />
+<Syntax />
 
 ## Usage example [#usage-examples]
 

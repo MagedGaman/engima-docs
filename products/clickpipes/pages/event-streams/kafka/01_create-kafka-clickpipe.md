@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Create your first Kafka ClickPipe'
+sidebarTitle: 'Create your first Kafka ClickPipe'
 description: 'Step-by-step guide to creating your first Kafka ClickPipe.'
 slug: /integrations/clickpipes/kafka/create-your-first-kafka-clickpipe
 sidebar_position: 1

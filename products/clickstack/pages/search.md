@@ -1,13 +1,15 @@
 ---
 slug: /use-cases/observability/clickstack/search
 title: 'Search with ClickStack'
-sidebar_label: 'Search'
+sidebarTitle: 'Search'
 pagination_prev: null
 pagination_next: null
 description: 'Search with ClickStack'
 doc_type: 'guide'
 keywords: ['clickstack', 'search', 'logs', 'observability', 'full-text search']
 ---
+
+import ClickstackTagging from '/snippets/_clickstack_tagging.mdx';
 
 ClickStack allows you to do a full-text search on your events (logs and traces). You can get started searching by just typing keywords that match your events. For example, if your log contains "Error", you can find it by just typing in "Error" in the search bar.
 
@@ -79,4 +81,4 @@ For more information on setting up and configuring alerts, see the [Alerts docum
 
 ### Tagging [#tagging]
 
-<Markdown src="/snippets/_clickstack_tagging.mdx"/>
+<ClickstackTagging />

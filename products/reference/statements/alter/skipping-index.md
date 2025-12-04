@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Manipulating Data Skipping Indices'
-sidebar_label: 'INDEX'
+sidebarTitle: 'INDEX'
 sidebar_position: 42
 slug: /sql-reference/statements/alter/skipping-index
 title: 'Manipulating Data Skipping Indices'

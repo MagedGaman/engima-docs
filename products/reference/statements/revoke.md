@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for REVOKE Statement'
-sidebar_label: 'REVOKE'
+sidebarTitle: 'REVOKE'
 sidebar_position: 39
 slug: /sql-reference/statements/revoke
 title: 'REVOKE Statement'

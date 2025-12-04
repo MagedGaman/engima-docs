@@ -3,7 +3,7 @@ slug: /cloud/get-started/cloud/use-cases/AI_ML/agent_facing_analytics
 title: 'Agent facing analytics'
 description: 'Build agent-facing analytics systems with ClickHouse Cloud for AI agents and autonomous systems requiring real-time data access'
 keywords: ['use cases', 'Machine Learning', 'Generative AI', 'agent facing analytics', 'agents']
-sidebar_label: 'Agent facing analytics'
+sidebarTitle: 'Agent facing analytics'
 doc_type: 'guide'
 ---
 

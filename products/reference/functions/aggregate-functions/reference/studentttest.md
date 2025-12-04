@@ -1,6 +1,6 @@
 ---
 description: 'Applies the student t-test to samples from two populations.'
-sidebar_label: 'studentTTest'
+sidebarTitle: 'studentTTest'
 sidebar_position: 194
 slug: /sql-reference/aggregate-functions/reference/studentttest
 title: 'studentTTest'

@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for mathematical functions'
-sidebar_label: 'Mathematical'
+sidebarTitle: 'Mathematical'
 slug: /sql-reference/functions/math-functions
 title: 'Mathematical functions'
 doc_type: 'reference'

@@ -10,6 +10,7 @@ keywords: ['ClickStack Helm chart', 'Helm ClickHouse deployment', 'HyperDX Helm 
 ---
 
 import BetaBadge from '/snippets/components/Badges/BetaBadge.jsx'
+import JsonSupport from '/snippets/_json_support.mdx';
 
 The helm chart for HyperDX can be found [here](https://github.com/hyperdxio/helm-charts) and is the **recommended** method for production deployments.
 
@@ -301,7 +302,7 @@ helm install my-hyperdx hyperdx/hdx-oss-v2 --debug --dry-run
 kubectl get pods -l app.kubernetes.io/name=hdx-oss-v2
 ```
 
-<Markdown src="/snippets/_json_support.md"/>
+<JsonSupport />
 
 Users can set these environment variables via either parameters or the `values.yaml` e.g.
 

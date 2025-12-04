@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Planetscale for Postgres'
+sidebarTitle: 'Planetscale for Postgres'
 description: 'Set up Planetscale for Postgres as a source for ClickPipes'
 slug: /integrations/clickpipes/postgres/source/planetscale
 title: 'PlanetScale for Postgres source setup guide'

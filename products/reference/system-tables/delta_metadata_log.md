@@ -7,6 +7,8 @@ title: 'system.delta_lake_metadata_log'
 doc_type: 'reference'
 ---
 
+import SystemTableCloud from '/snippets/_system_table_cloud.mdx';
+
 The `system.delta_lake_metadata_log` table records metadata access and parsing events for Delta Lake tables read by ClickHouse. It provides detailed information about each metadata file, which is useful for debugging, auditing, and understanding Delta table structure evolution.
 
 ## Purpose [#purpose]
@@ -27,7 +29,7 @@ This table is primarily intended for debugging purposes.
 | `file_path`    | [String](../../sql-reference/data-types/string.md)    | Path to the root metadata JSON file.             |
 | `content`      | [String](../../sql-reference/data-types/string.md)    | Content in JSON format (raw metadata from .json).       |
 
-<Markdown src="/snippets/_system_table_cloud.md"/>
+<SystemTableCloud />
 
 ## Controlling log verbosity [#controlling-log-verbosity]
 

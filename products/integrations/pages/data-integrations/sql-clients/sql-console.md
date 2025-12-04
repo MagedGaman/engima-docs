@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'SQL Console'
+sidebarTitle: 'SQL Console'
 sidebar_position: 1
 title: 'SQL Console'
 slug: /integrations/sql-clients/sql-console

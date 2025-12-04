@@ -1,6 +1,6 @@
 ---
 description: Documentation for QUALIFY Clause
-sidebar_label: QUALIFY
+sidebarTitle: QUALIFY
 slug: /sql-reference/statements/select/qualify
 title: QUALIFY clause
 doc_type: reference

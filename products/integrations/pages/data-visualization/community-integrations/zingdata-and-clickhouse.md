@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Zing Data'
+sidebarTitle: 'Zing Data'
 sidebar_position: 206
 slug: /integrations/zingdata
 keywords: ['Zing Data']
@@ -11,13 +11,15 @@ doc_type: 'guide'
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
 
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
+
 <CommunityMaintainedBadge/>
 
 <a href="https://www.zingdata.com/" target="_blank">Zing Data</a> is a data exploration and visualization platform. Zing Data connects to ClickHouse using the JS driver provided by ClickHouse.
 
 ## How to connect [#how-to-connect]
 1. Gather your connection details.
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 2. Download or visit Zing Data
 

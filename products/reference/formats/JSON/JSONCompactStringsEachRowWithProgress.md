@@ -5,9 +5,11 @@ input_format: true
 keywords: ['JSONCompactStringsEachRowWithProgress']
 output_format: true
 slug: /interfaces/formats/JSONCompactStringsEachRowWithProgress
-title: 'JSONCompactStringsEachRowWithProgress <Badge intent="success">Output</Badge>'
+title: 'JSONCompactStringsEachRowWithProgress'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Explo'
+sidebarTitle: 'Explo'
 sidebar_position: 131
 slug: /integrations/explo
 keywords: ['clickhouse', 'Explo', 'connect', 'integrate', 'ui']
@@ -12,6 +12,8 @@ integration:
 ---
 
 import CommunityMaintainedBadge from '/snippets/components/Badges/CommunityMaintainedBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <CommunityMaintainedBadge/>
 
@@ -29,7 +31,7 @@ If you do not have a dataset to work with you can add one of the examples.  This
 </Tip>
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2.  Connect Explo to ClickHouse [#2--connect-explo-to-clickhouse]
 

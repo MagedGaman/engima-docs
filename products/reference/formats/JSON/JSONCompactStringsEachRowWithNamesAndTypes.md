@@ -2,9 +2,11 @@
 description: 'Documentation for the JSONCompactStringsEachRowWithNamesAndTypes format'
 keywords: ['JSONCompactStringsEachRowWithNamesAndTypes']
 slug: /interfaces/formats/JSONCompactStringsEachRowWithNamesAndTypes
-title: 'JSONCompactStringsEachRowWithNamesAndTypes <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'JSONCompactStringsEachRowWithNamesAndTypes'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

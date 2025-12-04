@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Files'
-sidebar_label: 'Files'
+sidebarTitle: 'Files'
 slug: /sql-reference/functions/files
 title: 'Files'
 doc_type: 'reference'

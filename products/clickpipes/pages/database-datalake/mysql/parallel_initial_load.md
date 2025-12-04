@@ -2,7 +2,7 @@
 title: 'Parallel Snapshot In The MySQL ClickPipe'
 description: 'Doc for explaining parallel snapshot in the MySQL ClickPipe'
 slug: /integrations/clickpipes/mysql/parallel_initial_load
-sidebar_label: 'How parallel snapshot works'
+sidebarTitle: 'How parallel snapshot works'
 doc_type: 'guide'
 keywords: ['clickpipes', 'mysql', 'cdc', 'data ingestion', 'real-time sync']
 ---

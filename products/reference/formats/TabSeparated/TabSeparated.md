@@ -5,9 +5,11 @@ input_format: true
 keywords: ['TabSeparated', 'TSV']
 output_format: true
 slug: /interfaces/formats/TabSeparated
-title: 'TabSeparated <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `TSV`</Badge>'
+title: 'TabSeparated'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge> <Badge intent="info">Alias: `TSV`</Badge>
 
 ## Description [#description]
 

@@ -5,9 +5,11 @@ input_format: true
 keywords: ['CSVWithNames']
 output_format: true
 slug: /interfaces/formats/CSVWithNames
-title: 'CSVWithNames <Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>'
+title: 'CSVWithNames'
 doc_type: 'reference'
 ---
+
+<Badge intent="success">Input</Badge> <Badge intent="success">Output</Badge>
 
 ## Description [#description]
 

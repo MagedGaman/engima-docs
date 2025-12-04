@@ -1,6 +1,6 @@
 ---
 slug: /cloud/data-resiliency
-sidebar_label: 'Data resiliency'
+sidebarTitle: 'Data resiliency'
 title: 'Disaster recovery'
 description: 'This guide provides an overview of disaster recovery.'
 doc_type: 'reference'

@@ -1,7 +1,7 @@
 ---
 description: 'This engine provides a read-only integration with existing Delta Lake
   tables in Amazon S3.'
-sidebar_label: 'DeltaLake table engine'
+sidebarTitle: 'DeltaLake table engine'
 sidebar_position: 40
 slug: /engines/table-engines/integrations/deltalake
 title: 'DeltaLake table engine'

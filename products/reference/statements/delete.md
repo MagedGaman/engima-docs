@@ -1,7 +1,7 @@
 ---
 description: 'Lightweight deletes simplify the process of deleting data from the database.'
 keywords: ['delete']
-sidebar_label: 'DELETE'
+sidebarTitle: 'DELETE'
 sidebar_position: 36
 slug: /sql-reference/statements/delete
 title: 'The Lightweight DELETE Statement'

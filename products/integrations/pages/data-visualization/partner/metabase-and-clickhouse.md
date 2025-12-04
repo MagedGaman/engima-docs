@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Metabase'
+sidebarTitle: 'Metabase'
 sidebar_position: 131
 slug: /integrations/metabase
 keywords: ['Metabase']
@@ -14,6 +14,8 @@ integration:
 ---
 
 import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
+
+import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 
 <PartnerBadge/>
 
@@ -31,7 +33,7 @@ If you do not have a dataset to work with you can add one of the examples.  This
 
 ## 1. Gather your connection details [#1-gather-your-connection-details]
 
-<Markdown src="/snippets/_gather_your_details_http.mdx" />
+<GatherYourDetailsHttp />
 
 ## 2.  Download the ClickHouse plugin for Metabase [#2--download-the-clickhouse-plugin-for-metabase]
 

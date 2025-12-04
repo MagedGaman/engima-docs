@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Overview'
+sidebarTitle: 'Overview'
 slug: /integrations/azure-data-factory/overview
 description: 'Bringing Azure Data into ClickHouse - Overview'
 keywords: ['azure data factory', 'azure', 'microsoft', 'data']

@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Lifecycle of a MySQL ClickPipe'
+sidebarTitle: 'Lifecycle of a MySQL ClickPipe'
 description: 'Various pipe statuses and their meanings'
 slug: /integrations/clickpipes/mysql/lifecycle
 title: 'Lifecycle of a MySQL ClickPipe'

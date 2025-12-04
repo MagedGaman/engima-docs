@@ -2,12 +2,14 @@
 description: 'This section contains descriptions of server settings i.e settings
   which cannot be changed at the session or query level.'
 keywords: ['global server settings']
-sidebar_label: 'Server Settings'
+sidebarTitle: 'Server Settings'
 sidebar_position: 57
 slug: /operations/server-configuration-parameters/settings
 title: 'Server settings'
 doc_type: 'reference'
 ---
+
+import SystemLogParameters from '/snippets/products/reference/settings/server-settings/system-log-parameters.mdx';
 
 This section contains descriptions of server settings.
 These are settings which cannot be changed at the session or query level.
@@ -198,7 +200,7 @@ Period in seconds for updating heavy asynchronous metrics.
 
 Settings for the [asynchronous_insert_log](/operations/system-tables/asynchronous_insert_log) system table for logging async inserts.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 **Example**
 
@@ -251,7 +253,7 @@ To disable `asynchronous_metric_log` setting, you should create the following fi
 <clickhouse><asynchronous_metric_log remove="1" /></clickhouse>
 ```
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 ## asynchronous_metrics_enable_heavy_metrics [#asynchronous_metrics_enable_heavy_metrics] 
 
@@ -400,7 +402,7 @@ The maximum number of threads that will be used for constantly executing some li
 
 Settings for the [backup_log](../../operations/system-tables/backup_log.md) system table for logging `BACKUP` and `RESTORE` operations.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 **Example**
 
@@ -492,7 +494,7 @@ bcrypt's computational overhead at higher work factors.
 
 Settings for the [`blob_storage_log`](../system-tables/blob_storage_log.md) system table.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 Example:
 
@@ -890,7 +892,7 @@ Drop unexpected tables from Replicated databases instead of moving them to a sep
 
 Setting for the 'dead_letter_queue' system table.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 The default settings are:
 
@@ -1339,7 +1341,7 @@ To disable `error_log` setting, you should create the following file `/etc/click
 </clickhouse>
 ```
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 ## format_parsing_thread_pool_queue_size [#format_parsing_thread_pool_queue_size] 
 
@@ -3190,7 +3192,7 @@ To disable `metric_log` setting, you should create the following file `/etc/clic
 </clickhouse>
 ```
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 ## min_os_cpu_wait_time_ratio_to_drop_connection [#min_os_cpu_wait_time_ratio_to_drop_connection] 
 
@@ -3333,7 +3335,7 @@ Keys for server/client settings:
 
 Settings for the [`opentelemetry_span_log`](../system-tables/opentelemetry_span_log.md) system table.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 Example:
 
@@ -3455,7 +3457,7 @@ Logging events that are associated with [MergeTree](../../engines/table-engines/
 
 Queries are logged in the [system.part_log](/operations/system-tables/part_log) table, not in a separate file. You can configure the name of this table in the `table` parameter (see below).
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 **Example**
 
@@ -3616,7 +3618,7 @@ Disabled by default to avoid possible security issues which can be caused by bug
 
 Settings for the [`processors_profile_log`](../system-tables/processors_profile_log.md) system table.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 The default settings are:
 
@@ -3875,7 +3877,7 @@ Setting for logging queries received with the [log_queries=1](../../operations/s
 
 Queries are logged in the [system.query_log](/operations/system-tables/query_log) table, not in a separate file. You can change the name of the table in the `table` parameter (see below).
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 If the table does not exist, ClickHouse will create it. If the structure of the query log changed when the ClickHouse server was updated, the table with the old structure is renamed, and a new table is created automatically.
 
@@ -3960,7 +3962,7 @@ To disable `query_metric_log` setting, you should create the following file `/et
 </clickhouse>
 ```
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 ## query_thread_log [#query_thread_log] 
 
@@ -3968,7 +3970,7 @@ Setting for logging threads of queries received with the [log_query_threads=1](/
 
 Queries are logged in the [system.query_thread_log](/operations/system-tables/query_thread_log) table, not in a separate file. You can change the name of the table in the `table` parameter (see below).
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 If the table does not exist, ClickHouse will create it. If the structure of the query thread log changed when the ClickHouse server was updated, the table with the old structure is renamed, and a new table is created automatically.
 
@@ -3993,7 +3995,7 @@ Setting for logging views (live, materialized etc) dependant of queries received
 
 Queries are logged in the [system.query_views_log](/operations/system-tables/query_views_log) table, not in a separate file. You can change the name of the table in the `table` parameter (see below).
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 If the table does not exist, ClickHouse will create it. If the structure of the query views log changed when the ClickHouse server was updated, the table with the old structure is renamed, and a new table is created automatically.
 
@@ -4152,7 +4154,7 @@ Disable streaming in S3Queue even if the table is created and there are attached
 
 Settings for the `s3queue_log` system table.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 The default settings are:
 
@@ -4595,7 +4597,7 @@ The size of the protected queue (in case of SLRU policy) in the text index posti
 
 Settings for the [text_log](/operations/system-tables/text_log) system table for logging text messages.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 Additionally:
 
@@ -4849,7 +4851,7 @@ Possible values:
 
 Settings for the [trace_log](/operations/system-tables/trace_log) system table operation.
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters />
 
 The default server configuration file `config.xml` contains the following settings section:
 
@@ -5231,7 +5233,7 @@ Settings for the [`zookeeper_log`](/operations/system-tables/zookeeper_log) syst
 
 The following settings can be configured by sub-tags:
 
-<Markdown src="/products/reference/settings/server-settings/_snippets/_system-log-parameters.md"/>"
+<SystemLogParameters/>
 
 **Example**
 

@@ -1,6 +1,6 @@
 ---
 description: 'Allows ClickHouse to connect to external databases via JDBC.'
-sidebar_label: 'JDBC table engine'
+sidebarTitle: 'JDBC table engine'
 sidebar_position: 100
 slug: /engines/table-engines/integrations/jdbc
 title: 'JDBC table engine'

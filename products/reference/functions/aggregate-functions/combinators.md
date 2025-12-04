@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for Aggregate Function Combinators'
-sidebar_label: 'Combinators'
+sidebarTitle: 'Combinators'
 sidebar_position: 37
 slug: /sql-reference/aggregate-functions/combinators
 title: 'Aggregate Function Combinators'

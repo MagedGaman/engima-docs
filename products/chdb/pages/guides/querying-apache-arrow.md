@@ -1,6 +1,6 @@
 ---
 title: 'How to query Apache Arrow with chDB'
-sidebar_label: 'Querying Apache Arrow'
+sidebarTitle: 'Querying Apache Arrow'
 slug: /chdb/guides/apache-arrow
 description: 'In this guide, we will learn how to query Apache Arrow tables with chDB'
 keywords: ['chdb', 'Apache Arrow']

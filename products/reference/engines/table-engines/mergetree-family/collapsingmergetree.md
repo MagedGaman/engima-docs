@@ -2,7 +2,7 @@
 description: 'Inherits from MergeTree but adds logic for collapsing rows during the
   merge process.'
 keywords: ['updates', 'collapsing']
-sidebar_label: 'CollapsingMergeTree'
+sidebarTitle: 'CollapsingMergeTree'
 sidebar_position: 70
 slug: /engines/table-engines/mergetree-family/collapsingmergetree
 title: 'CollapsingMergeTree table engine'

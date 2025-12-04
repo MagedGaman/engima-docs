@@ -1,6 +1,6 @@
 ---
 description: 'Documentation for MySQL Table Engine'
-sidebar_label: 'MySQL table engine'
+sidebarTitle: 'MySQL table engine'
 sidebar_position: 138
 slug: /engines/table-engines/integrations/mysql
 title: 'MySQL table engine'

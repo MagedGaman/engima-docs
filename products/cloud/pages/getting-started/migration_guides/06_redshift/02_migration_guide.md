@@ -7,4 +7,6 @@ title: 'Amazon Redshift to ClickHouse migration guide'
 doc_type: 'guide'
 ---
 
-<Markdown src="/snippets/_redshift_migration_guide.md"/>
+import RedshiftMigrationGuide from '/snippets/_redshift_migration_guide.mdx';
+
+<RedshiftMigrationGuide />

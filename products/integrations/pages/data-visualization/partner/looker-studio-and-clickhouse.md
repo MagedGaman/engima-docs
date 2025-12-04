@@ -1,5 +1,5 @@
 ---
-sidebar_label: 'Looker Studio'
+sidebarTitle: 'Looker Studio'
 slug: /integrations/lookerstudio
 keywords: ['clickhouse', 'looker', 'studio', 'connect', 'mysql', 'integrate', 'ui']
 description: 'Looker Studio, formerly Google Data Studio, is an online tool for converting data into customizable informative reports and dashboards.'
@@ -12,17 +12,20 @@ integration:
 
 import PartnerBadge from '/snippets/components/Badges/PartnerBadge.jsx'
 
+import ClickhouseMysqlCloudSetup from '/snippets/_clickhouse_mysql_cloud_setup.mdx';
+import ClickhouseMysqlOnPremiseSetup from '/snippets/_clickhouse_mysql_on_premise_setup.mdx';
+
 <PartnerBadge/>
 
 Looker Studio can connect to ClickHouse via the MySQL interface using the official Google MySQL data source.
 
 ## ClickHouse Cloud setup [#clickhouse-cloud-setup]
 
-<Markdown src="/snippets/_clickhouse_mysql_cloud_setup.mdx" />
+<ClickhouseMysqlCloudSetup />
 
 ## On-premise ClickHouse server setup [#on-premise-clickhouse-server-setup]
 
-<Markdown src="/snippets/_clickhouse_mysql_on_premise_setup.mdx" />
+<ClickhouseMysqlOnPremiseSetup />
 
 ## Connecting Looker Studio to ClickHouse [#connecting-looker-studio-to-clickhouse]
 
