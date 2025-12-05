@@ -36,4 +36,4 @@ const Footer = ({ children, className, ...props }) => (
 
 CUICard.Footer = Footer;
 
-export default CUICard;
+export { CUICard };

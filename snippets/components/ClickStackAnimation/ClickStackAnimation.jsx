@@ -1,5 +1,3 @@
-
-
 export const ClickStackAnimation = ({ className, ...props }) => {
   return (
     <div className={`clickstack-animation-wrapper ${className || ''}`} style={{ height: '537px' }} {...props}>
