@@ -1,12 +1,12 @@
-import CUICard from '/snippets/components/CUICard/CUICard.jsx';
-
-const useDarkMode = () => {
+export const IntegrationGrid = () => {
+  // Custom hook to detect dark mode
+  function useDarkMode() {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
     const checkDarkMode = () => {
       const theme = document.documentElement.getAttribute('data-theme') ||
-        document.body.getAttribute('data-theme');
+                    document.body.getAttribute('data-theme');
       if (theme === 'dark') {
         setIsDark(true);
         return;
@@ -17,7 +17,7 @@ const useDarkMode = () => {
       }
 
       if (document.documentElement.classList.contains('dark') ||
-        document.body.classList.contains('dark')) {
+          document.body.classList.contains('dark')) {
         setIsDark(true);
         return;
       }
@@ -47,10 +47,88 @@ const useDarkMode = () => {
     };
   }, []);
 
-  return isDark;
-};
+    return isDark;
+  }
 
-const IntegrationCard = ({ integration }) => {
+  function getTierIcon(tier, withMargin = false) {
+    const style = withMargin ? { marginRight: '6px' } : {};
+
+    switch (tier) {
+      case 'core':
+        return (
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
+            <path d="M1.30762 1.39073C1.30762 1.3103 1.37465 1.22986 1.46849 1.22986H2.64824C2.72868 1.22986 2.80912 1.29689 2.80912 1.39073V14.4886C2.80912 14.5691 2.74209 14.6495 2.64824 14.6495H1.46849C1.38805 14.6495 1.30762 14.5825 1.30762 14.4886V1.39073Z" fill="currentColor" />
+            <path d="M4.2832 1.39073C4.2832 1.3103 4.35023 1.22986 4.44408 1.22986H5.62383C5.70427 1.22986 5.7847 1.29689 5.7847 1.39073V14.4886C5.7847 14.5691 5.71767 14.6495 5.62383 14.6495H4.44408C4.36364 14.6495 4.2832 14.5825 4.2832 14.4886V1.39073Z" fill="currentColor" />
+            <path d="M7.25977 1.39073C7.25977 1.3103 7.3268 1.22986 7.42064 1.22986H8.60039C8.68083 1.22986 8.76127 1.29689 8.76127 1.39073V14.4886C8.76127 14.5691 8.69423 14.6495 8.60039 14.6495H7.42064C7.3402 14.6495 7.25977 14.5825 7.25977 14.4886V1.39073Z" fill="currentColor" />
+            <path d="M10.2354 1.39073C10.2354 1.3103 10.3024 1.22986 10.3962 1.22986H11.576C11.6564 1.22986 11.7369 1.29689 11.7369 1.39073V14.4886C11.7369 14.5691 11.6698 14.6495 11.576 14.6495H10.3962C10.3158 14.6495 10.2354 14.5825 10.2354 14.4886V1.39073Z" fill="currentColor" />
+            <path d="M13.2256 6.6057C13.2256 6.52526 13.2926 6.44482 13.3865 6.44482H14.5662C14.6466 6.44482 14.7271 6.51186 14.7271 6.6057V9.27354C14.7271 9.35398 14.6601 9.43442 14.5662 9.43442H13.3865C13.306 9.43442 13.2256 9.36739 13.2256 9.27354V6.6057Z" fill="currentColor" />
+          </svg>
+        );
+      case 'partner':
+        return (
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
+            <polyline points="12.5 9.5 10 12 6 11 2.5 8.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+            <polyline points="4.54 4.41 8 3.5 11.46 4.41" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+            <path d="M2.15,3.78 L0.55,6.95 A0.5,0.5 0,0,0 0.77,7.62 L2.5,8.5 L4.54,4.41 L2.82,3.55 A0.5,0.5 0,0,0 2.15,3.78 Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+            <path d="M13.5,8.5 L15.23,7.62 A0.5,0.5 0,0,0 15.45,6.95 L13.85,3.78 A0.5,0.5 0,0,0 13.18,3.55 L11.46,4.41 Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+            <path d="M11.5,4.5 L9,4.5 L6.15,7.27 A0.5,0.5 0,0,0 6.24,8.05 C7.33,8.74 8.81,8.72 10,7.5 L12.5,9.5 L13.5,8.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+            <polyline points="7.75 13.5 5.15 12.85 3.5 11.67" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"/>
+          </svg>
+        );
+      case 'community':
+        return (
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
+            <path fillRule="evenodd" clipRule="evenodd" d="M6.22168 4.44463V4.44463C6.22168 3.46263 7.01768 2.66663 7.99968 2.66663V2.66663C8.98168 2.66663 9.77768 3.46263 9.77768 4.44463V4.44463C9.77768 5.42663 8.98168 6.22263 7.99968 6.22263V6.22263C7.01768 6.22196 6.22168 5.42596 6.22168 4.44463Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M1.91309 11.5553V11.5553C1.91309 10.5733 2.70909 9.77734 3.69109 9.77734V9.77734C4.67309 9.77734 5.46909 10.5733 5.46909 11.5553V11.5553C5.46842 12.5373 4.67309 13.3333 3.69109 13.3333V13.3333C2.70909 13.3333 1.91309 12.5373 1.91309 11.5553Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <path fillRule="evenodd" clipRule="evenodd" d="M10.5322 11.5553V11.5553C10.5322 10.5733 11.3282 9.77734 12.3102 9.77734V9.77734C13.2922 9.77734 14.0882 10.5733 14.0882 11.5553V11.5553C14.0882 12.5373 13.2922 13.3333 12.3102 13.3333V13.3333C11.3276 13.3333 10.5322 12.5373 10.5322 11.5553H10.5322Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M10.5939 11.1134H5.40723" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M8.95996 5.94006L11.54 9.96006" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4.45996 9.96006L7.03996 5.94006" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  }
+
+  function getProperCapitalization(text) {
+    const specialCases = {
+      'ai/ml': 'AI/ML',
+      'clickpipes': 'ClickPipes',
+      'data ingestion': 'Data ingestion',
+      'data integration': 'Data integration',
+      'data management': 'Data management',
+      'data visualization': 'Data visualization',
+      'deployment method': 'Deployment method',
+      'language client': 'Language client',
+      'security governance': 'Security governance',
+      'sql client': 'SQL client'
+    };
+
+    const lowerText = text.toLowerCase();
+    if (specialCases[lowerText]) {
+      return specialCases[lowerText];
+    }
+
+    return text.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
+
+  function getSectionDescription(type) {
+    const descriptions = {
+      'ClickPipes': 'ClickPipes is an integration engine that makes ingesting massive volumes of data from a diverse set of sources as simple as clicking a few buttons.',
+      'Data ingestion': 'Streamline your data pipelines with ClickHouse! Seamless integrations ensure efficient ingestion, optimizing real-time analytics.',
+      'Data visualization': 'Illuminate your data stories! ClickHouse integrations enhance visualization, making insights more vivid & actionable.',
+      'SQL client': 'Access and query ClickHouse databases using familiar SQL client tools and interfaces.',
+      'Language client': 'Code in your comfort zone! ClickHouse\'s language client integrations make data access fluent across multiple programming languages.',
+      'AI/ML': 'Leverage ClickHouse for machine learning and AI workloads with integrated ML tools and frameworks.',
+      'Data management': 'Manage, monitor, and optimize your ClickHouse data with specialized management tools.',
+      'Data integration': 'Integrate ClickHouse with your existing data infrastructure and workflows.',
+      'Security governance': 'Implement security and governance frameworks for your ClickHouse environment.'
+    };
+    return descriptions[type] || 'Integrate ClickHouse with specialized tools and services.';
+  }
+
+  function IntegrationCard({ integration }) {
   const isDark = useDarkMode();
 
   const getNavigationLink = (docsLink, slug) => {
@@ -78,42 +156,52 @@ const IntegrationCard = ({ integration }) => {
   return (
     <a
       href={linkTo}
-      className="integration-card-link"
+      className="block no-underline integration-card-link"
+      style={{ textDecoration: 'none' }}
     >
-      <CUICard>
+      <div
+        className="relative flex min-h-[120px] flex-col items-center justify-center rounded-xl transition-all duration-300 p-5 cursor-pointer integration-card"
+        style={{
+          aspectRatio: '1 / 1',
+          backgroundColor: isDark ? 'rgba(65, 65, 65, 0.5)' : '#fff',
+          border: isDark ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e0e0e0',
+          boxShadow: isDark ? '0 1px 3px 0 rgba(0, 0, 0, 0.2)' : '0 1px 3px 0 rgba(0, 0, 0, 0.1)'
+        }}
+      >
         {integration.integration_tier && integration.integration_tier !== 'community' && (
-          <div className="integration-tier-icon">
+          <div className="absolute top-3 right-3 opacity-70">
             {getTierIcon(integration.integration_tier)}
           </div>
         )}
-        <CUICard.Body>
-          <CUICard.Header>
+        <div className="w-full flex flex-col items-center justify-center gap-3">
+          <div className="w-full flex items-center justify-center mb-3">
             <img
               src={getLogoSrc()}
               alt={`${integration.integration_title || integration.slug} logo`}
-              className="integration-card-image"
+              className="object-contain"
+              style={{ width: '64px', height: '64px' }}
             />
-          </CUICard.Header>
-          <CUICard.Footer>
+          </div>
+          <div className="w-full text-center text-sm font-medium" style={{ color: '#000', marginTop: '8px' }}>
             {integration.integration_title}
-          </CUICard.Footer>
-        </CUICard.Body>
-      </CUICard>
+          </div>
+        </div>
+      </div>
     </a>
-  );
-};
+    );
+  }
 
-const IntegrationCards = ({ integrations }) => {
+  function IntegrationCards({ integrations }) {
   return (
-    <div className="integration-cards-grid">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6 my-8">
       {integrations.map((integration, index) => (
         <IntegrationCard key={`${integration.slug}-${integration.integration_title || index}`} integration={integration} />
       ))}
-    </div>
-  );
-};
+      </div>
+    );
+  }
 
-const transformCMSData = (cmsData) => {
+  function transformCMSData(cmsData) {
   const categoryMapping = {
     'AI_ML': 'AI/ML',
     'CLICKPIPES': 'ClickPipes',
@@ -128,7 +216,6 @@ const transformCMSData = (cmsData) => {
 
   return cmsData.map(item => {
     const integrationTypes = item.attributes.category ? [categoryMapping[item.attributes.category] || item.attributes.category] : [];
-
     const integrationTier = item.attributes.supportLevel?.toLowerCase() || '';
 
     return {
@@ -141,9 +228,9 @@ const transformCMSData = (cmsData) => {
       integration_tier: integrationTier
     };
   });
-};
+}
 
-const useCMSIntegrations = () => {
+function useCMSIntegrations() {
   const [integrations, setIntegrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -215,91 +302,12 @@ const useCMSIntegrations = () => {
       }
     };
 
-    fetchIntegrations();
-  }, []);
+      fetchIntegrations();
+    }, []);
 
-  return { integrations, loading, error };
-};
-
-const getTierIcon = (tier, withMargin = false) => {
-  const style = withMargin ? { marginRight: '6px' } : {};
-
-  switch (tier) {
-    case 'core':
-      return (
-        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
-          <path d="M1.30762 1.39073C1.30762 1.3103 1.37465 1.22986 1.46849 1.22986H2.64824C2.72868 1.22986 2.80912 1.29689 2.80912 1.39073V14.4886C2.80912 14.5691 2.74209 14.6495 2.64824 14.6495H1.46849C1.38805 14.6495 1.30762 14.5825 1.30762 14.4886V1.39073Z" fill="currentColor" />
-          <path d="M4.2832 1.39073C4.2832 1.3103 4.35023 1.22986 4.44408 1.22986H5.62383C5.70427 1.22986 5.7847 1.29689 5.7847 1.39073V14.4886C5.7847 14.5691 5.71767 14.6495 5.62383 14.6495H4.44408C4.36364 14.6495 4.2832 14.5825 4.2832 14.4886V1.39073Z" fill="currentColor" />
-          <path d="M7.25977 1.39073C7.25977 1.3103 7.3268 1.22986 7.42064 1.22986H8.60039C8.68083 1.22986 8.76127 1.29689 8.76127 1.39073V14.4886C8.76127 14.5691 8.69423 14.6495 8.60039 14.6495H7.42064C7.3402 14.6495 7.25977 14.5825 7.25977 14.4886V1.39073Z" fill="currentColor" />
-          <path d="M10.2354 1.39073C10.2354 1.3103 10.3024 1.22986 10.3962 1.22986H11.576C11.6564 1.22986 11.7369 1.29689 11.7369 1.39073V14.4886C11.7369 14.5691 11.6698 14.6495 11.576 14.6495H10.3962C10.3158 14.6495 10.2354 14.5825 10.2354 14.4886V1.39073Z" fill="currentColor" />
-          <path d="M13.2256 6.6057C13.2256 6.52526 13.2926 6.44482 13.3865 6.44482H14.5662C14.6466 6.44482 14.7271 6.51186 14.7271 6.6057V9.27354C14.7271 9.35398 14.6601 9.43442 14.5662 9.43442H13.3865C13.306 9.43442 13.2256 9.36739 13.2256 9.27354V6.6057Z" fill="currentColor" />
-        </svg>
-      );
-    case 'partner':
-      return (
-        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
-          <polyline points="12.5 9.5 10 12 6 11 2.5 8.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-          <polyline points="4.54 4.41 8 3.5 11.46 4.41" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-          <path d="M2.15,3.78 L0.55,6.95 A0.5,0.5 0,0,0 0.77,7.62 L2.5,8.5 L4.54,4.41 L2.82,3.55 A0.5,0.5 0,0,0 2.15,3.78 Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-          <path d="M13.5,8.5 L15.23,7.62 A0.5,0.5 0,0,0 15.45,6.95 L13.85,3.78 A0.5,0.5 0,0,0 13.18,3.55 L11.46,4.41 Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-          <path d="M11.5,4.5 L9,4.5 L6.15,7.27 A0.5,0.5 0,0,0 6.24,8.05 C7.33,8.74 8.81,8.72 10,7.5 L12.5,9.5 L13.5,8.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-          <polyline points="7.75 13.5 5.15 12.85 3.5 11.67" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" />
-        </svg>
-      );
-    case 'community':
-      return (
-        <svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
-          <path fillRule="evenodd" clipRule="evenodd" d="M6.22168 4.44463V4.44463C6.22168 3.46263 7.01768 2.66663 7.99968 2.66663V2.66663C8.98168 2.66663 9.77768 3.46263 9.77768 4.44463V4.44463C9.77768 5.42663 8.98168 6.22263 7.99968 6.22263V6.22263C7.01768 6.22196 6.22168 5.42596 6.22168 4.44463Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-          <path fillRule="evenodd" clipRule="evenodd" d="M1.91309 11.5553V11.5553C1.91309 10.5733 2.70909 9.77734 3.69109 9.77734V9.77734C4.67309 9.77734 5.46909 10.5733 5.46909 11.5553V11.5553C5.46842 12.5373 4.67309 13.3333 3.69109 13.3333V13.3333C2.70909 13.3333 1.91309 12.5373 1.91309 11.5553Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-          <path fillRule="evenodd" clipRule="evenodd" d="M10.5322 11.5553V11.5553C10.5322 10.5733 11.3282 9.77734 12.3102 9.77734V9.77734C13.2922 9.77734 14.0882 10.5733 14.0882 11.5553V11.5553C14.0882 12.5373 13.2922 13.3333 12.3102 13.3333V13.3333C11.3276 13.3333 10.5322 12.5373 10.5322 11.5553H10.5322Z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M10.5939 11.1134H5.40723" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M8.95996 5.94006L11.54 9.96006" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M4.45996 9.96006L7.03996 5.94006" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-};
-
-const getProperCapitalization = (text) => {
-  const specialCases = {
-    'ai/ml': 'AI/ML',
-    'clickpipes': 'ClickPipes',
-    'data ingestion': 'Data ingestion',
-    'data integration': 'Data integration',
-    'data management': 'Data management',
-    'data visualization': 'Data visualization',
-    'deployment method': 'Deployment method',
-    'language client': 'Language client',
-    'security governance': 'Security governance',
-    'sql client': 'SQL client'
-  };
-
-  const lowerText = text.toLowerCase();
-  if (specialCases[lowerText]) {
-    return specialCases[lowerText];
+    return { integrations, loading, error };
   }
 
-  return text.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-};
-
-const getSectionDescription = (type) => {
-  const descriptions = {
-    'ClickPipes': 'ClickPipes is an integration engine that makes ingesting massive volumes of data from a diverse set of sources as simple as clicking a few buttons.',
-    'Data ingestion': 'Streamline your data pipelines with ClickHouse! Seamless integrations ensure efficient ingestion, optimizing real-time analytics.',
-    'Data visualization': 'Illuminate your data stories! ClickHouse integrations enhance visualization, making insights more vivid & actionable.',
-    'SQL client': 'Access and query ClickHouse databases using familiar SQL client tools and interfaces.',
-    'Language client': 'Code in your comfort zone! ClickHouse\'s language client integrations make data access fluent across multiple programming languages.',
-    'AI/ML': 'Leverage ClickHouse for machine learning and AI workloads with integrated ML tools and frameworks.',
-    'Data management': 'Manage, monitor, and optimize your ClickHouse data with specialized management tools.',
-    'Data integration': 'Integrate ClickHouse with your existing data infrastructure and workflows.',
-    'Security governance': 'Implement security and governance frameworks for your ClickHouse environment.'
-  };
-  return descriptions[type] || 'Integrate ClickHouse with specialized tools and services.';
-};
-
-const IntegrationGrid = () => {
   const { integrations, loading, error } = useCMSIntegrations();
 
   const [searchTerm, setSearchTerm] = useState(() => {
@@ -404,13 +412,13 @@ const IntegrationGrid = () => {
   const filteredIntegrations = useMemo(() => {
     const filtered = integrations.filter(integration => {
       const matchesSearch = integration.integration_title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        integration.slug.toLowerCase().includes(searchTerm.toLowerCase());
+                           integration.slug.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesFilter = selectedFilter === 'All' ||
-        integration.integration_type.some(type => type === selectedFilter);
+                           integration.integration_type.some(type => type === selectedFilter);
 
       const matchesTier = selectedTier === 'All' ||
-        integration.integration_tier === selectedTier;
+                         integration.integration_tier === selectedTier;
 
       return matchesSearch && matchesFilter && matchesTier;
     });
@@ -467,39 +475,63 @@ const IntegrationGrid = () => {
 
   if (loading) {
     return (
-      <div className="loading-state">
-        <p>Loading integrations...</p>
+      <div className="text-center py-12">
+        <p className="text-gray-600 dark:text-gray-400">Loading integrations...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="error-state">
-        <p>Failed to load integrations: {error}</p>
-        <p>Please try refreshing the page.</p>
+      <div className="text-center py-12">
+        <p className="text-red-600 dark:text-red-400">Failed to load integrations: {error}</p>
+        <p className="text-gray-600 dark:text-gray-400">Please try refreshing the page.</p>
       </div>
     );
   }
 
   if (integrations.length === 0) {
     return (
-      <div className="empty-state">
-        <p>No integrations found.</p>
+      <div className="text-center py-12">
+        <p className="text-gray-600 dark:text-gray-400">No integrations found.</p>
       </div>
     );
   }
 
   return (
-    <div className="integrations-container">
-      <div className="search-container">
-        <div>
+    <>
+      <style dangerouslySetInnerHTML={{__html: `
+        .integration-card {
+          background-color: #fff !important;
+        }
+        .dark .integration-card {
+          background-color: rgba(65, 65, 65, 0.5) !important;
+        }
+        .dark .integration-card div.text-sm {
+          color: #fff !important;
+        }
+        .dark .integration-card div {
+          color: #fff !important;
+        }
+        .integration-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+          border-color: rgba(252, 255, 116, 0.3) !important;
+        }
+        .dark .integration-card:hover {
+          box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3);
+          border-color: rgba(252, 255, 116, 0.3) !important;
+        }
+      `}} />
+    <div className="max-w-7xl mx-auto px-4">
+      <div className="my-8 flex justify-center items-center" style={{ margin: '2rem 0 12px 0' }}>
+        <div className="relative w-full" style={{ maxWidth: '500px' }}>
           <svg
-            className="search-icon"
+            className="absolute pointer-events-none z-10"
+            style={{ left: '12px', top: '50%', transform: 'translateY(-50%)', width: '14px', height: '14px', color: '#666' }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
           >
             <path
               strokeLinecap="round"
@@ -513,15 +545,26 @@ const IntegrationGrid = () => {
             placeholder="Search by integration"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
+            className="w-full text-sm border rounded-xl focus:outline-none bg-[#F6F7FA] dark:bg-[#282828] text-black dark:text-white border-gray-300 dark:border-gray-600 focus:border-[#FAFF69]"
+            style={{
+              height: '38px',
+              padding: '0.5rem 0.75rem 0.5rem 2.5rem',
+              lineHeight: '1.4',
+              boxSizing: 'border-box'
+            }}
           />
         </div>
       </div>
 
-      <div className="filter-container">
-        <div className="filter-row">
+      <div className="flex flex-col my-8" style={{ gap: '12px' }}>
+        <div className="flex flex-wrap justify-center" style={{ gap: '8px' }}>
           <button
-            className={`filter-button ${selectedFilter === 'All' ? 'active' : ''}`}
+            className={`text-sm font-medium rounded-full transition-all cursor-pointer flex items-center justify-center whitespace-nowrap border ${
+              selectedFilter === 'All'
+                ? 'bg-black dark:bg-[#FAFF69] text-white dark:text-black border-black dark:border-[#FAFF69]'
+                : 'bg-white dark:bg-[#282828] text-black dark:text-white border-gray-300 dark:border-white/20 hover:border-[#FAFF69] hover:bg-gray-50 dark:hover:bg-[#FAFF69] dark:hover:text-black'
+            }`}
+            style={{ padding: '6px 12px' }}
             onClick={() => setSelectedFilter('All')}
           >
             All
@@ -529,7 +572,12 @@ const IntegrationGrid = () => {
           {integrationTypes.map(type => (
             <button
               key={type}
-              className={`filter-button ${selectedFilter === type ? 'active' : ''}`}
+              className={`text-sm font-medium rounded-full transition-all cursor-pointer flex items-center justify-center whitespace-nowrap border ${
+                selectedFilter === type
+                  ? 'bg-black dark:bg-[#FAFF69] text-white dark:text-black border-black dark:border-[#FAFF69]'
+                  : 'bg-white dark:bg-[#282828] text-black dark:text-white border-gray-300 dark:border-white/20 hover:border-[#FAFF69] hover:bg-gray-50 dark:hover:bg-[#FAFF69] dark:hover:text-black'
+              }`}
+              style={{ padding: '6px 12px' }}
               onClick={() => setSelectedFilter(type)}
             >
               {getProperCapitalization(type)}
@@ -537,9 +585,14 @@ const IntegrationGrid = () => {
           ))}
         </div>
 
-        <div className="filter-row">
+        <div className="flex flex-wrap justify-center" style={{ gap: '8px' }}>
           <button
-            className={`filter-button ${selectedTier === 'All' ? 'active' : ''}`}
+            className={`text-sm font-medium rounded-full transition-all cursor-pointer flex items-center justify-center whitespace-nowrap border ${
+              selectedTier === 'All'
+                ? 'bg-black dark:bg-[#FAFF69] text-white dark:text-black border-black dark:border-[#FAFF69]'
+                : 'bg-white dark:bg-[#282828] text-black dark:text-white border-gray-300 dark:border-white/20 hover:border-[#FAFF69] hover:bg-gray-50 dark:hover:bg-[#FAFF69] dark:hover:text-black'
+            }`}
+            style={{ padding: '6px 12px' }}
             onClick={() => setSelectedTier('All')}
           >
             All tiers
@@ -547,7 +600,12 @@ const IntegrationGrid = () => {
           {integrationTiers.map(tier => (
             <button
               key={tier}
-              className={`filter-button ${selectedTier === tier ? 'active' : ''}`}
+              className={`text-sm font-medium rounded-full transition-all cursor-pointer flex items-center justify-center whitespace-nowrap border ${
+                selectedTier === tier
+                  ? 'bg-black dark:bg-[#FAFF69] text-white dark:text-black border-black dark:border-[#FAFF69]'
+                  : 'bg-white dark:bg-[#282828] text-black dark:text-white border-gray-300 dark:border-white/20 hover:border-[#FAFF69] hover:bg-gray-50 dark:hover:bg-[#FAFF69] dark:hover:text-black'
+              }`}
+              style={{ padding: '6px 12px', gap: '6px' }}
               onClick={() => setSelectedTier(tier)}
             >
               {getTierIcon(tier, true)}
@@ -585,22 +643,22 @@ const IntegrationGrid = () => {
             return a.localeCompare(b);
           })
           .map(([type, typeIntegrations]) => (
-            <section key={type} className="integration-section">
-              <h2 className="section-title">
+            <section key={type} style={{ margin: '3rem 0' }}>
+              <h2 className="text-2xl font-bold mb-2 text-black dark:text-white" style={{ marginBottom: '0.5rem' }}>
                 {getProperCapitalization(type)}
               </h2>
-              <p className="section-description">
+              <p className="text-base text-gray-600 dark:text-gray-400 mb-8 leading-relaxed" style={{ marginBottom: '2rem', lineHeight: '1.6' }}>
                 {getSectionDescription(type)}
               </p>
               <IntegrationCards integrations={typeIntegrations} />
             </section>
           ))
       ) : (
-        <section className="integration-section">
-          <h2 className="section-title">
+        <section style={{ margin: '3rem 0' }}>
+          <h2 className="text-2xl font-bold mb-2 text-black dark:text-white" style={{ marginBottom: '0.5rem' }}>
             {getProperCapitalization(selectedFilter)}
           </h2>
-          <p className="section-description">
+          <p className="text-base text-gray-600 dark:text-gray-400 mb-8 leading-relaxed" style={{ marginBottom: '2rem', lineHeight: '1.6' }}>
             {getSectionDescription(selectedFilter)}
           </p>
           <IntegrationCards integrations={filteredIntegrations} />
@@ -608,12 +666,11 @@ const IntegrationGrid = () => {
       )}
 
       {filteredIntegrations.length === 0 && (
-        <div className="no-results">
-          <p>No integrations found matching your criteria.</p>
+        <div className="text-center py-12">
+          <p className="text-gray-600 dark:text-gray-400 text-lg">No integrations found matching your criteria.</p>
         </div>
       )}
-    </div>
-  );
-};
-
-export default IntegrationGrid;
+      </div>
+    </>
+    );
+  };
