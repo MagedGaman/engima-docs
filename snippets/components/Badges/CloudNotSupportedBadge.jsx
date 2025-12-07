@@ -11,12 +11,10 @@ const Icon = () => {
     )
 }
 
-const CloudNotSupportedBadge = () => {
+export const CloudNotSupportedBadge = () => {
     return (
         <div className="cloudNotSupportedBadge">
             <Icon />Not supported in ClickHouse Cloud
         </div>
     )
 }
-
-export { CloudNotSupportedBadge }

@@ -26,10 +26,9 @@ This option includes authentication, enabling the persistence of dashboards, ale
 * Local testing of the full stack
 
 ## Deployment steps [#deployment-steps]
-<br/>
 
-<Steps headerLevel="h3">
-
+<Steps>
+<Step>
 ### Deploy with Docker [#deploy-with-docker]
 
 The following will run an OpenTelemetry collector (on port 4317 and 4318) and the HyperDX UI (on port 8080).
@@ -37,22 +36,27 @@ The following will run an OpenTelemetry collector (on port 4317 and 4318) and th
 ```shell
 docker run -p 8080:8080 -p 4317:4317 -p 4318:4318 docker.hyperdx.io/hyperdx/hyperdx-all-in-one
 ```
+</Step>
 
+<Step>
 ### Navigate to the HyperDX UI [#navigate-to-hyperdx-ui]
 
 Visit [http://localhost:8080](http://localhost:8080) to access the HyperDX UI.
 
-Create a user, providing a username and password which meets the requirements. 
+Create a user, providing a username and password which meets the requirements.
 
 On clicking `Create` data sources will be created for the integrated ClickHouse instance.
 
 <img src="/images/use-cases/observability/hyperdx-login.png" alt="HyperDX UI"/>
 
 For an example of using an alternative ClickHouse instance, see ["Create a ClickHouse Cloud connection"](/use-cases/observability/clickstack/getting-started#create-a-cloud-connection).
+</Step>
 
+<Step>
 ### Ingest data [#ingest-data]
 
 To ingest data see ["Ingesting data"](/use-cases/observability/clickstack/ingesting-data).
+</Step>
 
 </Steps>
 

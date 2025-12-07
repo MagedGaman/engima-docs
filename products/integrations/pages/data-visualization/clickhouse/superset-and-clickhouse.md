@@ -13,7 +13,7 @@ integration:
   - website: 'https://github.com/ClickHouse/clickhouse-connect'
 ---
 
-import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
+import {ClickHouseSupportedBadge} from '/snippets/components/ClickHouseSupported/ClickHouseSupported.jsx'
 
 import GatherYourDetailsHttp from '/snippets/_gather_your_details_http.mdx';
 

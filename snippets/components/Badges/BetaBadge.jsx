@@ -12,7 +12,7 @@ const Icon = () => {
     )
 }
 
-const BetaBadge = () => {
+export const BetaBadge = () => {
     return (
         <div className="betaBadge">
             <Icon />
@@ -27,5 +27,3 @@ const BetaBadge = () => {
         </div>
     )
 };
-
-export { BetaBadge };

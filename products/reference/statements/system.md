@@ -7,7 +7,7 @@ title: SYSTEM Statements
 doc_type: reference
 ---
 
-import {CloudNotSupportedBadge} from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '/snippets/components/CloudNotSupportedBadge/CloudNotSupportedBadge.jsx'
 
 ## SYSTEM RELOAD EMBEDDED DICTIONARIES [#reload-embedded-dictionaries]
 

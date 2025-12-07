@@ -18,14 +18,14 @@
     "products": [
       {
         "product": "Home",
-        "description": "ClickHouse docs",
+        "description": "Explore docs by use case, product or learning goal.",
         "pages": [
           "products/common_pages/home"
         ]
       },
       {
         "product": "Cloud",
-        "description": "Managed ClickHouse",
+        "description": "Serverless hosted DBMS solution.",
         "tabs": [
           {
             "tab": "Home",
@@ -136,7 +136,7 @@
               "products/cloud/pages/features/02_integrations",
               {
                 "group": "SQL console",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/features/03_sql_console_features/01_sql-console",
                   "products/cloud/pages/features/03_sql_console_features/02_query-insights",
@@ -147,7 +147,7 @@
               },
               {
                 "group": "Infrastructure",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   {
                     "group": "Automatic scaling",
@@ -165,7 +165,7 @@
               },
               {
                 "group": "Admin",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   {
                     "group": "Cloud API",
@@ -181,7 +181,7 @@
               "products/cloud/pages/features/06_security",
               {
                 "group": "Monitoring",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/features/07_monitoring/advanced_dashboard",
                   "products/cloud/pages/features/07_monitoring/notifications",
@@ -198,7 +198,7 @@
             "pages": [
               {
                 "group": "SQL console",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/guides/SQL_console/connection_details",
                   "products/cloud/pages/guides/SQL_console/query-endpoints"
@@ -206,13 +206,13 @@
               },
               {
                 "group": "Backups",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/guides/backups/01_review-and-restore-backups",
                   "products/cloud/pages/guides/backups/02_configurable-backups",
                   {
                     "group": "Bring Your Own Backup",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/guides/backups/03_bring_your_own_backup/01_export-backups-to-own-cloud-account",
                       "products/cloud/pages/guides/backups/03_bring_your_own_backup/02_backup_restore_from_ui",
@@ -223,7 +223,7 @@
               },
               {
                 "group": "Best practices",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/guides/best_practices/multitenancy",
                   "products/cloud/pages/guides/best_practices/usagelimits"
@@ -232,7 +232,7 @@
               "products/cloud/pages/guides/cloud-compatibility",
               {
                 "group": "Data sources",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/guides/data_sources/01_cloud-endpoints-api",
                   "products/cloud/pages/guides/data_sources/02_accessing-s3-data-securely"
@@ -240,37 +240,37 @@
               },
               {
                 "group": "Infrastructure",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   {
                     "group": "Deployment modes",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/guides/infrastructure/01_deployment_options/02_clickhouse-private",
                       "products/cloud/pages/guides/infrastructure/01_deployment_options/03_clickhouse-government",
                       {
                         "group": "Bring Your Own Cloud (BYOC)",
-                        "collapsed": true,
+                        "expanded": false,
                         "pages": [
                           "products/cloud/pages/guides/infrastructure/01_deployment_options/byoc/01_overview",
                           "products/cloud/pages/guides/infrastructure/01_deployment_options/byoc/02_architecture",
                           {
                             "group": "Onboarding",
-                            "collapsed": true,
+                            "expanded": false,
                             "pages": [
                               "products/cloud/pages/guides/infrastructure/01_deployment_options/byoc/03_onboarding/01_aws"
                             ]
                           },
                           {
                             "group": "FAQ",
-                            "collapsed": true,
+                            "expanded": false,
                             "pages": [
                               "products/cloud/pages/guides/infrastructure/01_deployment_options/byoc/04_faq/01_aws"
                             ]
                           },
                           {
                             "group": "Observability",
-                            "collapsed": true,
+                            "expanded": false,
                             "pages": [
                               "products/cloud/pages/guides/infrastructure/01_deployment_options/byoc/05_observability/01_aws"
                             ]
@@ -283,11 +283,11 @@
               },
               {
                 "group": "Security",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   {
                     "group": "Cloud access management",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/guides/security/01_cloud_access_management/01_manage-my-account",
                       "products/cloud/pages/guides/security/01_cloud_access_management/02_manage-cloud-users",
@@ -299,12 +299,12 @@
                   },
                   {
                     "group": "Connectivity",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/guides/security/02_connectivity/01_setting-ip-filters",
                       {
                         "group": "Private networking",
-                        "collapsed": true,
+                        "expanded": false,
                         "pages": [
                           "products/cloud/pages/guides/security/02_connectivity/private_networking/02_aws-privatelink",
                           "products/cloud/pages/guides/security/02_connectivity/private_networking/03_gcp-private-service-connect",
@@ -317,7 +317,7 @@
                   "products/cloud/pages/guides/security/04_cmek",
                   {
                     "group": "Compliance",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/guides/security/06_compliance/hipaa-onboarding",
                       "products/cloud/pages/guides/security/06_compliance/pci-onboarding"
@@ -344,7 +344,7 @@
                   "products/cloud/pages/reference/03_billing/01_billing_overview",
                   {
                     "group": "Marketplace",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/reference/03_billing/02_marketplace/overview",
                       "products/cloud/pages/reference/03_billing/02_marketplace/aws-marketplace-committed",
@@ -358,7 +358,7 @@
                   },
                   {
                     "group": "ClickPipes",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/cloud/pages/reference/03_billing/03_clickpipes/clickpipes_for_cdc",
                       "products/cloud/pages/reference/03_billing/03_clickpipes/clickpipes_for_streaming_and_object_storage"
@@ -374,7 +374,7 @@
               "products/cloud/pages/reference/08_settings",
               {
                 "group": "Security",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/cloud/pages/reference/09_security/01_console-roles",
                   "products/cloud/pages/reference/09_security/02_audit-logging",
@@ -405,7 +405,7 @@
             "groups": [
               {
                 "group": "About ClickHouse",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/oss/pages/get_started/about/intro",
                   "products/oss/pages/get_started/about/olap",
@@ -416,7 +416,7 @@
               },
               {
                 "group": "Starter guides",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/oss/pages/get_started/oss",
                   "products/oss/pages/get_started/starter_guides/creating-tables",
@@ -429,7 +429,7 @@
               },
               {
                 "group": "Install",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/oss/pages/get_started/install/install",
                   "products/oss/pages/get_started/install/debian_ubuntu",
@@ -463,7 +463,7 @@
             "groups": [
               {
                 "group": "Best practices",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/common_pages/best_practices/choosing_a_primary_key",
                   "products/common_pages/best_practices/select_data_type",
@@ -480,7 +480,7 @@
               },
               {
                 "group": "OSS best practices",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/oss/pages/oss_specific_guides/best_practices/sizing-and-hardware-recommendations",
                   "products/oss/pages/oss_specific_guides/best_practices/tips"
@@ -488,7 +488,7 @@
               },
               {
                 "group": "Data modelling",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/common_pages/general_guides/data_modelling/schema-design",
                   "products/common_pages/general_guides/data_modelling/sparse-primary-indexes",
@@ -582,7 +582,7 @@
             "pages": [
               {
                 "group": "Object storage ClickPipes",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/clickpipes/pages/cloud-object-stores/object-storage/01_create_clickpipe_for_object_storage",
                   "products/clickpipes/pages/cloud-object-stores/object-storage/02_reference",
@@ -597,7 +597,7 @@
             "pages": [
               {
                 "group": "Postgres",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/clickpipes/pages/database-datalake/postgres/index",
                   "products/clickpipes/pages/database-datalake/postgres/deduplication",
@@ -640,7 +640,7 @@
               },
               {
                 "group": "MongoDB",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/clickpipes/pages/database-datalake/mongodb/index",
                   "products/clickpipes/pages/database-datalake/mongodb/datatypes",
@@ -668,7 +668,7 @@
               },
               {
                 "group": "MySQL",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/clickpipes/pages/database-datalake/mysql/index",
                   "products/clickpipes/pages/database-datalake/mysql/faq",
@@ -708,7 +708,7 @@
             "pages": [
               {
                 "group": "AWS",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/clickpipes/pages/amazon-databases/kinesis",
                   "products/clickpipes/pages/amazon-databases/secure-kinesis",
@@ -725,7 +725,7 @@
             "pages": [
               {
                 "group": "Kafka ClickPipes",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/clickpipes/pages/event-streams/kafka/01_create-kafka-clickpipe",
                   "products/clickpipes/pages/event-streams/kafka/02_schema-registries",
@@ -914,7 +914,15 @@
               "products/integrations/pages/language-clients/go/index",
               "products/integrations/pages/language-clients/js",
               {
+                "group": "Java",
+                "expanded": false,
+                "pages": [
+                  "products/integrations/pages/language-clients/java/client"
+                ]
+              },
+              {
                 "group": "Python",
+                "expanded": false,
                 "pages": [
                   "products/integrations/pages/language-clients/python/index",
                   "products/integrations/pages/language-clients/python/driver-api",
@@ -927,7 +935,15 @@
               },
               "products/integrations/pages/language-clients/rust",
               "products/integrations/pages/language-clients/csharp",
-              "products/integrations/pages/language-clients/cpp"
+              "products/integrations/pages/language-clients/cpp",
+              {
+                "group": "Third-party clients",
+                "expanded": false,
+                "pages": [
+                  "products/integrations/pages/language-clients/third-party/moose-olap",
+                  "products/integrations/pages/language-clients/third-party/client-libraries"
+                ]
+              }
             ]
           },
           {
@@ -936,7 +952,7 @@
             "groups": [
               {
                 "group": "AWS",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/integrations/pages/data-ingestion/AWS/integrating-s3-with-clickhouse",
                   "products/integrations/pages/data-ingestion/AWS/performance",
@@ -944,21 +960,91 @@
                 ]
               },
               {
-                "group": "Kafka",
-                "collapsed": true,
+                "group": "GCP",
+                "expanded": false,
                 "pages": [
-                  "products/integrations/pages/data-ingestion/kafka/index",
-                  "products/integrations/pages/data-ingestion/kafka/kafka-clickhouse-connect-sink",
-                  "products/integrations/pages/data-ingestion/kafka/kafka-table-engine"
+                  "products/integrations/pages/data-ingestion/GCP/index",
+                  {
+                    "group": "Google Dataflow",
+                    "expanded": false,
+                    "pages": [
+                      "products/integrations/pages/data-ingestion/GCP/google-dataflow/dataflow",
+                      "products/integrations/pages/data-ingestion/GCP/google-dataflow/java-runner",
+                      "products/integrations/pages/data-ingestion/GCP/google-dataflow/templates",
+                      {
+                        "group": "Dataflow templates",
+                        "expanded": false,
+                        "pages": [
+                          "products/integrations/pages/data-ingestion/GCP/google-dataflow/templates/bigquery-to-clickhouse"
+                        ]
+                      }
+                    ]
+                  }
                 ]
               },
               {
-                "group": "ETL tools",
-                "collapsed": true,
+                "group": "Azure",
+                "expanded": false,
+                "pages": [
+                  {
+                    "group": "Azure Data Factory",
+                    "expanded": false,
+                    "pages": [
+                      "products/integrations/pages/data-ingestion/azure/azure-data-factory/overview",
+                      "products/integrations/pages/data-ingestion/azure/azure-data-factory/using_azureblobstorage",
+                      "products/integrations/pages/data-ingestion/azure/azure-data-factory/using_http_interface"
+                    ]
+                  },
+                  "products/integrations/pages/data-ingestion/azure/azure-synapse"
+                ]
+              },
+              {
+                "group": "Standalone Integrations",
+                "expanded": false,
                 "pages": [
                   "products/integrations/pages/data-ingestion/etl-tools/airbyte-and-clickhouse",
                   "products/integrations/pages/data-ingestion/etl-tools/apache-beam",
-                  "products/integrations/pages/data-ingestion/etl-tools/dlt-and-clickhouse",
+                  {
+                    "group": "Apache Spark",
+                    "expanded": false,
+                    "pages": [
+                      "products/integrations/pages/data-ingestion/apache-spark/index",
+                      "products/integrations/pages/data-ingestion/apache-spark/spark-jdbc",
+                      "products/integrations/pages/data-ingestion/apache-spark/spark-native-connector"
+                    ]
+                  },
+                  "products/integrations/pages/data-ingestion/etl-tools/bladepipe-and-clickhouse",
+                  {
+                    "group": "dbt",
+                    "expanded": false,
+                    "pages": [
+                      "products/integrations/pages/data-ingestion/etl-tools/dbt/index",
+                      "products/integrations/pages/data-ingestion/etl-tools/dbt/features-and-configurations"
+                    ]
+                  },
+                  "products/integrations/pages/data-ingestion/emqx/index",
+                  "products/integrations/pages/data-ingestion/jdbc-with-clickhouse",
+                  {
+                    "group": "Kafka",
+                    "expanded": false,
+                    "pages": [
+                      "products/integrations/pages/data-ingestion/kafka/index",
+                      "products/integrations/pages/data-ingestion/kafka/kafka-clickhouse-connect-sink",
+                      "products/integrations/pages/data-ingestion/kafka/confluent/confluent-cloud",
+                      "products/integrations/pages/data-ingestion/kafka/confluent/custom-connector",
+                      "products/integrations/pages/data-ingestion/kafka/msk/index",
+                      "products/integrations/pages/data-ingestion/kafka/kafka-vector",
+                      "products/integrations/pages/data-ingestion/kafka/kafka-table-engine",
+                      "products/integrations/pages/data-ingestion/kafka/confluent/index",
+                      "products/integrations/pages/data-ingestion/kafka/confluent/kafka-connect-http",
+                      "products/integrations/pages/data-ingestion/kafka/kafka-connect-jdbc",
+                      "products/integrations/pages/data-ingestion/kafka/kafka-table-engine-named-collections"
+                    ]
+                  },
+                  "products/integrations/pages/data-ingestion/s3-minio",
+                  "products/integrations/pages/data-ingestion/mysql",
+                  "products/integrations/pages/data-ingestion/etl-tools/nifi-and-clickhouse",
+                  "products/integrations/pages/data-ingestion/postgresql/connecting-to-postgresql",
                   "products/integrations/pages/data-ingestion/etl-tools/vector-to-clickhouse"
                 ]
               }
@@ -967,16 +1053,63 @@
           {
             "tab": "Data visualization",
             "icon": "chart-simple",
-            "pages": [
-              "products/integrations/pages/data-visualization/clickhouse/powerbi-and-clickhouse",
-              "products/integrations/pages/data-visualization/clickhouse/superset-and-clickhouse",
+            "groups": [
               {
-                "group": "Grafana",
-                "collapsed": true,
+                "group": "ClickHouse integrations",
                 "pages": [
-                  "products/integrations/pages/data-visualization/clickhouse/grafana/index",
-                  "products/integrations/pages/data-visualization/clickhouse/grafana/query-builder",
-                  "products/integrations/pages/data-visualization/clickhouse/grafana/config"
+                  "products/integrations/pages/data-visualization/clickhouse/powerbi-and-clickhouse",
+                  "products/integrations/pages/data-visualization/clickhouse/splunk-and-clickhouse",
+                  "products/integrations/pages/data-visualization/clickhouse/quicksight-and-clickhouse",
+                  "products/integrations/pages/data-visualization/clickhouse/superset-and-clickhouse",
+                  {
+                    "group": "Tableau",
+                    "expanded": false,
+                    "pages": [
+                      "products/integrations/pages/data-visualization/clickhouse/tableau/tableau-and-clickhouse",
+                      "products/integrations/pages/data-visualization/clickhouse/tableau/tableau-online-and-clickhouse",
+                      "products/integrations/pages/data-visualization/clickhouse/tableau/tableau-connection-tips",
+                      "products/integrations/pages/data-visualization/clickhouse/tableau/tableau-analysis-tips",
+                      {
+                        "group": "Grafana",
+                        "expanded": false,
+                        "pages": [
+                          "products/integrations/pages/data-visualization/clickhouse/grafana/index",
+                          "products/integrations/pages/data-visualization/clickhouse/grafana/query-builder",
+                          "products/integrations/pages/data-visualization/clickhouse/grafana/config"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Partner integrations",
+                "pages": [
+                  "products/integrations/pages/data-visualization/partner/lightdash-and-clickhouse",
+                  "products/integrations/pages/data-visualization/partner/looker-and-clickhouse",
+                  "products/integrations/pages/data-visualization/partner/looker-studio-and-clickhouse",
+                  "products/integrations/pages/data-visualization/partner/metabase-and-clickhouse",
+                  "products/integrations/pages/data-visualization/partner/omni-and-clickhouse"
+                ]
+              },
+              {
+                "group": "Community integrations",
+                "expanded": false,
+                "pages": [
+                  "products/integrations/pages/data-visualization/community-integrations/astrato-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/chartbrew-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/databrain-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/deepnote",
+                  "products/integrations/pages/data-visualization/community-integrations/dot-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/draxlr-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/embeddable-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/explo-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/fabi-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/hashboard-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/luzmo-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/mitzu-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/rocketbi-and-clickhouse",
+                  "products/integrations/pages/data-visualization/community-integrations/zingdata-and-clickhouse"
                 ]
               }
             ]
@@ -988,14 +1121,48 @@
               "products/integrations/pages/data-integrations/sql-clients/datagrip",
               "products/integrations/pages/data-integrations/sql-clients/dbeaver",
               "products/integrations/pages/data-integrations/sql-clients/dbvisualizer",
-              "products/integrations/pages/data-integrations/sql-clients/jupysql"
+              "products/integrations/pages/data-integrations/sql-clients/jupysql",
+              "products/integrations/pages/data-integrations/sql-clients/qstudio",
+              "products/integrations/pages/data-integrations/sql-clients/tablum",
+              "products/integrations/pages/data-integrations/sql-clients/marimo"
+            ]
+          },
+          {
+            "tab": "Data integration",
+            "icon": "plug",
+            "groups": [
+              {
+                "group": "Integrations",
+                "expanded": false,
+                "pages": [
+                  "products/integrations/pages/data-integrations/integrations/retool",
+                  "products/integrations/pages/data-integrations/integrations/easypanel",
+                  "products/integrations/pages/data-integrations/integrations/splunk"
+                ]
+              },
+              {
+                "group": "Interfaces",
+                "expanded": false,
+                "pages": [
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/http",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/native-clients-interfaces-index",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/jdbc",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/mysql",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/odbc",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/postgresql",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/prometheus",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/ssh",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/grpc",
+                  "products/integrations/pages/data-integrations/drivers-and-interfaces/arrowflight"
+                ]
+              }
             ]
           }
         ]
       },
       {
         "product": "Reference",
-        "description": "Reference docs",
+        "description": "Reference docs for syntax, settings, formats, functions",
         "tabs": [
           {
             "tab": "Home",
@@ -1016,12 +1183,12 @@
               },
               {
                 "group": "Statements",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/statements/index",
                   {
                     "group": "ALTER",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/statements/alter/index",
                       "products/reference/statements/alter/apply-deleted-mask",
@@ -1053,7 +1220,7 @@
                   "products/reference/statements/check-table",
                   {
                     "group": "CREATE",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/statements/create/index",
                       "products/reference/statements/create/database",
@@ -1089,7 +1256,7 @@
                   "products/reference/statements/revoke",
                   {
                     "group": "SELECT",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/statements/select/index",
                       "products/reference/statements/select/all",
@@ -1137,7 +1304,7 @@
             "groups": [
               {
                 "group": "Numeric types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/int-uint",
                   "products/reference/data-types/float",
@@ -1147,7 +1314,7 @@
               },
               {
                 "group": "String types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/string",
                   "products/reference/data-types/fixedstring"
@@ -1155,7 +1322,7 @@
               },
               {
                 "group": "Date and time types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/date",
                   "products/reference/data-types/date32",
@@ -1167,7 +1334,7 @@
               },
               {
                 "group": "Network types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/ipv4",
                   "products/reference/data-types/ipv6"
@@ -1175,7 +1342,7 @@
               },
               {
                 "group": "Composite types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/array",
                   "products/reference/data-types/tuple",
@@ -1185,7 +1352,7 @@
               },
               {
                 "group": "Semi-structured types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/newjson",
                   "products/reference/data-types/json",
@@ -1195,7 +1362,7 @@
               },
               {
                 "group": "Nullable and optional types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/nullable",
                   "products/reference/data-types/lowcardinality"
@@ -1203,7 +1370,7 @@
               },
               {
                 "group": "Specialized types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/uuid",
                   "products/reference/data-types/enum",
@@ -1214,7 +1381,7 @@
               },
               {
                 "group": "Aggregate function types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/aggregatefunction",
                   "products/reference/data-types/simpleaggregatefunction"
@@ -1222,7 +1389,7 @@
               },
               {
                 "group": "Special Data Types",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/data-types/special-data-types/index",
                   "products/reference/data-types/special-data-types/expression",
@@ -1251,12 +1418,12 @@
               },
               {
                 "group": "Table Engines",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/engines/table-engines/index",
                   {
                     "group": "Integrations",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/engines/table-engines/integrations/index",
                       "products/reference/engines/table-engines/integrations/ExternalDistributed",
@@ -1288,7 +1455,7 @@
                   },
                   {
                     "group": "Log Family",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/engines/table-engines/log-family/index",
                       "products/reference/engines/table-engines/log-family/log",
@@ -1298,7 +1465,7 @@
                   },
                   {
                     "group": "MergeTree Family",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/engines/table-engines/mergetree-family/index",
                       "products/reference/engines/table-engines/mergetree-family/mergetree",
@@ -1317,7 +1484,7 @@
                   },
                   {
                     "group": "Special",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/engines/table-engines/special/index",
                       "products/reference/engines/table-engines/special/alias",
@@ -1343,7 +1510,7 @@
               },
               {
                 "group": "Database Engines",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/engines/database-engines/index",
                   "products/reference/engines/database-engines/atomic",
@@ -1366,7 +1533,7 @@
             "groups": [
               {
                 "group": "Regular functions",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/functions/regular-functions/overview",
                   "products/reference/functions/regular-functions/arithmetic-functions",
@@ -1387,7 +1554,7 @@
                   "products/reference/functions/regular-functions/functions-for-nulls",
                   {
                     "group": "Geo",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/functions/regular-functions/geo/index",
                       "products/reference/functions/regular-functions/geo/coordinates",
@@ -1429,7 +1596,7 @@
               },
               {
                 "group": "Aggregate Functions",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/functions/aggregate-functions/index",
                   "products/reference/functions/aggregate-functions/combinators",
@@ -1437,7 +1604,7 @@
                   "products/reference/functions/aggregate-functions/parametric-functions",
                   {
                     "group": "Reference",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/functions/aggregate-functions/reference/index",
                       "products/reference/functions/aggregate-functions/reference/aggthrow",
@@ -1578,7 +1745,7 @@
               },
               {
                 "group": "Table functions",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/functions/table-functions/index",
                   "products/reference/functions/table-functions/arrowflight",
@@ -1638,7 +1805,7 @@
               },
               {
                 "group": "Window functions",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/functions/window-functions/index",
                   "products/reference/functions/window-functions/cume_dist",
@@ -1669,11 +1836,11 @@
             "groups": [
               {
                 "group": "Formats",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   {
                     "group": "Arrow",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/Arrow/Arrow",
                       "products/reference/formats/Arrow/ArrowStream"
@@ -1681,7 +1848,7 @@
                   },
                   {
                     "group": "Avro",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/Avro/Avro",
                       "products/reference/formats/Avro/AvroConfluent"
@@ -1690,7 +1857,7 @@
                   "products/reference/formats/BSONEachRow",
                   {
                     "group": "CSV",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/CSV/CSV",
                       "products/reference/formats/CSV/CSVWithNames",
@@ -1700,7 +1867,7 @@
                   "products/reference/formats/CapnProto",
                   {
                     "group": "CustomSeparated",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/CustomSeparated/CustomSeparated",
                       "products/reference/formats/CustomSeparated/CustomSeparatedIgnoreSpaces",
@@ -1716,7 +1883,7 @@
                   "products/reference/formats/HiveText",
                   {
                     "group": "JSON",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/JSON/JSON",
                       "products/reference/formats/JSON/JSONAsObject",
@@ -1747,7 +1914,7 @@
                   },
                   {
                     "group": "LineAsString",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/LineAsString/LineAsString",
                       "products/reference/formats/LineAsString/LineAsStringWithNames",
@@ -1766,7 +1933,7 @@
                   "products/reference/formats/One",
                   {
                     "group": "Parquet",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/Parquet/Parquet",
                       "products/reference/formats/Parquet/ParquetMetadata"
@@ -1775,7 +1942,7 @@
                   "products/reference/formats/PostgreSQLWire",
                   {
                     "group": "Pretty",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/Pretty/Pretty",
                       "products/reference/formats/Pretty/PrettyCompact",
@@ -1794,7 +1961,7 @@
                   "products/reference/formats/Prometheus",
                   {
                     "group": "Protobuf",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/Protobuf/Protobuf",
                       "products/reference/formats/Protobuf/ProtobufList",
@@ -1805,7 +1972,7 @@
                   "products/reference/formats/Regexp",
                   {
                     "group": "RowBinary",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/RowBinary/RowBinary",
                       "products/reference/formats/RowBinary/RowBinaryWithDefaults",
@@ -1816,7 +1983,7 @@
                   "products/reference/formats/SQLInsert",
                   {
                     "group": "TabSeparated",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/TabSeparated/TSKV",
                       "products/reference/formats/TabSeparated/TabSeparated",
@@ -1829,7 +1996,7 @@
                   },
                   {
                     "group": "Template",
-                    "collapsed": true,
+                    "expanded": false,
                     "pages": [
                       "products/reference/formats/Template/Template",
                       "products/reference/formats/Template/TemplateIgnoreSpaces"
@@ -1864,7 +2031,7 @@
             "groups": [
               {
                 "group": "System tables",
-                "collapsed": true,
+                "expanded": false,
                 "pages": [
                   "products/reference/system-tables/index",
                   "products/reference/system-tables/asynchronous_insert_log",

@@ -13,7 +13,7 @@ integration:
 keywords: ['Grafana', 'data visualization', 'dashboard', 'plugin', 'data source']
 ---
 
-import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
+import ClickHouseSupportedBadge from '/snippets/components/ClickHouseSupported/ClickHouseSupported.jsx'
 
 import GatherYourDetailsNative from '/snippets/_gather_your_details_native.mdx';
 

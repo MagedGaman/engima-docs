@@ -10,7 +10,7 @@ integration:
   - category: 'data_visualization'
 ---
 
-import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
+import ClickHouseSupportedBadge from '/snippets/components/ClickHouseSupported/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 

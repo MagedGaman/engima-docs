@@ -9,12 +9,10 @@ const Icon = () => {
     )
 }
 
-const DeprecatedBadge = () => {
+export const DeprecatedBadge = () => {
     return (
         <div className="deprecatedBadge">
             <Icon />Deprecated feature
         </div>
     )
 }
-
-export { DeprecatedBadge }
