@@ -9,12 +9,10 @@ const Icon = () => {
     )
 }
 
-const CommunityMaintainedBadge = () => {
+export const CommunityMaintainedBadge = () => {
     return (
         <div className="CommunityMaintainedBadge">
             <Icon />Community Maintained
         </div>
     )
 }
-
-export { CommunityMaintainedBadge }

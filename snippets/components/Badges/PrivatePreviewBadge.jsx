@@ -11,7 +11,7 @@ const Icon = () => {
     )
 }
 
-const PrivatePreviewBadge = () => {
+export const PrivatePreviewBadge = () => {
     return (
         <div className="privatePreviewBadge">
             <Icon />
@@ -19,5 +19,3 @@ const PrivatePreviewBadge = () => {
         </div>
     )
 }
-
-export { PrivatePreviewBadge }

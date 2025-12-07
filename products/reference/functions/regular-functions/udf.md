@@ -6,7 +6,7 @@ title: 'UDFs User Defined Functions'
 doc_type: 'reference'
 ---
 
-import {PrivatePreviewBadge} from '/snippets/components/Badges/PrivatePreviewBadge.jsx'
+import {PrivatePreviewBadge} from '/snippets/components/PrivatePreviewBadge/PrivatePreviewBadge.jsx'
 
 ## Executable User Defined Functions [#executable-user-defined-functions]
 

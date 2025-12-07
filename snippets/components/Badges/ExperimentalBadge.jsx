@@ -11,12 +11,10 @@ const Icon = () => {
     )
 }
 
-const ExperimentalBadge = () => {
+export const ExperimentalBadge = () => {
     return (
         <div className="experimentalBadge">
             <Icon />Experimental feature.&nbsp;<u><a href='/docs/beta-and-experimental-features#experimental-features'>Learn more.</a></u>
         </div>
     )
 }
-
-export { ExperimentalBadge }

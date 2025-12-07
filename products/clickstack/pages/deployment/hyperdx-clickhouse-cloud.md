@@ -9,8 +9,8 @@ doc_type: 'guide'
 keywords: ['clickstack', 'deployment', 'setup', 'configuration', 'observability']
 ---
 
-import {PrivatePreviewBadge} from '/snippets/components/Badges/PrivatePreviewBadge.jsx'
-import {BetaBadge} from '/snippets/components/Badges/BetaBadge.jsx'
+import {PrivatePreviewBadge} from '/snippets/components/PrivatePreviewBadge/PrivatePreviewBadge.jsx'
+import {BetaBadge} from '/snippets/components/BetaBadge/BetaBadge.jsx'
 
 [//]: # (import { TrackedLink } from '@site/src/components/GalaxyTrackedLink/GalaxyTrackedLink';)
 
@@ -43,6 +43,7 @@ The following guide assumes you have already created a ClickHouse Cloud service.
 
 <Steps>
 
+<Step>
 ### Copy service credentials (optional) [#copy-service-credentials]
 
 **If you have existing observability events you wish to visualize in your service, this step can be skipped.**
@@ -53,6 +54,9 @@ Press the `Connect` button from the navigation menu. A modal will open offering 
 
 <img src="/images/use-cases/observability/clickhouse_cloud_connection.png" alt="ClickHouse Cloud connect"/>
 
+</Step>
+
+<Step>
 ### Deploy Open Telemetry Collector (optional) [#deploy-otel-collector] 
 
 **If you have existing observability events you wish to visualize in your service, this step can be skipped.**
@@ -266,6 +270,9 @@ docker run --rm -it \
 In production, we recommend creating a dedicated user for ingestion, restricting access permissions to the database and tables needed. See ["Database and ingestion user"](/use-cases/observability/clickstack/production#database-ingestion-user) for further details.
 </Note>
 
+</Step>
+
+<Step>
 ### Connect to HyperDX [#connect-to-hyperdx]
 
 Select your service, then select `HyperDX` from the left menu.
@@ -278,6 +285,9 @@ For users looking to explore the HyperDX interface only, we recommend our [sampl
 
 <img src="/images/use-cases/observability/hyperdx_cloud_landing.png" alt="ClickHouse Cloud HyperDX Landing"/>
 
+</Step>
+
+<Step>
 ### User permissions [#user-permissions]
 
 Users accessing HyperDX are automatically authenticated using their ClickHouse Cloud console credentials. Access is controlled through SQL console permissions configured in the service settings.
@@ -297,6 +307,9 @@ Users accessing HyperDX are automatically authenticated using their ClickHouse C
 To enable alerts, at least one user with **Service Admin** permissions (mapped to **Full Access** in the SQL Console Access dropdown) must log into HyperDX at least once. This provisions a dedicated user in the database that runs alert queries.
 </Note>
 
+</Step>
+
+<Step>
 ### Create a data source [#create-a-datasource]
 
 HyperDX is Open Telemetry native but not Open Telemetry exclusive - users can use their own table schemas if desired.
@@ -324,6 +337,8 @@ Note that different data sources in ClickStack—such as logs and traces—can b
 Users looking to connect HyperDX to an existing service with data can complete the database and table settings as required. Settings will be auto-detected if tables conform to the Open Telemetry schemas for ClickHouse. 
 
 If using your own schema, we recommend creating a Logs source ensuring the required fields are specified - see ["Log source settings"](/use-cases/observability/clickstack/config#logs) for further details.
+
+</Step>
 
 </Steps>
 

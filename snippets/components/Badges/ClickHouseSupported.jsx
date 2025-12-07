@@ -13,12 +13,10 @@ const Icon = () => {
     )
 }
 
-const ClickHouseSupported = () => {
+export const ClickHouseSupportedBadge = () => {
     return (
         <div className="ClickHouseSupportedBadge">
             <Icon />ClickHouse Supported
         </div>
     )
 }
-
-export { ClickHouseSupported };

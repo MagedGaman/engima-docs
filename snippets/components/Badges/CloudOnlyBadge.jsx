@@ -10,12 +10,10 @@ const Icon = () => {
     )
 }
 
-const CloudOnlyBadge = () => {
+export const CloudOnlyBadge = () => {
     return (
         <div className="cloudBadge">
             <Icon />{'ClickHouse Cloud only'}
         </div>
     )
 }
-
-export { CloudOnlyBadge }

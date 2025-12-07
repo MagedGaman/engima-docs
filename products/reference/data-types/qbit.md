@@ -8,7 +8,7 @@ title: 'QBit Data Type'
 doc_type: 'reference'
 ---
 
-import {ExperimentalBadge} from '/snippets/components/Badges/ExperimentalBadge.jsx'
+import {ExperimentalBadge} from '/snippets/components/ExperimentalBadge/ExperimentalBadge.jsx'
 
 <ExperimentalBadge/>
 

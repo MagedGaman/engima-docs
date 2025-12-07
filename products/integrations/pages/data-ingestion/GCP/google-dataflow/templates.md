@@ -8,7 +8,7 @@ doc_type: 'guide'
 keywords: ['google dataflow', 'gcp', 'data pipeline', 'templates', 'batch processing']
 ---
 
-import ClickHouseSupportedBadge from '/snippets/components/Badges/ClickHouseSupported.jsx'
+import ClickHouseSupportedBadge from '/snippets/components/ClickHouseSupported/ClickHouseSupported.jsx'
 
 <ClickHouseSupportedBadge/>
 

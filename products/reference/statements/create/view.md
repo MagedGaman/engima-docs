@@ -7,9 +7,9 @@ title: CREATE VIEW
 doc_type: reference
 ---
 
-import {ExperimentalBadge} from '/snippets/components/Badges/ExperimentalBadge.jsx'
-import {DeprecatedBadge} from '/snippets/components/Badges/DeprecatedBadge.jsx'
-import {CloudNotSupportedBadge} from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {ExperimentalBadge} from '/snippets/components/ExperimentalBadge/ExperimentalBadge.jsx'
+import {DeprecatedBadge} from '/snippets/components/DeprecatedBadge/DeprecatedBadge.jsx'
+import {CloudNotSupportedBadge} from '/snippets/components/CloudNotSupportedBadge/CloudNotSupportedBadge.jsx'
 
 Creates a new view. Views can be [normal](#normal-view), [materialized](#materialized-view), [refreshable materialized](#refreshable-materialized-view), and [window](/sql-reference/statements/create/view#window-view).
 

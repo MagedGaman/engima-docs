@@ -7,7 +7,7 @@ doc_type: 'guide'
 keywords: ['ClickHouse Cloud', 'encryption', 'CMEK', 'KMS key poller']
 ---
 
-import {EnterprisePlanFeatureBadge} from '/snippets/components/Badges/EnterprisePlanFeatureBadge.jsx'
+import {EnterprisePlanFeatureBadge} from '/snippets/components/EnterprisePlanFeatureBadge/EnterprisePlanFeatureBadge.jsx'
 
 ## Storage level encryption [#storage-encryption]
 

@@ -7,7 +7,7 @@ title: 'Shared database engine'
 doc_type: 'reference'
 ---
 
-import {CloudOnlyBadge} from '/snippets/components/Badges/CloudOnlyBadge.jsx'
+import {CloudOnlyBadge} from '/snippets/components/CloudOnlyBadge/CloudOnlyBadge.jsx'
 
 <CloudOnlyBadge/>
 

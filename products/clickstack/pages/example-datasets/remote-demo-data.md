@@ -45,6 +45,7 @@ This demo uses a [ClickStack maintained fork](https://github.com/ClickHouse/open
 
 <Steps>
 
+<Step>
 ### Connect to the demo server [#connect-to-the-demo-server]
 
 <Note title="Local-Only mode">
@@ -64,6 +65,9 @@ Rename the connection to `Demo` and complete the subsequent form with the follow
 
 <img src="/images/use-cases/observability/hyperdx-demo/edit_demo_connection.png" alt="Edit Demo Connection"/>
 
+</Step>
+
+<Step>
 ### Modify the sources [#modify-sources]
 
 <Note title="Local-Only mode">
@@ -78,6 +82,9 @@ Scroll up to `Sources` and modify each of the sources - `Logs`, `Traces`, `Metri
 You may need to reload the page to ensure the full list of databases is listed in each source.
 </Note>
 
+</Step>
+
+<Step>
 ### Adjust the time frame [#adjust-the-timeframe]
 
 Adjust the time to show all data from the previous `1 day` using the time picker in the top right.
@@ -90,6 +97,9 @@ You may a small difference in the number of errors in the overview bar chart, wi
 The location of the bars will differ depending on when you query the dataset.
 </Note>
 
+</Step>
+
+<Step>
 ### Filter to errors [#filter-to-errors]
 
 To highlight occurrences of errors, use the `SeverityText` filter and select `error` to display only error-level entries.
@@ -98,6 +108,9 @@ The error should be more apparent:
 
 <img src="/images/use-cases/observability/hyperdx-demo/step_3.png" alt="Step 3"/>
 
+</Step>
+
+<Step>
 ### Identify the error patterns [#identify-error-patterns]
 
 With HyperDX's Clustering feature, you can automatically identify errors and group them into meaningful patterns. This accelerates user analysis when dealing with large volumes of log and traces. To use it, select `Event Patterns` from the `Analysis Mode` menu on the left panel.
@@ -108,6 +121,9 @@ The error clusters reveal issues related to failed payments, including a named p
 
 Note that these error clusters likely originate from different services.
 
+</Step>
+
+<Step>
 ### Explore an error pattern [#explore-error-pattern]
 
 Click the most obvious error clusters which correlates with our reported issue of users being able to complete payments: `Failed to place order`.
@@ -122,6 +138,9 @@ Select any of the resulting errors. The logs metadata will be shown in detail. S
 
 <img src="/images/use-cases/observability/hyperdx-demo/step_6.png" alt="Step 6"/>
 
+</Step>
+
+<Step>
 ### Explore the infrastructure [#explore-the-infrastructure]
 
 We've identified a cache-related error that's likely causing payment failures. We still need to identify where this issue is originating from in our microservice architecture.
@@ -134,6 +153,9 @@ Select the `Infrastructure` tab to view the metrics associated with the underlyi
 
 The issue does not seem to infrastructure related - no metrics have appreciably changed over the time period: either before or after the error. Close the infrastructure tab.
 
+</Step>
+
+<Step>
 ### Explore a trace [#explore-a-trace]
 
 In ClickStack, traces are also automatically correlated with both logs and metrics. Let's explore the trace linked to our selected log to identify the service responsible.
@@ -146,6 +168,9 @@ By scrolling to the bottom of the view we can see that the `payment` service is 
 
 <img src="/images/use-cases/observability/hyperdx-demo/step_9.png" alt="Step 9"/>
 
+</Step>
+
+<Step>
 ### Searching traces [#searching-traces] 
 
 We have established users are failing to complete purchases due to a cache issue in the payment service. Let's explore the traces for this service in more detail to see if we can learn more about the root cause.
@@ -162,6 +187,9 @@ If we apply event clustering to the traces by selecting `Event Patterns`, we can
 
 <img src="/images/use-cases/observability/hyperdx-demo/step_12.png" alt="Step 12"/>
 
+</Step>
+
+<Step>
 ### Explore infrastructure for a trace [#explore-infrastructure-for-a-trace]
 
 Switch to the results view by clicking on `Results table`. Filter to errors using the `StatusCode` filter and `Error` value. 
@@ -174,6 +202,9 @@ Select a `Error: Visa cache full: cannot add new item.` error, switch to the `In
 
 By correlating traces with metrics we can see that memory and CPU increased with the `payment` service, before collapsing to `0` (we can attribute this to a pod restart) - suggesting the cache issue caused resource issues. We can expect this has impacted payment completion times.
 
+</Step>
+
+<Step>
 ### Event deltas for faster resolution [#event-deltas-for-faster-resolution] 
 
 Event Deltas help surface anomalies by attributing changes in performance or error rates to specific subsets of data—making it easier to quickly pinpoint the root cause. 
@@ -196,6 +227,9 @@ If we select the events with a duration greater than `200ms`, and apply the filt
 
 With analysis performed on the subset of data, we can see most performance spikes are associated with `visa` transactions.
 
+</Step>
+
+<Step>
 ### Using charts for more context [#using-charts-for-more-context]
 
 In ClickStack, we can chart any numeric value from logs, traces, or metrics for greater context. 
@@ -229,6 +263,9 @@ If we set `Group By` to `SpanAttributes['app.payment.card_type']` (just type `ca
 
 Note than once the error occurs responses return in `0s`.
 
+</Step>
+
+<Step>
 ### Exploring metrics more context [#exploring-metrics-for-more-context]
 
 Finally, let's plot the cache size as a metric to see how it behaved over time, thus giving us more context.
@@ -253,6 +290,9 @@ In summary, by exploring logs, traces and finally metrics we have concluded:
 - As the cache grew, the performance of Visa payments degraded
 - On reaching the maximum size, the cache rejected payments and reported itself as size `0`.
 
+</Step>
+
+<Step>
 ### Using sessions [#using-sessions] 
 
 Sessions allow us to replay the user experience, offering a visual account of how an error occurred from the user's perspective. While not typically used to diagnose root causes, they are valuable for confirming issues reported to customer support and can serve as a starting point for deeper investigation.
@@ -269,6 +309,9 @@ Search for `SpanAttributes.userEmail: Braulio` to find our customer's session. S
 
 <img src="/images/use-cases/observability/hyperdx-demo/step_22.png" alt="Step 22"/>
 
+</Step>
+
+<Step>
 ### Replaying sessions [#replaying-sessions] 
 
 Sessions can be replayed by pressing the ▶️ button. Switching between `Highlighted` and `All Events` allows varying degrees of span granularity, with the former highlighting key events and errors. 
@@ -280,6 +323,8 @@ If we scroll to the bottom of the spans we can see a `500` error associated with
 Selecting the span we can confirm this was caused by an internal error. By clicking the `Trace` tab and scrolling though the connected spans, we are able to confirm the customer indeed was a victim of our cache issue.
 
 <img src="/images/use-cases/observability/hyperdx-demo/step_24.png" alt="Step 24"/>
+
+</Step>
 
 </Steps>
 

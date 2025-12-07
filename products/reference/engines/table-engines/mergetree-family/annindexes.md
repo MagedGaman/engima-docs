@@ -7,7 +7,7 @@ title: 'Exact and Approximate Vector Search'
 doc_type: 'guide'
 ---
 
-import {ExperimentalBadge} from '/snippets/components/Badges/ExperimentalBadge.jsx'
+import {ExperimentalBadge} from '/snippets/components/ExperimentalBadge/ExperimentalBadge.jsx'
 
 # Exact and approximate vector search
 

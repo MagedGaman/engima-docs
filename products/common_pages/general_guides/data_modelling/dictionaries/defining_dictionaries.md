@@ -7,7 +7,7 @@ title: 'Dictionaries'
 doc_type: 'reference'
 ---
 
-import {CloudNotSupportedBadge} from '/snippets/components/Badges/CloudNotSupportedBadge.jsx'
+import {CloudNotSupportedBadge} from '/snippets/components/CloudNotSupportedBadge/CloudNotSupportedBadge.jsx'
 
 import SnippetDictionaryInCloud from '/snippets/_snippet_dictionary_in_cloud.mdx';
 import SelfManagedOnlyNoRoadmap from '/snippets/_self_managed_only_no_roadmap.mdx';

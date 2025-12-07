@@ -15,12 +15,10 @@ const Icon = () => {
 }
 
 
-const PartnerBadge = () => {
+export const PartnerBadge = () => {
     return (
         <div className="PartnerBadge">
             <Icon />Partner Integration
         </div>
     )
 }
-
-export { PartnerBadge }
