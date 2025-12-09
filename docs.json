@@ -385,6 +385,11 @@
               "products/cloud/pages/reference/data-resiliency",
               "products/cloud/pages/reference/11_account-close"
             ]
+          },
+          {
+            "tab": "API reference",
+            "icon": "code",
+            "openapi": "api-reference/cloud/cloud-openapi.json"
           }
         ]
       },
@@ -838,6 +843,11 @@
               "products/clickstack/pages/production",
               "products/clickstack/pages/ttl"
             ]
+          },
+          {
+            "tab": "API reference",
+            "icon": "code",
+            "openapi": "api-reference/hyperdx/hyperdx-openapi.json"
           }
         ]
       },
