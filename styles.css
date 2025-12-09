@@ -2,6 +2,12 @@
     height: 3rem;
 }
 
+/* Product selector trigger button text size */
+.nav-dropdown-products-selector-trigger .truncate,
+.nav-dropdown-products-selector-trigger span.truncate {
+    font-size: 1rem !important;
+}
+
 /* ============================================
    Homepage Gemini-style Interface Styling
    ============================================ */
@@ -25,122 +31,10 @@
 
 .hero-aside>img {
     min-width: auto !important;
-    width: 100% !important;
+    width: 70% !important;
     height: auto !important;
-    max-width: 100% !important;
+    max-width: 70% !important;
     object-fit: contain !important;
-}
-
-/* ============================================
-   Gemini Style Interface Styling
-   ============================================ */
-
-/* Main container */
-.gemini-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0;
-}
-
-/* The big rectangular card */
-.gemini-display {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1.5rem;
-    padding: 2.5rem;
-    min-height: 600px;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-/* Light mode adjustments */
-html:not(.dark) .gemini-display {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
-    border-color: rgba(0, 0, 0, 0.1);
-}
-
-/* Static header inside the card */
-.gemini-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    z-index: 10;
-}
-
-.gemini-header h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.3;
-}
-
-/* Typewriter effect */
-.typewriter-container {
-    display: inline-block;
-    position: relative;
-}
-
-.typewriter-text {
-    display: inline-block;
-}
-
-.typewriter-cursor {
-    display: inline-block;
-    width: 2px;
-    height: 1em;
-    background-color: currentColor;
-    margin-left: 2px;
-    animation: blink 1s step-end infinite;
-    vertical-align: text-bottom;
-}
-
-@keyframes blink {
-
-    0%,
-    50% {
-        opacity: 1;
-    }
-
-    51%,
-    100% {
-        opacity: 0;
-    }
-}
-
-/* Content viewport for sliding cards */
-.gemini-content-viewport {
-    position: relative;
-    flex: 1;
-    min-height: 400px;
-    overflow: hidden;
-}
-
-/* Individual content cards */
-.gemini-card {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    opacity: 0;
-    transform: translateX(100%);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-}
-
-.gemini-card.active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-    position: relative;
-}
-
-.gemini-card-inner {
-    height: 100%;
 }
 
 /* Search card content */
@@ -268,8 +162,18 @@ html:not(.dark) .hero-action-shortcut {
 
 .docs-tour-card-content h3 {
     margin: 0 0 0.5rem 0;
-    font-size: 1rem;
+    font-size: 1.125rem;
     font-weight: 600;
+}
+
+/* Light mode - black title text */
+html:not(.dark) .docs-tour-card-content h3 {
+    color: #000000;
+}
+
+/* Dark mode - white title text */
+.dark .docs-tour-card-content h3 {
+    color: #ffffff;
 }
 
 .docs-tour-card-content p {
@@ -373,10 +277,10 @@ html:not(.dark) .gemini-nav-btn.active {
 
 /* Reduce padding on hero and sidekick sections on home page */
 .hero {
-    padding-top: 1rem !important;
+    padding-top: 5rem !important;
     padding-bottom: 1rem !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    padding-left: 8rem !important;
+    padding-right: 8rem !important;
     align-items: center !important;
     min-height: auto !important;
     height: auto !important;
@@ -387,12 +291,46 @@ html:not(.dark) .gemini-nav-btn.active {
 .hero h1 {
     font-size: 2.5rem !important;
     margin-bottom: 0.5rem !important;
+    color: #ffffff !important;
 }
 
+/* Tilted Background Effect - matches ClickHouse.com styling */
 .hero h1 .tilted {
-    display: inline-block;
-    vertical-align: middle;
-    margin-top: 0.25rem;
+    position: relative !important;
+    display: inline-block !important;
+    isolation: isolate !important;
+    margin: 0.25em 0.25em !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+.hero h1 .tilted::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: -1 !important;
+    transform: skewY(-3deg) !important;
+    background-color: #FCFF74 !important;
+}
+
+.hero h1 .tilted-content {
+    position: relative !important;
+    display: inline-block !important;
+    padding: 0.1em 0.5em !important;
+    color: #000000 !important;
+}
+
+/* Light mode - black text and black tilted background */
+html:not(.dark) .hero h1 {
+    color: #000000 !important;
+}
+
+html:not(.dark) .hero h1 .tilted::before {
+    background-color: #000000 !important;
+}
+
+html:not(.dark) .hero h1 .tilted-content {
+    color: #ffffff !important;
 }
 
 .hero p {
@@ -421,8 +359,8 @@ html:not(.dark) .gemini-nav-btn.active {
 .sidekick.divider {
     padding-top: 0 !important;
     padding-bottom: 1rem !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     border-top: none !important;
@@ -480,6 +418,13 @@ html:not(.dark) .hero-aside .product-item img {
     line-height: 1.2;
 }
 
+/* Dark mode - white text for product item titles */
+.dark .hero-aside .product-item h3,
+:is(.dark) .hero-aside .product-item h3,
+[data-theme='dark'] .hero-aside .product-item h3 {
+    color: #ffffff !important;
+}
+
 @media (max-width: 1024px) {
     .hero-aside .product-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -499,13 +444,50 @@ html:not(.dark) .hero-aside .product-item img {
 /* Product selector dropdown styling - Desktop only */
 @media (min-width: 1024px) {
 
-    /* Dropdown container - make it wider */
+    /* Dropdown container - make it wider with backdrop blur */
     [data-testid="product-dropdown-content"],
     [class*="dropdown-content"],
     [class*="popover-content"]:has([class*="product"]) {
-        min-width: 900px !important;
-        max-width: 1200px !important;
+        min-width: 1100px !important;
+        max-width: 1400px !important;
         border-radius: 1.5rem !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+    }
+
+    /* Add backdrop overlay when product dropdown is open */
+    body:has([data-testid="product-dropdown-content"]:not([style*="display: none"])) {
+        position: relative;
+    }
+
+    body:has([data-testid="product-dropdown-content"]:not([style*="display: none"]))::before {
+        content: '';
+        position: fixed;
+        top: var(--header-height, 64px);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 40;
+        pointer-events: none;
+    }
+
+    /* Product selector header text */
+    [data-testid="product-dropdown-content"]::before,
+    div:has(> .product-selector-radio-group)::before,
+    div:has(> [class*="product-selector"] [role="radiogroup"])::before,
+    [class*="popover-content"]:has([class*="product"])::before {
+        content: "Explore ClickHouse docs" !important;
+        font-weight: 500 !important;
+        font-size: 1rem !important;
+        padding: 0.5rem 1rem !important;
+        margin: 0 !important;
+        display: block !important;
+        color: currentColor !important;
+        text-align: left !important;
+        line-height: 1.5 !important;
     }
 
     /* Product selector radio group - 3x3 grid layout */
@@ -514,12 +496,12 @@ html:not(.dark) .hero-aside .product-item img {
     [class*="ProductSelector"] {
         display: grid !important;
         grid-template-columns: repeat(3, 1fr) !important;
-        grid-template-rows: repeat(3, minmax(140px, 1fr)) !important;
-        gap: 1.25rem !important;
-        padding: 1.5rem !important;
-        height: auto !important;
-        min-height: 520px !important;
+        gap: 0.75rem !important;
+        padding: 1rem !important;
+        height: 248px !important;
         width: 100% !important;
+        justify-items: center !important;
+        align-items: center !important;
     }
 
     /* Individual product items in dropdown */
@@ -527,7 +509,7 @@ html:not(.dark) .hero-aside .product-item img {
     [class*="product-selector"] [role="radiogroup"]>a,
     [class*="ProductSelector"]>a,
     a.link:has(.nav-dropdown-products-selector-item) {
-        max-width: 100% !important;
+        max-width: 320px !important;
         margin: 0 !important;
         position: relative !important;
         height: 100% !important;
@@ -538,12 +520,25 @@ html:not(.dark) .hero-aside .product-item img {
     [class*="product-selector"] [role="radiogroup"]>a>*,
     [class*="ProductSelector"]>a>*,
     .nav-dropdown-products-selector-item {
-        border-radius: 1rem !important;
+        border-radius: 0.75rem !important;
         height: 100% !important;
-        min-height: 110px !important;
-        display: grid !important;
+        display: flex !important;
+        flex-direction: row !important;
         align-items: flex-start !important;
-        padding: 1.25rem 1.5rem !important;
+        padding: 0.625rem 0.875rem !important;
+        background-color: transparent !important;
+        border: 1px solid transparent !important;
+        transition: all 0.2s ease-in-out !important;
+        gap: 0.75rem !important;
+    }
+
+    /* Product item hover state - subtle background */
+    .product-selector-radio-group>a:hover>*,
+    [class*="product-selector"] [role="radiogroup"]>a:hover>*,
+    [class*="ProductSelector"]>a:hover>*,
+    .nav-dropdown-products-selector-item:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
     }
 
     /* Allow text to wrap properly */
@@ -589,8 +584,14 @@ html:not(.dark) .hero-aside .product-item img {
 
     /* Dark mode color overrides */
     :is(.dark) .nav-dropdown-products-selector-item-title,
-    :is([data-theme="dark"]) .nav-dropdown-products-selector-item-title {
-        color: #e5e5e5 !important;
+    :is([data-theme="dark"]) .nav-dropdown-products-selector-item-title,
+    [data-theme='dark'] a .nav-dropdown-products-selector-item-title,
+    .dark a .nav-dropdown-products-selector-item-title,
+    :is(.dark) a .nav-dropdown-products-selector-item-title,
+    [data-theme='dark'] a .nav-dropdown-products-selector-item p:first-child,
+    .dark a .nav-dropdown-products-selector-item p:first-child,
+    :is(.dark) a .nav-dropdown-products-selector-item p:first-child {
+        color: #ffffff !important;
     }
 
     :is(.dark) .nav-dropdown-products-selector-item-description,
@@ -686,8 +687,14 @@ html:not([data-theme="dark"]) .nav-dropdown-products-selector-item .flex.flex-co
 
 /* Dark mode color overrides */
 :is(.dark) .nav-dropdown-products-selector-item-title,
-:is([data-theme="dark"]) .nav-dropdown-products-selector-item-title {
-    color: #e5e5e5 !important;
+:is([data-theme="dark"]) .nav-dropdown-products-selector-item-title,
+[data-theme='dark'] a .nav-dropdown-products-selector-item-title,
+.dark a .nav-dropdown-products-selector-item-title,
+:is(.dark) a .nav-dropdown-products-selector-item-title,
+[data-theme='dark'] a .nav-dropdown-products-selector-item p:first-child,
+.dark a .nav-dropdown-products-selector-item p:first-child,
+:is(.dark) a .nav-dropdown-products-selector-item p:first-child {
+    color: #ffffff !important;
 }
 
 :is(.dark) .nav-dropdown-products-selector-item-description,
@@ -697,27 +704,6 @@ html:not([data-theme="dark"]) .nav-dropdown-products-selector-item .flex.flex-co
 :is(.dark) .nav-dropdown-products-selector-item .flex.flex-col p:last-child,
 :is([data-theme="dark"]) .nav-dropdown-products-selector-item .flex.flex-col p:last-child {
     color: #a3a3a3 !important;
-}
-
-/* Responsive adjustments for Gemini interface */
-@media (max-width: 768px) {
-    .gemini-display {
-        padding: 1.5rem;
-        min-height: 500px;
-    }
-
-    .gemini-header h1 {
-        font-size: 1.75rem;
-    }
-
-    .search-hero-btn {
-        font-size: 1rem;
-    }
-
-    .gemini-nav-btn {
-        padding: 0.625rem 1rem;
-        font-size: 0.875rem;
-    }
 }
 
 /* ============================================
@@ -895,9 +881,9 @@ html.dark .dark\:bg-primary-light,
 .nav-dropdown-products-selector-item::before {
     content: "" !important;
     display: block !important;
-    width: 40px !important;
-    height: 40px !important;
-    min-width: 40px !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
     flex-shrink: 0 !important;
     background-size: contain !important;
     background-repeat: no-repeat !important;
@@ -1038,7 +1024,7 @@ a[href*="/support"] .nav-dropdown-products-selector-item::before {
     grid-template-columns: repeat(3, minmax(180px, 1fr)) !important;
     gap: 12px !important;
     padding: 20px !important;
-    max-width: 700px !important;
+    max-width: 900px !important;
 }
 
 /* Individual product item wrapper links */
@@ -1059,9 +1045,9 @@ a[href*="/support"] .nav-dropdown-products-selector-item::before {
     padding: 16px !important;
     text-align: left !important;
 
-    /* Glassmorphic styling */
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* Transparent by default */
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
     border-radius: 8px !important;
     box-shadow: none !important;
 
@@ -1121,7 +1107,7 @@ a[href*="/support"] .nav-dropdown-products-selector-item::before {
 .nav-dropdown-products-selector-item p:last-child,
 .nav-dropdown-products-selector-item-description {
     margin: 0 !important;
-    font-size: 12px !important;
+    font-size: 0.875rem !important;
     font-weight: 400 !important;
     line-height: 1.5 !important;
     color: rgba(255, 255, 255, 0.6) !important;
@@ -1224,163 +1210,22 @@ h1[id="page-title"] {
     }
 }
 
-/* ClickStack Animation Component */
+/* ============================================
+   ClickPipes Home Page Specific Styling
+   ============================================ */
 
-.clickstack-animation-wrapper {
-    width: 100%;
-    max-width: max-content;
-    transition: opacity 0.3s ease;
+/* Narrower hero-aside on clickpipes_home page */
+[data-page="clickpipes_home"] .hero-aside,
+body.clickpipes_home .hero-aside {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
 }
 
-.clickstack-animation-inner {
-    transform-origin: top left;
-}
-
-.clickstack-grid {
-    display: grid;
-    width: 537px;
-    height: 537px;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-}
-
-/* Grid item containers */
-.clickstack-grid-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.clickstack-grid-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Icon boxes */
-.clickstack-icon-box {
-    display: flex;
-    width: 4rem;
-    height: 4rem;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    padding: 1rem;
-    flex-shrink: 0;
-    border: 1px solid rgba(113, 113, 122, 0.8);
-    background-color: #171717;
-}
-
-/* SVG positioning utilities */
-.clickstack-svg-absolute {
-    position: absolute;
-}
-
-.clickstack-svg-left-center {
-    left: 50%;
-    top: 50%;
-    transform: translateY(2rem);
-}
-
-.clickstack-svg-right-center {
-    right: 50%;
-    top: 50%;
-    transform: translateY(2rem);
-}
-
-.clickstack-svg-bottom-left {
-    bottom: 50%;
-    left: 50%;
-    transform: translateY(-2rem);
-}
-
-.clickstack-svg-bottom-right {
-    bottom: 50%;
-    right: 50%;
-    transform: translateY(-2rem);
-}
-
-/* ClickStack Logo Container */
-.clickstack-logo-container {
-    position: relative;
-}
-
-.clickstack-logo-glow {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    animation: fadeInOut 3s ease-in-out infinite;
-    background-color: rgba(250, 255, 105, 0.6);
-    filter: blur(40px);
-}
-
-.clickstack-logo-box {
-    position: absolute;
-    inset: 0;
-    z-index: 10;
-    display: flex;
-    border-radius: 0.5rem;
-    border: 2px solid #faff69;
-    background-color: #262626;
-    background-image: linear-gradient(to bottom right, rgba(250, 255, 105, 0.2), rgba(250, 255, 105, 0.4));
-}
-
-.clickstack-logo-svg {
-    margin: auto;
-}
-
-@keyframes fadeInOut {
-
-    0%,
-    100% {
-        opacity: 0.3;
-    }
-
-    50% {
-        opacity: 0.8;
-    }
-}
-
-/* Light mode adjustments - hide glow, keep yellow border */
-:is(.light) .clickstack-logo-glow {
-    display: none;
-}
-
-:is(.light) .clickstack-logo-box {
-    border-color: #faff69;
-    background-color: #000000;
-    background-image: none;
-}
-
-/* SVG line colors - dark mode (default) */
-.clickstack-line-bg {
-    stroke: #414141;
-}
-
-.clickstack-line-animated {
-    stroke: #faff69;
-}
-
-/* SVG line colors - light mode (all grey) */
-:is(.light) .clickstack-line-bg {
-    stroke: #d4d4d8;
-}
-
-:is(.light) .clickstack-line-animated {
-    stroke: #a1a1aa;
-}
-
-/* Responsive adjustments */
-@media (max-width: 767px) {
-    .clickstack-animation-wrapper {
-        max-width: 400px;
-    }
-
-    .clickstack-grid {
-        width: 400px;
-        height: 400px;
-    }
+/* Adjust hero-text width to balance the layout */
+[data-page="clickpipes_home"] .hero-text,
+body.clickpipes_home .hero-text {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
 }
 
 /* ClickHouse yellow links in dark mode */
@@ -1805,4 +1650,20 @@ h1[id="page-title"] {
 [data-theme='dark'] .scalePlanFeatureBadge {
     background-color: #1D64EC;
     color: #FFFFFF;
+}
+
+/* ============================================
+   Fix Table of Contents Overlap
+   ============================================ */
+
+/* Reset negative margin on Table of Contents to prevent overlap with description */
+#table-of-contents {
+    margin-top: 0 !important;
+}
+
+/* Fix layout overlap in flex-row-reverse pages (like secure-rds) */
+@media (min-width: 1280px) {
+    .flex.flex-row-reverse>.relative.grow {
+        max-width: calc(100% - 20rem) !important;
+    }
 }
