@@ -1,54 +1,141 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Guias",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#D20A11",
+    "light": "#D20A11",
+    "dark": "#D20A11"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "navigation": {
     "tabs": [
       {
         "tab": "Guides",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Empezando",
             "pages": [
               "index",
               "quickstart",
-              "development"
+              "development "
             ]
           },
           {
-            "group": "Customization",
+            "group": "Primeros Pasos",
+            "pages": []
+          },
+          {
+            "group": "Configuración Inicial",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "configuración_inicial/mconverter_eu_scraper_de_contenido_de_hoteles_sobre_booking_com_(1)_(1)"
             ]
           },
           {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
+            "group": "Motor",
+            "pages": []
           },
           {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
-            ]
+            "group": "Crm",
+            "pages": []
+          },
+          {
+            "group": "Informes",
+            "pages": []
+          },
+          {
+            "group": "Web",
+            "pages": []
+          },
+          {
+            "group": "Pms",
+            "pages": []
+          },
+          {
+            "group": "Channel",
+            "pages": []
+          },
+          {
+            "group": "Procesos",
+            "pages": []
+          },
+          {
+            "group": "Analítica",
+            "pages": []
+          },
+          {
+            "group": "Perfomance",
+            "pages": []
+          },
+          {
+            "group": "Administración",
+            "pages": []
+          },
+          {
+            "group": "Arion",
+            "pages": []
+          },
+          {
+            "group": "Desconexión por baja",
+            "pages": []
+          },
+          {
+            "group": "Conexiones",
+            "pages": []
+          },
+          {
+            "group": "Central De Reservas",
+            "pages": []
+          },
+          {
+            "group": "Operaciones",
+            "pages": []
+          },
+          {
+            "group": "Conversaciones",
+            "pages": []
+          },
+          {
+            "group": "Agencias B2B",
+            "pages": []
+          },
+          {
+            "group": "Generales",
+            "pages": []
+          },
+          {
+            "group": "Marketplace",
+            "pages": []
+          },
+          {
+            "group": "Plano De Mesa",
+            "pages": []
+          },
+          {
+            "group": "Preguntas Frecuentes",
+            "pages": []
+          },
+          {
+            "group": "Integraciones",
+            "pages": []
+          },
+          {
+            "group": "Tarifas Y Disponibilidad",
+            "pages": []
+          },
+          {
+            "group": "Marca Blanca",
+            "pages": []
+          },
+          {
+            "group": "Inbox",
+            "pages": []
           }
         ]
       },
       {
         "tab": "API reference",
+        "hidden": true,
         "groups": [
           {
             "group": "API documentation",
@@ -57,7 +144,7 @@
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Endpoint",
             "pages": [
               "api-reference/endpoint/get",
               "api-reference/endpoint/create",
@@ -71,13 +158,8 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
           "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "href": "https://www.pxsol.com/blog",
           "icon": "newspaper"
         }
       ]
@@ -85,38 +167,28 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.png"
+  },
+  "search": {
+    "prompt": "Buscar en guias..."
   },
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "label": "Soporte",
+        "href": "mailto:equipo@pxsol.com"
       }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
+    ]
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "youtube": "https://www.youtube.com/@PxsolSoftwareHotelero",
+      "instagram": "https://www.instagram.com/pxsol/?hl=es"
     }
   }
 }
