@@ -1,3 +1,7 @@
+html.dark .code-block-background {
+    background-color: #161616 !important;
+}
+
 .nav-logo {
     height: 3rem;
 }
