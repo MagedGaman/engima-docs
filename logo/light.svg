@@ -10,5 +10,5 @@
                     </g>
                     
                     <!-- Text -->
-                    <text font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="600" fill="#1e293b" y="86" x="150">Enigma</text>
+                    <text font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="600" fill="#2563eb" y="86" x="150">Enigma</text>
                 </svg>
