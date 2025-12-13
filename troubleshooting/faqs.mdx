@@ -88,7 +88,6 @@ Yes, Enigma takes security seriously:
 - We do not track or log browsing behavior
 
 **Compliance:**
-- SOC 2 Type II certified
 - GDPR compliant
 - Data residency options available for Enterprise
 
@@ -110,8 +109,8 @@ Yes, but with limits based on your plan:
 
 **Concurrent Session Limits:**
 - **Free Tier:** 2 concurrent sessions
-- **Pro Tier:** 5 concurrent sessions
-- **Enterprise:** Custom limits (10-100+)
+- **Pro Tier:** 15 concurrent sessions
+- **Enterprise:** Custom limits
 
 **Example:**
 ```javascript
@@ -224,9 +223,6 @@ ws.onmessage = async (event) => {
 - Handle popup windows via guardrails
 - May require manual takeover for 2FA
 
-**Security Warning:**
-Never log or store credentials provided to websites. Use environment variables and secure secret management.
-
 **Related:**
 - [Guardrails](/usage-guides/guardrails)
 - [Security Best Practices](/essentials/security)
@@ -239,10 +235,9 @@ Never log or store credentials provided to websites. Use environment variables a
 
 **Short Answer:** No, not currently.
 
-Enigma uses its own LLM infrastructure (Claude models from Anthropic) to power the browser agent. You cannot bring your own API keys or use different models.
+Enigma uses its own LLM infrastructure to power the browser agent. You cannot bring your own API keys or use different models.
 
 **What You Get:**
-- Access to latest Claude models
 - Optimized prompting for browser automation
 - No need to manage separate API keys
 - Usage tracked and billed through Enigma
@@ -260,7 +255,7 @@ Enigma uses its own LLM infrastructure (Claude models from Anthropic) to power t
 
 ### Does Enigma work with [framework]?
 
-Enigma provides a **REST API** and **WebSocket interface**, making it compatible with any framework or language that can make HTTP requests.
+Enigma provides a **REST API**, **WebSocket interface**, **MCP** and OPENAI format, making it compatible with any framework or language that can make HTTP requests.
 
 **Officially Supported:**
 - JavaScript/TypeScript (Node.js, Deno, Bun)
@@ -383,7 +378,7 @@ async def automate(task_details: str):
 **Free Tier Includes:**
 - **$5 free credits** per month
 - **2 concurrent sessions**
-- **Max 60 second session duration**
+- **15 minutes session duration**
 - All API features enabled
 - Community support
 
@@ -534,7 +529,7 @@ try {
 **Yes** - You can set spending limits in your account settings.
 
 **How to Set Limits:**
-1. Go to [enigma.click/settings/billing](https://enigma.click/settings/billing)
+1. Go to [app.enigma.click/billing](https://app.enigma.click/billing)
 2. Navigate to "Spending Limits"
 3. Set daily, weekly, or monthly caps
 4. Enable alerts at threshold percentages
