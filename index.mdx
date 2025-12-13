@@ -1,97 +1,256 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Overview"
+description: "Real-time browser automation infrastructure for AI agents"
 ---
 
-## Setting up
+Enigma is real-time browser automation infrastructure for AI agents. Give it a task in plain English, and an AI agent executes it in a real browser—clicking, typing, navigating, and extracting data autonomously.
 
-Get your documentation site up and running in minutes.
+**Key capabilities:**
+- Sub-100ms response times via hybrid CNN-LLM architecture
+- Live video streaming to observe sessions in real-time
+- Human-in-the-loop with guardrails and manual takeover
+- Flexible integration via REST API, WebSocket, MCP, or OpenAI-compatible endpoints
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+---
 
-## Make it yours
+## Reading Order
 
-Design a docs site that looks great and empowers your users.
+| Your Goal | Start Here |
+|-----------|------------|
+| **New to Enigma?** | [Quickstart](/quickstart) (5 min) |
+| **Building an integration?** | [Sessions & Tasks](/sessions), then [API Reference](/api-reference) |
+| **Using Claude Desktop?** | [MCP Server](/mcp) |
+| **Migrating from OpenAI?** | [OpenAI API](/openai-api) |
+| **Debugging issues?** | [Errors & Troubleshooting](/errors) |
 
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+---
+
+## How It Works
+
+### Sessions
+A session is a browser instance controlled by an AI agent. Start a session, and Enigma spins up an isolated browser environment ready to execute tasks.
+
+```
+POST /start/start-session → sessionId, socketURL, streaming URLs
+```
+
+Sessions persist until you terminate them or they time out (max 5 minutes). One session can run multiple tasks sequentially.
+
+### Tasks
+A task is a single objective for the agent. Each task gets a unique `taskId` for tracking.
+
+```
+Session
+ ├── Task 1 (initial) → completed
+ ├── Task 2 (follow-up) → completed
+ └── Task 3 (follow-up) → guardrail triggered
+```
+
+### Response Model
+
+Most browser tasks complete in 10-40 seconds. Enigma waits up to 50 seconds for your task to finish—meaning you typically get results inline, in a single request.
+
+```
+POST /start/run-task
+     ↓
+┌────────────────────────────────────┐
+│  Task completes in < 50s?          │
+│  ├── Yes → Result returned inline  │
+│  └── No  → pollUrl returned        │
+└────────────────────────────────────┘
+```
+
+**Inline result:**
+```json
+{
+  "success": true,
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully completed the search",
+      "completion_time": 23.5,
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650
+    },
+    "usage": { "cost": 0.0124 }
+  }
+}
+```
+
+**Pending result (for longer tasks):**
+```json
+{
+  "success": true,
+  "status": "pending",
+  "pollUrl": "https://connect.enigma.click/task/{sessionId}/{taskId}"
+}
+```
+
+This design gives you the simplicity of synchronous APIs for typical tasks, with the reliability of async for complex multi-step operations. See [Quickstart](/quickstart) for code that handles both cases.
+
+### Guardrails
+When the agent needs human input—credentials, clarification, approval—it triggers a guardrail and pauses. Your application detects this via polling or WebSocket events, provides the input, and the agent resumes.
+
+**Common guardrail triggers:**
+- Login forms requiring credentials
+- Purchase confirmations or sensitive actions
+- CAPTCHAs or security challenges
+- Ambiguous instructions needing clarification
+
+---
+
+## Choose Your Integration
+
+### Which endpoint should I use?
+
+```
+Need browser automation?
+├── Single task, don't care about session? → POST /start/run-task
+├── Multiple tasks in sequence? → POST /start/start-session + /send-message
+├── Using LangChain/existing OpenAI code? → POST /v1/chat/completions
+└── Using Claude Desktop/MCP client? → MCP Server
+```
+
+### REST vs WebSocket?
+
+- **REST:** Simpler. Good enough for 90% of use cases. Poll for results.
+- **WebSocket:** Only if you need live agent thoughts or sub-second event handling.
+
+---
+
+## Integration Methods
+
+| Method | Best For | Real-time Events |
+|--------|----------|------------------|
+| **REST API** | Simple integrations, serverless, stateless workflows | Poll for updates |
+| **WebSocket** | Live dashboards, interactive UIs, real-time agent thoughts | Yes |
+| **OpenAI-Compatible** | LangChain, LlamaIndex, Vercel AI SDK, existing OpenAI tooling | Poll or stream |
+| **MCP Server** | Claude Desktop, Cline, any MCP-compatible AI assistant | No |
+
+### REST API
+
+Stateless HTTP requests. Two patterns:
+
+**Single task (simplest):**
+```
+POST /start/run-task → result (or pollUrl if still running)
+```
+
+**Multi-task session:**
+```
+POST /start/start-session → sessionId
+POST /start/send-message → send tasks, pause, resume, interact
+GET  /task/:sessionId/:taskId → poll for results
+```
+
+### WebSocket
+
+Persistent Socket.IO connection for real-time events. Receive agent thoughts, action notifications, and guardrail triggers as they happen.
+
+```javascript
+socket.on("message", (data) => {
+  // data.type: "agent" | "action" | "task_completed" | "guardrail_trigger"
+});
+```
+
+### OpenAI-Compatible API
+
+Drop-in replacement using OpenAI's chat completion format. Works with any framework that supports OpenAI.
+
+```javascript
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'enig_xxx'
+});
+
+const completion = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [{ role: 'user', content: 'Search Google for Anthropic' }]
+});
+```
+
+### MCP Server
+
+Expose Enigma as tools for AI assistants via Model Context Protocol. Add browser automation capabilities to Claude Desktop, Cline, or any MCP client.
+
+```json
+{
+  "mcpServers": {
+    "enigma": {
+      "url": "https://connect.enigma.click/mcp/sse?apiKey=enig_xxx"
+    }
+  }
+}
+```
+
+---
+
+## API Endpoints at a Glance
+
+### Core Endpoints
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/start/run-task` | POST | Execute a single task (auto-terminates) |
+| `/start/start-session` | POST | Create a persistent session |
+| `/start/send-message` | POST | Send commands to a session |
+| `/task/:sessionId/:taskId` | GET | Poll for task results |
+
+### OpenAI-Compatible
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/v1/chat/completions` | POST | Chat completion format |
+| `/v1/models` | GET | List available models |
+
+### Monitoring (No Auth Required)
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/start/health` | GET | System health check |
+| `/start/active-sockets` | GET | Active instance count |
+
+All authenticated endpoints require `Authorization: Bearer YOUR_API_KEY`.
+
+---
+
+## Cost Management
+
+<Warning>
+**💰 Avoid Idle Charges**
+
+Sessions stay alive (and billable) until terminated or timeout. To optimize costs:
+- Use `/start/run-task` for single tasks (auto-terminates)
+- Set `terminateOnCompletion: true` on your last task in a session
+- Or manually terminate with `newState: "terminate"`
+</Warning>
+
+---
+
+## Enigma vs. Traditional Automation
+
+| | Enigma | Playwright/Puppeteer |
+|--|--------|----------------------|
+| **Input** | Natural language | Code |
+| **Adaptability** | AI agent adapts to UI changes | Scripts break on changes |
+| **Maintenance** | Self-healing | Manual updates required |
+| **Latency** | Sub-100ms decisions | ~50ms per action |
+| **Best for** | Dynamic tasks, scraping, form-filling | Regression testing, CI/CD |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Run your first task in 5 minutes
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Complete endpoint documentation
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Sessions & Tasks" icon="browser" href="/sessions">
+    Lifecycle management
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Errors & Troubleshooting" icon="triangle-exclamation" href="/errors">
+    Error handling guide
   </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
-  </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+</CardGroup>

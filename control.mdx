@@ -1,0 +1,515 @@
+---
+title: "Controlling Sessions"
+description: "Send commands to control task execution, interact manually, or respond to guardrails"
+---
+
+## Control Methods
+
+Both methods use the same message payloads—choose based on your needs:
+
+| Method | How to Send | Best For |
+|--------|-------------|----------|
+| REST | `POST /start/send-message` with `{sessionId, message: {...}}` | Stateless, serverless, simple integrations |
+| WebSocket | `socket.emit("message", {...})` | Real-time events, live UIs |
+
+### REST API Structure
+
+**All REST commands use the same endpoint:** `POST /start/send-message`
+
+Your message payload gets wrapped in this format:
+```json
+{
+  "sessionId": "YOUR_SESSION_ID",
+  "message": {
+    // Your command here
+  }
+}
+```
+
+**Response Types:**
+
+| Action Type | Returns | Description |
+|-------------|---------|-------------|
+| `newTask` | `taskId` + result or `pollUrl` | Only action that returns taskId for polling |
+| `state` (pause/resume/stop/terminate) | `{success: true}` | Immediate confirmation |
+| `interaction` (clicks/typing/takeover) | `{success: true}` | Immediate confirmation |
+| `guardrail` | `{success: true}` | Immediate confirmation |
+
+<Tip>
+**Key Insight:** The REST endpoint `/start/send-message` is universal—it handles all message types. Only `actionType: "newTask"` returns a `taskId` for polling; all other actions return immediate success confirmation.
+</Tip>
+
+---
+
+## Task Control
+
+### newTask
+
+Start a new task in the current session. This is the only action type that returns a `taskId` for result tracking.
+
+**Parameters:**
+- `actionType`: `"newTask"` (required)
+- `newState`: `"start"` (required)
+- `taskDetails`: Task description (required)
+- `maxDuration`: Max time for task in ms (optional)
+- `maxInputTokens`: Max input tokens (optional)
+- `maxOutputTokens`: Max output tokens (optional)
+- `startingUrl`: Starting URL (optional)
+- `avoidDomains`: Array of domains to avoid (optional)
+- `terminateOnCompletion`: Auto-terminate session after task (optional, default: false)
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "newTask",
+      "newState": "start",
+      "taskDetails": "Search for wireless keyboards",
+      "maxDuration": 60000,
+      "terminateOnCompletion": true
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Search for wireless keyboards",
+  maxDuration: 60000,
+  maxInputTokens: 100000,
+  maxOutputTokens: 100000,
+  startingUrl: "https://amazon.com",
+  avoidDomains: ["facebook.com", "twitter.com"]
+});
+```
+
+</CodeGroup>
+
+**Response (task completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "SESSION_ID",
+  "taskId": "TASK_ID",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Found 10 wireless keyboard results",
+      "prompt_tokens": 8500,
+      "completion_tokens": 2300,
+      "total_tokens": 10800
+    }
+  }
+}
+```
+
+**Response (task still running after 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "SESSION_ID",
+  "taskId": "TASK_ID",
+  "pending": true,
+  "pollUrl": "https://connect.enigma.click/task/SESSION_ID/TASK_ID",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+<Tip>
+**💰 Cost Optimization Tip:**
+Set `terminateOnCompletion: true` when you're done with the session to avoid idle session charges. The session will automatically close after this task completes.
+</Tip>
+
+---
+
+### pause
+
+Pause the current task. Agent stops after completing its current action.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "pause" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "pause" });
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+---
+
+### resume
+
+Resume a paused task.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "resume" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "resume" });
+```
+
+</CodeGroup>
+
+---
+
+### stop
+
+Stop the current task. Session remains active for follow-up tasks.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "stop" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "stop" });
+```
+
+</CodeGroup>
+
+---
+
+### terminate
+
+End the session completely. Closes all connections.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "terminate" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "terminate" });
+```
+
+</CodeGroup>
+
+---
+
+## Manual Interaction
+
+### Coordinate System
+
+When using manual interactions, coordinates map to the browser viewport:
+
+- **Resolution:** 1024 × 600 pixels
+- **Origin:** Top-left (0, 0)
+- **Browser chrome offset:** 155 pixels from top
+
+```
+┌────────────────────────────────────┐
+│  Browser Toolbar (155px height)   │ ◄─ Not clickable
+├────────────────────────────────────┤
+│                                    │
+│     Clickable Content Area         │ ◄─ Y starts at 155
+│     (1024 × 445 pixels)            │
+│                                    │
+└────────────────────────────────────┘
+```
+
+If displaying the stream at a different size, scale coordinates accordingly:
+
+```javascript
+function scaleCoords(clientX, clientY, displayWidth, displayHeight) {
+  const serverWidth = 1024;
+  const serverHeight = 600;
+  const yOffset = 155; // Browser chrome height
+
+  return {
+    x: Math.round((clientX / displayWidth) * serverWidth),
+    y: Math.round((clientY / displayHeight) * serverHeight) + yOffset
+  };
+}
+```
+
+---
+
+### takeOverControl
+
+Enable manual mode. Agent pauses, you control the browser.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "takeOverControl" }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "takeOverControl" }
+});
+```
+
+</CodeGroup>
+
+---
+
+### releaseControl
+
+Return control to the AI agent.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "releaseControl" }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "releaseControl" }
+});
+```
+
+</CodeGroup>
+
+---
+
+### click
+
+Click at specific coordinates.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "CLICK", "x": 500, "y": 300 }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 500, y: 300 }
+});
+```
+
+</CodeGroup>
+
+---
+
+### doubleClick
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "DOUBLE_CLICK", "x": 500, "y": 300 }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "DOUBLE_CLICK", x: 500, y: 300 }
+});
+```
+
+</CodeGroup>
+
+---
+
+### type
+
+Type text into focused element.
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `text` | string | Text to type |
+| `humanLike` | boolean | Simulate human typing speed |
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "TYPE", "text": "Hello world", "humanLike": true }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "TYPE", text: "Hello world", humanLike: true }
+});
+```
+
+</CodeGroup>
+
+---
+
+### keyPress
+
+Press a single key.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "KEY_PRESS", "key": "Enter" }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "Enter" }
+});
+```
+
+</CodeGroup>
+
+Common keys: `Enter`, `Escape`, `Tab`, `Backspace`, `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`
+
+---
+
+## Guardrail Response
+
+When the agent triggers a guardrail (needs human input), respond to continue.
+
+<CodeGroup>
+
+```bash REST
+# 1. Detect via polling GET /task/:sessionId/:taskId:
+# Response: { "type": "guardrail_trigger", "data": { "type": "human_input_needed", "value": "I need login credentials" } }
+
+# 2. Respond:
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "guardrail",
+      "taskDetails": "Username: demo@example.com, Password: demo123",
+      "newState": "resume"
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    console.log("Agent needs:", data.data.value);
+
+    socket.emit("message", {
+      actionType: "guardrail",
+      taskDetails: "Username: demo@example.com, Password: demo123",
+      newState: "resume"
+    });
+  }
+});
+```
+
+</CodeGroup>
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Events Reference" icon="bolt" href="/events">
+    Incoming message types
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/streaming">
+    Watch sessions live
+  </Card>
+  <Card title="Errors & Troubleshooting" icon="triangle-exclamation" href="/errors">
+    Error handling guide
+  </Card>
+  <Card title="Sessions & Tasks" icon="browser" href="/sessions">
+    Session lifecycle management
+  </Card>
+</CardGroup>

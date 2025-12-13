@@ -1,0 +1,398 @@
+---
+title: "Events & Responses"
+description: "How to receive updates from Enigma sessions"
+---
+
+## Response Methods
+
+| Method | How It Works |
+|--------|--------------|
+| **REST** | Results returned inline if task completes within 50s, otherwise poll |
+| **WebSocket** | Real-time events pushed as they occur |
+
+---
+
+## REST API Responses
+
+### Inline Results (< 50 seconds)
+
+Both `/run-task` and `/send-message` wait up to 50 seconds for task completion. If the task finishes in time, you get the result immediately:
+
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "success": true,
+    "data": {
+      "message": "Successfully completed the search",
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650,
+      "completion_time": 23.5
+    }
+  }
+}
+```
+
+### Pending Results (> 50 seconds)
+
+For longer tasks, the response returns immediately with a poll URL:
+
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "pending",
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+### Polling `GET /task/:sessionId/:taskId`
+
+Poll until `pending: false` or a final `type` is returned.
+
+**Still running:**
+```json
+{
+  "success": true,
+  "status": "active",
+  "pending": true,
+  "usage": {
+    "inputTokens": 8000,
+    "outputTokens": 2100,
+    "computeTime": 3,
+    "cost": 0.0067
+  }
+}
+```
+
+**Completed:**
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "Task finished",
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+**Guardrail triggered:**
+```json
+{
+  "success": true,
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**Failed:**
+```json
+{
+  "success": false,
+  "status": "failed",
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT",
+  "usage": {
+    "inputTokens": 5000,
+    "outputTokens": 1200,
+    "computeTime": 2,
+    "cost": 0.0045
+  }
+}
+```
+
+---
+
+## WebSocket Events
+
+Connect via Socket.IO and listen for `message` events:
+
+```javascript
+socket.on("message", (data) => {
+  console.log(data.type, data);
+});
+```
+
+### Event Types
+
+#### agent
+
+Live agent thoughts and reasoning.
+
+```json
+{
+  "type": "agent",
+  "content": "I'll navigate to the search box and enter the query..."
+}
+```
+
+#### action
+
+Agent performed a browser action.
+
+```json
+{
+  "type": "action",
+  "data": { "name": "click_element" }
+}
+```
+
+#### response_update
+
+Status update during task execution.
+
+```json
+{
+  "type": "response_update",
+  "data": { "message": "Starting task... Browsing the web now." }
+}
+```
+
+#### task_completed
+
+Task finished successfully.
+
+```json
+{
+  "type": "task_completed",
+  "taskId": "x9y8z7w6v5u4",
+  "data": {
+    "message": "Task completed successfully",
+    "prompt_tokens": 15420,
+    "completion_tokens": 8230,
+    "total_tokens": 23650,
+    "completion_time": 45.3,
+    "usage": {
+      "cost": 0.0234
+    }
+  }
+}
+```
+
+#### guardrail_trigger
+
+Agent needs human input to continue.
+
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**Respond with:**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Username: demo@example.com, Password: demo123",
+  newState: "resume"
+});
+```
+
+#### error
+
+Task failed with error.
+
+```json
+{
+  "type": "error",
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT"
+}
+```
+
+### Connection Events
+
+```javascript
+socket.on("connect", () => console.log("Connected"));
+socket.on("disconnect", () => console.log("Disconnected"));
+socket.on("error", (err) => console.error("Error:", err));
+
+// Session terminated by server
+socket.on("end_session", (data) => {
+  console.log("Session ended:", data.reason);
+  // reasons: "completed", "terminated", "expired", "terminateOnCompletion", "instance_lost"
+});
+
+// Instance connection issues (session enters 5-min grace period)
+socket.on("instance:disconnected", (data) => {
+  console.log("Instance lost, waiting for reconnection...");
+  console.log("Grace period:", data.gracePeriod, "ms");
+});
+
+// Instance recovered
+socket.on("instance:reconnected", (data) => {
+  console.log("Instance reconnected");
+});
+```
+
+---
+
+## Complete Event Reference
+
+| Event Type | REST | WebSocket | Description |
+|------------|------|-----------|-------------|
+| `agent` | ✗ | ✓ | Live agent reasoning |
+| `action` | ✗ | ✓ | Browser action performed |
+| `response_update` | ✗ | ✓ | Status updates |
+| `task_completed` | ✓ (poll) | ✓ | Task finished successfully |
+| `guardrail_trigger` | ✓ (poll) | ✓ | Human input needed |
+| `error` | ✓ (poll) | ✓ | Task failed |
+| `end_session` | ✗ | ✓ | Session terminated |
+| `instance:disconnected` | ✗ | ✓ | Instance connection lost |
+| `instance:reconnected` | ✗ | ✓ | Instance recovered |
+
+---
+
+## Polling Best Practices
+
+```javascript
+async function pollForResult(sessionId, taskId, apiKey) {
+  const maxAttempts = 60; // 2 minutes max
+  const interval = 2000; // Poll every 2 seconds
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(`https://connect.enigma.click/task/${sessionId}/${taskId}`, {
+      headers: { "Authorization": `Bearer ${apiKey}` }
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    // Final states
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") return data;
+    if (data.status === "failed") throw new Error(data.error || "Task failed");
+    if (data.status === "terminated") throw new Error("Session terminated");
+
+    // Still running
+    if (data.pending) {
+      console.log(`Attempt ${i + 1}/${maxAttempts}: Task still running...`);
+      await new Promise(r => setTimeout(r, interval));
+      continue;
+    }
+
+    return data;
+  }
+
+  throw new Error("Polling timeout after 2 minutes");
+}
+
+// Usage
+try {
+  const result = await pollForResult("SESSION_ID", "TASK_ID", "YOUR_API_KEY");
+  console.log("Result:", result);
+} catch (error) {
+  console.error("Error:", error.message);
+}
+```
+
+---
+
+## Error Handling Example
+
+### REST API
+```javascript
+async function handleTaskExecution(sessionId, taskId, apiKey) {
+  try {
+    const result = await pollForResult(sessionId, taskId, apiKey);
+
+    if (result.type === "task_completed") {
+      console.log("Success:", result.data.message);
+      return result;
+    }
+
+    if (result.type === "guardrail_trigger") {
+      console.log("Guardrail:", result.data.value);
+      // Handle guardrail - get user input and resume
+      return await handleGuardrail(sessionId, result);
+    }
+  } catch (error) {
+    console.error("Task failed:", error.message);
+    throw error;
+  }
+}
+```
+
+### WebSocket
+```javascript
+function setupEventHandlers(socket) {
+  socket.on("message", (data) => {
+    switch (data.type) {
+      case "task_completed":
+        console.log("Success:", data.data.message);
+        break;
+
+      case "guardrail_trigger":
+        console.log("Guardrail:", data.data.value);
+        // Prompt user for input
+        handleGuardrail(socket, data);
+        break;
+
+      case "error":
+        console.error("Task error:", data.error);
+        socket.disconnect();
+        break;
+
+      case "agent":
+        console.log("Agent:", data.content);
+        break;
+    }
+  });
+
+  socket.on("end_session", (data) => {
+    console.log("Session ended:", data.reason);
+    socket.disconnect();
+  });
+
+  socket.on("error", (err) => {
+    console.error("Socket error:", err);
+    socket.disconnect();
+  });
+}
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Controlling Sessions" icon="gamepad" href="/control">
+    Send commands to sessions
+  </Card>
+  <Card title="Errors & Troubleshooting" icon="triangle-exclamation" href="/errors">
+    Comprehensive error guide
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/streaming">
+    Watch sessions live
+  </Card>
+  <Card title="Sessions & Tasks" icon="browser" href="/sessions">
+    Session lifecycle
+  </Card>
+</CardGroup>
