@@ -1,0 +1,217 @@
+---
+title: "Concept: Tasks"
+description: "Understanding browser tasks and their lifecycle"
+---
+
+## What is a Task?
+
+A **task** is a single objective for the AI agent to complete within a browser session. Each task is described in natural language and executed autonomously by the agent.
+
+Examples of tasks:
+- "Search Google for Anthropic and return the first result"
+- "Find the price of the wireless keyboard on this page"
+- "Fill out this form with the provided data and submit it"
+- "Navigate through the checkout flow and screenshot the payment page"
+
+---
+
+## Task Lifecycle
+
+Tasks progress through several states from initiation to completion:
+
+```
+┌─────────┐     ┌───────────┐     ┌─────────────────┐
+│ Started │────►│  Running  │────►│ task_completed  │
+└─────────┘     └───────────┘     └─────────────────┘
+                     │
+                     ├───────────► guardrail_trigger
+                     │
+                     └───────────► failed
+```
+
+### Task States
+
+| State | Description | What Happens |
+|-------|-------------|--------------|
+| `started` | Task has been accepted and queued | Agent prepares to execute |
+| `running` | Agent is actively executing the task | Browser actions occurring |
+| `task_completed` | Task finished successfully | Result available in response |
+| `guardrail_trigger` | Agent needs human input to proceed | Task paused, awaiting response |
+| `failed` | Task encountered an error | Session may continue or terminate |
+
+---
+
+## Task Properties
+
+### Task Identification
+Each task gets a unique `taskId` when created. Use this ID to:
+- Poll for task status (REST API)
+- Track specific tasks in multi-task workflows
+- Retrieve task results
+
+### Task Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `taskDetails` | string | required | Natural language task description |
+| `maxDuration` | number | 300000 | Max time for this task in ms |
+| `maxInputTokens` | number | 100000 | Max input tokens |
+| `maxOutputTokens` | number | 100000 | Max output tokens |
+| `startingUrl` | string | null | Starting URL (optional) |
+| `avoidDomains` | string[] | `[]` | Domains to avoid |
+| `terminateOnCompletion` | boolean | false | Auto-terminate session after this task |
+
+---
+
+## Task Results
+
+When a task completes successfully, you receive a structured result:
+
+```json
+{
+  "type": "task_completed",
+  "data": {
+    "message": "Successfully completed the search",
+    "completion_time": 23.5,
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+### Result Fields
+
+| Field | Description |
+|-------|-------------|
+| `message` | Natural language result from the agent |
+| `completion_time` | Time taken to complete task (seconds) |
+| `prompt_tokens` | Input tokens used |
+| `completion_tokens` | Output tokens generated |
+| `total_tokens` | Sum of input and output tokens |
+| `cost` | Total cost in USD |
+| `completedAt` | ISO 8601 timestamp |
+
+---
+
+## Task Execution
+
+### Sequential Execution
+Within a single session, tasks run sequentially:
+
+```
+Session: sess_abc
+├── Task 1 (running) → completes
+├── Task 2 (queued) → starts → completes
+└── Task 3 (queued) → starts → completes
+```
+
+You cannot run multiple tasks in parallel within the same session. For concurrent execution, use multiple sessions.
+
+### Task Duration
+Most tasks complete in 10-40 seconds. The API waits up to 50 seconds before returning a `pollUrl` for longer tasks.
+
+**Typical completion times:**
+- Simple search/navigation: 10-20 seconds
+- Form filling: 20-40 seconds
+- Complex multi-step: 60-120 seconds
+
+### Task Dependencies
+Tasks can build on previous state within a session:
+
+```javascript
+// Task 1: Login
+await sendTask("Log into the website with these credentials");
+
+// Task 2: Navigate (depends on being logged in)
+await sendTask("Go to my account settings");
+
+// Task 3: Extract (depends on being in settings)
+await sendTask("Extract my email address");
+```
+
+---
+
+## Writing Effective Task Descriptions
+
+### Be Specific
+❌ "Find products"
+✅ "Search Amazon for wireless keyboards under $50 and return the top 3 results with prices"
+
+### Include Context
+❌ "Click the button"
+✅ "Click the blue 'Add to Cart' button next to the first product"
+
+### Specify Output Format
+❌ "Get the data"
+✅ "Extract the product name, price, and rating as a JSON object"
+
+### Break Down Complex Tasks
+❌ "Research this company and create a report"
+✅
+1. "Search Google for [company name] and find their website"
+2. "Navigate to their About page and extract the company description"
+3. "Find their contact information and return it in structured format"
+
+---
+
+## Task Constraints
+
+### Maximum Duration
+Tasks inherit the session's `maxDuration` (default 5 minutes) but can have a shorter limit specified per-task.
+
+### Token Limits
+Tasks are constrained by `maxInputTokens` and `maxOutputTokens`. If limits are exceeded:
+- Input limit: Task fails with error
+- Output limit: Agent's response is truncated
+
+### Domain Restrictions
+If `avoidDomains` is set, the agent will:
+- Refuse to navigate to those domains
+- Trigger a guardrail if instructed to visit them
+- Skip links to those domains in search results
+
+---
+
+## Common Task Patterns
+
+### Research & Extraction
+"Search for [topic] and return [specific data]"
+
+### Navigation & Screenshot
+"Go to [URL] and take a screenshot of [element]"
+
+### Form Filling
+"Fill out the form with: Name=[value], Email=[value], then submit"
+
+### Verification
+"Check if [condition] is true on [page]"
+
+### Conditional Actions
+"If [condition], then [action], otherwise [alternative action]"
+
+---
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Sending Tasks" icon="paper-plane" href="/usage-guides/multi-task-workflows">
+    How to create and send tasks
+  </Card>
+  <Card title="Task Polling" icon="rotate" href="/api-reference/endpoints">
+    Poll for task results
+  </Card>
+  <Card title="Guardrails" icon="shield-halved" href="/concepts/guardrails">
+    When tasks need human input
+  </Card>
+  <Card title="Structured Output" icon="table" href="/usage-guides/structured-output">
+    Get structured data from tasks
+  </Card>
+</CardGroup>

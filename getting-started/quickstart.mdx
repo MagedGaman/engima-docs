@@ -1,0 +1,349 @@
+---
+title: "Quickstart: REST API & WebSocket"
+description: "Run your first browser automation task in under 5 minutes"
+---
+
+## Prerequisites
+
+1. Sign up at [enigma.click](https://enigma.click)
+2. Go to **Settings → API Keys**
+3. Click **Create API Key** and copy it
+
+```
+enig_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+---
+
+## Option A: REST API (Simplest)
+
+The simplest way to start: one API call that creates a session, runs your task, and returns the result.
+
+### 1. Single Task (run-task)
+
+Perfect for one-off tasks that auto-terminate when complete.
+
+```bash
+curl -X POST https://connect.enigma.click/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"taskDetails": "Go to google.com and search for Anthropic"}'
+```
+
+**Response (completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully searched for Anthropic on Google",
+      "completion_time": 23.5,
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650
+    },
+    "usage": { "cost": 0.0124 }
+  }
+}
+```
+
+**Response (still running after 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "pending",
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+---
+
+### 2. Multi-Task Session (start-session + send-message)
+
+For multiple tasks in sequence, create a persistent session:
+
+**Step 1: Create session**
+```bash
+curl -X POST https://connect.enigma.click/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Go to amazon.com",
+    "startingUrl": "https://amazon.com"
+  }'
+```
+
+**Step 2: Send follow-up task**
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "newTask",
+      "newState": "start",
+      "taskDetails": "Search for wireless keyboards"
+    }
+  }'
+```
+
+**Step 3: Terminate when done**
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "terminate" }
+  }'
+```
+
+[Learn more about multi-task workflows](/usage-guides/multi-task-workflows)
+
+---
+
+### 3. Polling for Results
+
+When a task returns `status: "pending"`, poll until complete:
+
+```javascript
+async function runTask(taskDetails, apiKey) {
+  const response = await fetch("https://connect.enigma.click/start/run-task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({ taskDetails })
+  });
+
+  const data = await response.json();
+
+  // Inline result - return immediately
+  if (data.status === "complete") {
+    return data.result;
+  }
+
+  // Pending - poll for result
+  if (data.status === "pending") {
+    return await pollForResult(data.sessionId, data.taskId, apiKey);
+  }
+
+  throw new Error(data.message || "Task failed");
+}
+
+async function pollForResult(sessionId, taskId, apiKey) {
+  const maxAttempts = 60; // 2 minutes max
+  const interval = 2000; // Poll every 2 seconds
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(
+      `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+      { headers: { "Authorization": `Bearer ${apiKey}` } }
+    );
+
+    const data = await res.json();
+
+    // Check for completion
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") return data;
+    if (!data.success && data.type === "failed") throw new Error(data.error);
+
+    // Still running - wait and retry
+    await new Promise(r => setTimeout(r, interval));
+  }
+
+  throw new Error("Task timeout after 2 minutes");
+}
+
+// Usage
+const result = await runTask("Search Google for Anthropic", "enig_xxx");
+console.log(result.data.message);
+console.log(`Cost: $${result.usage.cost}`);
+```
+
+<Tip>
+Copy this `runTask` function as your starting point. It handles both response types and is production-ready.
+</Tip>
+
+---
+
+## Option B: WebSocket (Real-time)
+
+Use WebSocket when you need live agent thoughts, action notifications, and real-time updates.
+
+### 1. Socket.IO Connection
+
+```javascript
+import { io } from "socket.io-client";
+
+// Create a session first
+const session = await fetch("https://connect.enigma.click/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to google.com and search for Anthropic"
+  })
+}).then(r => r.json());
+
+// Connect to WebSocket
+const socket = io("https://connect.enigma.click", {
+  auth: { sessionId: session.sessionId },
+  transports: ["websocket"]
+});
+```
+
+---
+
+### 2. Listening for Events
+
+```javascript
+socket.on("connect", () => {
+  console.log("Connected to session");
+});
+
+socket.on("message", (data) => {
+  switch (data.type) {
+    case "agent":
+      // Live agent reasoning
+      console.log("Agent thinking:", data.content);
+      break;
+
+    case "action":
+      // Browser action performed
+      console.log("Agent action:", data.data.name);
+      break;
+
+    case "task_completed":
+      // Task finished
+      console.log("Task done:", data.data.message);
+      console.log("Cost:", data.usage.cost);
+      socket.disconnect();
+      break;
+
+    case "guardrail_trigger":
+      // Agent needs human input
+      console.log("Guardrail:", data.data.value);
+      // Respond with required input
+      socket.emit("message", {
+        actionType: "guardrail",
+        taskDetails: "Provide the required information here",
+        newState: "resume"
+      });
+      break;
+
+    case "error":
+      // Task failed
+      console.error("Error:", data.error);
+      socket.disconnect();
+      break;
+  }
+});
+
+socket.on("end_session", (data) => {
+  console.log("Session ended:", data.reason);
+  socket.disconnect();
+});
+```
+
+---
+
+### 3. Full Working Example
+
+```javascript
+import { io } from "socket.io-client";
+
+async function runTaskWithWebSocket(taskDetails, apiKey) {
+  return new Promise(async (resolve, reject) => {
+    // Step 1: Create session
+    const session = await fetch("https://connect.enigma.click/start/start-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({ taskDetails })
+    }).then(r => r.json());
+
+    // Step 2: Connect to WebSocket
+    const socket = io("https://connect.enigma.click", {
+      auth: { sessionId: session.sessionId },
+      transports: ["websocket"]
+    });
+
+    // Step 3: Handle events
+    socket.on("message", (data) => {
+      switch (data.type) {
+        case "agent":
+          console.log("💭", data.content);
+          break;
+
+        case "action":
+          console.log("🎯", data.data.name);
+          break;
+
+        case "task_completed":
+          console.log("✅ Done:", data.data.message);
+          socket.disconnect();
+          resolve(data);
+          break;
+
+        case "guardrail_trigger":
+          console.error("⚠️ Guardrail triggered:", data.data.value);
+          socket.disconnect();
+          reject(new Error(`Guardrail: ${data.data.value}`));
+          break;
+
+        case "error":
+          console.error("❌ Error:", data.error);
+          socket.disconnect();
+          reject(new Error(data.error));
+          break;
+      }
+    });
+
+    socket.on("error", (err) => {
+      console.error("Socket error:", err);
+      reject(err);
+    });
+  });
+}
+
+// Usage
+const result = await runTaskWithWebSocket(
+  "Go to google.com and search for Anthropic",
+  "enig_xxx"
+);
+console.log("Result:", result.data.message);
+console.log("Cost:", result.usage.cost);
+```
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain multiple tasks in a session
+  </Card>
+  <Card title="OpenAI Integration" icon="code" href="/integrations/openai-compatible">
+    Use with LangChain and OpenAI SDK
+  </Card>
+  <Card title="MCP Quickstart" icon="robot" href="/getting-started/mcp-quickstart">
+    Set up Claude Desktop integration
+  </Card>
+  <Card title="Workflow Automation" icon="workflow" href="/getting-started/workflow-quickstart">
+    Integrate with n8n, Make.com, Zapier
+  </Card>
+</CardGroup>

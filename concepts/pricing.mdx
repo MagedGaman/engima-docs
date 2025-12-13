@@ -1,0 +1,321 @@
+---
+title: "Pricing & Costs"
+description: "Understanding Enigma's pricing model and how to optimize costs"
+---
+
+## Pricing Model
+
+Enigma charges for two components:
+
+1. **Token Usage** — AI model input/output tokens
+2. **Compute Time** — Browser instance runtime
+
+Both are tracked per-task and returned in the `usage` object of each response.
+
+---
+
+## Token Pricing
+
+Enigma uses proprietary browser-optimized AI models:
+
+| Model | Input (per 1M tokens) | Output (per 1M tokens) | Best For |
+|-------|----------------------|------------------------|----------|
+| **enigma-browser-1** | $0.60 | $1.80 | Complex tasks, high accuracy |
+| **enigma-browser-fast** | $0.40 | $1.20 | Simple tasks, faster execution |
+
+<Note>
+Token prices are subject to change. Check the [dashboard](https://app.enigma.click) for current rates.
+</Note>
+
+### What Counts as Tokens?
+
+**Input Tokens:**
+- Your task description
+- Page content (HTML, text visible to agent)
+- Agent's internal reasoning
+- Previous task context in multi-task sessions
+
+**Output Tokens:**
+- Agent's thoughts and actions
+- Result message returned to you
+- Navigation decisions
+- Error messages
+
+---
+
+## Compute Pricing
+
+Compute time is charged per second of active session time:
+
+| Resource | Rate |
+|----------|------|
+| **Browser Instance** | $0.XX per minute |
+
+**What counts as compute time:**
+- Time from session creation to termination
+- Includes idle time between tasks
+- Maximum 5 minutes per session
+
+<Warning>
+**Avoid Idle Charges:** Sessions remain billable until terminated. Always use `terminateOnCompletion: true` on your final task or manually terminate sessions when done.
+</Warning>
+
+---
+
+## Cost Examples
+
+Typical costs for common tasks:
+
+| Task Type | Tokens Used | Duration | Est. Cost |
+|-----------|-------------|----------|-----------|
+| **Simple search** | ~10,000 | 20s | $0.01 |
+| **Form filling** | ~25,000 | 45s | $0.03 |
+| **Data extraction** | ~40,000 | 60s | $0.05 |
+| **Multi-step workflow** | ~100,000 | 3min | $0.15 |
+| **Complex automation** | ~200,000 | 5min | $0.30 |
+
+<Note>
+These are estimates. Actual costs depend on page complexity, task specificity, and agent efficiency.
+</Note>
+
+---
+
+## Cost Breakdown in Responses
+
+Every task response includes detailed cost information:
+
+```json
+{
+  "type": "task_completed",
+  "data": {
+    "message": "Task completed successfully",
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  }
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `prompt_tokens` | Input tokens used |
+| `completion_tokens` | Output tokens generated |
+| `total_tokens` | Sum of input + output |
+| `completion_time` | Task duration in seconds |
+| `computeTime` | Billable compute time in seconds |
+| `cost` | Total cost in USD |
+
+---
+
+## Cost Optimization Tips
+
+### 1. Use `terminateOnCompletion: true`
+
+**Problem:** Sessions continue running (and billing) after tasks complete.
+**Solution:** Auto-terminate when done.
+
+```json
+{
+  "taskDetails": "Search for products",
+  "terminateOnCompletion": true
+}
+```
+
+**Savings:** Eliminates idle session costs.
+
+---
+
+### 2. Set Appropriate `maxDuration`
+
+**Problem:** Default 5-minute sessions may run longer than needed.
+**Solution:** Set realistic timeouts.
+
+```json
+{
+  "taskDetails": "Quick search task",
+  "maxDuration": 60000  // 1 minute
+}
+```
+
+**Savings:** Prevents runaway sessions.
+
+---
+
+### 3. Use `enigma-browser-fast` for Simple Tasks
+
+**Problem:** Using the standard model for simple tasks wastes money.
+**Solution:** Specify the fast model when appropriate.
+
+```json
+{
+  "model": "enigma-browser-fast",
+  "taskDetails": "Get the title of this page"
+}
+```
+
+**Savings:** 33% reduction in token costs.
+
+---
+
+### 4. Optimize Task Descriptions
+
+**Problem:** Verbose or vague instructions waste tokens.
+**Solution:** Be concise and specific.
+
+❌ **Verbose:**
+"Please navigate to the website and then search for the product I mentioned earlier and then click on the first result and extract all the information you can find about it."
+
+✅ **Optimized:**
+"Search for [product] and return: name, price, rating from first result."
+
+**Savings:** Reduces input tokens by 50-70%.
+
+---
+
+### 5. Batch Related Tasks in Single Sessions
+
+**Problem:** Creating separate sessions for related tasks multiplies compute costs.
+**Solution:** Chain tasks in one session.
+
+❌ **Expensive:**
+```javascript
+await runTask("Go to amazon.com");  // New session
+await runTask("Search for keyboards");  // Another new session
+await runTask("Get first result price");  // Yet another session
+```
+
+✅ **Optimized:**
+```javascript
+const session = await startSession("Go to amazon.com");
+await sendTask(session, "Search for keyboards");
+await sendTask(session, "Get first result price");
+await terminateSession(session);
+```
+
+**Savings:** 3x reduction in compute costs.
+
+---
+
+### 6. Avoid Unnecessary Page Loads
+
+**Problem:** Navigating to unnecessary pages burns tokens.
+**Solution:** Be specific about starting URLs.
+
+❌ **Wasteful:**
+```json
+{
+  "taskDetails": "Search Amazon for keyboards"
+}
+```
+
+✅ **Optimized:**
+```json
+{
+  "taskDetails": "Search for keyboards",
+  "startingUrl": "https://amazon.com"
+}
+```
+
+**Savings:** Skips homepage → search navigation.
+
+---
+
+### 7. Use `avoidDomains` to Prevent Detours
+
+**Problem:** Agent accidentally navigates to unrelated domains.
+**Solution:** Block known distractions.
+
+```json
+{
+  "taskDetails": "Research this topic",
+  "avoidDomains": ["facebook.com", "twitter.com", "instagram.com"]
+}
+```
+
+**Savings:** Prevents wasted navigation.
+
+---
+
+## Monitoring Costs
+
+### Dashboard
+View historical usage and costs at [app.enigma.click](https://app.enigma.click/usage).
+
+### API Responses
+Every task response includes the `usage.cost` field for real-time tracking.
+
+### Polling Updates
+When polling long-running tasks, cost accumulates in real-time:
+
+```json
+{
+  "pending": true,
+  "usage": {
+    "cost": 0.0045  // Current cost, will increase as task continues
+  }
+}
+```
+
+---
+
+## Free Tier / Credits
+
+<Note>
+Check your [dashboard](https://app.enigma.click) for current credit balance and any promotional offers.
+</Note>
+
+---
+
+## Billing
+
+- **Billing Cycle:** Monthly
+- **Payment Methods:** Credit card, ACH
+- **Minimum Charge:** None — pay only for what you use
+- **Billing Dashboard:** [app.enigma.click/billing](https://app.enigma.click/billing)
+
+---
+
+## Cost Comparison
+
+### vs. Manual Labor
+
+| Task | Enigma Cost | Human Labor (@ $25/hr) | Savings |
+|------|-------------|------------------------|---------|
+| Product research | $0.05 | $2.08 (5 min) | 98% |
+| Form filling | $0.03 | $1.25 (3 min) | 98% |
+| Data extraction | $0.15 | $10.00 (24 min) | 99% |
+
+### vs. Traditional Automation
+
+| Factor | Enigma | Selenium/Playwright |
+|--------|--------|---------------------|
+| Development time | Minutes | Hours/Days |
+| Maintenance | Zero | Ongoing |
+| Adaptability | Self-healing | Breaks on changes |
+| Cost per run | $0.01-0.30 | Infrastructure + dev time |
+
+---
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Cost Optimization Guide" icon="chart-line" href="/usage-guides/cost-optimization">
+    Advanced cost-saving strategies
+  </Card>
+  <Card title="Session Control" icon="gamepad" href="/usage-guides/controlling-sessions">
+    Manage sessions to reduce costs
+  </Card>
+  <Card title="Response Model" icon="exchange-alt" href="/concepts/response-model">
+    Understand billing during polling
+  </Card>
+  <Card title="API Parameters" icon="sliders" href="/api-reference/parameters">
+    All cost-related parameters
+  </Card>
+</CardGroup>

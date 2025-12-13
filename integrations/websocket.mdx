@@ -1,0 +1,804 @@
+---
+title: "WebSocket Integration"
+description: "Real-time browser automation with Socket.IO events"
+---
+
+## When to Use WebSocket vs REST
+
+### Use WebSocket When:
+
+- You need **live agent thoughts and reasoning** as tasks execute
+- Building **real-time dashboards** or interactive UIs
+- You want **sub-second event notifications**
+- You need **immediate guardrail detection**
+- Building applications where users watch tasks execute live
+
+### Use REST API When:
+
+- Simple integrations where polling is acceptable
+- Serverless environments (Lambda, Vercel)
+- Stateless workflows
+- You don't need real-time updates
+
+<Tip>
+**Rule of thumb:** If you're building a UI where users watch tasks execute, use WebSocket. Otherwise, REST is simpler.
+</Tip>
+
+---
+
+## Socket.IO Setup and Connection
+
+### Installation
+
+```bash
+npm install socket.io-client
+```
+
+### Basic Connection
+
+```javascript
+import { io } from "socket.io-client";
+
+// Step 1: Create a session via REST API
+const session = await fetch("https://connect.enigma.click/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to google.com and search for Anthropic"
+  })
+}).then(r => r.json());
+
+// Step 2: Connect to WebSocket with sessionId
+const socket = io("https://connect.enigma.click", {
+  auth: { sessionId: session.sessionId },
+  transports: ["websocket"]
+});
+
+// Step 3: Listen for events
+socket.on("connect", () => {
+  console.log("✓ Connected to session");
+});
+
+socket.on("message", (data) => {
+  console.log("Event:", data.type, data);
+});
+
+socket.on("disconnect", () => {
+  console.log("✗ Disconnected");
+});
+```
+
+---
+
+## Event Types
+
+### agent
+
+Live agent thoughts and reasoning as the task executes.
+
+**Event:**
+```json
+{
+  "type": "agent",
+  "content": "I'll navigate to the search box and enter the query..."
+}
+```
+
+**Handler:**
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "agent") {
+    console.log("💭 Agent:", data.content);
+  }
+});
+```
+
+---
+
+### action
+
+Browser action performed by the agent.
+
+**Event:**
+```json
+{
+  "type": "action",
+  "data": {
+    "name": "click_element",
+    "target": "search button"
+  }
+}
+```
+
+**Handler:**
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "action") {
+    console.log("🎯 Action:", data.data.name);
+  }
+});
+```
+
+---
+
+### task_completed
+
+Task finished successfully.
+
+**Event:**
+```json
+{
+  "type": "task_completed",
+  "taskId": "x9y8z7w6v5u4",
+  "data": {
+    "message": "Successfully searched for Anthropic on Google",
+    "prompt_tokens": 15420,
+    "completion_tokens": 8230,
+    "total_tokens": 23650,
+    "completion_time": 45.3
+  },
+  "usage": {
+    "cost": 0.0234
+  }
+}
+```
+
+**Handler:**
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "task_completed") {
+    console.log("✅ Done:", data.data.message);
+    console.log("💰 Cost:", data.usage.cost);
+    socket.disconnect();
+  }
+});
+```
+
+---
+
+### guardrail_trigger
+
+Agent needs human input to continue.
+
+**Event:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**Handler:**
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    console.log("⚠️ Guardrail:", data.data.value);
+
+    // Respond with required information
+    socket.emit("message", {
+      actionType: "guardrail",
+      taskDetails: "Username: demo@example.com, Password: demo123",
+      newState: "resume"
+    });
+  }
+});
+```
+
+---
+
+### error
+
+Task failed with an error.
+
+**Event:**
+```json
+{
+  "type": "error",
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT"
+}
+```
+
+**Handler:**
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "error") {
+    console.error("❌ Error:", data.error);
+    socket.disconnect();
+  }
+});
+```
+
+---
+
+### end_session
+
+Session terminated by server.
+
+**Event:**
+```json
+{
+  "type": "end_session",
+  "reason": "completed",
+  "message": "Session ended"
+}
+```
+
+**Reasons:**
+- `"completed"` - Task completed successfully
+- `"terminated"` - User terminated session
+- `"expired"` - Session timeout (5 minutes)
+- `"terminateOnCompletion"` - Auto-terminated after task
+- `"instance_lost"` - Instance connection permanently lost
+
+**Handler:**
+```javascript
+socket.on("end_session", (data) => {
+  console.log("🔚 Session ended:", data.reason);
+  socket.disconnect();
+});
+```
+
+---
+
+### instance:disconnected
+
+Instance connection lost, entering 5-minute grace period.
+
+**Event:**
+```json
+{
+  "type": "instance:disconnected",
+  "message": "Instance connection lost. Attempting reconnection...",
+  "gracePeriod": 300000
+}
+```
+
+**Handler:**
+```javascript
+socket.on("instance:disconnected", (data) => {
+  console.warn("⚠️ Instance disconnected");
+  console.log("Grace period:", data.gracePeriod, "ms");
+  // Show "Reconnecting..." UI to user
+});
+```
+
+---
+
+### instance:reconnected
+
+Instance connection restored.
+
+**Event:**
+```json
+{
+  "type": "instance:reconnected",
+  "message": "Instance connection restored"
+}
+```
+
+**Handler:**
+```javascript
+socket.on("instance:reconnected", (data) => {
+  console.log("✅ Instance reconnected");
+  // Hide "Reconnecting..." UI
+});
+```
+
+---
+
+## Complete Working Example
+
+```javascript
+import { io } from "socket.io-client";
+
+async function runTaskWithWebSocket(taskDetails, apiKey) {
+  return new Promise(async (resolve, reject) => {
+    // Step 1: Create session
+    const session = await fetch("https://connect.enigma.click/start/start-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({ taskDetails })
+    }).then(r => r.json());
+
+    console.log("Session created:", session.sessionId);
+
+    // Step 2: Connect to WebSocket
+    const socket = io("https://connect.enigma.click", {
+      auth: { sessionId: session.sessionId },
+      transports: ["websocket"]
+    });
+
+    // Step 3: Handle events
+    socket.on("connect", () => {
+      console.log("✓ Connected");
+    });
+
+    socket.on("message", (data) => {
+      switch (data.type) {
+        case "agent":
+          console.log("💭", data.content);
+          break;
+
+        case "action":
+          console.log("🎯", data.data.name);
+          break;
+
+        case "task_completed":
+          console.log("✅ Done:", data.data.message);
+          console.log("💰 Cost: $" + data.usage.cost);
+          socket.disconnect();
+          resolve(data);
+          break;
+
+        case "guardrail_trigger":
+          console.error("⚠️ Guardrail:", data.data.value);
+          socket.disconnect();
+          reject(new Error(`Guardrail: ${data.data.value}`));
+          break;
+
+        case "error":
+          console.error("❌ Error:", data.error);
+          socket.disconnect();
+          reject(new Error(data.error));
+          break;
+      }
+    });
+
+    socket.on("end_session", (data) => {
+      console.log("🔚 Session ended:", data.reason);
+      socket.disconnect();
+    });
+
+    socket.on("instance:disconnected", (data) => {
+      console.warn("⚠️ Instance disconnected, reconnecting...");
+    });
+
+    socket.on("instance:reconnected", () => {
+      console.log("✅ Instance reconnected");
+    });
+
+    socket.on("error", (err) => {
+      console.error("Socket error:", err);
+      reject(err);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("✗ Disconnected");
+    });
+  });
+}
+
+// Usage
+try {
+  const result = await runTaskWithWebSocket(
+    "Go to google.com and search for Anthropic",
+    "enig_xxx"
+  );
+  console.log("Result:", result.data.message);
+} catch (error) {
+  console.error("Task failed:", error.message);
+}
+```
+
+---
+
+## Reconnection Handling
+
+### Automatic Reconnection
+
+Socket.IO automatically reconnects on connection loss. The Enigma server maintains session state during brief disconnections.
+
+```javascript
+const socket = io("https://connect.enigma.click", {
+  auth: { sessionId: session.sessionId },
+  transports: ["websocket"],
+  reconnection: true,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  reconnectionAttempts: 5
+});
+
+socket.on("reconnect", (attemptNumber) => {
+  console.log(`Reconnected after ${attemptNumber} attempts`);
+});
+
+socket.on("reconnect_attempt", (attemptNumber) => {
+  console.log(`Reconnection attempt ${attemptNumber}...`);
+});
+
+socket.on("reconnect_error", (error) => {
+  console.error("Reconnection error:", error);
+});
+
+socket.on("reconnect_failed", () => {
+  console.error("Reconnection failed after all attempts");
+  // Session may be lost
+});
+```
+
+---
+
+### Instance Disconnection vs Socket Disconnection
+
+Two types of disconnections:
+
+**1. Socket Disconnection** (client-server connection)
+- Handled automatically by Socket.IO
+- Session state preserved
+- Events resume after reconnection
+
+**2. Instance Disconnection** (browser instance connection)
+- Server loses connection to browser instance
+- 5-minute grace period to recover
+- You receive `instance:disconnected` event
+- If recovered: `instance:reconnected` event
+- If not recovered within 5 min: session terminates
+
+```javascript
+let instanceDisconnected = false;
+
+socket.on("instance:disconnected", (data) => {
+  instanceDisconnected = true;
+  console.warn("⚠️ Browser instance disconnected");
+  console.log(`Grace period: ${data.gracePeriod / 1000}s`);
+
+  // Show UI warning
+  showReconnectingUI();
+});
+
+socket.on("instance:reconnected", () => {
+  instanceDisconnected = false;
+  console.log("✅ Browser instance restored");
+
+  // Hide UI warning
+  hideReconnectingUI();
+});
+
+socket.on("end_session", (data) => {
+  if (data.reason === "instance_lost") {
+    console.error("❌ Instance could not be recovered");
+    // Notify user, restart task if needed
+  }
+});
+```
+
+---
+
+## Error Handling
+
+### Comprehensive Error Handler
+
+```javascript
+function setupErrorHandling(socket) {
+  // Socket.IO errors
+  socket.on("connect_error", (error) => {
+    console.error("Connection error:", error.message);
+    // Invalid sessionId, network issue, or server down
+  });
+
+  socket.on("error", (error) => {
+    console.error("Socket error:", error);
+  });
+
+  // Task errors
+  socket.on("message", (data) => {
+    if (data.type === "error") {
+      console.error("Task error:", data.error);
+      console.error("Code:", data.code);
+
+      // Handle specific error codes
+      switch (data.code) {
+        case "NAVIGATION_TIMEOUT":
+          console.log("Page took too long to load");
+          break;
+        case "ELEMENT_NOT_FOUND":
+          console.log("Agent couldn't find required element");
+          break;
+        case "SESSION_EXPIRED":
+          console.log("Session timed out");
+          break;
+        default:
+          console.log("Unknown error:", data.code);
+      }
+
+      socket.disconnect();
+    }
+  });
+
+  // Guardrail errors (unhandled)
+  socket.on("message", (data) => {
+    if (data.type === "guardrail_trigger") {
+      console.warn("Guardrail triggered but no handler provided");
+      console.warn("Agent says:", data.data.value);
+
+      // Optionally auto-stop
+      socket.emit("message", {
+        actionType: "guardrail",
+        taskDetails: "Cannot proceed",
+        newState: "stop"
+      });
+    }
+  });
+}
+```
+
+---
+
+## Sending Commands
+
+You can send commands to control the session via WebSocket:
+
+### Start New Task
+```javascript
+socket.emit("message", {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Search for wireless keyboards",
+  maxDuration: 60000
+});
+```
+
+### Pause Task
+```javascript
+socket.emit("message", {
+  actionType: "state",
+  newState: "pause"
+});
+```
+
+### Resume Task
+```javascript
+socket.emit("message", {
+  actionType: "state",
+  newState: "resume"
+});
+```
+
+### Stop Task
+```javascript
+socket.emit("message", {
+  actionType: "state",
+  newState: "stop"
+});
+```
+
+### Terminate Session
+```javascript
+socket.emit("message", {
+  actionType: "state",
+  newState: "terminate"
+});
+```
+
+### Respond to Guardrail
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Username: user@example.com, Password: pass123",
+  newState: "resume"
+});
+```
+
+### Manual Browser Control
+```javascript
+// Take control
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "takeOverControl" }
+});
+
+// Click at coordinates
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 500, y: 300 }
+});
+
+// Type text
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "TYPE", text: "Hello world", humanLike: true }
+});
+
+// Press key
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "Enter" }
+});
+
+// Release control
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "releaseControl" }
+});
+```
+
+---
+
+## Advanced Pattern: Multi-Task with Live Updates
+
+```javascript
+import { io } from "socket.io-client";
+
+class EnigmaWebSocketClient {
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+    this.socket = null;
+    this.sessionId = null;
+  }
+
+  async createSession(taskDetails) {
+    const response = await fetch("https://connect.enigma.click/start/start-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.apiKey}`
+      },
+      body: JSON.stringify({ taskDetails })
+    });
+
+    const session = await response.json();
+    this.sessionId = session.sessionId;
+
+    this.socket = io("https://connect.enigma.click", {
+      auth: { sessionId: this.sessionId },
+      transports: ["websocket"]
+    });
+
+    this.setupEventHandlers();
+
+    return session;
+  }
+
+  setupEventHandlers() {
+    this.socket.on("connect", () => {
+      console.log("✓ Connected");
+    });
+
+    this.socket.on("message", (data) => {
+      this.handleEvent(data);
+    });
+
+    this.socket.on("end_session", (data) => {
+      console.log("Session ended:", data.reason);
+      this.disconnect();
+    });
+
+    this.socket.on("instance:disconnected", () => {
+      console.warn("Instance disconnected, reconnecting...");
+    });
+
+    this.socket.on("instance:reconnected", () => {
+      console.log("Instance reconnected");
+    });
+  }
+
+  handleEvent(data) {
+    switch (data.type) {
+      case "agent":
+        this.onAgent(data.content);
+        break;
+      case "action":
+        this.onAction(data.data);
+        break;
+      case "task_completed":
+        this.onTaskCompleted(data);
+        break;
+      case "guardrail_trigger":
+        this.onGuardrail(data.data);
+        break;
+      case "error":
+        this.onError(data);
+        break;
+    }
+  }
+
+  onAgent(content) {
+    console.log("💭", content);
+  }
+
+  onAction(action) {
+    console.log("🎯", action.name);
+  }
+
+  onTaskCompleted(data) {
+    console.log("✅", data.data.message);
+    console.log("💰 Cost:", data.usage.cost);
+  }
+
+  onGuardrail(data) {
+    console.warn("⚠️ Guardrail:", data.value);
+    // Override this method to handle guardrails
+  }
+
+  onError(data) {
+    console.error("❌", data.error);
+    this.disconnect();
+  }
+
+  sendTask(taskDetails, terminateOnCompletion = false) {
+    return new Promise((resolve, reject) => {
+      this.socket.emit("message", {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails,
+        terminateOnCompletion
+      });
+
+      const originalHandler = this.onTaskCompleted.bind(this);
+      this.onTaskCompleted = (data) => {
+        originalHandler(data);
+        resolve(data);
+      };
+
+      const originalErrorHandler = this.onError.bind(this);
+      this.onError = (data) => {
+        originalErrorHandler(data);
+        reject(new Error(data.error));
+      };
+    });
+  }
+
+  pause() {
+    this.socket.emit("message", {
+      actionType: "state",
+      newState: "pause"
+    });
+  }
+
+  resume() {
+    this.socket.emit("message", {
+      actionType: "state",
+      newState: "resume"
+    });
+  }
+
+  terminate() {
+    this.socket.emit("message", {
+      actionType: "state",
+      newState: "terminate"
+    });
+  }
+
+  disconnect() {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+}
+
+// Usage
+const client = new EnigmaWebSocketClient("enig_xxx");
+
+await client.createSession("Go to amazon.com");
+await client.sendTask("Search for wireless keyboards");
+await client.sendTask("Add first result to cart", true); // terminates after
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="REST API Integration" icon="code" href="/integrations/rest-api">
+    Simple polling-based integration
+  </Card>
+  <Card title="Handling Guardrails" icon="shield-halved" href="/usage-guides/handling-guardrails">
+    Respond to human-in-the-loop requests
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Watch sessions live via WebRTC
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Build complex automation sequences
+  </Card>
+</CardGroup>

@@ -1,0 +1,625 @@
+---
+title: "Manual Interaction"
+description: "Take control of the browser and interact manually with clicks, typing, and keyboard inputs"
+---
+
+## Overview
+
+Manual interaction allows you to take direct control of the browser session and perform actions like clicking, typing, and pressing keys. This is useful when:
+
+- You need to handle sensitive information (passwords, credentials)
+- The AI agent encounters a situation it can't handle
+- You want to guide the agent to a specific state before continuing
+- Testing and debugging workflows
+
+---
+
+## Coordinate System
+
+When using manual interactions, coordinates map to the browser viewport:
+
+- **Resolution:** 1024 × 600 pixels
+- **Origin:** Top-left (0, 0)
+- **Browser chrome offset:** 155 pixels from top
+
+```
+Server Browser (1024 × 755 total)
+┌────────────────────────────────────┐
+│  Browser Toolbar (155px height)   │ ◄─ Not clickable
+├────────────────────────────────────┤
+│                                    │
+│     Clickable Content Area         │ ◄─ Y starts at 155
+│     (1024 × 445 pixels)            │
+│                                    │
+└────────────────────────────────────┘
+```
+
+<Warning>
+All click coordinates must account for the **155px browser chrome offset**. If you click at coordinates (100, 100), you're actually clicking (100, 255) on the full browser window.
+</Warning>
+
+### Scaling Coordinates
+
+If displaying the stream at a different size, scale coordinates accordingly:
+
+```javascript
+function scaleCoords(clientX, clientY, displayWidth, displayHeight) {
+  const serverWidth = 1024;
+  const serverHeight = 600;
+  const yOffset = 155; // Browser chrome height
+
+  return {
+    x: Math.round((clientX / displayWidth) * serverWidth),
+    y: Math.round((clientY / displayHeight) * serverHeight) + yOffset
+  };
+}
+
+// Example usage
+canvas.onclick = (e) => {
+  const coords = scaleCoords(
+    e.clientX,
+    e.clientY,
+    canvas.width,
+    canvas.height
+  );
+
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "CLICK", x: coords.x, y: coords.y }
+  });
+};
+```
+
+---
+
+## Taking Over Control
+
+### takeOverControl
+
+Enable manual mode. The AI agent pauses, and you gain full control of the browser.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "takeOverControl" }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "takeOverControl" }
+});
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+<Note>
+When you take over control, the current task is automatically paused. You can perform manual actions and then release control to let the agent continue.
+</Note>
+
+---
+
+### releaseControl
+
+Return control to the AI agent. The agent will resume from where it left off.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "releaseControl" }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "releaseControl" }
+});
+```
+
+</CodeGroup>
+
+---
+
+## Interaction Actions
+
+### click
+
+Click at specific coordinates.
+
+**Parameters:**
+- `type`: `"CLICK"` (required)
+- `x`: X coordinate (0-1024) (required)
+- `y`: Y coordinate (155-755, accounting for chrome offset) (required)
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "CLICK", "x": 500, "y": 300 }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 500, y: 300 }
+});
+```
+
+</CodeGroup>
+
+---
+
+### doubleClick
+
+Perform a double-click at specific coordinates.
+
+**Parameters:**
+- `type`: `"DOUBLE_CLICK"` (required)
+- `x`: X coordinate (0-1024) (required)
+- `y`: Y coordinate (155-755) (required)
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "DOUBLE_CLICK", "x": 500, "y": 300 }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "DOUBLE_CLICK", x: 500, y: 300 }
+});
+```
+
+</CodeGroup>
+
+---
+
+### type
+
+Type text into the currently focused element.
+
+**Parameters:**
+- `type`: `"TYPE"` (required)
+- `text`: Text to type (required)
+- `humanLike`: Simulate human typing speed (optional, default: false)
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "TYPE", "text": "Hello world", "humanLike": true }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "TYPE", text: "Hello world", humanLike: true }
+});
+```
+
+</CodeGroup>
+
+<Tip>
+Set `humanLike: true` to simulate realistic typing speed and patterns. This can help avoid detection on sites with anti-bot measures.
+</Tip>
+
+---
+
+### keyPress
+
+Press a single key or key combination.
+
+**Parameters:**
+- `type`: `"KEY_PRESS"` (required)
+- `key`: Key name (required)
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "interaction",
+      "action": { "type": "KEY_PRESS", "key": "Enter" }
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "Enter" }
+});
+```
+
+</CodeGroup>
+
+**Common key values:**
+- `Enter`
+- `Escape`
+- `Tab`
+- `Backspace`
+- `Delete`
+- `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`
+- `PageUp`, `PageDown`
+- `Home`, `End`
+- Single characters: `a`, `b`, `1`, `2`, etc.
+
+---
+
+## Combining with Video Streaming
+
+Manual interaction is most useful when combined with video streaming so you can see what you're clicking.
+
+### Complete Example
+
+```javascript
+import { io } from "socket.io-client";
+
+// 1. Create session and connect
+const session = await fetch("https://connect.enigma.click/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to login page",
+    startingUrl: "https://example.com/login"
+  })
+}).then(r => r.json());
+
+// 2. Setup video stream
+const video = document.getElementById("stream");
+const canvas = document.getElementById("clickable-overlay");
+
+// Load stream (iframe method)
+video.src = session.streaming.webViewURL;
+
+// 3. Connect WebSocket
+const socket = io("https://connect.enigma.click", {
+  auth: { sessionId: session.sessionId },
+  transports: ["websocket"]
+});
+
+// 4. Take over control when ready
+socket.on("connect", () => {
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "takeOverControl" }
+  });
+});
+
+// 5. Setup click handler
+canvas.addEventListener("click", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const coords = scaleCoords(
+    e.clientX - rect.left,
+    e.clientY - rect.top,
+    rect.width,
+    rect.height
+  );
+
+  console.log("Clicking at:", coords);
+
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "CLICK", x: coords.x, y: coords.y }
+  });
+});
+
+// 6. Setup keyboard handler for typing
+document.getElementById("username-input").addEventListener("input", (e) => {
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "TYPE", text: e.target.value, humanLike: true }
+  });
+});
+
+// 7. Release control when done
+document.getElementById("done-button").addEventListener("click", () => {
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "releaseControl" }
+  });
+
+  // Optionally send a new task
+  socket.emit("message", {
+    actionType: "newTask",
+    newState: "start",
+    taskDetails: "Complete the checkout process"
+  });
+});
+
+function scaleCoords(clientX, clientY, displayWidth, displayHeight) {
+  const serverWidth = 1024;
+  const serverHeight = 600;
+  const yOffset = 155; // Browser chrome height
+
+  return {
+    x: Math.round((clientX / displayWidth) * serverWidth),
+    y: Math.round((clientY / displayHeight) * serverHeight) + yOffset
+  };
+}
+```
+
+---
+
+## Common Patterns
+
+### Pattern 1: Manual Login
+
+```javascript
+// Take control
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "takeOverControl" }
+});
+
+// Click username field (adjust coordinates as needed)
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 400, y: 300 }
+});
+
+// Type username
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "TYPE", text: "user@example.com", humanLike: true }
+});
+
+// Press Tab to move to password field
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "Tab" }
+});
+
+// Type password
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "TYPE", text: "secretPassword123", humanLike: true }
+});
+
+// Press Enter to submit
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "Enter" }
+});
+
+// Release control back to agent
+setTimeout(() => {
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "releaseControl" }
+  });
+}, 2000);
+```
+
+### Pattern 2: Selecting from Dropdown
+
+```javascript
+// Click to open dropdown
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 500, y: 350 }
+});
+
+// Wait for dropdown to open
+await new Promise(r => setTimeout(r, 500));
+
+// Press Down arrow to navigate options
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "ArrowDown" }
+});
+
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "ArrowDown" }
+});
+
+// Press Enter to select
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "KEY_PRESS", key: "Enter" }
+});
+```
+
+### Pattern 3: CAPTCHA Handling
+
+```javascript
+// Agent detects CAPTCHA and triggers guardrail
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger" &&
+      data.data.value.includes("CAPTCHA")) {
+
+    // Take control for manual CAPTCHA solving
+    socket.emit("message", {
+      actionType: "interaction",
+      action: { type: "takeOverControl" }
+    });
+
+    // User solves CAPTCHA manually via video stream
+    // Once solved, release control
+    document.getElementById("captcha-solved-btn").onclick = () => {
+      socket.emit("message", {
+        actionType: "interaction",
+        action: { type: "releaseControl" }
+      });
+
+      // Resume the task
+      socket.emit("message", {
+        actionType: "guardrail",
+        taskDetails: "CAPTCHA solved, continue",
+        newState: "resume"
+      });
+    };
+  }
+});
+```
+
+---
+
+## Best Practices
+
+### 1. Always Use Coordinate Scaling
+
+Don't hardcode coordinates. Always scale from your display to server coordinates:
+
+```javascript
+// Good
+const coords = scaleCoords(e.clientX, e.clientY, canvas.width, canvas.height);
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: coords.x, y: coords.y }
+});
+
+// Bad - hardcoded coordinates won't work if display size differs
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 500, y: 300 }
+});
+```
+
+### 2. Add Delays Between Actions
+
+Give the browser time to respond between actions:
+
+```javascript
+async function performSequence() {
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "CLICK", x: 400, y: 300 }
+  });
+
+  await new Promise(r => setTimeout(r, 500)); // Wait 500ms
+
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "TYPE", text: "search term" }
+  });
+
+  await new Promise(r => setTimeout(r, 300));
+
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "KEY_PRESS", key: "Enter" }
+  });
+}
+```
+
+### 3. Use humanLike Typing for Sensitive Sites
+
+For sites with anti-bot detection:
+
+```javascript
+socket.emit("message", {
+  actionType: "interaction",
+  action: {
+    type: "TYPE",
+    text: "realistic human input",
+    humanLike: true  // ← Simulates human typing speed
+  }
+});
+```
+
+### 4. Verify Actions with Video Stream
+
+Always combine manual interaction with video streaming to verify your actions:
+
+```javascript
+// Setup video stream first
+const iframe = document.createElement("iframe");
+iframe.src = session.streaming.webViewURL;
+iframe.width = 1024;
+iframe.height = 600;
+document.body.appendChild(iframe);
+
+// Then perform manual interactions while watching the stream
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Clicks not registering | Verify Y offset (155px) is added to coordinates |
+| Clicking wrong location | Check coordinate scaling function |
+| Typing not working | Ensure element is focused first (click it) |
+| Key presses ignored | Verify key name matches expected values |
+| Actions happening too fast | Add delays between actions (500ms recommended) |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Setup video streaming for manual interaction
+  </Card>
+  <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
+    Pause, resume, and manage task execution
+  </Card>
+  <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
+    Respond when the agent needs help
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain multiple tasks together
+  </Card>
+</CardGroup>

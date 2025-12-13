@@ -16,24 +16,58 @@
           {
             "group": "Getting Started",
             "pages": [
-              "index",
-              "quickstart"
+              "getting-started/overview",
+              "getting-started/quickstart",
+              "getting-started/workflow-quickstart",
+              "getting-started/mcp-quickstart"
             ]
           },
           {
-            "group": "Core Concepts",
+            "group": "Concepts",
             "pages": [
-              "sessions",
-              "control",
-              "events",
-              "streaming"
+              "concepts/sessions",
+              "concepts/tasks",
+              "concepts/guardrails",
+              "concepts/response-model",
+              "concepts/pricing"
             ]
           },
           {
-            "group": "Reference",
+            "group": "Usage Guides",
             "pages": [
-              "api-reference/introduction",
-              "errors"
+              "usage-guides/multi-task-workflows",
+              "usage-guides/controlling-sessions",
+              "usage-guides/manual-interaction",
+              "usage-guides/handling-guardrails",
+              "usage-guides/video-streaming",
+              "usage-guides/structured-output",
+              "usage-guides/cost-optimization"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/rest-api",
+              "integrations/websocket",
+              "integrations/openai-compatible",
+              "integrations/mcp-server"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/endpoints",
+              "api-reference/parameters",
+              "api-reference/response-formats",
+              "api-reference/rate-limits"
+            ]
+          },
+          {
+            "group": "Troubleshooting",
+            "pages": [
+              "troubleshooting/errors-reference",
+              "troubleshooting/common-issues",
+              "troubleshooting/faqs"
             ]
           }
         ]
@@ -41,7 +75,7 @@
     ],
     "global": {
       "anchors": [
-       
+
       ]
     }
   },
@@ -79,5 +113,39 @@
       "x": "https://x.com/enigmaclick",
       "github": "https://github.com/enigma"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/index",
+      "destination": "/getting-started/overview"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/getting-started/quickstart"
+    },
+    {
+      "source": "/sessions",
+      "destination": "/concepts/sessions"
+    },
+    {
+      "source": "/control",
+      "destination": "/usage-guides/controlling-sessions"
+    },
+    {
+      "source": "/events",
+      "destination": "/api-reference/response-formats"
+    },
+    {
+      "source": "/streaming",
+      "destination": "/usage-guides/video-streaming"
+    },
+    {
+      "source": "/errors",
+      "destination": "/troubleshooting/errors-reference"
+    },
+    {
+      "source": "/api-reference/introduction",
+      "destination": "/api-reference/endpoints"
+    }
+  ]
 }

@@ -1,0 +1,410 @@
+---
+title: "Multi-Task Workflows"
+description: "Learn how to create persistent sessions and send multiple tasks sequentially"
+---
+
+## Overview
+
+Multi-task workflows allow you to reuse a single browser session for multiple sequential tasks. This is more efficient than creating a new session for each task, as the browser state persists between tasks.
+
+**When to use:**
+- Multiple related tasks on the same website
+- Workflows that build on previous actions (e.g., login → search → checkout)
+- Scenarios where maintaining browser state (cookies, local storage) is important
+
+**When not to use:**
+- Single, isolated tasks (use `/start/run-task` instead)
+- Unrelated tasks across different websites
+
+---
+
+## Creating Persistent Sessions
+
+Use the `/start/start-session` endpoint to create a session that remains active for multiple tasks.
+
+```bash
+curl -X POST https://connect.enigma.click/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Go to amazon.com",
+    "maxDuration": 300000,
+    "startingUrl": "https://amazon.com"
+  }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "socketURL": "https://connect.enigma.click",
+  "streaming": {
+    "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
+    "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
+    "dimensions": { "width": 1024, "height": 600 }
+  },
+  "initialPrompt": "Go to amazon.com",
+  "expiresIn": 300000,
+  "balance": 12.50,
+  "message": "Connect to instance using sessionId in auth"
+}
+```
+
+<Note>
+Save the `sessionId` from the response—you'll need it for all follow-up tasks.
+</Note>
+
+---
+
+## Sending Follow-Up Tasks
+
+After creating a session, send additional tasks using the `/start/send-message` endpoint with `actionType: "newTask"`.
+
+<CodeGroup>
+
+```bash REST API
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "newTask",
+      "newState": "start",
+      "taskDetails": "Now add the first item to cart"
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Now add the first item to cart",
+  maxDuration: 60000
+});
+
+socket.on("message", (data) => {
+  if (data.type === "task_completed") {
+    console.log("Task done:", data.data);
+  }
+});
+```
+
+</CodeGroup>
+
+**Response (completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "result": {
+    "type": "task_completed",
+    "data": { "message": "Added item to cart" }
+  }
+}
+```
+
+**Response (still running):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "pending": true,
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
+}
+```
+
+---
+
+## Complete Working Example
+
+This example demonstrates a complete multi-task workflow: creating a session, sending multiple tasks, polling for results, and terminating the session.
+
+```javascript
+const API_KEY = "YOUR_API_KEY";
+const BASE = "https://connect.enigma.click";
+
+async function runMultiTaskWorkflow() {
+  // 1. Create session
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: "Go to amazon.com",
+      startingUrl: "https://amazon.com"
+    })
+  }).then(r => r.json());
+
+  console.log("Session created:", session.sessionId);
+
+  // 2. Send follow-up task
+  const task1 = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: session.sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Search for 'wireless keyboard'"
+      }
+    })
+  }).then(r => r.json());
+
+  // 3. Poll if pending
+  if (task1.pending) {
+    const result = await pollForResult(session.sessionId, task1.taskId);
+    console.log("Task 1 result:", result);
+  }
+
+  // 4. Send another task
+  const task2 = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: session.sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Add the first result to cart"
+      }
+    })
+  }).then(r => r.json());
+
+  if (task2.pending) {
+    const result = await pollForResult(session.sessionId, task2.taskId);
+    console.log("Task 2 result:", result);
+  }
+
+  // 5. Terminate when done
+  await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: session.sessionId,
+      message: { actionType: "state", newState: "terminate" }
+    })
+  });
+
+  console.log("Session terminated");
+}
+
+async function pollForResult(sessionId, taskId) {
+  const maxAttempts = 60;
+  const interval = 2000;
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(`${BASE}/task/${sessionId}/${taskId}`, {
+      headers: { "Authorization": `Bearer ${API_KEY}` }
+    });
+    const data = await res.json();
+
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") throw new Error(`Guardrail: ${data.data.value}`);
+    if (data.status === "failed") throw new Error(data.error);
+
+    if (data.pending) {
+      await new Promise(r => setTimeout(r, interval));
+      continue;
+    }
+
+    return data;
+  }
+
+  throw new Error("Polling timeout");
+}
+
+runMultiTaskWorkflow();
+```
+
+---
+
+## Single vs Multi-Task Comparison
+
+### Use `/start/run-task` for Single Tasks
+
+When you only need to execute one task and don't need session persistence:
+
+```bash
+curl -X POST https://connect.enigma.click/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Search Google for Anthropic and return the first result"
+  }'
+```
+
+- Session automatically terminates when task completes
+- No need to manage `sessionId`
+- `terminateOnCompletion: true` is set automatically
+- More cost-effective for isolated tasks
+
+### Use `/start/start-session` for Multi-Task Workflows
+
+When you need to:
+- Execute multiple related tasks
+- Maintain browser state between tasks
+- Potentially interact manually between tasks
+- Have control over session lifecycle
+
+```bash
+# Create session
+POST /start/start-session
+
+# Send task 1
+POST /start/send-message { actionType: "newTask", ... }
+
+# Send task 2
+POST /start/send-message { actionType: "newTask", ... }
+
+# Terminate when done
+POST /start/send-message { actionType: "state", newState: "terminate" }
+```
+
+---
+
+## Session Parameters
+
+Configure your session behavior with these parameters:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `taskDetails` | string | "" | Initial task description (can be empty for sessions without initial task) |
+| `maxDuration` | number | 300000 | Session timeout in ms (max: 300000 = 5 minutes) |
+| `maxInputTokens` | number | 100000 | Max input tokens for AI model |
+| `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
+| `startingUrl` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
+| `avoidDomains` | string[] | [] | Domains agent should not visit (e.g., `["facebook.com"]`) |
+| `mode` | string | "default" | Session mode (currently only "default" supported) |
+| `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
+
+**Example with parameters:**
+```json
+{
+  "taskDetails": "Search for wireless keyboards",
+  "maxDuration": 180000,
+  "maxInputTokens": 50000,
+  "maxOutputTokens": 50000,
+  "startingUrl": "https://amazon.com",
+  "avoidDomains": ["facebook.com", "twitter.com"],
+  "mode": "default",
+  "terminateOnCompletion": false
+}
+```
+
+<Note>
+- `maxDuration` is enforced server-side; sessions cannot exceed 5 minutes (300000ms)
+- `taskDetails` can be empty if you plan to send tasks later via `/start/send-message`
+- Always terminate sessions when done to avoid unnecessary charges
+</Note>
+
+---
+
+## Best Practices
+
+### 1. Always Terminate Sessions
+
+Don't forget to terminate sessions when your workflow completes:
+
+```javascript
+// At the end of your workflow
+await fetch(`${BASE}/start/send-message`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    sessionId: session.sessionId,
+    message: { actionType: "state", newState: "terminate" }
+  })
+});
+```
+
+Or use `terminateOnCompletion` on your final task:
+
+```javascript
+message: {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Final task",
+  terminateOnCompletion: true
+}
+```
+
+### 2. Handle Errors Gracefully
+
+Always check for errors and handle guardrails:
+
+```javascript
+const result = await pollForResult(sessionId, taskId);
+
+if (result.type === "guardrail_trigger") {
+  // Handle guardrail - see Handling Guardrails guide
+  console.log("Guardrail:", result.data.value);
+} else if (result.status === "failed") {
+  // Handle error
+  console.error("Task failed:", result.error);
+}
+```
+
+### 3. Poll with Reasonable Intervals
+
+Don't poll too frequently:
+
+```javascript
+// Good: 2-second intervals
+await new Promise(r => setTimeout(r, 2000));
+
+// Bad: 100ms intervals (wastes requests)
+await new Promise(r => setTimeout(r, 100));
+```
+
+### 4. Use WebSocket for Real-Time Updates
+
+For better UX and efficiency, consider WebSocket instead of polling:
+
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "task_completed") {
+    console.log("Task done:", data.data);
+  } else if (data.type === "guardrail_trigger") {
+    console.log("Guardrail:", data.data.value);
+  }
+});
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
+    Pause, resume, stop, and terminate tasks
+  </Card>
+  <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
+    Respond to agent requests for input
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Watch sessions in real-time
+  </Card>
+  <Card title="Cost Optimization" icon="dollar-sign" href="/usage-guides/cost-optimization">
+    Reduce costs with efficient workflows
+  </Card>
+</CardGroup>

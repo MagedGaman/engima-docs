@@ -1,0 +1,757 @@
+---
+title: "Handling Guardrails"
+description: "Detect and respond to guardrails when the AI agent needs human input or guidance"
+---
+
+## Overview
+
+Guardrails are safety mechanisms that pause agent execution when:
+
+- The agent needs sensitive information (credentials, payment details)
+- The agent is uncertain and requires human guidance
+- The agent encounters content that requires human verification
+- The agent detects potential policy violations
+
+When a guardrail triggers, the task pauses and waits for your response before continuing.
+
+---
+
+## Detecting Guardrails
+
+Guardrails are detected differently depending on your integration method.
+
+### REST API (Polling)
+
+When polling a task endpoint, a guardrail appears as:
+
+```bash
+curl https://connect.enigma.click/task/SESSION_ID/TASK_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+### WebSocket (Real-Time)
+
+With WebSocket connections, you receive immediate notifications:
+
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    console.log("Guardrail triggered:", data.data.type);
+    console.log("Agent says:", data.data.value);
+
+    // Handle guardrail response
+    handleGuardrail(data.data);
+  }
+});
+```
+
+**Example guardrail event:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need the login credentials to continue"
+  }
+}
+```
+
+---
+
+## Responding to Guardrails
+
+Once a guardrail triggers, respond with the requested information or guidance.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "guardrail",
+      "taskDetails": "Username: demo@example.com, Password: demo123",
+      "newState": "resume"
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    console.log("Agent needs:", data.data.value);
+
+    socket.emit("message", {
+      actionType: "guardrail",
+      taskDetails: "Username: demo@example.com, Password: demo123",
+      newState: "resume"
+    });
+  }
+});
+```
+
+</CodeGroup>
+
+**Parameters:**
+- `actionType`: `"guardrail"` (required)
+- `taskDetails`: Your response to the agent (required)
+- `newState`: `"resume"` to continue, `"stop"` to cancel (required)
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+---
+
+## Common Guardrail Scenarios
+
+### 1. Login Credentials
+
+**Guardrail:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials for this site"
+  }
+}
+```
+
+**Response:**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Use username: user@example.com and password: mypassword123",
+  newState: "resume"
+});
+```
+
+**Alternative (manual input):**
+```javascript
+// Take control and enter credentials manually
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "takeOverControl" }
+});
+
+// Enter credentials via manual interaction
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "CLICK", x: 400, y: 300 }
+});
+
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "TYPE", text: "user@example.com", humanLike: true }
+});
+
+// Release control
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "releaseControl" }
+});
+
+// Resume task
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Credentials entered, please continue",
+  newState: "resume"
+});
+```
+
+---
+
+### 2. Payment Information
+
+**Guardrail:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "Payment information required to complete checkout"
+  }
+}
+```
+
+**Response (provide details):**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Card number: 4111111111111111, Expiry: 12/25, CVV: 123",
+  newState: "resume"
+});
+```
+
+**Response (cancel):**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Do not proceed with payment",
+  newState: "stop"
+});
+```
+
+---
+
+### 3. Ambiguous Instructions
+
+**Guardrail:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I found 5 products matching 'wireless keyboard'. Which one should I select?"
+  }
+}
+```
+
+**Response:**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Select the first one with the highest rating",
+  newState: "resume"
+});
+```
+
+---
+
+### 4. Verification Needed
+
+**Guardrail:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "This action requires two-factor authentication code"
+  }
+}
+```
+
+**Response:**
+```javascript
+// Get 2FA code from your system
+const twoFactorCode = await getTwoFactorCode();
+
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: `2FA code: ${twoFactorCode}`,
+  newState: "resume"
+});
+```
+
+---
+
+### 5. CAPTCHA Detection
+
+**Guardrail:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "CAPTCHA detected, manual solving required"
+  }
+}
+```
+
+**Response (manual solving):**
+```javascript
+// Take control for manual CAPTCHA solving
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "takeOverControl" }
+});
+
+// User solves CAPTCHA via video stream...
+// Once solved:
+
+socket.emit("message", {
+  actionType: "interaction",
+  action: { type: "releaseControl" }
+});
+
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "CAPTCHA solved, continue",
+  newState: "resume"
+});
+```
+
+---
+
+### 6. Content Verification
+
+**Guardrail:**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I found content that may be sensitive. Please verify before proceeding."
+  }
+}
+```
+
+**Response (approve):**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Content verified, safe to proceed",
+  newState: "resume"
+});
+```
+
+**Response (reject):**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Do not proceed with this content",
+  newState: "stop"
+});
+```
+
+---
+
+## Automated Guardrail Handling
+
+For predictable guardrails (like login credentials), implement automated handling:
+
+### Pattern 1: Credential Manager
+
+```javascript
+class GuardrailHandler {
+  constructor(credentials) {
+    this.credentials = credentials;
+  }
+
+  handle(guardrailData) {
+    const message = guardrailData.value.toLowerCase();
+
+    // Detect login request
+    if (message.includes("login") || message.includes("credentials")) {
+      return {
+        actionType: "guardrail",
+        taskDetails: `Username: ${this.credentials.username}, Password: ${this.credentials.password}`,
+        newState: "resume"
+      };
+    }
+
+    // Detect 2FA request
+    if (message.includes("2fa") || message.includes("two-factor")) {
+      const code = this.getTwoFactorCode();
+      return {
+        actionType: "guardrail",
+        taskDetails: `2FA code: ${code}`,
+        newState: "resume"
+      };
+    }
+
+    // Detect payment request
+    if (message.includes("payment") || message.includes("credit card")) {
+      return {
+        actionType: "guardrail",
+        taskDetails: "Do not proceed with payment",
+        newState: "stop"
+      };
+    }
+
+    // Default: require human intervention
+    return null;
+  }
+
+  getTwoFactorCode() {
+    // Integrate with your 2FA system
+    return "123456";
+  }
+}
+
+// Usage
+const handler = new GuardrailHandler({
+  username: "user@example.com",
+  password: "securepassword123"
+});
+
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    const response = handler.handle(data.data);
+
+    if (response) {
+      // Automated response
+      socket.emit("message", response);
+    } else {
+      // Escalate to human
+      console.log("Human intervention required:", data.data.value);
+      notifyHuman(data.data);
+    }
+  }
+});
+```
+
+---
+
+### Pattern 2: Rule-Based Handler
+
+```javascript
+const guardrailRules = [
+  {
+    pattern: /login|credentials|username|password/i,
+    response: (data) => ({
+      actionType: "guardrail",
+      taskDetails: process.env.LOGIN_CREDENTIALS,
+      newState: "resume"
+    })
+  },
+  {
+    pattern: /captcha/i,
+    response: (data) => {
+      // Trigger manual intervention
+      return "MANUAL";
+    }
+  },
+  {
+    pattern: /payment|credit card|billing/i,
+    response: (data) => ({
+      actionType: "guardrail",
+      taskDetails: "Skip payment step",
+      newState: "stop"
+    })
+  },
+  {
+    pattern: /which.*select|choose.*option/i,
+    response: (data) => ({
+      actionType: "guardrail",
+      taskDetails: "Select the first option",
+      newState: "resume"
+    })
+  }
+];
+
+function handleGuardrailWithRules(guardrailData) {
+  const message = guardrailData.value;
+
+  for (const rule of guardrailRules) {
+    if (rule.pattern.test(message)) {
+      const response = rule.response(guardrailData);
+
+      if (response === "MANUAL") {
+        console.log("Manual intervention required");
+        return null;
+      }
+
+      return response;
+    }
+  }
+
+  // No rule matched, require human
+  return null;
+}
+
+// Usage
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    const response = handleGuardrailWithRules(data.data);
+
+    if (response) {
+      socket.emit("message", response);
+    } else {
+      // Escalate to human
+      alertHuman(data.data);
+    }
+  }
+});
+```
+
+---
+
+### Pattern 3: Async Handler with Timeout
+
+```javascript
+class AsyncGuardrailHandler {
+  constructor(timeout = 30000) {
+    this.timeout = timeout;
+    this.pendingGuardrails = new Map();
+  }
+
+  async handle(sessionId, guardrailData) {
+    // Try automated handling first
+    const autoResponse = this.tryAutomatic(guardrailData);
+
+    if (autoResponse) {
+      return autoResponse;
+    }
+
+    // Fall back to human with timeout
+    return this.requestHumanInput(sessionId, guardrailData);
+  }
+
+  tryAutomatic(guardrailData) {
+    const message = guardrailData.value.toLowerCase();
+
+    if (message.includes("login")) {
+      return {
+        actionType: "guardrail",
+        taskDetails: `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`,
+        newState: "resume"
+      };
+    }
+
+    return null;
+  }
+
+  async requestHumanInput(sessionId, guardrailData) {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        this.pendingGuardrails.delete(sessionId);
+        reject(new Error("Guardrail response timeout"));
+      }, this.timeout);
+
+      this.pendingGuardrails.set(sessionId, {
+        resolve: (response) => {
+          clearTimeout(timeoutId);
+          this.pendingGuardrails.delete(sessionId);
+          resolve(response);
+        },
+        reject,
+        data: guardrailData
+      });
+
+      // Notify UI/human
+      this.notifyHuman(sessionId, guardrailData);
+    });
+  }
+
+  respondToGuardrail(sessionId, taskDetails, shouldResume = true) {
+    const pending = this.pendingGuardrails.get(sessionId);
+
+    if (pending) {
+      pending.resolve({
+        actionType: "guardrail",
+        taskDetails,
+        newState: shouldResume ? "resume" : "stop"
+      });
+    }
+  }
+
+  notifyHuman(sessionId, data) {
+    console.log(`[${sessionId}] Human input needed:`, data.value);
+    // Send notification to UI, Slack, email, etc.
+  }
+}
+
+// Usage
+const handler = new AsyncGuardrailHandler(30000);
+
+socket.on("message", async (data) => {
+  if (data.type === "guardrail_trigger") {
+    try {
+      const response = await handler.handle(session.sessionId, data.data);
+      socket.emit("message", response);
+    } catch (error) {
+      console.error("Guardrail handling failed:", error);
+      // Stop the task
+      socket.emit("message", {
+        actionType: "state",
+        newState: "stop"
+      });
+    }
+  }
+});
+
+// Human responds via UI
+app.post("/api/respond-guardrail", (req, res) => {
+  const { sessionId, response, shouldResume } = req.body;
+  handler.respondToGuardrail(sessionId, response, shouldResume);
+  res.json({ success: true });
+});
+```
+
+---
+
+## Best Practices
+
+### 1. Never Hardcode Sensitive Data
+
+Don't put credentials directly in code:
+
+```javascript
+// Bad
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Username: admin, Password: admin123",
+  newState: "resume"
+});
+
+// Good
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`,
+  newState: "resume"
+});
+```
+
+### 2. Implement Timeouts
+
+Always set timeouts for human intervention:
+
+```javascript
+const GUARDRAIL_TIMEOUT = 60000; // 1 minute
+
+const timeoutPromise = new Promise((_, reject) =>
+  setTimeout(() => reject(new Error("Timeout")), GUARDRAIL_TIMEOUT)
+);
+
+const responsePromise = waitForHumanResponse(sessionId);
+
+try {
+  const response = await Promise.race([responsePromise, timeoutPromise]);
+  socket.emit("message", response);
+} catch (error) {
+  console.log("Timeout - stopping task");
+  socket.emit("message", { actionType: "state", newState: "stop" });
+}
+```
+
+### 3. Log All Guardrails
+
+Track guardrail occurrences for debugging and improvement:
+
+```javascript
+function logGuardrail(sessionId, guardrailData, response) {
+  console.log({
+    timestamp: new Date().toISOString(),
+    sessionId,
+    guardrailType: guardrailData.type,
+    guardrailMessage: guardrailData.value,
+    responseType: response ? "automated" : "manual",
+    response: response?.taskDetails
+  });
+
+  // Send to logging service
+  analytics.track("guardrail_triggered", {
+    sessionId,
+    type: guardrailData.type,
+    automated: !!response
+  });
+}
+```
+
+### 4. Provide Clear Responses
+
+Be specific in your guardrail responses:
+
+```javascript
+// Bad - vague
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Yes, do it",
+  newState: "resume"
+});
+
+// Good - specific
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Select the product titled 'Logitech K380' from the search results",
+  newState: "resume"
+});
+```
+
+---
+
+## Monitoring and Analytics
+
+Track guardrail patterns to improve automation:
+
+```javascript
+class GuardrailAnalytics {
+  constructor() {
+    this.stats = {
+      total: 0,
+      automated: 0,
+      manual: 0,
+      types: {}
+    };
+  }
+
+  record(guardrailData, wasAutomated) {
+    this.stats.total++;
+    this.stats.automated += wasAutomated ? 1 : 0;
+    this.stats.manual += wasAutomated ? 0 : 1;
+
+    const type = guardrailData.type;
+    this.stats.types[type] = (this.stats.types[type] || 0) + 1;
+  }
+
+  report() {
+    console.log("Guardrail Statistics:");
+    console.log(`Total: ${this.stats.total}`);
+    console.log(`Automated: ${this.stats.automated} (${(this.stats.automated / this.stats.total * 100).toFixed(1)}%)`);
+    console.log(`Manual: ${this.stats.manual} (${(this.stats.manual / this.stats.total * 100).toFixed(1)}%)`);
+    console.log("By Type:", this.stats.types);
+
+    return this.stats;
+  }
+}
+
+const analytics = new GuardrailAnalytics();
+
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    const response = tryAutomatedResponse(data.data);
+    analytics.record(data.data, !!response);
+
+    if (response) {
+      socket.emit("message", response);
+    } else {
+      requestHumanIntervention(data.data);
+    }
+  }
+});
+
+// Report every hour
+setInterval(() => {
+  const report = analytics.report();
+  sendToMonitoring(report);
+}, 3600000);
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Manual Interaction" icon="hand-pointer" href="/usage-guides/manual-interaction">
+    Take direct control for CAPTCHA and complex inputs
+  </Card>
+  <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
+    Pause, resume, stop, and terminate tasks
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain multiple tasks together
+  </Card>
+  <Card title="Structured Output" icon="code" href="/usage-guides/structured-output">
+    Get structured data from task results
+  </Card>
+</CardGroup>

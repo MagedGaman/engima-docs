@@ -1,0 +1,537 @@
+---
+title: "Endpoints"
+description: "Complete reference for all Enigma API endpoints"
+---
+
+## Base URL
+
+```
+https://connect.enigma.click
+```
+
+All endpoints use this base URL unless otherwise specified.
+
+---
+
+## Session Endpoints
+
+### POST /start/start-session
+
+Create a new persistent session that can run multiple tasks.
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+  "taskDetails": "Go to amazon.com",
+  "maxDuration": 300000,
+  "maxInputTokens": 100000,
+  "maxOutputTokens": 100000,
+  "startingUrl": "https://amazon.com",
+  "avoidDomains": ["facebook.com"],
+  "mode": "default",
+  "terminateOnCompletion": false
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "socketURL": "https://connect.enigma.click",
+  "streaming": {
+    "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
+    "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
+    "dimensions": { "width": 1024, "height": 600 }
+  },
+  "initialPrompt": "Go to amazon.com",
+  "expiresIn": 300000,
+  "balance": 12.50,
+  "message": "Connect to instance using sessionId in auth"
+}
+```
+
+**Error Responses:**
+- `401` - Missing or invalid API key
+- `402` - Insufficient balance
+- `403` - Account deactivated
+- `429` - Rate limit exceeded
+- `503` - No available instances
+
+See [Parameters Reference](/api-reference/parameters) for detailed parameter descriptions.
+
+---
+
+### POST /start/send-message
+
+Universal endpoint for all session control commands. Handles tasks, state changes, interactions, and guardrails.
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "newTask | state | interaction | guardrail",
+    // ... action-specific fields
+  }
+}
+```
+
+**Supported Action Types:**
+
+#### actionType: newTask
+
+Start a new task. Returns taskId for polling.
+
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "newTask",
+    "newState": "start",
+    "taskDetails": "Search for laptops",
+    "maxDuration": 60000,
+    "maxInputTokens": 50000,
+    "maxOutputTokens": 50000,
+    "startingUrl": "https://amazon.com",
+    "avoidDomains": ["facebook.com"],
+    "terminateOnCompletion": true
+  }
+}
+```
+
+**Response (completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Found 50 laptop results",
+      "prompt_tokens": 8500,
+      "completion_tokens": 2300,
+      "total_tokens": 10800
+    }
+  }
+}
+```
+
+**Response (still running):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "pending": true,
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+#### actionType: state
+
+Control task execution (pause, resume, stop, terminate). Returns immediate success.
+
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "state",
+    "newState": "pause | resume | stop | terminate"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+#### actionType: interaction
+
+Manual browser control. Returns immediate success.
+
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "interaction",
+    "action": {
+      "type": "CLICK | TYPE | KEY_PRESS | takeOverControl | releaseControl",
+      // ... action-specific parameters
+    }
+  }
+}
+```
+
+**Available Interaction Types:**
+- `takeOverControl` - Enable manual mode
+- `releaseControl` - Return control to AI
+- `CLICK` - Click at coordinates `{x, y}`
+- `DOUBLE_CLICK` - Double click at coordinates `{x, y}`
+- `TYPE` - Type text `{text, humanLike}`
+- `KEY_PRESS` - Press key `{key}`
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+#### actionType: guardrail
+
+Respond to guardrail trigger. Returns immediate success.
+
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "guardrail",
+    "taskDetails": "Username: user@example.com, Password: pass123",
+    "newState": "resume"
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+**Error Responses:**
+- `400` - Missing required fields (sessionId, message)
+- `401` - Session not found or unauthorized
+
+---
+
+### POST /start/run-task
+
+Execute a single task with auto-terminating session. Simplified version of start-session + send-message.
+
+**Authentication:** Required
+
+<Note>
+`terminateOnCompletion` is automatically set to `true` for this endpoint. The session will close after task completion.
+</Note>
+
+**Request Body:**
+```json
+{
+  "taskDetails": "Search Google for Anthropic",
+  "maxDuration": 300000,
+  "maxInputTokens": 100000,
+  "maxOutputTokens": 100000,
+  "startingUrl": "https://google.com",
+  "avoidDomains": [],
+  "mode": "default"
+}
+```
+
+**Response (completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully searched for Anthropic",
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650,
+      "completion_time": 23.5
+    }
+  }
+}
+```
+
+**Response (still running):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "pending",
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+**Error Responses:**
+- `400` - Missing taskDetails
+- `401` - Missing or invalid API key
+- `402` - Insufficient balance
+- `503` - No available instances
+
+---
+
+## Task Endpoints
+
+### GET /task/:sessionId/:taskId
+
+Poll for task result. No authentication required. No rate limit.
+
+**Path Parameters:**
+- `sessionId` - Session identifier
+- `taskId` - Task identifier
+
+**Response (still running):**
+```json
+{
+  "success": true,
+  "status": "active",
+  "pending": true,
+  "usage": {
+    "inputTokens": 8000,
+    "outputTokens": 2100,
+    "computeTime": 3,
+    "cost": 0.0067
+  }
+}
+```
+
+**Response (completed):**
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "Task finished successfully",
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+**Response (guardrail triggered):**
+```json
+{
+  "success": true,
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**Response (failed):**
+```json
+{
+  "success": false,
+  "status": "failed",
+  "error": "Navigation timeout after 30 seconds",
+  "usage": {
+    "inputTokens": 5000,
+    "outputTokens": 1200,
+    "computeTime": 2,
+    "cost": 0.0045
+  }
+}
+```
+
+**Error Responses:**
+- `404` - Task not found
+
+---
+
+## OpenAI-Compatible Endpoints
+
+### POST /v1/chat/completions
+
+OpenAI-compatible chat completions endpoint. Creates a new session for each request and auto-terminates after completion.
+
+**Authentication:** Required (Bearer token)
+
+<Note>
+The OpenAI-compatible endpoint creates a new session for each request. For multi-task workflows, use the native REST API.
+</Note>
+
+**Request Body:**
+```json
+{
+  "model": "enigma-browser-1",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful browser automation assistant."
+    },
+    {
+      "role": "user",
+      "content": "Go to example.com and extract all headings"
+    }
+  ],
+  "stream": false,
+  "max_tokens": 2000
+}
+```
+
+**Response (Non-Streaming):**
+```json
+{
+  "id": "chatcmpl-a1b2c3d4e5f6",
+  "object": "chat.completion",
+  "created": 1704067200,
+  "model": "enigma-browser-1",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "I found 5 headings on example.com:\n1. Example Domain\n2. More Information\n3. Contact\n4. About\n5. Privacy Policy"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 8450,
+    "completion_tokens": 2100,
+    "total_tokens": 10550
+  },
+  "enigma": {
+    "sessionId": "a1b2c3d4e5f6",
+    "taskId": "x9y8z7w6v5u4",
+    "cost": 0.0089
+  }
+}
+```
+
+**Response (Streaming):**
+
+Server-Sent Events (SSE) format:
+
+```
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"role":"assistant","content":"I"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" found"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: [DONE]
+```
+
+**Error Responses:**
+- `401` - Invalid API key
+- `402` - Insufficient balance
+- `429` - Rate limit exceeded
+- `503` - No browser instances available
+- Guardrail error: `{"error": {"message": "Guardrail triggered: I need login credentials to proceed", "type": "guardrail_error", "code": "guardrail_triggered"}}`
+
+See [OpenAI-Compatible API](/integrations/openai-compatible) for detailed integration guide.
+
+---
+
+### GET /v1/models
+
+List available models for OpenAI-compatible endpoint.
+
+**Authentication:** Required (Bearer token)
+
+**Response:**
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "enigma-browser-1",
+      "object": "model",
+      "created": 1704067200,
+      "owned_by": "enigma"
+    }
+  ]
+}
+```
+
+---
+
+## Monitoring Endpoints
+
+### GET /start/health
+
+System health check. No authentication required.
+
+**Response:**
+```json
+{
+  "success": true,
+  "status": "healthy",
+  "instancesAvailable": true,
+  "instanceCount": 5,
+  "timestamp": "2024-01-15T10:30:00.000Z"
+}
+```
+
+---
+
+### GET /start/active-sockets
+
+View active instance connections. No authentication required.
+
+**Response:**
+```json
+{
+  "success": true,
+  "sockets": ["socket_id_1", "socket_id_2", "socket_id_3"],
+  "count": 3,
+  "timestamp": "2024-01-15T10:30:00.000Z"
+}
+```
+
+---
+
+## Endpoint Summary
+
+| Endpoint | Method | Auth | Rate Limit | Description |
+|----------|--------|------|------------|-------------|
+| `/start/start-session` | POST | Required | 10/min per user | Create persistent session |
+| `/start/send-message` | POST | Required | 10/min per user | Send commands to session |
+| `/start/run-task` | POST | Required | 10/min per user | Execute single task |
+| `/task/:sessionId/:taskId` | GET | Not required | None | Poll for task result |
+| `/v1/chat/completions` | POST | Required | 10/min per user | OpenAI-compatible chat |
+| `/v1/models` | GET | Required | None | List available models |
+| `/start/health` | GET | Not required | None | System health check |
+| `/start/active-sockets` | GET | Not required | None | Active connections |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Parameters Reference" icon="sliders" href="/api-reference/parameters">
+    Detailed parameter documentation
+  </Card>
+  <Card title="Response Formats" icon="code" href="/api-reference/response-formats">
+    Complete response format reference
+  </Card>
+  <Card title="Rate Limits" icon="gauge" href="/api-reference/rate-limits">
+    Rate limiting details and best practices
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get started in 5 minutes
+  </Card>
+</CardGroup>

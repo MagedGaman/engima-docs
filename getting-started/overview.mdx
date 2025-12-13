@@ -1,0 +1,170 @@
+---
+title: "Overview"
+description: "Real-time browser automation infrastructure for AI agents"
+---
+
+Enigma is real-time browser automation infrastructure for AI agents. Give it a task in plain English, and an AI agent executes it in a real browser—clicking, typing, navigating, and extracting data autonomously.
+
+**Key capabilities:**
+- Sub-100ms response times via hybrid CNN-LLM architecture
+- Live video streaming to observe sessions in real-time
+- Human-in-the-loop with guardrails and manual takeover
+- Flexible integration via REST API, WebSocket, MCP, or OpenAI-compatible endpoints
+
+---
+
+## Get Started
+
+<CardGroup cols={2}>
+  <Card title="🚀 Quickstart" icon="rocket" href="/getting-started/quickstart">
+    Run your first task in 5 minutes
+  </Card>
+  <Card title="🔌 Integrations" icon="plug" href="/integrations/rest-api">
+    REST, WebSocket, OpenAI, n8n
+  </Card>
+  <Card title="🤖 MCP Setup" icon="robot" href="/getting-started/mcp-quickstart">
+    Claude Desktop & Cline setup
+  </Card>
+  <Card title="📊 Live Stream" icon="video" href="/usage-guides/video-streaming">
+    Watch sessions in real-time
+  </Card>
+</CardGroup>
+
+---
+
+## What Can Enigma Do?
+
+### Research & Data Extraction
+Gather information from multiple sources, extract structured data, and compile research reports automatically.
+
+**Example:** "Search LinkedIn for engineering managers in San Francisco, extract their profiles, and compile contact information into a structured list."
+
+### Form Automation
+Fill out complex forms, handle multi-step workflows, and submit applications with conditional logic.
+
+**Example:** "Go to this insurance quote form, fill it out using the customer data I provide, and return the final quote."
+
+### E-commerce Operations
+Search for products, compare prices, add items to cart, and even complete checkout flows with human approval.
+
+**Example:** "Find the top 3 wireless keyboards on Amazon under $50, add the best-rated one to cart, and show me the checkout page."
+
+### Dynamic Testing
+Test web applications with natural language instructions, adapting to UI changes without brittle selectors.
+
+**Example:** "Navigate through the signup flow, try to register with invalid data, and report any validation errors you encounter."
+
+---
+
+## How It Works
+
+### Sessions & Tasks
+
+A **session** is an isolated browser instance controlled by an AI agent. A **task** is a single objective for the agent to complete within that session.
+
+```
+Session (sessionId: "sess_abc")
+ ├── Task 1 → completed
+ ├── Task 2 → completed
+ └── Task 3 → guardrail triggered
+```
+
+Sessions persist until you terminate them or they time out (max 5 minutes). One session can run multiple tasks sequentially.
+
+[Learn more about Sessions](/concepts/sessions) | [Learn more about Tasks](/concepts/tasks)
+
+### Response Model
+
+Most browser tasks complete in 10-40 seconds. Enigma waits up to 50 seconds for your task to finish—meaning you typically get results inline, in a single request.
+
+```
+POST /start/run-task
+     ↓
+┌────────────────────────────────────┐
+│  Task completes in < 50s?          │
+│  ├── Yes → Result returned inline  │
+│  └── No  → pollUrl returned        │
+└────────────────────────────────────┘
+```
+
+This gives you the simplicity of synchronous APIs for typical tasks, with the reliability of async for complex multi-step operations.
+
+[Learn more about Response Model](/concepts/response-model)
+
+### Guardrails
+
+When the agent needs human input—credentials, clarification, approval—it triggers a guardrail and pauses. Your application detects this and provides the input.
+
+**Common triggers:** Login forms, purchase confirmations, CAPTCHAs, ambiguous instructions.
+
+[Learn more about Guardrails](/concepts/guardrails)
+
+---
+
+## Choose Your Integration
+
+### Which endpoint should I use?
+
+```
+Need browser automation?
+├── Single task, don't care about session? → POST /start/run-task
+├── Multiple tasks in sequence? → POST /start/start-session + /send-message
+├── Using LangChain/existing OpenAI code? → POST /v1/chat/completions
+└── Using Claude Desktop/MCP client? → MCP Server
+```
+
+### REST vs WebSocket?
+
+- **REST:** Simpler. Good enough for 90% of use cases. Poll for results.
+- **WebSocket:** Only if you need live agent thoughts or sub-second event handling.
+
+---
+
+## Integration Methods
+
+| Method | Best For | Real-time Events |
+|--------|----------|------------------|
+| **REST API** | Simple integrations, serverless, stateless workflows | Poll for updates |
+| **WebSocket** | Live dashboards, interactive UIs, real-time agent thoughts | Yes |
+| **OpenAI-Compatible** | LangChain, LlamaIndex, Vercel AI SDK, existing OpenAI tooling | Poll or stream |
+| **MCP Server** | Claude Desktop, Cline, any MCP-compatible AI assistant | No |
+| **Workflows** | n8n, Make.com, Zapier | Poll for updates |
+
+### Quick Links
+
+- [REST API Integration](/integrations/rest-api)
+- [WebSocket Integration](/integrations/websocket)
+- [OpenAI-Compatible API](/integrations/openai-compatible)
+- [MCP Server Setup](/integrations/mcp-server)
+- [Workflow Integration (n8n, Make, Zapier)](/getting-started/workflow-quickstart)
+
+---
+
+## Enigma vs. Traditional Automation
+
+| | Enigma | Playwright/Puppeteer |
+|--|--------|----------------------|
+| **Input** | Natural language | Code |
+| **Adaptability** | AI agent adapts to UI changes | Scripts break on changes |
+| **Maintenance** | Self-healing | Manual updates required |
+| **Latency** | Sub-100ms decisions | ~50ms per action |
+| **Best for** | Dynamic tasks, scraping, form-filling | Regression testing, CI/CD |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/getting-started/quickstart">
+    Run your first task in 5 minutes
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/endpoints">
+    Complete endpoint documentation
+  </Card>
+  <Card title="Concepts" icon="book" href="/concepts/sessions">
+    Understand sessions, tasks, and guardrails
+  </Card>
+  <Card title="Troubleshooting" icon="triangle-exclamation" href="/troubleshooting/errors-reference">
+    Error handling and debugging
+  </Card>
+</CardGroup>

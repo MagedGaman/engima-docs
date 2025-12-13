@@ -1,0 +1,566 @@
+---
+title: "REST API Integration"
+description: "Build browser automation with Enigma's REST API endpoints"
+---
+
+## When to Use REST API
+
+The REST API is ideal for:
+
+- **Serverless environments** (AWS Lambda, Vercel, Cloudflare Workers)
+- **Simple integrations** where you don't need real-time events
+- **Stateless workflows** that poll for results
+- **Backend services** that trigger automation tasks
+- **Workflow automation** (n8n, Make.com, Zapier)
+
+**Choose WebSocket instead if you need:**
+- Live agent thoughts and reasoning
+- Sub-second event notifications
+- Real-time UI updates
+
+---
+
+## Authentication
+
+All API requests require Bearer token authentication:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+Get your API key at [enigma.click/settings](https://enigma.click/settings)
+
+**Base URL:**
+```
+https://connect.enigma.click
+```
+
+---
+
+## Basic Patterns
+
+### Pattern 1: Single Task (run-task)
+
+The simplest pattern for one-off tasks. Session auto-terminates after completion.
+
+```bash
+curl -X POST https://connect.enigma.click/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Go to google.com and search for Anthropic"
+  }'
+```
+
+**Response (completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully searched for Anthropic on Google",
+      "completion_time": 23.5,
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650
+    },
+    "usage": {
+      "cost": 0.0124
+    }
+  }
+}
+```
+
+**Response (still running after 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "pending",
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+<Tip>
+Most browser tasks complete in 10-40 seconds. The API waits up to 50 seconds before responding, so typical requests return results immediately—no polling required.
+</Tip>
+
+---
+
+### Pattern 2: Multi-Task Session
+
+For workflows that require multiple sequential tasks in the same browser session.
+
+**Step 1: Create persistent session**
+```bash
+curl -X POST https://connect.enigma.click/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Go to amazon.com",
+    "startingUrl": "https://amazon.com"
+  }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "socketURL": "https://connect.enigma.click",
+  "streaming": {
+    "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
+    "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
+    "dimensions": { "width": 1024, "height": 600 }
+  },
+  "expiresIn": 300000,
+  "balance": 12.50
+}
+```
+
+**Step 2: Send follow-up task**
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "a1b2c3d4e5f6",
+    "message": {
+      "actionType": "newTask",
+      "newState": "start",
+      "taskDetails": "Search for wireless keyboards",
+      "terminateOnCompletion": true
+    }
+  }'
+```
+
+<Warning>
+**💰 Cost Tip:** Set `terminateOnCompletion: true` on your last task to auto-close the session and avoid idle charges. Sessions remain billable until terminated or timed out.
+</Warning>
+
+---
+
+### Pattern 3: Polling for Results
+
+When a task returns `status: "pending"`, poll until completion:
+
+```javascript
+async function runTask(taskDetails, apiKey) {
+  const response = await fetch("https://connect.enigma.click/start/run-task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({ taskDetails })
+  });
+
+  const data = await response.json();
+
+  // Inline result - return immediately
+  if (data.status === "complete") {
+    return data.result;
+  }
+
+  // Pending - poll for result
+  if (data.status === "pending") {
+    return await pollForResult(data.sessionId, data.taskId, apiKey);
+  }
+
+  throw new Error(data.message || "Task failed");
+}
+
+async function pollForResult(sessionId, taskId, apiKey) {
+  const maxAttempts = 60; // 2 minutes max
+  const interval = 2000; // Poll every 2 seconds
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(
+      `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+      { headers: { "Authorization": `Bearer ${apiKey}` } }
+    );
+
+    const data = await res.json();
+
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") return data;
+    if (!data.success && data.status === "failed") throw new Error(data.error);
+
+    // Still running - wait and retry
+    await new Promise(r => setTimeout(r, interval));
+  }
+
+  throw new Error("Task timeout after 2 minutes");
+}
+
+// Usage
+const result = await runTask("Search Google for Anthropic", "enig_xxx");
+console.log(result.data.message);
+console.log(`Cost: $${result.usage.cost}`);
+```
+
+---
+
+## Complete Examples
+
+### Example 1: Simple Task Execution
+
+```javascript
+const API_KEY = "enig_xxxxxxxxxxxx";
+
+async function searchGoogle(query) {
+  const response = await fetch("https://connect.enigma.click/start/run-task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: `Search Google for "${query}" and summarize the first result`
+    })
+  });
+
+  const data = await response.json();
+
+  if (data.status === "complete") {
+    return data.result.data.message;
+  } else if (data.status === "pending") {
+    // Poll for result
+    const result = await pollForResult(data.sessionId, data.taskId, API_KEY);
+    return result.data.message;
+  }
+
+  throw new Error(data.message || "Task failed");
+}
+
+// Usage
+const summary = await searchGoogle("Anthropic Claude");
+console.log(summary);
+```
+
+---
+
+### Example 2: Multi-Step Workflow
+
+```javascript
+const API_KEY = "enig_xxxxxxxxxxxx";
+const BASE = "https://connect.enigma.click";
+
+async function amazonProductResearch(productName) {
+  // 1. Create session
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: "Go to amazon.com",
+      startingUrl: "https://amazon.com"
+    })
+  }).then(r => r.json());
+
+  const sessionId = session.sessionId;
+
+  // 2. Search for product
+  const searchTask = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: `Search for "${productName}" and list the top 3 results with prices`
+      }
+    })
+  }).then(r => r.json());
+
+  // Poll if needed
+  let searchResult;
+  if (searchTask.pending) {
+    searchResult = await pollForResult(sessionId, searchTask.taskId, API_KEY);
+  } else {
+    searchResult = searchTask.result;
+  }
+
+  console.log("Search results:", searchResult.data.message);
+
+  // 3. Add first item to cart
+  const cartTask = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Add the first product to cart",
+        terminateOnCompletion: true // Auto-close session
+      }
+    })
+  }).then(r => r.json());
+
+  // Poll if needed
+  let cartResult;
+  if (cartTask.pending) {
+    cartResult = await pollForResult(sessionId, cartTask.taskId, API_KEY);
+  } else {
+    cartResult = cartTask.result;
+  }
+
+  return {
+    searchResults: searchResult.data.message,
+    cartStatus: cartResult.data.message
+  };
+}
+
+// Usage
+const results = await amazonProductResearch("wireless keyboard");
+console.log(results);
+```
+
+---
+
+### Example 3: Handling Guardrails
+
+```javascript
+async function loginAndExtractData(url, credentials) {
+  const BASE = "https://connect.enigma.click";
+  const API_KEY = "enig_xxxxxxxxxxxx";
+
+  // Create session with login task
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: `Go to ${url} and log in`,
+      startingUrl: url
+    })
+  }).then(r => r.json());
+
+  const sessionId = session.sessionId;
+
+  // Start login task
+  const loginTask = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Log in to the website"
+      }
+    })
+  }).then(r => r.json());
+
+  // Poll for result
+  const taskId = loginTask.taskId;
+  let result = await pollForResult(sessionId, taskId, API_KEY);
+
+  // Handle guardrail if triggered
+  if (result.type === "guardrail_trigger") {
+    console.log("Guardrail:", result.data.value);
+
+    // Provide credentials
+    await fetch(`${BASE}/start/send-message`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        sessionId,
+        message: {
+          actionType: "guardrail",
+          taskDetails: `Username: ${credentials.username}, Password: ${credentials.password}`,
+          newState: "resume"
+        }
+      })
+    });
+
+    // Continue polling
+    result = await pollForResult(sessionId, taskId, API_KEY);
+  }
+
+  // Extract data after login
+  const extractTask = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Extract all user data from the dashboard",
+        terminateOnCompletion: true
+      }
+    })
+  }).then(r => r.json());
+
+  if (extractTask.pending) {
+    return await pollForResult(sessionId, extractTask.taskId, API_KEY);
+  }
+
+  return extractTask.result;
+}
+```
+
+---
+
+## Session Control
+
+Control task execution with state commands:
+
+### Pause Task
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "a1b2c3d4e5f6",
+    "message": { "actionType": "state", "newState": "pause" }
+  }'
+```
+
+### Resume Task
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "a1b2c3d4e5f6",
+    "message": { "actionType": "state", "newState": "resume" }
+  }'
+```
+
+### Stop Task
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "a1b2c3d4e5f6",
+    "message": { "actionType": "state", "newState": "stop" }
+  }'
+```
+
+### Terminate Session
+```bash
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "a1b2c3d4e5f6",
+    "message": { "actionType": "state", "newState": "terminate" }
+  }'
+```
+
+---
+
+## Error Handling
+
+All errors follow this format:
+
+```json
+{
+  "success": false,
+  "message": "Human-readable error message",
+  "code": "ERROR_CODE"
+}
+```
+
+### Common Error Codes
+
+| Status | Code | Solution |
+|--------|------|----------|
+| 400 | `INVALID_PARAMS` | Check request parameters |
+| 401 | `INVALID_API_KEY` | Verify API key is correct |
+| 402 | `INSUFFICIENT_BALANCE` | Add funds to account |
+| 404 | `SESSION_NOT_FOUND` | Session expired or invalid |
+| 429 | `RATE_LIMIT_EXCEEDED` | Wait before retrying |
+| 503 | `NO_INSTANCES_AVAILABLE` | Retry in a few moments |
+
+### Error Handling Example
+
+```javascript
+async function executeTaskWithRetry(taskDetails, apiKey, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch("https://connect.enigma.click/start/run-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({ taskDetails })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle specific error codes
+        if (response.status === 503) {
+          console.log(`Attempt ${attempt}: No instances available, retrying...`);
+          await new Promise(r => setTimeout(r, 2000 * attempt));
+          continue;
+        }
+
+        if (response.status === 429) {
+          console.log(`Attempt ${attempt}: Rate limited, waiting...`);
+          await new Promise(r => setTimeout(r, 5000 * attempt));
+          continue;
+        }
+
+        throw new Error(`HTTP ${response.status}: ${data.message}`);
+      }
+
+      return data;
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      console.error(`Attempt ${attempt} failed:`, error.message);
+    }
+  }
+}
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Full API Reference" icon="book" href="/api-reference/introduction">
+    Complete endpoint documentation
+  </Card>
+  <Card title="WebSocket Integration" icon="plug" href="/integrations/websocket">
+    Real-time events and live updates
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Build complex automation sequences
+  </Card>
+  <Card title="Handling Guardrails" icon="shield-halved" href="/usage-guides/handling-guardrails">
+    Respond to human-in-the-loop requests
+  </Card>
+</CardGroup>

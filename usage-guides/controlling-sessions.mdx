@@ -1,0 +1,504 @@
+---
+title: "Controlling Sessions"
+description: "Control task execution with pause, resume, stop, and terminate commands"
+---
+
+## Overview
+
+Session control commands allow you to manage task execution dynamically. You can pause tasks for inspection, resume them, stop the current task, or terminate the entire session.
+
+All control commands use the same endpoint but with different message payloads:
+
+| Method | Endpoint | Best For |
+|--------|----------|----------|
+| REST | `POST /start/send-message` | Stateless, serverless, simple integrations |
+| WebSocket | `socket.emit("message", {...})` | Real-time events, live UIs |
+
+---
+
+## newTask
+
+Start a new task in the current session. This is the only control action that returns a `taskId` for result tracking.
+
+**Parameters:**
+- `actionType`: `"newTask"` (required)
+- `newState`: `"start"` (required)
+- `taskDetails`: Task description (required)
+- `maxDuration`: Max time for task in ms (optional)
+- `maxInputTokens`: Max input tokens (optional)
+- `maxOutputTokens`: Max output tokens (optional)
+- `startingUrl`: Starting URL (optional)
+- `avoidDomains`: Array of domains to avoid (optional)
+- `terminateOnCompletion`: Auto-terminate session after task (optional, default: false)
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "newTask",
+      "newState": "start",
+      "taskDetails": "Search for wireless keyboards",
+      "maxDuration": 60000,
+      "terminateOnCompletion": true
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Search for wireless keyboards",
+  maxDuration: 60000,
+  maxInputTokens: 100000,
+  maxOutputTokens: 100000,
+  startingUrl: "https://amazon.com",
+  avoidDomains: ["facebook.com", "twitter.com"]
+});
+```
+
+</CodeGroup>
+
+**Response (task completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "SESSION_ID",
+  "taskId": "TASK_ID",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Found 10 wireless keyboard results",
+      "prompt_tokens": 8500,
+      "completion_tokens": 2300,
+      "total_tokens": 10800
+    }
+  }
+}
+```
+
+**Response (task still running after 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "SESSION_ID",
+  "taskId": "TASK_ID",
+  "pending": true,
+  "pollUrl": "https://connect.enigma.click/task/SESSION_ID/TASK_ID",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+<Tip>
+**Cost Optimization:** Set `terminateOnCompletion: true` when you're done with the session to avoid idle session charges. The session will automatically close after this task completes.
+</Tip>
+
+---
+
+## pause
+
+Pause the current task. The agent will stop after completing its current action and wait for a `resume` command.
+
+**Use cases:**
+- Inspect the current state before continuing
+- Wait for external conditions to be met
+- Synchronize with other systems
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "pause" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "pause" });
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+<Note>
+The agent will complete its current action before pausing. It does not immediately halt mid-action.
+</Note>
+
+---
+
+## resume
+
+Resume a paused task. The agent will continue from where it left off.
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "resume" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "resume" });
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+---
+
+## stop
+
+Stop the current task immediately. The session remains active and ready for new tasks.
+
+**Difference from terminate:**
+- `stop`: Ends the current task only, session stays active
+- `terminate`: Ends the entire session and all connections
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "stop" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "stop" });
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+**When to use:**
+- Task is taking too long
+- Task is heading in wrong direction
+- Need to intervene and start a different task
+
+**After stopping:**
+You can immediately send a new task or manually interact with the browser before sending the next task.
+
+---
+
+## terminate
+
+End the session completely. This closes the browser instance and all connections (WebSocket, video stream).
+
+<CodeGroup>
+
+```bash REST
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": { "actionType": "state", "newState": "terminate" }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", { actionType: "state", newState: "terminate" });
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+<Warning>
+Always terminate sessions when you're done to avoid unnecessary charges. Idle sessions continue to incur costs until they time out (max 5 minutes) or are explicitly terminated.
+</Warning>
+
+---
+
+## State Transitions
+
+Understanding how session states work:
+
+```
+┌─────────┐     ┌──────────┐     ┌─────────────┐
+│ Pending │────►│  Active  │────►│  Completed  │
+└─────────┘     └──────────┘     └─────────────┘
+                     │
+                     ├───────────► Paused ──────► Active (resume)
+                     │
+                     ├───────────► Stopped ─────► Active (new task)
+                     │
+                     └───────────► Terminated
+```
+
+| State | Description | Can Transition To |
+|-------|-------------|-------------------|
+| `pending` | Session initializing | `active` |
+| `active` | Task running | `paused`, `completed`, `stopped`, `terminated` |
+| `paused` | Task paused, waiting for resume | `active`, `stopped`, `terminated` |
+| `stopped` | Task stopped, ready for new task | `active`, `terminated` |
+| `completed` | Task finished successfully | `active` (new task), `terminated` |
+| `terminated` | Session ended | None (final state) |
+
+---
+
+## Cost Optimization Tips
+
+### 1. Terminate Sessions Promptly
+
+Don't leave sessions idle. Terminate them as soon as your workflow completes:
+
+```javascript
+// Option A: Explicit terminate
+await fetch(`${BASE}/start/send-message`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    sessionId: session.sessionId,
+    message: { actionType: "state", newState: "terminate" }
+  })
+});
+
+// Option B: Auto-terminate on last task
+await fetch(`${BASE}/start/send-message`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    sessionId: session.sessionId,
+    message: {
+      actionType: "newTask",
+      newState: "start",
+      taskDetails: "Final task",
+      terminateOnCompletion: true  // ← Session closes after this task
+    }
+  })
+});
+```
+
+### 2. Use `stop` to Intervene Early
+
+If a task is taking too long or going off-track, stop it immediately:
+
+```javascript
+// Monitor task progress
+const taskStatus = await fetch(`${BASE}/task/${sessionId}/${taskId}`)
+  .then(r => r.json());
+
+if (taskStatus.usage.cost > 0.10) {
+  // Stop task if cost exceeds threshold
+  await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: sessionId,
+      message: { actionType: "state", newState: "stop" }
+    })
+  });
+}
+```
+
+### 3. Set Appropriate `maxDuration`
+
+Limit task duration to prevent runaway costs:
+
+```javascript
+socket.emit("message", {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Search for products",
+  maxDuration: 30000  // 30 seconds max
+});
+```
+
+### 4. Use `pause` for Inspection
+
+Pause tasks to inspect state before continuing:
+
+```javascript
+// Pause to check if we're on the right track
+await sendMessage({ actionType: "state", newState: "pause" });
+
+// Check video stream or poll for current state
+const canContinue = await checkIfTaskOnTrack();
+
+if (canContinue) {
+  await sendMessage({ actionType: "state", newState: "resume" });
+} else {
+  await sendMessage({ actionType: "state", newState: "stop" });
+  // Start a different task
+}
+```
+
+---
+
+## Control Flow Example
+
+Complete example showing pause/resume/stop/terminate in action:
+
+```javascript
+const API_KEY = "YOUR_API_KEY";
+const BASE = "https://connect.enigma.click";
+
+async function controlFlowDemo() {
+  // Create session
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: "Go to amazon.com",
+      startingUrl: "https://amazon.com"
+    })
+  }).then(r => r.json());
+
+  const sessionId = session.sessionId;
+
+  // Start a task
+  const task = await sendMessage(sessionId, {
+    actionType: "newTask",
+    newState: "start",
+    taskDetails: "Search for 'mechanical keyboard'"
+  });
+
+  // Wait a bit, then pause to inspect
+  await new Promise(r => setTimeout(r, 5000));
+  await sendMessage(sessionId, { actionType: "state", newState: "pause" });
+  console.log("Task paused for inspection");
+
+  // Check something (e.g., video stream, task status)
+  await new Promise(r => setTimeout(r, 3000));
+
+  // Decision point
+  const shouldContinue = true; // Your logic here
+
+  if (shouldContinue) {
+    // Resume the task
+    await sendMessage(sessionId, { actionType: "state", newState: "resume" });
+    console.log("Task resumed");
+
+    // Wait for completion
+    await pollForResult(sessionId, task.taskId);
+  } else {
+    // Stop and try something different
+    await sendMessage(sessionId, { actionType: "state", newState: "stop" });
+    console.log("Task stopped");
+
+    // Start different task
+    await sendMessage(sessionId, {
+      actionType: "newTask",
+      newState: "start",
+      taskDetails: "Navigate to homepage instead"
+    });
+  }
+
+  // Terminate when done
+  await sendMessage(sessionId, { actionType: "state", newState: "terminate" });
+  console.log("Session terminated");
+}
+
+async function sendMessage(sessionId, message) {
+  return fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({ sessionId, message })
+  }).then(r => r.json());
+}
+
+async function pollForResult(sessionId, taskId) {
+  const maxAttempts = 60;
+  const interval = 2000;
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(`${BASE}/task/${sessionId}/${taskId}`, {
+      headers: { "Authorization": `Bearer ${API_KEY}` }
+    });
+    const data = await res.json();
+
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") throw new Error(`Guardrail: ${data.data.value}`);
+    if (data.status === "failed") throw new Error(data.error);
+
+    if (data.pending) {
+      await new Promise(r => setTimeout(r, interval));
+      continue;
+    }
+
+    return data;
+  }
+
+  throw new Error("Polling timeout");
+}
+
+controlFlowDemo();
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Manual Interaction" icon="hand-pointer" href="/usage-guides/manual-interaction">
+    Take over control and interact manually
+  </Card>
+  <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
+    Respond to agent requests for input
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Send multiple tasks in sequence
+  </Card>
+  <Card title="Cost Optimization" icon="dollar-sign" href="/usage-guides/cost-optimization">
+    Reduce costs with efficient session management
+  </Card>
+</CardGroup>
