@@ -4,8 +4,8 @@
   "name": "Enigma Documentation",
   "colors": {
     "primary": "#0037B9",
-    "light": "#818CF8",
-    "dark": "#4F46E5"
+    "light": "#0060c6",
+    "dark": "#003d9d"
   },
   "favicon": "/favicon.svg",
   "navigation": {
