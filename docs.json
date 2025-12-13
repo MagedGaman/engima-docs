@@ -39,21 +39,12 @@
         ]
       }
     ],
-  //   "global": {
-  //     "anchors": [
-  //       {
-  //         "anchor": "Dashboard",
-  //         "href": "https://enigma.click",
-  //         "icon": "gauge"
-  //       },
-  //       {
-  //         "anchor": "API Status",
-  //         "href": "https://status.enigma.click",
-  //         "icon": "signal"
-  //       }
-  //     ]
-  //   }
-  // },
+    "global": {
+      "anchors": [
+       
+      ]
+    }
+  },
   "logo": {
     "light": "https://docs.enigma.click/logo/light.svg",
     "dark": "https://docs.enigma.click/logo/dark.svg"
