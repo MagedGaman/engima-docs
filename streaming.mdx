@@ -1,0 +1,391 @@
+---
+title: "Video Streaming"
+description: "Watch browser sessions in real-time via WebRTC or browser player"
+---
+
+## Overview
+
+When you create a session, Enigma returns streaming URLs:
+
+```json
+{
+  "streaming": {
+    "webRTCURL": "https://74.235.190.31:8889/SESSION_ID/whep",
+    "webViewURL": "https://74.235.190.31:8889/SESSION_ID",
+    "dimensions": { "width": 1024, "height": 600 }
+  }
+}
+```
+
+### Two Options
+
+| Method | Use Case | Complexity |
+|--------|----------|------------|
+| **webViewURL** | Browser-based player, simple embed | Low |
+| **webRTCURL** | Custom WebRTC integration, lower latency | Medium |
+
+---
+
+## Option 1: Browser Player (Recommended)
+
+The simplest way to display a session—just embed the URL in an iframe:
+
+```html
+<iframe
+  src="https://74.235.190.31:8889/SESSION_ID"
+  width="1024"
+  height="600"
+  frameborder="0"
+  allow="autoplay">
+</iframe>
+```
+
+**Benefits:**
+- No WebRTC code needed
+- Works in all modern browsers
+- Automatic reconnection handling
+- Built-in controls
+
+**When to use:** Most applications, especially dashboards and monitoring UIs.
+
+---
+
+## Option 2: WebRTC Integration (Advanced)
+
+For custom video players or lower latency requirements.
+
+### Quick Setup
+
+```javascript
+async function connectStream(webRTCURL, videoElement) {
+  const pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  });
+
+  // Receive video/audio
+  pc.addTransceiver("video", { direction: "recvonly" });
+  pc.addTransceiver("audio", { direction: "recvonly" });
+
+  // Attach tracks to video element
+  pc.ontrack = (e) => {
+    if (!videoElement.srcObject) {
+      videoElement.srcObject = new MediaStream();
+    }
+    videoElement.srcObject.addTrack(e.track);
+  };
+
+  // Create offer
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  // Wait for ICE gathering
+  await new Promise((resolve) => {
+    if (pc.iceGatheringState === "complete") resolve();
+    else pc.onicegatheringstatechange = () => {
+      if (pc.iceGatheringState === "complete") resolve();
+    };
+  });
+
+  // Send to WHEP server
+  const response = await fetch(webRTCURL, {
+    method: "POST",
+    headers: { "Content-Type": "application/sdp" },
+    body: pc.localDescription.sdp
+  });
+
+  if (!response.ok) {
+    throw new Error(`WHEP error: ${response.status}`);
+  }
+
+  const answer = await response.text();
+  await pc.setRemoteDescription({ type: "answer", sdp: answer });
+
+  return pc;
+}
+
+// Usage
+const video = document.getElementById("stream");
+const pc = await connectStream(session.streaming.webRTCURL, video);
+```
+
+**When to use:** Building custom video players, need ultra-low latency, advanced integration requirements.
+
+---
+
+## Stream Dimensions
+
+| Property | Value |
+|----------|-------|
+| Width | 1024 px |
+| Height | 600 px |
+| Format | H.264 |
+| Browser chrome height | 155 px |
+
+<Note>
+Always read dimensions from `session.streaming.dimensions` as these may vary by instance.
+</Note>
+
+---
+
+## Coordinate Mapping for Manual Interaction
+
+When combining video streaming with manual interaction, map click coordinates from your display to server coordinates.
+
+### Understanding the Coordinate System
+
+```
+Server Browser (1024 × 755 total)
+┌────────────────────────────────────┐
+│  Browser Toolbar (155px height)   │ ◄─ Not clickable
+├────────────────────────────────────┤
+│                                    │
+│     Content Area (1024 × 600)     │ ◄─ This is what you see in stream
+│                                    │
+│                                    │
+└────────────────────────────────────┘
+```
+
+The stream shows only the **content area** (1024 × 600), but clicks must account for the browser chrome offset.
+
+### Mapping Function
+
+```javascript
+function mapCoords(clientX, clientY, canvas, streamDimensions) {
+  const rect = canvas.getBoundingClientRect();
+
+  // Server dimensions
+  const SERVER_WIDTH = streamDimensions?.width || 1024;
+  const SERVER_HEIGHT = streamDimensions?.height || 600;
+  const Y_OFFSET = 155; // Browser chrome height
+  const SERVER_ASPECT = SERVER_WIDTH / SERVER_HEIGHT;
+
+  // Calculate letterboxing (black bars)
+  const containerAspect = rect.width / rect.height;
+  let videoWidth, videoHeight, offsetX, offsetY;
+
+  if (containerAspect > SERVER_ASPECT) {
+    // Horizontal black bars
+    videoHeight = rect.height;
+    videoWidth = rect.height * SERVER_ASPECT;
+    offsetX = (rect.width - videoWidth) / 2;
+    offsetY = 0;
+  } else {
+    // Vertical black bars
+    videoWidth = rect.width;
+    videoHeight = rect.width / SERVER_ASPECT;
+    offsetX = 0;
+    offsetY = (rect.height - videoHeight) / 2;
+  }
+
+  // Adjust for video position
+  const videoX = clientX - rect.left - offsetX;
+  const videoY = clientY - rect.top - offsetY;
+
+  // Check bounds
+  if (videoX < 0 || videoX > videoWidth || videoY < 0 || videoY > videoHeight) {
+    return null; // Click outside video area (black bars)
+  }
+
+  // Map to server coordinates
+  return {
+    x: Math.round((videoX / videoWidth) * SERVER_WIDTH),
+    y: Math.round((videoY / videoHeight) * SERVER_HEIGHT) + Y_OFFSET
+  };
+}
+```
+
+### Usage Example
+
+```javascript
+canvas.onclick = (e) => {
+  const coords = mapCoords(
+    e.clientX,
+    e.clientY,
+    canvas,
+    session.streaming.dimensions
+  );
+
+  if (!coords) {
+    console.log("Clicked outside video area");
+    return;
+  }
+
+  socket.emit("message", {
+    actionType: "interaction",
+    action: { type: "CLICK", x: coords.x, y: coords.y }
+  });
+};
+```
+
+---
+
+## Connection States (WebRTC)
+
+Monitor the connection:
+
+```javascript
+pc.onconnectionstatechange = () => {
+  console.log("State:", pc.connectionState);
+  // "connecting" → "connected" → "disconnected"
+
+  if (pc.connectionState === "failed") {
+    console.error("Connection failed, reconnecting...");
+    pc.close();
+    connectStream(webRTCURL, videoElement);
+  }
+
+  if (pc.connectionState === "disconnected") {
+    console.warn("Connection lost, attempting to reconnect...");
+  }
+};
+
+pc.oniceconnectionstatechange = () => {
+  console.log("ICE State:", pc.iceConnectionState);
+};
+```
+
+---
+
+## Cleanup
+
+Always close the connection when done:
+
+```javascript
+function disconnect(pc) {
+  if (pc) {
+    pc.close();
+    pc = null;
+  }
+}
+
+// On session end
+socket.on("end_session", () => {
+  console.log("Session ended");
+  disconnect(pc);
+});
+
+// On page unload
+window.addEventListener("beforeunload", () => {
+  disconnect(pc);
+});
+```
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Black screen | Check ICE gathering completed before sending offer |
+| No connection | Verify STUN server is reachable, check firewall |
+| Choppy video | Network bandwidth issue, reduce other traffic |
+| Stream stops | Session may have terminated—check status |
+| Audio not playing | Check browser autoplay policies, may need user interaction |
+| Clicks not registering | Verify coordinate mapping includes Y_OFFSET |
+
+### Enable Debug Logging
+
+```javascript
+pc.addEventListener("icecandidateerror", (e) => {
+  console.error("ICE candidate error:", e);
+});
+
+pc.addEventListener("connectionstatechange", () => {
+  console.log("Connection state:", pc.connectionState);
+});
+```
+
+---
+
+## Complete Integration Example
+
+```javascript
+class EnigmaStream {
+  constructor(sessionId, webRTCURL) {
+    this.sessionId = sessionId;
+    this.webRTCURL = webRTCURL;
+    this.pc = null;
+  }
+
+  async connect(videoElement) {
+    this.pc = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+    });
+
+    this.pc.addTransceiver("video", { direction: "recvonly" });
+    this.pc.addTransceiver("audio", { direction: "recvonly" });
+
+    this.pc.ontrack = (e) => {
+      if (!videoElement.srcObject) {
+        videoElement.srcObject = new MediaStream();
+      }
+      videoElement.srcObject.addTrack(e.track);
+    };
+
+    this.pc.onconnectionstatechange = () => {
+      if (this.pc.connectionState === "failed") {
+        this.reconnect(videoElement);
+      }
+    };
+
+    const offer = await this.pc.createOffer();
+    await this.pc.setLocalDescription(offer);
+
+    await new Promise((resolve) => {
+      if (this.pc.iceGatheringState === "complete") resolve();
+      else this.pc.onicegatheringstatechange = () => {
+        if (this.pc.iceGatheringState === "complete") resolve();
+      };
+    });
+
+    const response = await fetch(this.webRTCURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/sdp" },
+      body: this.pc.localDescription.sdp
+    });
+
+    const answer = await response.text();
+    await this.pc.setRemoteDescription({ type: "answer", sdp: answer });
+  }
+
+  async reconnect(videoElement) {
+    console.log("Reconnecting...");
+    this.disconnect();
+    await new Promise(r => setTimeout(r, 1000));
+    await this.connect(videoElement);
+  }
+
+  disconnect() {
+    if (this.pc) {
+      this.pc.close();
+      this.pc = null;
+    }
+  }
+}
+
+// Usage
+const stream = new EnigmaStream(
+  session.sessionId,
+  session.streaming.webRTCURL
+);
+await stream.connect(document.getElementById("video"));
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Controlling Sessions" icon="gamepad" href="/control">
+    Manual interaction commands
+  </Card>
+  <Card title="Events Reference" icon="bolt" href="/events">
+    Receive live updates
+  </Card>
+  <Card title="Errors & Troubleshooting" icon="triangle-exclamation" href="/errors">
+    Common issues and solutions
+  </Card>
+  <Card title="Sessions & Tasks" icon="browser" href="/sessions">
+    Session lifecycle
+  </Card>
+</CardGroup>

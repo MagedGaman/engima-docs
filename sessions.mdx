@@ -1,0 +1,422 @@
+---
+title: "Sessions & Tasks"
+description: "Understanding the relationship between sessions and tasks is key to building effective automations"
+---
+
+## Concepts
+
+### Session
+
+A **session** is an isolated browser instance controlled by an AI agent. When created, Enigma provisions a browser environment and returns connection details.
+
+- One session can run multiple tasks sequentially
+- Sessions persist until terminated or timed out
+- Each session has a unique `sessionId`
+
+### Task
+
+A **task** is a single objective for the agent to complete within a session.
+
+- Each task gets a unique `taskId`
+- Tasks run one at a time per session
+- Track progress via polling (REST) or events (WebSocket)
+
+```
+Session (sessionId: "sess_abc")
+ ├── Task 1 (taskId: "task_001") → completed
+ ├── Task 2 (taskId: "task_002") → completed
+ └── Task 3 (taskId: "task_003") → guardrail_trigger
+```
+
+---
+
+## Session Lifecycle
+
+```
+┌─────────┐     ┌──────────┐     ┌─────────────┐
+│ Pending │────►│  Active  │────►│  Completed  │
+└─────────┘     └──────────┘     └─────────────┘
+                     │
+                     ├───────────► Orphaned ───► Failed
+                     │
+                     ├───────────► Terminated
+                     │
+                     └───────────► Failed
+```
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Session initialized, waiting for instance assignment |
+| `active` | Task currently running |
+| `orphaned` | Instance disconnected, awaiting reconnection (5 min grace period) |
+| `completed` | Session ended successfully |
+| `terminated` | Session ended by user request or timeout |
+| `failed` | Session ended due to error |
+
+---
+
+## Creating a Session
+
+Two approaches based on your use case:
+
+### Option A: Persistent Session
+
+Create a session, then send multiple tasks over time.
+
+```bash
+curl -X POST https://connect.enigma.click/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Go to amazon.com",
+    "maxDuration": 300000,
+    "startingUrl": "https://amazon.com"
+  }'
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "socketURL": "https://connect.enigma.click",
+  "streaming": {
+    "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
+    "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
+    "dimensions": { "width": 1024, "height": 600 }
+  },
+  "initialPrompt": "Go to amazon.com",
+  "expiresIn": 300000,
+  "balance": 12.50,
+  "message": "Connect to instance using sessionId in auth"
+}
+```
+
+### Option B: Single Task (Auto-Terminate)
+
+Run one task, session closes automatically when done.
+
+```bash
+curl -X POST https://connect.enigma.click/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Search Google for Anthropic and return the first result"
+  }'
+```
+
+---
+
+## Session Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `taskDetails` | string | "" | Initial task description (can be empty for sessions without initial task) |
+| `maxDuration` | number | 300000 | Session timeout in ms (max: 300000 = 5 minutes) |
+| `maxInputTokens` | number | 100000 | Max input tokens for AI model |
+| `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
+| `startingUrl` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
+| `avoidDomains` | string[] | [] | Domains agent should not visit (e.g., `["facebook.com"]`) |
+| `mode` | string | "default" | Session mode (currently only "default" supported) |
+| `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
+
+**Example with all parameters:**
+```json
+{
+  "taskDetails": "Search for wireless keyboards",
+  "maxDuration": 180000,
+  "maxInputTokens": 50000,
+  "maxOutputTokens": 50000,
+  "startingUrl": "https://amazon.com",
+  "avoidDomains": ["facebook.com", "twitter.com"],
+  "mode": "default",
+  "terminateOnCompletion": true
+}
+```
+
+<Note>
+- `maxDuration` is enforced server-side; sessions cannot exceed 5 minutes (300000ms)
+- `taskDetails` can be empty if you plan to send tasks later via `/start/send-message`
+- `terminateOnCompletion: true` is automatically set for `/start/run-task` endpoint
+</Note>
+
+---
+
+## Task Lifecycle
+
+```
+┌─────────┐     ┌───────────┐     ┌─────────────────┐
+│ Started │────►│  Running  │────►│ task_completed  │
+└─────────┘     └───────────┘     └─────────────────┘
+                     │
+                     ├───────────► guardrail_trigger
+                     │
+                     └───────────► failed
+```
+
+---
+
+## Sending Tasks
+
+After creating a persistent session, send follow-up tasks:
+
+<CodeGroup>
+
+```bash REST API
+curl -X POST https://connect.enigma.click/start/send-message \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "sessionId": "SESSION_ID",
+    "message": {
+      "actionType": "newTask",
+      "newState": "start",
+      "taskDetails": "Now add the first item to cart"
+    }
+  }'
+```
+
+```javascript WebSocket
+socket.emit("message", {
+  actionType: "newTask",
+  newState: "start",
+  taskDetails: "Now add the first item to cart",
+  maxDuration: 60000
+});
+
+socket.on("message", (data) => {
+  if (data.type === "task_completed") {
+    console.log("Task done:", data.data);
+  }
+});
+```
+
+</CodeGroup>
+
+**Response (completed within 50 seconds):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "result": {
+    "type": "task_completed",
+    "data": { "message": "Added item to cart" }
+  }
+}
+```
+
+**Response (still running):**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "pending": true,
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
+}
+```
+
+---
+
+## Polling Task Status
+
+For REST API, poll the task endpoint:
+
+```bash
+curl https://connect.enigma.click/task/SESSION_ID/TASK_ID \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+**Responses:**
+
+```json
+// Running
+{
+  "success": true,
+  "status": "active",
+  "pending": true,
+  "usage": {
+    "inputTokens": 5000,
+    "outputTokens": 1200,
+    "computeTime": 2,
+    "cost": 0.0045
+  }
+}
+
+// Completed
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "Task finished successfully",
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
+}
+
+// Guardrail triggered
+{
+  "success": true,
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+
+// Failed
+{
+  "success": false,
+  "status": "failed",
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT",
+  "usage": {
+    "inputTokens": 8000,
+    "outputTokens": 2000,
+    "computeTime": 3,
+    "cost": 0.0067
+  }
+}
+```
+
+---
+
+## Multi-Task Workflow Example
+
+```javascript
+const API_KEY = "YOUR_API_KEY";
+const BASE = "https://connect.enigma.click";
+
+async function runMultiTaskWorkflow() {
+  // 1. Create session
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: "Go to amazon.com",
+      startingUrl: "https://amazon.com"
+    })
+  }).then(r => r.json());
+
+  console.log("Session created:", session.sessionId);
+
+  // 2. Send follow-up task
+  const task1 = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: session.sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Search for 'wireless keyboard'"
+      }
+    })
+  }).then(r => r.json());
+
+  // 3. Poll if pending
+  if (task1.pending) {
+    const result = await pollForResult(session.sessionId, task1.taskId);
+    console.log("Task 1 result:", result);
+  }
+
+  // 4. Send another task
+  const task2 = await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: session.sessionId,
+      message: {
+        actionType: "newTask",
+        newState: "start",
+        taskDetails: "Add the first result to cart"
+      }
+    })
+  }).then(r => r.json());
+
+  if (task2.pending) {
+    const result = await pollForResult(session.sessionId, task2.taskId);
+    console.log("Task 2 result:", result);
+  }
+
+  // 5. Terminate when done
+  await fetch(`${BASE}/start/send-message`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      sessionId: session.sessionId,
+      message: { actionType: "state", newState: "terminate" }
+    })
+  });
+
+  console.log("Session terminated");
+}
+
+async function pollForResult(sessionId, taskId) {
+  const maxAttempts = 60;
+  const interval = 2000;
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(`${BASE}/task/${sessionId}/${taskId}`, {
+      headers: { "Authorization": `Bearer ${API_KEY}` }
+    });
+    const data = await res.json();
+
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") throw new Error(`Guardrail: ${data.data.value}`);
+    if (data.status === "failed") throw new Error(data.error);
+
+    if (data.pending) {
+      await new Promise(r => setTimeout(r, interval));
+      continue;
+    }
+
+    return data;
+  }
+
+  throw new Error("Polling timeout");
+}
+
+runMultiTaskWorkflow();
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Controlling Sessions" icon="gamepad" href="/control">
+    Pause, resume, stop, manual takeover
+  </Card>
+  <Card title="Events Reference" icon="bolt" href="/events">
+    All message types and payloads
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/streaming">
+    Watch sessions in real-time
+  </Card>
+  <Card title="Errors & Troubleshooting" icon="triangle-exclamation" href="/errors">
+    Error handling best practices
+  </Card>
+</CardGroup>

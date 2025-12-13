@@ -1,0 +1,608 @@
+---
+title: "Errors & Troubleshooting"
+description: "Comprehensive guide to error handling, common issues, and solutions"
+---
+
+## Error Response Format
+
+All errors follow a consistent structure:
+
+```json
+{
+  "success": false,
+  "error": "Human-readable error message",
+  "code": "ERROR_CODE",
+  "details": { /* Additional context */ }
+}
+```
+
+---
+
+## HTTP Status Codes
+
+| Status | Meaning | Common Causes |
+|--------|---------|---------------|
+| `200` | Success | Request completed successfully |
+| `400` | Bad Request | Invalid parameters, malformed JSON |
+| `401` | Unauthorized | Missing or invalid API key |
+| `402` | Payment Required | Insufficient account balance |
+| `404` | Not Found | Session or task does not exist |
+| `429` | Too Many Requests | Rate limit exceeded |
+| `500` | Internal Server Error | Server-side issue |
+| `503` | Service Unavailable | System maintenance or overload |
+
+---
+
+## Error Codes Reference
+
+### Authentication Errors
+
+#### INVALID_API_KEY
+```json
+{
+  "success": false,
+  "error": "Invalid API key",
+  "code": "INVALID_API_KEY"
+}
+```
+**Solution:** Verify your API key is correct and active in Settings → API Keys.
+
+#### API_KEY_EXPIRED
+```json
+{
+  "success": false,
+  "error": "API key has expired",
+  "code": "API_KEY_EXPIRED"
+}
+```
+**Solution:** Generate a new API key.
+
+#### UNAUTHORIZED
+```json
+{
+  "success": false,
+  "error": "Authorization header missing",
+  "code": "UNAUTHORIZED"
+}
+```
+**Solution:** Include `Authorization: Bearer YOUR_API_KEY` header.
+
+---
+
+### Session Errors
+
+#### SESSION_NOT_FOUND
+```json
+{
+  "success": false,
+  "error": "Session a1b2c3d4e5f6 does not exist or has expired",
+  "code": "SESSION_NOT_FOUND"
+}
+```
+**Causes:**
+- Session was terminated
+- Session expired (5 min timeout)
+- Invalid sessionId
+
+**Solution:** Create a new session with `POST /start/start-session`.
+
+#### SESSION_EXPIRED
+```json
+{
+  "success": false,
+  "error": "Session expired after 300 seconds of inactivity",
+  "code": "SESSION_EXPIRED"
+}
+```
+**Solution:** Sessions expire after `maxDuration`. Create a new session for continuation.
+
+#### SESSION_LIMIT_REACHED
+```json
+{
+  "success": false,
+  "error": "Maximum concurrent sessions reached (limit: 5)",
+  "code": "SESSION_LIMIT_REACHED",
+  "details": {
+    "current": 5,
+    "limit": 5
+  }
+}
+```
+**Solution:** Terminate unused sessions or upgrade your plan.
+
+#### INSTANCE_UNAVAILABLE
+```json
+{
+  "success": false,
+  "error": "No browser instances available",
+  "code": "INSTANCE_UNAVAILABLE"
+}
+```
+**Solution:** Wait and retry, or contact support if persistent.
+
+---
+
+### Task Errors
+
+#### TASK_NOT_FOUND
+```json
+{
+  "success": false,
+  "error": "Task x9y8z7w6v5u4 not found in session a1b2c3d4e5f6",
+  "code": "TASK_NOT_FOUND"
+}
+```
+**Solution:** Verify taskId and sessionId are correct.
+
+#### TASK_ALREADY_RUNNING
+```json
+{
+  "success": false,
+  "error": "A task is already running in this session",
+  "code": "TASK_ALREADY_RUNNING"
+}
+```
+**Solution:** Wait for current task to complete or stop it with `newState: "stop"`.
+
+#### TASK_TIMEOUT
+```json
+{
+  "success": false,
+  "error": "Task exceeded maximum duration of 60000ms",
+  "code": "TASK_TIMEOUT",
+  "usage": {
+    "inputTokens": 25000,
+    "outputTokens": 8000,
+    "cost": 0.0245
+  }
+}
+```
+**Solution:** Increase `maxDuration` or simplify the task.
+
+#### INVALID_TASK_DETAILS
+```json
+{
+  "success": false,
+  "error": "taskDetails cannot be empty",
+  "code": "INVALID_TASK_DETAILS"
+}
+```
+**Solution:** Provide a valid task description.
+
+---
+
+### Browser Errors
+
+#### NAVIGATION_TIMEOUT
+```json
+{
+  "success": false,
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT",
+  "details": {
+    "url": "https://example.com",
+    "timeout": 30000
+  }
+}
+```
+**Causes:**
+- Slow website
+- Network issues
+- Website blocking automated access
+
+**Solution:**
+- Retry the request
+- Check if website is accessible
+- Use `startingUrl` if navigating to a specific page
+
+#### PAGE_CRASH
+```json
+{
+  "success": false,
+  "error": "Browser page crashed during execution",
+  "code": "PAGE_CRASH"
+}
+```
+**Solution:** Retry the task. If persistent, report to support.
+
+#### ELEMENT_NOT_FOUND
+```json
+{
+  "success": false,
+  "error": "Could not locate element matching criteria",
+  "code": "ELEMENT_NOT_FOUND"
+}
+```
+**Causes:**
+- Page structure changed
+- Element inside iframe
+- Element not yet loaded
+
+**Solution:** Rephrase task description or wait for page load.
+
+---
+
+### Rate Limiting Errors
+
+#### RATE_LIMIT_EXCEEDED
+```json
+{
+  "success": false,
+  "message": "Rate limit exceeded. Please try again later."
+}
+```
+**Solution:** Wait before retrying. Implement exponential backoff.
+
+**Rate Limits by Endpoint:**
+- `POST /start/start-session`: 10 requests/minute per user
+- `POST /start/send-message`: 10 requests/minute per user
+- `POST /start/run-task`: 10 requests/minute per user
+- `GET /task/:sessionId/:taskId`: No rate limit
+
+**Rate limits are per user (API key owner), not per API key.**
+
+---
+
+### Billing Errors
+
+#### INSUFFICIENT_BALANCE
+```json
+{
+  "success": false,
+  "error": "Insufficient account balance ($0.50 remaining, $2.00 required)",
+  "code": "INSUFFICIENT_BALANCE",
+  "details": {
+    "balance": 0.50,
+    "required": 2.00
+  }
+}
+```
+**Solution:** Add credits to your account at enigma.click/billing.
+
+#### PAYMENT_FAILED
+```json
+{
+  "success": false,
+  "error": "Payment method declined",
+  "code": "PAYMENT_FAILED"
+}
+```
+**Solution:** Update payment method in Settings → Billing.
+
+---
+
+### Validation Errors
+
+#### INVALID_PARAMETER
+```json
+{
+  "success": false,
+  "error": "Invalid parameter 'maxDuration': must be between 1000 and 300000",
+  "code": "INVALID_PARAMETER",
+  "details": {
+    "parameter": "maxDuration",
+    "value": 500000,
+    "min": 1000,
+    "max": 300000
+  }
+}
+```
+**Solution:** Check parameter requirements in API documentation.
+
+#### MISSING_REQUIRED_FIELD
+```json
+{
+  "success": false,
+  "error": "Missing required field: taskDetails",
+  "code": "MISSING_REQUIRED_FIELD",
+  "details": {
+    "field": "taskDetails"
+  }
+}
+```
+**Solution:** Include all required fields in request body.
+
+---
+
+### MCP-Specific Errors
+
+#### MCP_SESSION_NOT_FOUND
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32603,
+    "message": "Session not found"
+  }
+}
+```
+**Solution:** Check your MCP session ID or reconnect to the SSE endpoint.
+
+#### MCP_METHOD_NOT_FOUND
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32601,
+    "message": "Method not found: invalid_method"
+  }
+}
+```
+**Solution:** Use valid MCP methods (tools/list, tools/call, etc.).
+
+#### MCP_INVALID_REQUEST
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "error": {
+    "code": -32600,
+    "message": "Invalid request"
+  }
+}
+```
+**Solution:** Ensure request follows JSON-RPC 2.0 format with `jsonrpc: "2.0"`.
+
+---
+
+## Error Handling Best Practices
+
+### Retry Logic with Exponential Backoff
+
+```javascript
+async function makeRequestWithRetry(url, options, maxRetries = 3) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      const data = await response.json();
+
+      if (response.ok) return data;
+
+      // Don't retry client errors (4xx) except rate limits
+      if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+        throw new Error(`${data.code}: ${data.error}`);
+      }
+
+      // Retry on 5xx errors and rate limits
+      if (attempt < maxRetries - 1) {
+        const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
+        console.log(`Retry ${attempt + 1}/${maxRetries} after ${delay}ms`);
+        await new Promise(r => setTimeout(r, delay));
+        continue;
+      }
+
+      throw new Error(`${data.code}: ${data.error}`);
+
+    } catch (error) {
+      if (attempt === maxRetries - 1) throw error;
+    }
+  }
+}
+```
+
+### Handling Guardrails
+
+```javascript
+async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
+  let attempts = 0;
+  const maxGuardrailAttempts = 3;
+
+  while (attempts < maxGuardrailAttempts) {
+    const result = await pollForResult(sessionId, taskId, apiKey);
+
+    if (result.type === "task_completed") {
+      return result;
+    }
+
+    if (result.type === "guardrail_trigger") {
+      console.log(`Guardrail triggered: ${result.data.value}`);
+
+      // Get user input
+      const userInput = await promptUser(result.data.value);
+
+      // Resume with input
+      await fetch("https://connect.enigma.click/start/send-message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          sessionId,
+          message: {
+            actionType: "guardrail",
+            taskDetails: userInput,
+            newState: "resume"
+          }
+        })
+      });
+
+      attempts++;
+      continue;
+    }
+
+    throw new Error("Unexpected result type");
+  }
+
+  throw new Error("Maximum guardrail attempts exceeded");
+}
+```
+
+### Complete Error Handling
+
+```javascript
+async function robustTaskExecution(taskDetails, apiKey) {
+  let sessionId = null;
+
+  try {
+    // Create session with retry
+    const session = await makeRequestWithRetry(
+      "https://connect.enigma.click/start/start-session",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({ taskDetails })
+      }
+    );
+
+    sessionId = session.sessionId;
+
+    // Execute task with guardrail handling
+    const result = await executeTaskWithGuardrails(
+      sessionId,
+      taskDetails,
+      apiKey
+    );
+
+    return result;
+
+  } catch (error) {
+    console.error("Task execution failed:", error.message);
+
+    // Clean up session on error
+    if (sessionId) {
+      await terminateSession(sessionId, apiKey);
+    }
+
+    throw error;
+
+  }
+}
+
+async function terminateSession(sessionId, apiKey) {
+  try {
+    await fetch("https://connect.enigma.click/start/send-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        sessionId,
+        message: { actionType: "state", newState: "terminate" }
+      })
+    });
+  } catch (error) {
+    console.error("Failed to terminate session:", error.message);
+  }
+}
+```
+
+---
+
+## Common Issues
+
+### "Session stuck in pending state"
+
+**Symptoms:** Session never becomes active.
+
+**Causes:**
+- No available instances
+- System overload
+- Network issues
+
+**Solutions:**
+1. Wait 30 seconds and check status again
+2. Terminate and create new session
+3. Check system status at status.enigma.click
+4. Contact support if persistent
+
+### "Tasks completing but no result returned"
+
+**Symptoms:** Polling returns `pending: true` indefinitely.
+
+**Causes:**
+- Task actually still running
+- Connection issue between instance and API
+- Task completed but notification lost
+
+**Solutions:**
+1. Continue polling for up to 5 minutes
+2. Check WebSocket events if available
+3. Terminate and retry task
+
+### "High token usage / costs"
+
+**Symptoms:** Tasks consuming more tokens than expected.
+
+**Causes:**
+- Complex pages with lots of content
+- Multiple retries
+- Long-running tasks
+
+**Solutions:**
+1. Set lower `maxInputTokens` and `maxOutputTokens`
+2. Use `startingUrl` to skip navigation
+3. Add relevant domains to `avoidDomains`
+4. Simplify task instructions
+
+### "Guardrails triggered unexpectedly"
+
+**Symptoms:** Agent asks for input unnecessarily.
+
+**Causes:**
+- Ambiguous task instructions
+- Login required
+- Captchas or security checks
+
+**Solutions:**
+1. Make task instructions more specific
+2. Provide credentials upfront if known
+3. Use `avoidDomains` for sites requiring auth
+4. Consider manual takeover for complex scenarios
+
+---
+
+## Debugging Checklist
+
+When encountering issues:
+
+- [ ] Verify API key is valid and has correct permissions
+- [ ] Check account balance is sufficient
+- [ ] Confirm session/task IDs are correct
+- [ ] Review task instructions for clarity
+- [ ] Check network connectivity
+- [ ] Look for error codes in responses
+- [ ] Enable verbose logging
+- [ ] Test with simpler task first
+- [ ] Check system status page
+- [ ] Review usage limits for your plan
+
+---
+
+## Getting Help
+
+If you're still experiencing issues:
+
+1. **Documentation:** Review relevant API docs
+2. **Status Page:** Check status.enigma.click
+3. **Support:** Email support@enigma.click with:
+   - Error code and full error response
+   - Session ID and task ID
+   - Task description
+   - Timestamp of occurrence
+   - Steps to reproduce
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Basic integration guide
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Complete endpoint documentation
+  </Card>
+  <Card title="Sessions & Tasks" icon="browser" href="/sessions">
+    Lifecycle management
+  </Card>
+  <Card title="Events Reference" icon="bolt" href="/events">
+    Real-time event handling
+  </Card>
+</CardGroup>

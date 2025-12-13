@@ -1,80 +1,314 @@
 ---
 title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+description: "Run your first browser automation task in under 5 minutes"
 ---
 
-## Get started in three steps
+## 1. Get Your API Key
 
-Get your documentation site running locally and make your first customization.
+1. Sign up at [enigma.click](https://enigma.click)
+2. Go to **Settings → API Keys**
+3. Click **Create API Key** and copy it
 
-### Step 1: Set up your local environment
+```
+enig_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+---
 
-### Step 2: Deploy your changes
+## 2. Run Your First Task
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+The simplest way to start: one API call that creates a session, runs your task, and returns the result.
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+<CodeGroup>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+```bash REST API
+curl -X POST https://connect.enigma.click/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{"taskDetails": "Go to google.com and search for Anthropic"}'
+```
 
-### Step 3: Go live
+```javascript WebSocket
+import { io } from "socket.io-client";
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+// 1. Create a session
+const session = await fetch("https://connect.enigma.click/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+  },
+  body: JSON.stringify({ taskDetails: "Go to google.com and search for Anthropic" })
+}).then(r => r.json());
 
-## Next steps
+// 2. Connect and listen for events
+const socket = io("https://connect.enigma.click", {
+  auth: { sessionId: session.sessionId },
+  transports: ["websocket"]
+});
 
-Now that you have your docs running, explore these key features:
+socket.on("message", (data) => {
+  console.log(data.type, data);
+  // "agent" → live reasoning
+  // "action" → browser action taken
+  // "task_completed" → done
+});
+```
+
+```javascript OpenAI-Compatible
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY'
+});
+
+const completion = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [
+    { role: 'user', content: 'Go to google.com and search for Anthropic' }
+  ]
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+```json MCP Server
+// Add to your Claude Desktop config:
+// macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
+// Windows: %APPDATA%\Claude\claude_desktop_config.json
+
+{
+  "mcpServers": {
+    "enigma": {
+      "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+    }
+  }
+}
+
+// Restart Claude Desktop. You can now ask Claude to browse the web for you.
+```
+
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully searched for Anthropic on Google",
+      "completion_time": 23.5,
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650
+    },
+    "usage": {
+      "cost": 0.0124
+    }
+  }
+}
+```
+
+---
+
+## 3. Understanding Responses
+
+Most browser tasks complete in 10-40 seconds. The API waits up to 50 seconds before responding, so typical requests return results immediately—no polling required.
+
+### Inline Result (Most Common)
+
+When your task completes within 50 seconds, you get the result directly:
+
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully searched for Anthropic on Google",
+      "completion_time": 23.5,
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650
+    },
+    "usage": {
+      "cost": 0.0124
+    }
+  }
+}
+```
+
+Read your result from `result.data.message`. Token usage and cost are included for transparency.
+
+### Pending Result (Longer Tasks)
+
+For complex tasks that take longer than 50 seconds, you'll receive a `pollUrl`:
+
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "pending",
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+Poll the URL until the task completes:
+
+```javascript
+async function runTask(taskDetails, apiKey) {
+  const response = await fetch("https://connect.enigma.click/start/run-task", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({ taskDetails })
+  });
+
+  const data = await response.json();
+
+  // Inline result - return immediately
+  if (data.status === "complete") {
+    return data.result;
+  }
+
+  // Pending - poll for result
+  if (data.status === "pending") {
+    return await pollForResult(data.sessionId, data.taskId, apiKey);
+  }
+
+  throw new Error(data.message || "Task failed");
+}
+
+async function pollForResult(sessionId, taskId, apiKey) {
+  const maxAttempts = 60;
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(
+      `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+      { headers: { "Authorization": `Bearer ${apiKey}` } }
+    );
+
+    const data = await res.json();
+
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") return data;
+    if (!data.success && data.type === "failed") throw new Error(data.error);
+
+    // Still running - wait and retry
+    await new Promise(r => setTimeout(r, 2000));
+  }
+
+  throw new Error("Task timeout after 2 minutes");
+}
+
+// Usage
+const result = await runTask("Search Google for Anthropic", "enig_xxx");
+console.log(result.data.message);
+console.log(`Cost: $${result.usage.cost}`);
+```
+
+<Tip>
+Copy this `runTask` function as your starting point. It handles both response types and is production-ready.
+</Tip>
+
+---
+
+## 4. What Just Happened?
+
+1. Enigma spun up an isolated browser instance
+2. An AI agent interpreted your task
+3. The agent navigated to Google, typed the search query, and executed it
+4. Results were returned with full token usage and cost breakdown
+
+The session auto-terminated after completion (that's what `/run-task` does). For multi-step workflows where you want to keep the browser open, use `/start-session` instead.
+
+---
+
+## 5. Multi-Task Sessions
+
+When you need to do multiple things in sequence—search, then click a result, then extract data—use a persistent session:
+
+```javascript
+const API_KEY = "YOUR_API_KEY";
+const BASE = "https://connect.enigma.click";
+
+// 1. Create session
+const session = await fetch(`${BASE}/start/start-session`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to amazon.com",
+    startingUrl: "https://amazon.com"
+  })
+}).then(r => r.json());
+
+const sessionId = session.sessionId;
+
+// 2. Send follow-up task
+const task = await fetch(`${BASE}/start/send-message`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    sessionId,
+    message: {
+      actionType: "newTask",
+      newState: "start",
+      taskDetails: "Search for wireless keyboards"
+    }
+  })
+}).then(r => r.json());
+
+// 3. When done, terminate the session
+await fetch(`${BASE}/start/send-message`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    sessionId,
+    message: { actionType: "state", newState: "terminate" }
+  })
+});
+```
+
+<Warning>
+**💰 Cost Tip:** Set `terminateOnCompletion: true` on your last task to auto-close the session and avoid idle charges. Sessions remain billable until terminated or timed out.
+</Warning>
+
+---
+
+## Next Steps
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Sessions & Tasks" icon="browser" href="/sessions">
+    Multi-task workflows and session lifecycle
+  </Card>
+  <Card title="Controlling Sessions" icon="gamepad" href="/control">
+    Pause, resume, manual takeover
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/streaming">
+    Watch sessions live via WebRTC
+  </Card>
+  <Card title="Errors & Troubleshooting" icon="triangle-exclamation" href="/errors">
+    Error handling and debugging
+  </Card>
 </CardGroup>
-
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
