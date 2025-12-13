@@ -1,6 +1,6 @@
-<svg width="240" height="60" viewBox="0 0 240 60" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Icon (scaled 2x) -->
-                    <g transform="translate(4, 0) scale(2)">
+                <svg width="480" height="120" viewBox="0 0 480 120" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Icon (scaled 4x) -->
+                    <g transform="translate(8, 0) scale(4)">
                         <path d="M16 3.5 L19 10.5 L16 9 L13 10.5 Z" fill="#2563eb"></path>
                         <path d="M28.5 16 L21.5 13 L23 16 L21.5 19 Z" fill="#2563eb"></path>
                         <path d="M16 28.5 L13 21.5 L16 23 L19 21.5 Z" fill="#2563eb"></path>
@@ -10,5 +10,5 @@
                     </g>
                     
                     <!-- Text -->
-                    <text font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#1e293b" y="43" x="75">Enigma</text>
+                    <text font-family="system-ui, -apple-system, sans-serif" font-size="64" font-weight="600" fill="#1e293b" y="86" x="150">Enigma</text>
                 </svg>
