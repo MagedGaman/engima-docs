@@ -55,8 +55,8 @@
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "https://docs.enigma.click/logo/light.svg",
+    "dark": "https://docs.enigma.click/logo/dark.svg"
   },
   "navbar": {
     "links": [
@@ -68,7 +68,7 @@
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://enigma.click"
+      "href": "https://app.enigma.click"
     }
   },
   "contextual": {
