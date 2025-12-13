@@ -1,0 +1,314 @@
+---
+title: "Workflow Quickstart: n8n, Make, Zapier"
+description: "Integrate Enigma with no-code automation platforms"
+---
+
+## Understanding Enigma's Response Model
+
+Before setting up your workflow, understand how Enigma returns results:
+
+**Fast Tasks (< 50 seconds):**
+- Single HTTP request returns the result directly
+- No polling needed
+- Most simple tasks (search, navigate, extract) complete in 10-40 seconds
+
+**Longer Tasks (> 50 seconds):**
+- Initial request returns a `pollUrl`
+- You must poll this URL until task completes
+- Required for complex multi-step automations
+
+---
+
+## Platform Compatibility
+
+| Platform | HTTP Timeout | Enigma Compatibility | Recommended Approach |
+|----------|--------------|---------------------|---------------------|
+| **n8n** | 100s (Cloud) | ✅ Excellent | Direct call works for most tasks |
+| **Make.com** | 30s default, up to 300s | ✅ Good | Set timeout to 60s+ |
+| **Zapier** | 30s (fixed, cannot change) | ⚠️ Requires polling | Always use polling pattern |
+
+---
+
+## n8n Integration
+
+### Why n8n Works Well
+n8n Cloud has a 100-second timeout — comfortably above Enigma's 50-second inline window. Most tasks will return results directly without polling.
+
+### Method 1: Simple Task (Direct Response)
+Use when you're confident the task takes < 50 seconds.
+
+**Step 1: Add HTTP Request Node**
+- Method: POST
+- URL: `https://connect.enigma.click/start/run-task`
+- Authentication: Header Auth
+  - Name: `Authorization`
+  - Value: `Bearer YOUR_API_KEY`
+
+**Step 2: Configure Body**
+- Body Content Type: JSON
+- Body:
+```json
+{
+  "taskDetails": "Go to google.com and search for 'Anthropic AI'"
+}
+```
+
+**Step 3: Use the Response**
+- Access `{{ $json.result.data.message }}` for the task output
+- Access `{{ $json.result.usage.cost }}` for cost tracking
+
+### Method 2: With Polling (For Longer Tasks)
+Use when task might exceed 50 seconds.
+
+**Workflow Structure:**
+```
+[HTTP Request: Start Task]
+    → [IF: Check if pending]
+        → Yes → [Loop: Poll until complete]
+        → No → [Continue with result]
+```
+
+**Step-by-Step:**
+
+1. **HTTP Request Node** — Start Task
+   - URL: `https://connect.enigma.click/start/run-task`
+   - Method: POST
+   - Authentication: Header Auth (`Authorization: Bearer YOUR_API_KEY`)
+   - Body:
+   ```json
+   {
+     "taskDetails": "Your complex task here"
+   }
+   ```
+
+2. **IF Node** — Check Status
+   - Condition: `{{ $json.status }}` equals `pending`
+   - Route 1 (True): Go to polling loop
+   - Route 2 (False): Task complete, continue
+
+3. **Wait Node** (on True route)
+   - Duration: 3 seconds
+
+4. **HTTP Request Node** — Poll
+   - URL: `{{ $('HTTP Request').item.json.pollUrl }}`
+   - Method: GET
+   - Authentication: Header Auth (`Authorization: Bearer YOUR_API_KEY`)
+
+5. **Loop Back to IF Node**
+   - Use the loop node or manually route back to the IF node
+   - Continue until `status !== "pending"`
+
+---
+
+## Make.com Integration
+
+### ⚠️ Important: Increase HTTP Timeout
+Make.com's default timeout is 30 seconds — too short for Enigma. **You must increase it to 60+ seconds.**
+
+### Method 1: Simple Task (Extended Timeout)
+
+**Step 1: Add HTTP → Make a Request Module**
+
+**Step 2: Configure Request**
+- URL: `https://connect.enigma.click/start/run-task`
+- Method: POST
+- Headers:
+  - `Authorization`: `Bearer YOUR_API_KEY`
+  - `Content-Type`: `application/json`
+- Body type: Raw
+- Content type: JSON
+- Request content:
+```json
+{
+  "taskDetails": "Search Google for Anthropic and return first result"
+}
+```
+
+**Step 3: Set Timeout (CRITICAL)**
+- Click "Show advanced settings"
+- Set **Timeout**: `60` (seconds) — or higher for complex tasks
+- Maximum allowed: 300 seconds
+
+**Step 4: Parse Response**
+- If `status` = `complete`: Use `result.data.message`
+- If `status` = `pending`: Implement polling (Method 2)
+
+### Method 2: With Polling (Recommended for Production)
+
+**Scenario Structure:**
+```
+[HTTP: Start Task]
+    → [Router]
+        → Route 1 (status = complete): [Continue]
+        → Route 2 (status = pending): [Sleep 3s] → [HTTP: Poll] → [Loop]
+```
+
+**Step-by-Step:**
+
+1. **HTTP Module** — Start Task
+   - URL: `https://connect.enigma.click/start/run-task`
+   - Method: POST
+   - Headers: `Authorization`, `Content-Type`
+   - Timeout: 60+ seconds
+   - Body:
+   ```json
+   {
+     "taskDetails": "Your task here"
+   }
+   ```
+
+2. **Router Module**
+   - Route 1 Filter: `status` equals `complete`
+   - Route 2 Filter: `status` equals `pending`
+
+3. **On Route 2** — Add Sleep Module
+   - Duration: 3000ms
+
+4. **HTTP Module** — Poll for Result
+   - URL: `{{pollUrl}}`
+   - Method: GET
+   - Headers: `Authorization: Bearer YOUR_API_KEY`
+
+5. **Loop Back or Use Repeater**
+   - Continue polling until `type` = `task_completed`
+
+---
+
+## Zapier Integration
+
+### ⚠️ Important Limitation
+Zapier has a **fixed 30-second HTTP timeout** that cannot be changed. Since Enigma's inline response window is 50 seconds, **you must always use the polling pattern** with Zapier.
+
+### Why Polling is Required
+Even if your task might complete in 20 seconds, Zapier may timeout before Enigma responds. The polling pattern ensures reliable results regardless of task duration.
+
+### Step-by-Step Setup
+
+**Step 1: Trigger**
+Choose your trigger (e.g., "New Row in Google Sheets", "New Form Response", etc.)
+
+**Step 2: Start the Enigma Task**
+- App: Webhooks by Zapier
+- Event: POST
+- URL: `https://connect.enigma.click/start/run-task`
+- Payload Type: JSON
+- Data:
+```json
+{
+  "taskDetails": "Your task description here"
+}
+```
+- Headers:
+  - `Authorization`: `Bearer YOUR_API_KEY`
+  - `Content-Type`: `application/json`
+
+**Step 3: Add Delay**
+- App: Delay by Zapier
+- Event: Delay For
+- Duration: 30 seconds (or estimated task time)
+
+**Step 4: Poll for Result**
+- App: Webhooks by Zapier
+- Event: GET
+- URL: Construct from Step 2:
+  - `https://connect.enigma.click/task/{{steps.2.sessionId}}/{{steps.2.taskId}}`
+  - Or use `{{steps.2.pollUrl}}` if available
+- Headers:
+  - `Authorization`: `Bearer YOUR_API_KEY`
+
+**Step 5: Check if Complete**
+- App: Filter by Zapier
+- Condition: `type` equals `task_completed`
+- If not complete, use Paths to retry polling
+
+**Step 6: Use the Result**
+- Access the task output: `{{steps.4.data.message}}`
+- Access cost: `{{steps.4.usage.cost}}`
+
+### Alternative: Use Looping (Zapier Beta)
+If you have access to Zapier's Looping feature:
+1. Start task
+2. Loop: Poll every 5 seconds until `type` = `task_completed`
+3. Continue with result
+
+---
+
+## Platform Comparison Summary
+
+| Feature | n8n | Make.com | Zapier |
+|---------|-----|----------|--------|
+| Direct response possible | ✅ Yes | ✅ Yes (with timeout config) | ❌ No |
+| Polling complexity | Low | Medium | High |
+| Max HTTP timeout | 100s | 300s | 30s (fixed) |
+| Recommended for | All use cases | All use cases | Simple tasks only |
+| Loop/retry support | ✅ Native | ✅ Native | ⚠️ Limited |
+
+---
+
+## Common Patterns
+
+### Pattern 1: Form → Browser Task → Store Result
+**Trigger:** Form submission
+**Action:** Run Enigma task with form data
+**Output:** Store result in database/sheet
+
+**Example Use Case:** Lead enrichment — form captures company name, Enigma researches company details, result stored in CRM.
+
+### Pattern 2: Scheduled Research
+**Trigger:** Schedule (daily/weekly)
+**Action:** Run research task
+**Output:** Send email summary
+
+**Example Use Case:** Daily competitor monitoring — scrape competitor websites, compile changes, email report.
+
+### Pattern 3: Lead Enrichment
+**Trigger:** New lead in CRM
+**Action:** Research company/person via browser
+**Output:** Update CRM record
+
+**Example Use Case:** Sales automation — new lead added to Salesforce, Enigma finds LinkedIn profile and company info, updates Salesforce.
+
+---
+
+## Troubleshooting
+
+### "Connection timed out" Error
+
+**n8n:** Should not happen if task < 100s. Check network and API key.
+**Make.com:** Increase timeout in advanced settings to 60+ seconds.
+**Zapier:** Expected. Implement polling pattern.
+
+### Task Returns "pending" Status
+
+Normal for tasks > 50 seconds. Implement polling to get final result.
+
+### Empty or Missing Result
+
+Check that you're accessing the correct response path:
+- **Direct response:** `result.data.message`
+- **Polled response:** `data.message`
+
+### High Costs
+
+- Set `terminateOnCompletion: true` in your task payload
+- Monitor costs in the Enigma dashboard
+- See [Cost Optimization](/usage-guides/cost-optimization) for tips
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="REST API Guide" icon="code" href="/integrations/rest-api">
+    Full REST API documentation
+  </Card>
+  <Card title="Cost Optimization" icon="dollar-sign" href="/usage-guides/cost-optimization">
+    Tips to reduce costs
+  </Card>
+  <Card title="Handling Guardrails" icon="shield-halved" href="/usage-guides/handling-guardrails">
+    Respond to human-in-the-loop requests
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/troubleshooting/common-issues">
+    Common workflow issues
+  </Card>
+</CardGroup>

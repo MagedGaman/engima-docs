@@ -1,0 +1,673 @@
+---
+title: "Parameters"
+description: "Complete reference for all Enigma API parameters"
+---
+
+## Session Parameters
+
+Parameters used when creating a new session via `POST /start/start-session`.
+
+### taskDetails
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `""`
+- **Description:** Initial task description for the session. The AI agent will execute this task when the session starts.
+
+**Example:**
+```json
+{
+  "taskDetails": "Go to amazon.com and search for wireless keyboards"
+}
+```
+
+---
+
+### maxDuration
+
+- **Type:** `number` (milliseconds)
+- **Required:** No
+- **Default:** `300000` (5 minutes)
+- **Maximum:** `300000` (5 minutes)
+- **Description:** Maximum time the session can run before automatic termination. Prevents runaway costs.
+
+**Example:**
+```json
+{
+  "maxDuration": 180000  // 3 minutes
+}
+```
+
+<Warning>
+Sessions automatically terminate after `maxDuration` even if tasks are still running. Set this value based on your expected task completion time.
+</Warning>
+
+---
+
+### maxInputTokens
+
+- **Type:** `number`
+- **Required:** No
+- **Default:** `100000`
+- **Description:** Maximum number of input tokens the AI can process. Limits context size to control costs.
+
+**Example:**
+```json
+{
+  "maxInputTokens": 50000
+}
+```
+
+---
+
+### maxOutputTokens
+
+- **Type:** `number`
+- **Required:** No
+- **Default:** `100000`
+- **Description:** Maximum number of output tokens the AI can generate. Limits response size to control costs.
+
+**Example:**
+```json
+{
+  "maxOutputTokens": 50000
+}
+```
+
+---
+
+### startingUrl
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `null`
+- **Description:** URL where the browser session should start. If not provided, starts with a blank page.
+
+**Example:**
+```json
+{
+  "startingUrl": "https://google.com"
+}
+```
+
+<Tip>
+Setting a `startingUrl` can speed up task execution by starting the browser at the relevant page.
+</Tip>
+
+---
+
+### avoidDomains
+
+- **Type:** `string[]` (array of strings)
+- **Required:** No
+- **Default:** `[]`
+- **Description:** List of domains the agent should avoid navigating to. Useful for preventing unwanted redirects or blocking third-party sites.
+
+**Example:**
+```json
+{
+  "avoidDomains": ["facebook.com", "twitter.com", "ads.example.com"]
+}
+```
+
+---
+
+### mode
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `"default"`
+- **Description:** Session mode. Currently only `"default"` is supported.
+
+**Example:**
+```json
+{
+  "mode": "default"
+}
+```
+
+---
+
+### terminateOnCompletion
+
+- **Type:** `boolean`
+- **Required:** No
+- **Default:** `false`
+- **Description:** Whether to automatically terminate the session after the current task completes. Set to `true` to prevent idle session charges.
+
+**Example:**
+```json
+{
+  "terminateOnCompletion": true
+}
+```
+
+<Tip>
+**💰 Cost Optimization:** Set `terminateOnCompletion: true` on your last task to automatically close the session and prevent idle charges.
+</Tip>
+
+---
+
+## Task Parameters
+
+Parameters used when starting a new task via `POST /start/send-message` with `actionType: "newTask"`.
+
+All [Session Parameters](#session-parameters) are available for tasks, plus:
+
+### actionType
+
+- **Type:** `string`
+- **Required:** Yes
+- **Values:** `"newTask"`, `"state"`, `"interaction"`, `"guardrail"`
+- **Description:** Type of action to perform on the session.
+
+**Example:**
+```json
+{
+  "actionType": "newTask"
+}
+```
+
+---
+
+### newState
+
+- **Type:** `string`
+- **Required:** Yes (for `actionType: "newTask"` and `actionType: "state"`)
+- **Values:**
+  - For tasks: `"start"`
+  - For state control: `"pause"`, `"resume"`, `"stop"`, `"terminate"`
+- **Description:** State change to apply.
+
+**Examples:**
+```json
+// Starting a new task
+{
+  "actionType": "newTask",
+  "newState": "start"
+}
+
+// Pausing execution
+{
+  "actionType": "state",
+  "newState": "pause"
+}
+
+// Resuming execution
+{
+  "actionType": "state",
+  "newState": "resume"
+}
+```
+
+---
+
+## Message Parameters
+
+Parameters used in the `message` field of `POST /start/send-message`.
+
+### For State Control (actionType: "state")
+
+**Required Parameters:**
+- `actionType`: `"state"`
+- `newState`: `"pause" | "resume" | "stop" | "terminate"`
+
+**Example:**
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "state",
+    "newState": "pause"
+  }
+}
+```
+
+---
+
+### For Manual Interaction (actionType: "interaction")
+
+**Required Parameters:**
+- `actionType`: `"interaction"`
+- `action`: Object containing interaction details
+
+**Action Object Structure:**
+
+#### takeOverControl / releaseControl
+
+```json
+{
+  "type": "takeOverControl"
+}
+// or
+{
+  "type": "releaseControl"
+}
+```
+
+#### CLICK / DOUBLE_CLICK
+
+```json
+{
+  "type": "CLICK",  // or "DOUBLE_CLICK"
+  "x": 500,
+  "y": 300
+}
+```
+
+**Parameters:**
+- `x` (number): Horizontal coordinate (0-1024)
+- `y` (number): Vertical coordinate (155-600, accounting for browser chrome)
+
+<Note>
+**Coordinate System:** The browser viewport is 1024×600 pixels. The top 155 pixels are browser chrome (not clickable). Clickable area is 1024×445 pixels starting at Y=155.
+</Note>
+
+#### TYPE
+
+```json
+{
+  "type": "TYPE",
+  "text": "Hello world",
+  "humanLike": true
+}
+```
+
+**Parameters:**
+- `text` (string, required): Text to type
+- `humanLike` (boolean, optional): Simulate human typing speed
+
+#### KEY_PRESS
+
+```json
+{
+  "type": "KEY_PRESS",
+  "key": "Enter"
+}
+```
+
+**Parameters:**
+- `key` (string, required): Key to press
+
+**Common Keys:**
+- `Enter`
+- `Escape`
+- `Tab`
+- `Backspace`
+- `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`
+
+---
+
+### For Guardrail Response (actionType: "guardrail")
+
+**Required Parameters:**
+- `actionType`: `"guardrail"`
+- `taskDetails`: Human-provided information
+- `newState`: `"resume"`
+
+**Example:**
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "guardrail",
+    "taskDetails": "Username: user@example.com, Password: pass123",
+    "newState": "resume"
+  }
+}
+```
+
+---
+
+## Response Fields
+
+Fields returned in API responses.
+
+### Session Response Fields
+
+Returned from `POST /start/start-session`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the request succeeded |
+| `sessionId` | string | Unique session identifier |
+| `socketURL` | string | WebSocket connection URL |
+| `streaming` | object | Video streaming configuration |
+| `streaming.webRTCURL` | string | WebRTC WHEP endpoint URL |
+| `streaming.webViewURL` | string | HTTP video stream URL |
+| `streaming.dimensions` | object | Video dimensions `{width: 1024, height: 600}` |
+| `initialPrompt` | string | The initial task that was provided |
+| `expiresIn` | number | Session expiration time in milliseconds |
+| `balance` | number | Current account balance in USD |
+| `message` | string | Additional information |
+
+---
+
+### Task Response Fields
+
+Returned from `POST /start/send-message` with `actionType: "newTask"` and `POST /start/run-task`:
+
+**When task completes within 50 seconds:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the request succeeded |
+| `sessionId` | string | Session identifier |
+| `taskId` | string | Task identifier |
+| `status` | string | Task status: `"complete"` |
+| `result` | object | Task result details |
+| `result.type` | string | Result type: `"task_completed"` |
+| `result.data` | object | Result data |
+| `result.data.message` | string | Task completion message |
+| `result.data.prompt_tokens` | number | Input tokens used |
+| `result.data.completion_tokens` | number | Output tokens generated |
+| `result.data.total_tokens` | number | Total tokens used |
+| `result.data.completion_time` | number | Task execution time in seconds |
+
+**When task is still running after 50 seconds:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the request succeeded |
+| `sessionId` | string | Session identifier |
+| `taskId` | string | Task identifier for polling |
+| `status` | string | Task status: `"pending"` |
+| `pending` | boolean | `true` when task is still running |
+| `pollUrl` | string | URL to poll for task result |
+| `message` | string | Instruction to poll for result |
+
+---
+
+### Poll Response Fields
+
+Returned from `GET /task/:sessionId/:taskId`:
+
+**While running:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the request succeeded |
+| `status` | string | Task status: `"active"` |
+| `pending` | boolean | `true` when task is still running |
+| `usage` | object | Current usage statistics |
+| `usage.inputTokens` | number | Input tokens used so far |
+| `usage.outputTokens` | number | Output tokens generated so far |
+| `usage.computeTime` | number | Compute time in seconds |
+| `usage.cost` | number | Cost in USD so far |
+
+**When completed:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the request succeeded |
+| `type` | string | Result type: `"task_completed"` |
+| `data` | object | Task result data |
+| `data.message` | string | Task completion message |
+| `data.prompt_tokens` | number | Total input tokens used |
+| `data.completion_tokens` | number | Total output tokens generated |
+| `data.total_tokens` | number | Total tokens used |
+| `data.completion_time` | number | Task execution time in seconds |
+| `usage` | object | Final usage statistics |
+| `usage.inputTokens` | number | Total input tokens |
+| `usage.outputTokens` | number | Total output tokens |
+| `usage.computeTime` | number | Total compute time in seconds |
+| `usage.cost` | number | Total cost in USD |
+| `completedAt` | string | ISO 8601 timestamp of completion |
+
+**When guardrail triggered:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the request succeeded |
+| `type` | string | Result type: `"guardrail_trigger"` |
+| `data` | object | Guardrail details |
+| `data.type` | string | Guardrail type (e.g., `"human_input_needed"`) |
+| `data.value` | string | Guardrail message explaining what's needed |
+
+**When failed:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | `false` |
+| `status` | string | `"failed"` |
+| `error` | string | Error message |
+| `code` | string | Error code (e.g., `"NAVIGATION_TIMEOUT"`) |
+| `usage` | object | Usage statistics up to failure |
+
+---
+
+### Usage Object Structure
+
+The `usage` object provides token and cost information:
+
+```typescript
+{
+  inputTokens: number;      // Number of input tokens used
+  outputTokens: number;     // Number of output tokens generated
+  computeTime: number;      // Compute time in seconds
+  cost: number;             // Cost in USD
+}
+```
+
+**Example:**
+```json
+{
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  }
+}
+```
+
+---
+
+## OpenAI-Compatible Parameters
+
+Parameters for `POST /v1/chat/completions`.
+
+### model
+
+- **Type:** `string`
+- **Required:** Yes
+- **Value:** `"enigma-browser-1"`
+- **Description:** Model to use. Currently only `enigma-browser-1` is available.
+
+---
+
+### messages
+
+- **Type:** `array` of message objects
+- **Required:** Yes
+- **Description:** Array of conversation messages
+
+**Message Object Structure:**
+```typescript
+{
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+```
+
+**Example:**
+```json
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful browser automation assistant."
+    },
+    {
+      "role": "user",
+      "content": "Go to example.com and extract all headings"
+    }
+  ]
+}
+```
+
+---
+
+### stream
+
+- **Type:** `boolean`
+- **Required:** No
+- **Default:** `false`
+- **Description:** Enable streaming responses via Server-Sent Events (SSE).
+
+---
+
+### max_tokens
+
+- **Type:** `number`
+- **Required:** No
+- **Default:** `2000`
+- **Description:** Maximum number of tokens in the response.
+
+---
+
+### temperature
+
+- **Type:** `number`
+- **Required:** No
+- **Description:** Not used (included for OpenAI compatibility only). Task execution is deterministic.
+
+---
+
+## Type Definitions
+
+### ActionType
+
+```typescript
+type ActionType = "newTask" | "state" | "interaction" | "guardrail";
+```
+
+---
+
+### StateType
+
+```typescript
+type StateType = "start" | "pause" | "resume" | "stop" | "terminate";
+```
+
+---
+
+### InteractionType
+
+```typescript
+type InteractionType =
+  | "takeOverControl"
+  | "releaseControl"
+  | "CLICK"
+  | "DOUBLE_CLICK"
+  | "TYPE"
+  | "KEY_PRESS";
+```
+
+---
+
+### SessionConfig
+
+```typescript
+interface SessionConfig {
+  taskDetails?: string;
+  maxDuration?: number;
+  maxInputTokens?: number;
+  maxOutputTokens?: number;
+  startingUrl?: string | null;
+  avoidDomains?: string[];
+  mode?: string;
+  terminateOnCompletion?: boolean;
+}
+```
+
+---
+
+### TaskMessage
+
+```typescript
+interface TaskMessage {
+  actionType: "newTask";
+  newState: "start";
+  taskDetails: string;
+  maxDuration?: number;
+  maxInputTokens?: number;
+  maxOutputTokens?: number;
+  startingUrl?: string | null;
+  avoidDomains?: string[];
+  terminateOnCompletion?: boolean;
+}
+```
+
+---
+
+### StateMessage
+
+```typescript
+interface StateMessage {
+  actionType: "state";
+  newState: "pause" | "resume" | "stop" | "terminate";
+}
+```
+
+---
+
+### InteractionMessage
+
+```typescript
+interface InteractionMessage {
+  actionType: "interaction";
+  action:
+    | { type: "takeOverControl" }
+    | { type: "releaseControl" }
+    | { type: "CLICK" | "DOUBLE_CLICK"; x: number; y: number }
+    | { type: "TYPE"; text: string; humanLike?: boolean }
+    | { type: "KEY_PRESS"; key: string };
+}
+```
+
+---
+
+### GuardrailMessage
+
+```typescript
+interface GuardrailMessage {
+  actionType: "guardrail";
+  taskDetails: string;
+  newState: "resume";
+}
+```
+
+---
+
+## Parameter Validation
+
+### Constraints
+
+| Parameter | Min | Max | Notes |
+|-----------|-----|-----|-------|
+| `maxDuration` | 0 | 300000 | Milliseconds (5 minutes max) |
+| `maxInputTokens` | 0 | 100000 | Default: 100000 |
+| `maxOutputTokens` | 0 | 100000 | Default: 100000 |
+| `max_tokens` | 0 | unlimited | OpenAI-compatible endpoint |
+| Click `x` coordinate | 0 | 1024 | Browser width |
+| Click `y` coordinate | 155 | 600 | Accounting for browser chrome |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Endpoints" icon="plug" href="/api-reference/endpoints">
+    Complete endpoint reference
+  </Card>
+  <Card title="Response Formats" icon="code" href="/api-reference/response-formats">
+    Response format reference
+  </Card>
+  <Card title="Controlling Sessions" icon="gamepad" href="/control">
+    Session control guide
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Get started in 5 minutes
+  </Card>
+</CardGroup>

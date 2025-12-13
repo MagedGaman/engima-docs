@@ -1,0 +1,978 @@
+---
+title: "Common Issues & Solutions"
+description: "Troubleshooting guide for frequently encountered issues with Enigma"
+---
+
+## Overview
+
+This guide covers the most common issues users encounter when working with Enigma, along with detailed solutions and preventive measures.
+
+---
+
+## Session Issues
+
+### Session Stuck in Pending State
+
+**Symptoms:**
+- Session status remains `pending` indefinitely
+- Session never transitions to `active` state
+- No browser instance appears to be assigned
+
+**Common Causes:**
+- No available browser instances
+- System experiencing high load
+- Network connectivity issues
+- Resource allocation bottleneck
+
+**Solutions:**
+
+1. **Wait and Check Status**
+   ```javascript
+   // Poll session status for up to 30 seconds
+   async function waitForSessionActive(sessionId, apiKey, maxWait = 30000) {
+     const startTime = Date.now();
+
+     while (Date.now() - startTime < maxWait) {
+       const response = await fetch(
+         `https://connect.enigma.click/start/session-status/${sessionId}`,
+         {
+           headers: { "Authorization": `Bearer ${apiKey}` }
+         }
+       );
+
+       const data = await response.json();
+
+       if (data.status === "active") {
+         return data;
+       }
+
+       if (data.status === "failed") {
+         throw new Error("Session failed to start");
+       }
+
+       await new Promise(r => setTimeout(r, 2000));
+     }
+
+     throw new Error("Session stuck in pending state");
+   }
+   ```
+
+2. **Terminate and Recreate**
+   ```javascript
+   // If session is stuck, terminate and create new one
+   await fetch("https://connect.enigma.click/start/send-message", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       sessionId,
+       message: { actionType: "state", newState: "terminate" }
+     })
+   });
+
+   // Create new session
+   const newSession = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({ taskDetails })
+   });
+   ```
+
+3. **Check System Status**
+   - Visit [status.enigma.click](https://status.enigma.click)
+   - Look for ongoing incidents or maintenance
+   - Check response times and success rates
+
+4. **Contact Support**
+   - If issue persists for > 2 minutes
+   - Provide session ID and timestamp
+   - Include error logs if available
+
+**Prevention:**
+- Implement timeout logic when creating sessions
+- Use retry logic with exponential backoff
+- Monitor system status before critical operations
+
+---
+
+### Tasks Timing Out
+
+**Symptoms:**
+- Tasks return `TASK_TIMEOUT` error
+- Tasks exceed `maxDuration` limit
+- Incomplete results with timeout message
+
+**Common Causes:**
+- Complex pages with heavy JavaScript
+- Slow network connections
+- Task requires multiple page loads
+- Website has anti-bot protections
+- Task instructions too complex
+
+**Solutions:**
+
+1. **Increase Maximum Duration**
+   ```javascript
+   const response = await fetch("https://connect.enigma.click/start/run-task", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       sessionId,
+       taskDetails: "Complex multi-step task",
+       maxDuration: 180000 // 3 minutes instead of default 60s
+     })
+   });
+   ```
+
+2. **Break Down Complex Tasks**
+   ```javascript
+   // Instead of one complex task:
+   // "Search for products, filter by price, add to cart, and checkout"
+
+   // Break into multiple simpler tasks:
+   const tasks = [
+     "Navigate to example.com and search for 'laptop'",
+     "Filter results by price range $500-$1000",
+     "Click on the first product",
+     "Add the product to cart"
+   ];
+
+   for (const task of tasks) {
+     const result = await runTask(sessionId, task, apiKey);
+     console.log(`Completed: ${task}`);
+   }
+   ```
+
+3. **Use Starting URL**
+   ```javascript
+   // Skip navigation time by starting at target page
+   const session = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Fill out the contact form",
+       startingUrl: "https://example.com/contact" // Skip homepage
+     })
+   });
+   ```
+
+4. **Optimize Task Instructions**
+   ```javascript
+   // Vague - may cause exploration and timeouts
+   taskDetails: "Find information about pricing"
+
+   // Specific - faster execution
+   taskDetails: "Click the 'Pricing' link in the navigation menu"
+   ```
+
+**Prevention:**
+- Set realistic `maxDuration` based on task complexity
+- Test tasks on fast network first
+- Monitor task execution times
+- Keep task instructions specific and focused
+
+---
+
+### Tasks Completing But No Result Returned
+
+**Symptoms:**
+- Polling returns `pending: true` indefinitely
+- Task appears stuck even though browser finished
+- No error message returned
+
+**Common Causes:**
+- Task is still genuinely running
+- Network issue between browser instance and API
+- Result notification was lost
+- WebSocket connection dropped
+
+**Solutions:**
+
+1. **Continue Polling with Timeout**
+   ```javascript
+   async function pollWithTimeout(sessionId, taskId, apiKey, maxTime = 300000) {
+     const startTime = Date.now();
+
+     while (Date.now() - startTime < maxTime) {
+       const response = await fetch(
+         `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+         {
+           headers: { "Authorization": `Bearer ${apiKey}` }
+         }
+       );
+
+       const data = await response.json();
+
+       if (!data.pending) {
+         return data;
+       }
+
+       // Wait before next poll
+       await new Promise(r => setTimeout(r, 2000));
+     }
+
+     throw new Error("Task polling timeout - no result after 5 minutes");
+   }
+   ```
+
+2. **Check WebSocket Events**
+   ```javascript
+   // If using WebSocket, monitor for task_completed event
+   const ws = new WebSocket(`wss://connect.enigma.click/ws?sessionId=${sessionId}`);
+
+   ws.onmessage = (event) => {
+     const data = JSON.parse(event.data);
+
+     if (data.type === "task_completed") {
+       console.log("Task completed:", data);
+     }
+   };
+   ```
+
+3. **Terminate and Retry**
+   ```javascript
+   // If stuck for > 5 minutes, terminate and retry
+   await fetch("https://connect.enigma.click/start/send-message", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       sessionId,
+       message: { actionType: "state", newState: "stop" }
+     })
+   });
+
+   // Wait a moment then retry
+   await new Promise(r => setTimeout(r, 2000));
+   const retryResult = await runTask(sessionId, taskDetails, apiKey);
+   ```
+
+**Prevention:**
+- Use WebSocket for real-time updates
+- Implement robust polling with timeouts
+- Monitor both polling and WebSocket channels
+
+---
+
+## Cost & Performance Issues
+
+### High Token Usage / Unexpected Costs
+
+**Symptoms:**
+- Tasks consuming more tokens than expected
+- Costs higher than estimated
+- `usage` object shows large token counts
+
+**Common Causes:**
+- Complex pages with lots of DOM elements
+- Multiple failed attempts and retries
+- Long-running tasks with many interactions
+- Not using token limits
+- Navigation to unnecessary pages
+
+**Solutions:**
+
+1. **Set Token Limits**
+   ```javascript
+   const response = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Search for products",
+       maxInputTokens: 10000,  // Limit context size
+       maxOutputTokens: 2000   // Limit response length
+     })
+   });
+   ```
+
+2. **Use Starting URL**
+   ```javascript
+   // Skip homepage navigation - saves tokens
+   const session = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Fill search form",
+       startingUrl: "https://example.com/search" // Go directly to target
+     })
+   });
+   ```
+
+3. **Block Unnecessary Domains**
+   ```javascript
+   const session = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Read article content",
+       avoidDomains: [
+         "ads.example.com",
+         "analytics.example.com",
+         "cdn.advertising.com"
+       ]
+     })
+   });
+   ```
+
+4. **Simplify Task Instructions**
+   ```javascript
+   // Verbose - may cause exploration
+   taskDetails: "Navigate around the site and find pricing information, compare different plans, and tell me about the features"
+
+   // Concise - direct execution
+   taskDetails: "Click 'Pricing' in navigation and extract plan names and prices"
+   ```
+
+5. **Monitor Usage**
+   ```javascript
+   const result = await pollForResult(sessionId, taskId, apiKey);
+
+   console.log("Token Usage:", {
+     input: result.usage.inputTokens,
+     output: result.usage.outputTokens,
+     cost: result.usage.cost
+   });
+
+   // Track cumulative costs
+   totalCost += result.usage.cost;
+   ```
+
+**Prevention:**
+- Always set `maxInputTokens` and `maxOutputTokens`
+- Use `startingUrl` when possible
+- Block ad networks and analytics domains
+- Keep tasks focused and specific
+- Test on simple pages first
+
+---
+
+## Guardrails & Interaction Issues
+
+### Guardrails Triggering Unexpectedly
+
+**Symptoms:**
+- Agent frequently asks for input
+- Tasks pause for user confirmation
+- `guardrail_trigger` events fire often
+
+**Common Causes:**
+- Task instructions are ambiguous
+- Website requires login/authentication
+- CAPTCHA or security check encountered
+- Agent uncertain about next action
+- Multiple valid options available
+
+**Solutions:**
+
+1. **Make Instructions More Specific**
+   ```javascript
+   // Ambiguous - may trigger guardrail
+   taskDetails: "Buy something"
+
+   // Specific - clear action
+   taskDetails: "Add the first search result to cart, do not proceed to checkout"
+   ```
+
+2. **Provide Credentials Upfront**
+   ```javascript
+   const session = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Login using username 'user@example.com' and password 'myPassword123', then navigate to dashboard"
+     })
+   });
+   ```
+
+3. **Handle Guardrails Programmatically**
+   ```javascript
+   async function handleGuardrails(sessionId, apiKey) {
+     const ws = new WebSocket(`wss://connect.enigma.click/ws?sessionId=${sessionId}`);
+
+     ws.onmessage = async (event) => {
+       const data = JSON.parse(event.data);
+
+       if (data.type === "guardrail_trigger") {
+         console.log("Guardrail:", data.data.value);
+
+         // Provide automated response
+         let response;
+         if (data.data.value.includes("login")) {
+           response = "Yes, use the credentials provided earlier";
+         } else if (data.data.value.includes("confirm")) {
+           response = "Yes, proceed";
+         } else {
+           // Get user input
+           response = await getUserInput(data.data.value);
+         }
+
+         // Resume with response
+         await fetch("https://connect.enigma.click/start/send-message", {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${apiKey}`
+           },
+           body: JSON.stringify({
+             sessionId,
+             message: {
+               actionType: "guardrail",
+               taskDetails: response,
+               newState: "resume"
+             }
+           })
+         });
+       }
+     };
+   }
+   ```
+
+4. **Avoid Sites Requiring Auth**
+   ```javascript
+   // Block login-required domains
+   const session = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Research product information",
+       avoidDomains: [
+         "login.example.com",
+         "secure.example.com"
+       ]
+     })
+   });
+   ```
+
+**Prevention:**
+- Write clear, unambiguous task instructions
+- Provide all necessary information upfront
+- Test tasks on public pages first
+- Handle common guardrail scenarios programmatically
+
+---
+
+## Streaming & Connection Issues
+
+### Video Stream Not Loading
+
+**Symptoms:**
+- Streaming endpoint returns errors
+- Video player shows no content
+- Connection timeout on stream URL
+
+**Common Causes:**
+- Session not active yet
+- Invalid session ID
+- Network/firewall blocking WebRTC
+- Browser instance crashed
+
+**Solutions:**
+
+1. **Verify Session is Active**
+   ```javascript
+   async function getStreamUrl(sessionId, apiKey) {
+     // Check session status first
+     const statusResponse = await fetch(
+       `https://connect.enigma.click/start/session-status/${sessionId}`,
+       {
+         headers: { "Authorization": `Bearer ${apiKey}` }
+       }
+     );
+
+     const status = await statusResponse.json();
+
+     if (status.status !== "active") {
+       throw new Error(`Session not ready: ${status.status}`);
+     }
+
+     // Get stream URL
+     return `https://connect.enigma.click/stream/${sessionId}`;
+   }
+   ```
+
+2. **Check Network Configuration**
+   ```javascript
+   // Ensure WebRTC ports are not blocked
+   // Required ports: TCP 443, UDP 49152-65535
+
+   // Test connection
+   const streamUrl = `https://connect.enigma.click/stream/${sessionId}`;
+   const testResponse = await fetch(streamUrl);
+
+   if (!testResponse.ok) {
+     console.error("Stream not accessible:", testResponse.status);
+   }
+   ```
+
+3. **Use Alternative Streaming Methods**
+   ```javascript
+   // If WebRTC fails, try SSE for updates
+   const eventSource = new EventSource(
+     `https://connect.enigma.click/stream/sse/${sessionId}?apiKey=${apiKey}`
+   );
+
+   eventSource.onmessage = (event) => {
+     const data = JSON.parse(event.data);
+     console.log("Stream update:", data);
+   };
+   ```
+
+**Related:**
+- [Streaming Guide](/streaming)
+- [Network Requirements](/getting-started/requirements)
+
+---
+
+### WebSocket Connection Issues
+
+**Symptoms:**
+- WebSocket fails to connect
+- Connection drops frequently
+- Events not received
+
+**Common Causes:**
+- Invalid API key or session ID
+- Firewall blocking WebSocket connections
+- Network instability
+- Session expired
+
+**Solutions:**
+
+1. **Implement Reconnection Logic**
+   ```javascript
+   function connectWebSocket(sessionId, apiKey, maxRetries = 3) {
+     let retries = 0;
+
+     function connect() {
+       const ws = new WebSocket(
+         `wss://connect.enigma.click/ws?sessionId=${sessionId}&apiKey=${apiKey}`
+       );
+
+       ws.onopen = () => {
+         console.log("WebSocket connected");
+         retries = 0;
+       };
+
+       ws.onerror = (error) => {
+         console.error("WebSocket error:", error);
+       };
+
+       ws.onclose = (event) => {
+         console.log("WebSocket closed:", event.code);
+
+         // Attempt reconnection
+         if (retries < maxRetries) {
+           retries++;
+           const delay = Math.min(1000 * Math.pow(2, retries), 10000);
+           console.log(`Reconnecting in ${delay}ms...`);
+           setTimeout(connect, delay);
+         }
+       };
+
+       ws.onmessage = (event) => {
+         const data = JSON.parse(event.data);
+         handleEvent(data);
+       };
+
+       return ws;
+     }
+
+     return connect();
+   }
+   ```
+
+2. **Fall Back to Polling**
+   ```javascript
+   let ws = null;
+   let pollingInterval = null;
+
+   try {
+     ws = connectWebSocket(sessionId, apiKey);
+   } catch (error) {
+     console.log("WebSocket failed, falling back to polling");
+
+     // Poll every 2 seconds
+     pollingInterval = setInterval(async () => {
+       const result = await fetch(
+         `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+         {
+           headers: { "Authorization": `Bearer ${apiKey}` }
+         }
+       );
+
+       const data = await result.json();
+       if (!data.pending) {
+         clearInterval(pollingInterval);
+         handleResult(data);
+       }
+     }, 2000);
+   }
+   ```
+
+**Prevention:**
+- Implement automatic reconnection
+- Have polling fallback ready
+- Monitor connection health
+- Use heartbeat/ping messages
+
+---
+
+### Polling Not Working
+
+**Symptoms:**
+- Polling requests return 404
+- Task ID not recognized
+- No updates on task status
+
+**Common Causes:**
+- Incorrect task ID or session ID
+- Task already completed and cleaned up
+- Session expired
+- Network request failing
+
+**Solutions:**
+
+1. **Verify IDs are Correct**
+   ```javascript
+   // Store task ID immediately after creation
+   const taskResponse = await fetch("https://connect.enigma.click/start/run-task", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       sessionId,
+       taskDetails: "Navigate to example.com"
+     })
+   });
+
+   const taskData = await taskResponse.json();
+   const taskId = taskData.taskId;
+
+   console.log("Created task:", taskId, "in session:", sessionId);
+
+   // Use exact IDs for polling
+   const result = await fetch(
+     `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+     {
+       headers: { "Authorization": `Bearer ${apiKey}` }
+     }
+   );
+   ```
+
+2. **Handle Errors Gracefully**
+   ```javascript
+   async function pollTask(sessionId, taskId, apiKey) {
+     try {
+       const response = await fetch(
+         `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+         {
+           headers: { "Authorization": `Bearer ${apiKey}` }
+         }
+       );
+
+       if (response.status === 404) {
+         throw new Error("Task or session not found - may have expired");
+       }
+
+       if (!response.ok) {
+         const error = await response.json();
+         throw new Error(error.error || "Polling failed");
+       }
+
+       return await response.json();
+
+     } catch (error) {
+       console.error("Polling error:", error.message);
+       throw error;
+     }
+   }
+   ```
+
+3. **Check Session is Still Active**
+   ```javascript
+   // Before polling, verify session exists
+   const sessionStatus = await fetch(
+     `https://connect.enigma.click/start/session-status/${sessionId}`,
+     {
+       headers: { "Authorization": `Bearer ${apiKey}` }
+     }
+   );
+
+   const status = await sessionStatus.json();
+
+   if (status.error || status.status === "terminated") {
+     throw new Error("Session no longer active");
+   }
+   ```
+
+**Prevention:**
+- Store IDs immediately when created
+- Validate IDs before polling
+- Check session status first
+- Handle 404 errors gracefully
+
+---
+
+## CAPTCHA & Security Challenges
+
+### CAPTCHA Blocking Tasks
+
+**Symptoms:**
+- Tasks fail at CAPTCHA pages
+- Agent cannot proceed past security checks
+- Guardrail triggers asking how to handle CAPTCHA
+
+**Common Causes:**
+- Website uses bot detection
+- High security on target site
+- Rate limiting triggered CAPTCHA
+- IP address flagged
+
+**Solutions:**
+
+1. **Manual Intervention via Guardrails**
+   ```javascript
+   // When CAPTCHA is encountered, guardrail will trigger
+   ws.onmessage = async (event) => {
+     const data = JSON.parse(event.data);
+
+     if (data.type === "guardrail_trigger") {
+       if (data.data.value.includes("CAPTCHA") || data.data.value.includes("verification")) {
+         // Notify user to solve CAPTCHA
+         console.log("CAPTCHA detected - manual intervention required");
+
+         // User solves CAPTCHA in browser stream
+         const userConfirmation = await askUser("Have you solved the CAPTCHA?");
+
+         // Resume task
+         await fetch("https://connect.enigma.click/start/send-message", {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+             "Authorization": `Bearer ${apiKey}`
+           },
+           body: JSON.stringify({
+             sessionId,
+             message: {
+               actionType: "guardrail",
+               taskDetails: "CAPTCHA solved, continue",
+               newState: "resume"
+             }
+           })
+         });
+       }
+     }
+   };
+   ```
+
+2. **Use Manual Takeover**
+   ```javascript
+   // Switch to manual control for CAPTCHA
+   await fetch("https://connect.enigma.click/start/send-message", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       sessionId,
+       message: { actionType: "state", newState: "manual" }
+     })
+   });
+
+   // User solves CAPTCHA via stream
+
+   // Return to agent control
+   await fetch("https://connect.enigma.click/start/send-message", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       sessionId,
+       message: { actionType: "state", newState: "resume" }
+     })
+   });
+   ```
+
+3. **Avoid CAPTCHA-Heavy Sites**
+   ```javascript
+   // Add known CAPTCHA-heavy domains to avoid list
+   const session = await fetch("https://connect.enigma.click/start/start-session", {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+       "Authorization": `Bearer ${apiKey}`
+     },
+     body: JSON.stringify({
+       taskDetails: "Research products",
+       avoidDomains: [
+         "heavily-protected.com",
+         "captcha-site.com"
+       ]
+     })
+   });
+   ```
+
+4. **Rate Limit Your Requests**
+   ```javascript
+   // Avoid triggering rate-limit CAPTCHAs
+   async function rateLimitedTasks(tasks, delayMs = 5000) {
+     const results = [];
+
+     for (const task of tasks) {
+       const result = await executeTask(task);
+       results.push(result);
+
+       // Wait between tasks
+       if (tasks.indexOf(task) < tasks.length - 1) {
+         await new Promise(r => setTimeout(r, delayMs));
+       }
+     }
+
+     return results;
+   }
+   ```
+
+**Prevention:**
+- Use manual takeover mode when CAPTCHAs expected
+- Rate limit requests to avoid triggering security
+- Test target sites beforehand
+- Have fallback strategy for CAPTCHA sites
+
+---
+
+## Debugging Tips
+
+### Enable Verbose Logging
+
+```javascript
+class EnigmaClient {
+  constructor(apiKey, debug = false) {
+    this.apiKey = apiKey;
+    this.debug = debug;
+  }
+
+  async request(url, options) {
+    if (this.debug) {
+      console.log(`[DEBUG] Request to ${url}`);
+      console.log(`[DEBUG] Options:`, JSON.stringify(options, null, 2));
+    }
+
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        "Authorization": `Bearer ${this.apiKey}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (this.debug) {
+      console.log(`[DEBUG] Response:`, JSON.stringify(data, null, 2));
+    }
+
+    return { response, data };
+  }
+}
+
+// Usage
+const client = new EnigmaClient(apiKey, true); // Enable debug mode
+```
+
+### Monitor All Events
+
+```javascript
+function monitorAllEvents(sessionId, apiKey) {
+  const ws = new WebSocket(
+    `wss://connect.enigma.click/ws?sessionId=${sessionId}&apiKey=${apiKey}`
+  );
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    console.log(`[EVENT] ${data.type}:`, data);
+
+    // Log specific event types
+    switch (data.type) {
+      case "task_started":
+        console.log("Task started:", data.data.taskId);
+        break;
+      case "task_completed":
+        console.log("Task completed with usage:", data.data.usage);
+        break;
+      case "guardrail_trigger":
+        console.log("Guardrail triggered:", data.data.value);
+        break;
+      case "error":
+        console.error("Error occurred:", data.data);
+        break;
+    }
+  };
+}
+```
+
+---
+
+## Quick Reference
+
+| Issue | First Thing to Try | Documentation |
+|-------|-------------------|---------------|
+| Session pending too long | Wait 30s, then terminate & recreate | [Sessions](/concepts/sessions) |
+| Task timeout | Increase maxDuration or simplify task | [Tasks](/concepts/tasks) |
+| High costs | Set maxInputTokens and maxOutputTokens | [Cost Optimization](/usage-guides/cost-optimization) |
+| Guardrails firing | Make instructions more specific | [Guardrails](/usage-guides/guardrails) |
+| Stream not loading | Verify session is active | [Streaming](/streaming) |
+| WebSocket failing | Implement polling fallback | [Events](/events) |
+| CAPTCHA blocking | Use manual takeover mode | [Manual Control](/control) |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Error Codes Reference" icon="exclamation-triangle" href="/troubleshooting/errors-reference">
+    Complete list of error codes
+  </Card>
+  <Card title="FAQs" icon="messages-question" href="/troubleshooting/faqs">
+    Frequently asked questions
+  </Card>
+  <Card title="Best Practices" icon="star" href="/usage-guides/best-practices">
+    Guidelines for optimal usage
+  </Card>
+  <Card title="Get Support" icon="life-ring" href="mailto:support@enigma.click">
+    Contact our support team
+  </Card>
+</CardGroup>

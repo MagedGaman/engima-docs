@@ -1,0 +1,911 @@
+---
+title: "MCP Server Reference"
+description: "Complete reference for Enigma's Model Context Protocol server"
+---
+
+## Overview
+
+The Enigma MCP (Model Context Protocol) server allows AI assistants like Claude Desktop and Cline to access browser automation capabilities directly through their native tool interfaces.
+
+**Key Features:**
+- Native integration with Claude Desktop and Cline
+- Six powerful tools for browser automation
+- Automatic session management
+- Streaming support for long tasks
+- Built-in error handling
+
+<Note>
+This is the **full reference** for the MCP server. For a quickstart guide, see [MCP Quickstart](/getting-started/mcp-quickstart).
+</Note>
+
+---
+
+## Configuration
+
+### Claude Desktop
+
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "enigma": {
+      "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+    }
+  }
+}
+```
+
+After editing, **restart Claude Desktop** completely (quit and reopen).
+
+---
+
+### Cline (VS Code Extension)
+
+**Open Settings:**
+1. Press `Cmd/Ctrl + Shift + P`
+2. Search for "Cline: Settings"
+3. Navigate to MCP Servers section
+
+**Add Configuration:**
+```json
+{
+  "enigma": {
+    "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+  }
+}
+```
+
+**Reload:** Restart VS Code or reload the Cline extension.
+
+---
+
+## Full Tool Reference
+
+### browser_task
+
+Execute a single browser automation task. Creates a session, runs the task, and auto-terminates.
+
+**When to use:**
+- One-off research tasks
+- Quick data extraction
+- Simple automations that don't require follow-up
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `taskDetails` | string | Yes | - | Natural language description of the task |
+| `startingUrl` | string | No | null | URL to start from (e.g., "https://google.com") |
+| `maxDuration` | number | No | 300000 | Max task duration in milliseconds (max: 300000) |
+
+**Example Usage:**
+
+```
+User: "Use Enigma to search Google for 'Anthropic Claude' and summarize the first result."
+
+Claude uses browser_task:
+{
+  "taskDetails": "Go to google.com, search for 'Anthropic Claude', and summarize the first result",
+  "startingUrl": "https://google.com",
+  "maxDuration": 120000
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "result": "Anthropic is an AI safety company that created Claude, a next-generation AI assistant...",
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "cost": 0.0124
+  }
+}
+```
+
+---
+
+### create_session
+
+Create a persistent browser session for multi-step workflows.
+
+**When to use:**
+- Multi-step automations (search → click → extract)
+- Tasks requiring context from previous steps
+- When you need to send multiple commands to the same browser
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `taskDetails` | string | No | "" | Initial task (can be empty to just create session) |
+| `startingUrl` | string | No | null | Starting URL |
+| `maxDuration` | number | No | 300000 | Session timeout in ms (max: 300000) |
+
+**Example Usage:**
+
+```
+User: "Create a browser session and go to amazon.com"
+
+Claude uses create_session:
+{
+  "taskDetails": "Go to amazon.com",
+  "startingUrl": "https://amazon.com",
+  "maxDuration": 300000
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "message": "Session created successfully. You can now send tasks to this session.",
+  "expiresIn": 300000,
+  "streamingUrl": "https://74.235.190.31:8889/a1b2c3d4e5f6"
+}
+```
+
+<Tip>
+Save the `sessionId` to send follow-up tasks with `send_task_to_session`.
+</Tip>
+
+---
+
+### send_task_to_session
+
+Send a new task to an existing session.
+
+**When to use:**
+- Follow-up actions in a multi-step workflow
+- Continuing work in an existing browser session
+- Chaining related tasks together
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `sessionId` | string | Yes | - | ID from `create_session` |
+| `taskDetails` | string | Yes | - | Task description |
+| `terminateOnCompletion` | boolean | No | false | Auto-close session after this task |
+
+**Example Usage:**
+
+```
+User: "Now search for wireless keyboards"
+
+Claude uses send_task_to_session:
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "taskDetails": "Search for wireless keyboards and list the top 3 results with prices",
+  "terminateOnCompletion": false
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "result": "Found 3 wireless keyboards:\n1. Logitech K380 - $29.99\n2. Keychron K2 - $79.00\n3. ...",
+  "usage": {
+    "cost": 0.0089
+  }
+}
+```
+
+<Warning>
+Set `terminateOnCompletion: true` on your final task to avoid idle session charges.
+</Warning>
+
+---
+
+### get_task_status
+
+Check the status of a running task.
+
+**When to use:**
+- Monitoring long-running tasks
+- Checking if a task completed while doing other work
+- Debugging task execution
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sessionId` | string | Yes | Session ID |
+| `taskId` | string | Yes | Task ID from previous task |
+
+**Example Usage:**
+
+```
+Claude uses get_task_status:
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4"
+}
+```
+
+**Response (still running):**
+```json
+{
+  "success": true,
+  "status": "active",
+  "pending": true,
+  "usage": {
+    "inputTokens": 8000,
+    "outputTokens": 2100,
+    "computeTime": 3,
+    "cost": 0.0067
+  }
+}
+```
+
+**Response (completed):**
+```json
+{
+  "success": true,
+  "status": "completed",
+  "type": "task_completed",
+  "data": {
+    "message": "Task completed successfully",
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5
+  },
+  "usage": {
+    "cost": 0.0124
+  }
+}
+```
+
+---
+
+### control_session
+
+Control task execution (pause, resume, stop, terminate).
+
+**When to use:**
+- Pausing a task to inspect the browser state
+- Stopping an incorrect task
+- Terminating a session when done
+- Resuming a paused task
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sessionId` | string | Yes | Session ID |
+| `action` | string | Yes | `"pause"`, `"resume"`, `"stop"`, or `"terminate"` |
+
+**Actions:**
+
+| Action | Description | Use Case |
+|--------|-------------|----------|
+| `pause` | Pause current task | Temporarily halt execution |
+| `resume` | Resume paused task | Continue after pausing |
+| `stop` | Stop current task, keep session alive | Cancel task but continue session |
+| `terminate` | End session completely | Close session and free resources |
+
+**Example Usage:**
+
+```
+User: "Stop the current task"
+
+Claude uses control_session:
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "action": "stop"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Session control command sent successfully",
+  "action": "stop"
+}
+```
+
+---
+
+### take_over_session
+
+Enable manual browser control for human intervention.
+
+**When to use:**
+- CAPTCHA solving
+- Complex form inputs that need human verification
+- Debugging what the agent sees
+- Manual credential entry
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sessionId` | string | Yes | Session ID |
+| `action` | string | Yes | `"takeover"` or `"release"` |
+
+**Example Usage:**
+
+```
+User: "Let me control the browser manually to solve the CAPTCHA"
+
+Claude uses take_over_session:
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "action": "takeover"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Manual control enabled. Agent paused.",
+  "streamingUrl": "https://74.235.190.31:8889/a1b2c3d4e5f6"
+}
+```
+
+<Note>
+After taking over, use the `streamingUrl` to view and control the browser. When done, use `action: "release"` to return control to the AI agent.
+</Note>
+
+---
+
+## Advanced Patterns
+
+### Pattern 1: Multi-Step Research Workflow
+
+```
+User: "Research wireless keyboards on Amazon. First go to Amazon, search for wireless keyboards, then tell me about the top 3 results."
+
+Claude's execution:
+1. Uses create_session:
+   {
+     "taskDetails": "Go to amazon.com",
+     "startingUrl": "https://amazon.com"
+   }
+   → Gets sessionId: "abc123"
+
+2. Uses send_task_to_session:
+   {
+     "sessionId": "abc123",
+     "taskDetails": "Search for wireless keyboards"
+   }
+   → Gets search results
+
+3. Uses send_task_to_session:
+   {
+     "sessionId": "abc123",
+     "taskDetails": "Extract the names, prices, and ratings of the top 3 results",
+     "terminateOnCompletion": true
+   }
+   → Gets structured data and auto-terminates
+```
+
+---
+
+### Pattern 2: Guardrail Handling with Manual Takeover
+
+```
+User: "Log in to example.com and extract my dashboard data"
+
+Claude's execution:
+1. Uses create_session:
+   {
+     "taskDetails": "Go to example.com and attempt to log in",
+     "startingUrl": "https://example.com"
+   }
+   → Encounters login form
+
+2. Detects guardrail (needs credentials)
+
+3. Claude asks: "I need login credentials for example.com. Would you like to enter them manually?"
+
+4. User says: "Yes"
+
+5. Uses take_over_session:
+   {
+     "sessionId": "abc123",
+     "action": "takeover"
+   }
+   → User manually enters credentials
+
+6. User says: "Done, credentials entered"
+
+7. Uses take_over_session:
+   {
+     "sessionId": "abc123",
+     "action": "release"
+   }
+   → Control returns to agent
+
+8. Uses send_task_to_session:
+   {
+     "sessionId": "abc123",
+     "taskDetails": "Extract all dashboard data",
+     "terminateOnCompletion": true
+   }
+   → Completes task
+```
+
+---
+
+### Pattern 3: Long Task with Status Monitoring
+
+```
+User: "Scrape all product listings from this marketplace (might take a while)"
+
+Claude's execution:
+1. Uses create_session and send_task_to_session
+
+2. While task is running, uses get_task_status every 30 seconds:
+   {
+     "sessionId": "abc123",
+     "taskId": "task456"
+   }
+
+3. Reports progress to user:
+   "Task is still running. So far used 15,000 tokens, cost: $0.012"
+
+4. When status changes to "completed", retrieves final result
+```
+
+---
+
+### Pattern 4: Error Recovery
+
+```
+User: "Go to example.com and extract all links"
+
+Claude's execution:
+1. Uses browser_task:
+   {
+     "taskDetails": "Go to example.com and extract all links"
+   }
+   → Fails with timeout error
+
+2. Claude analyzes error and retries with adjusted parameters:
+   Uses browser_task:
+   {
+     "taskDetails": "Go to example.com, wait for page to fully load, then extract all links",
+     "maxDuration": 120000
+   }
+   → Succeeds
+```
+
+---
+
+### Pattern 5: Streaming for Long Tasks
+
+For tasks that might take longer than the MCP timeout, Claude can use streaming:
+
+```
+User: "Research the top 10 AI companies and compile detailed information about each"
+
+Claude's execution:
+1. Uses create_session
+
+2. For each company (1-10):
+   Uses send_task_to_session:
+   {
+     "sessionId": "abc123",
+     "taskDetails": "Search for [Company Name] and extract: founded date, CEO, main products, revenue"
+   }
+   → Streams results back as each completes
+
+3. Uses control_session to terminate when done:
+   {
+     "sessionId": "abc123",
+     "action": "terminate"
+   }
+```
+
+---
+
+## Troubleshooting
+
+### Tools Not Appearing in Claude Desktop
+
+**Symptoms:**
+- MCP tools don't show up in Claude Desktop
+- No browser automation options available
+
+**Solutions:**
+
+1. **Verify config file location:**
+   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+
+2. **Check JSON syntax:**
+   ```bash
+   # Validate JSON on macOS/Linux
+   cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | jq .
+
+   # Should output valid JSON without errors
+   ```
+
+3. **Ensure API key format:**
+   - API key should start with `enig_`
+   - No extra spaces or quotes
+   - Example: `"url": "https://connect.enigma.click/mcp/sse?apiKey=enig_xxxxxxxxxxxx"`
+
+4. **Restart Claude Desktop completely:**
+   - Quit Claude Desktop (don't just close window)
+   - Reopen Claude Desktop
+   - Wait 10 seconds for MCP servers to initialize
+
+5. **Check Claude Desktop logs:**
+   - macOS: `~/Library/Logs/Claude/mcp*.log`
+   - Windows: `%APPDATA%\Claude\logs\mcp*.log`
+
+---
+
+### Authentication Errors
+
+**Error:** `"Invalid API key"` or `"Unauthorized"`
+
+**Solutions:**
+
+1. **Verify API key is active:**
+   - Go to [enigma.click/settings](https://enigma.click/settings)
+   - Check that API key exists and is not revoked
+   - Generate new API key if needed
+
+2. **Check URL format:**
+   ```json
+   // ❌ Wrong
+   "url": "https://connect.enigma.click/mcp/sse"
+
+   // ✅ Correct
+   "url": "https://connect.enigma.click/mcp/sse?apiKey=enig_xxxxxxxxxxxx"
+   ```
+
+3. **Test API key via curl:**
+   ```bash
+   curl -X POST https://connect.enigma.click/start/run-task \
+     -H "Authorization: Bearer enig_xxxxxxxxxxxx" \
+     -H "Content-Type: application/json" \
+     -d '{"taskDetails": "Go to google.com"}'
+
+   # Should return success, not 401
+   ```
+
+---
+
+### Session Timeout Errors
+
+**Error:** `"Session not found"` or `"Session expired"`
+
+**Cause:** Enigma sessions have a maximum duration of 5 minutes (300,000 ms).
+
+**Solutions:**
+
+1. **Break long tasks into smaller chunks:**
+   ```
+   // ❌ Bad: One huge task
+   "Extract data from all 100 pages"
+
+   // ✅ Good: Chunked tasks
+   "Extract data from pages 1-10"
+   "Extract data from pages 11-20"
+   ...
+   ```
+
+2. **Use get_task_status for monitoring:**
+   - Check task progress periodically
+   - Detect timeouts early
+
+3. **Adjust maxDuration:**
+   ```json
+   {
+     "taskDetails": "Complex task",
+     "maxDuration": 180000  // 3 minutes instead of 5
+   }
+   ```
+
+4. **For very long tasks, create new sessions:**
+   ```
+   Session 1: Research companies 1-5
+   Session 2: Research companies 6-10
+   Session 3: Research companies 11-15
+   ```
+
+---
+
+### Task Failures
+
+**Error:** `"Navigation timeout"`, `"Element not found"`, etc.
+
+**Solutions:**
+
+1. **Make instructions more specific:**
+   ```
+   // ❌ Vague
+   "Get the price"
+
+   // ✅ Specific
+   "Find the product price displayed near the 'Add to Cart' button"
+   ```
+
+2. **Add wait instructions:**
+   ```
+   "Go to example.com, wait for the page to fully load, then extract all links"
+   ```
+
+3. **Use startingUrl for known websites:**
+   ```json
+   {
+     "taskDetails": "Search for wireless keyboards",
+     "startingUrl": "https://amazon.com"  // Faster than "Go to amazon.com"
+   }
+   ```
+
+4. **Check for CAPTCHAs or login requirements:**
+   - Use `take_over_session` for manual intervention
+   - Consider providing credentials via guardrail response
+
+---
+
+### Tools Not Working in Cline
+
+**Symptoms:**
+- Tools appear but fail when used
+- Connection errors in VS Code
+
+**Solutions:**
+
+1. **Reload VS Code:**
+   - `Cmd/Ctrl + Shift + P` → "Reload Window"
+
+2. **Check Cline extension version:**
+   - Update to latest version
+   - Cline → Settings → Check for updates
+
+3. **Verify MCP server configuration:**
+   - Cline Settings → MCP Servers
+   - Ensure JSON is valid
+
+4. **Check VS Code network proxy settings:**
+   - If behind corporate proxy, configure VS Code proxy
+   - File → Preferences → Settings → Search "proxy"
+
+---
+
+## Tool Parameter Reference
+
+### Quick Reference Table
+
+| Tool | Required Parameters | Optional Parameters |
+|------|---------------------|---------------------|
+| `browser_task` | `taskDetails` | `startingUrl`, `maxDuration` |
+| `create_session` | - | `taskDetails`, `startingUrl`, `maxDuration` |
+| `send_task_to_session` | `sessionId`, `taskDetails` | `terminateOnCompletion` |
+| `get_task_status` | `sessionId`, `taskId` | - |
+| `control_session` | `sessionId`, `action` | - |
+| `take_over_session` | `sessionId`, `action` | - |
+
+### Parameter Details
+
+**taskDetails** (string)
+- Natural language description of the task
+- Be specific for better results
+- Examples:
+  - ✅ "Search Google for 'Anthropic' and summarize the first result"
+  - ✅ "Extract all product names and prices from this page"
+  - ❌ "Search" (too vague)
+
+**startingUrl** (string)
+- Must be valid HTTP/HTTPS URL
+- Optional but speeds up navigation
+- Examples:
+  - `"https://google.com"`
+  - `"https://amazon.com"`
+  - `"https://example.com/products"`
+
+**maxDuration** (number)
+- In milliseconds
+- Maximum: 300000 (5 minutes)
+- Default: 300000
+- Examples:
+  - `60000` = 1 minute
+  - `120000` = 2 minutes
+  - `300000` = 5 minutes
+
+**sessionId** (string)
+- Returned from `create_session`
+- Format: 12-character alphanumeric
+- Example: `"a1b2c3d4e5f6"`
+
+**taskId** (string)
+- Returned from task execution
+- Format: 12-character alphanumeric
+- Example: `"x9y8z7w6v5u4"`
+
+**action** (string)
+- For `control_session`: `"pause"`, `"resume"`, `"stop"`, `"terminate"`
+- For `take_over_session`: `"takeover"`, `"release"`
+
+**terminateOnCompletion** (boolean)
+- `true`: Auto-close session after task completes
+- `false`: Keep session alive for follow-up tasks
+- Default: `false`
+
+---
+
+## Example Conversations
+
+### Example 1: Simple Research
+
+**User:** "Use Enigma to search for 'Claude AI features' on Google and tell me what you find."
+
+**Claude's Response:**
+```
+I'll search Google for Claude AI features using the browser automation tool.
+
+[Uses browser_task with taskDetails: "Go to google.com, search for 'Claude AI features', and summarize the top 3 results"]
+
+Based on the search results, here are the key features of Claude AI:
+
+1. **Long Context Window**: Claude can handle up to 200K tokens...
+2. **Vision Capabilities**: Can analyze images and documents...
+3. **Code Generation**: Strong capabilities in writing and debugging code...
+
+[Full summary based on actual search results]
+```
+
+---
+
+### Example 2: Multi-Step E-commerce
+
+**User:** "Create a browser session, go to Amazon, search for wireless keyboards under $50, and tell me the top 3 results with prices."
+
+**Claude's Response:**
+```
+I'll create a browser session and research wireless keyboards on Amazon for you.
+
+[Uses create_session with startingUrl: "https://amazon.com"]
+Session created.
+
+[Uses send_task_to_session with taskDetails: "Search for wireless keyboards under $50 and extract the top 3 results with names, prices, and ratings"]
+
+Here are the top 3 wireless keyboards under $50:
+
+1. **Logitech K380** - $29.99
+   - Rating: 4.5/5 stars
+   - Features: Multi-device connectivity, compact design
+
+2. **Keychron K2** - $49.00
+   - Rating: 4.7/5 stars
+   - Features: Mechanical switches, Mac/Windows compatible
+
+3. **Microsoft Wireless Desktop** - $39.99
+   - Rating: 4.3/5 stars
+   - Features: Full keyboard with numeric pad
+
+Would you like me to get more details on any of these?
+```
+
+---
+
+### Example 3: Guardrail with Manual Takeover
+
+**User:** "Log in to my dashboard at example.com and show me my account balance."
+
+**Claude's Response:**
+```
+I'll navigate to example.com and attempt to access the dashboard.
+
+[Uses create_session with startingUrl: "https://example.com"]
+
+I've reached the login page, but I need your credentials to proceed. Would you prefer to:
+1. Provide me with your username and password
+2. Take manual control to enter them yourself
+
+User: "I'll enter them manually"
+
+[Uses take_over_session with action: "takeover"]
+
+I've enabled manual control. You can now view and control the browser at this URL:
+https://74.235.190.31:8889/abc123
+
+Please log in, then let me know when you're done.
+
+User: "Done, I'm logged in"
+
+[Uses take_over_session with action: "release"]
+[Uses send_task_to_session with taskDetails: "Extract the account balance from the dashboard"]
+
+Your account balance is $1,234.56
+```
+
+---
+
+## Best Practices
+
+### 1. Session Management
+
+**✅ Do:**
+- Use `browser_task` for one-off tasks
+- Use `create_session` + `send_task_to_session` for multi-step workflows
+- Always set `terminateOnCompletion: true` on your final task
+- Terminate sessions explicitly when done
+
+**❌ Don't:**
+- Create multiple sessions for related tasks
+- Leave sessions running after completion
+- Use `create_session` for simple one-off tasks
+
+---
+
+### 2. Task Instructions
+
+**✅ Do:**
+- Be specific and detailed
+- Include expected output format
+- Specify wait conditions if needed
+- Provide starting URLs when known
+
+**❌ Don't:**
+- Use vague instructions like "get data"
+- Assume the agent knows which element to click
+- Skip important context
+
+---
+
+### 3. Error Handling
+
+**✅ Do:**
+- Monitor long tasks with `get_task_status`
+- Retry failed tasks with adjusted parameters
+- Use `take_over_session` for CAPTCHAs
+- Check session expiration times
+
+**❌ Don't:**
+- Ignore timeout warnings
+- Retry indefinitely without changes
+- Assume tasks will always succeed
+
+---
+
+### 4. Cost Optimization
+
+**✅ Do:**
+- Terminate sessions when done
+- Use `terminateOnCompletion` on final tasks
+- Break very long tasks into chunks
+- Reuse sessions for related tasks
+
+**❌ Don't:**
+- Leave sessions idle
+- Create new sessions for each small task
+- Ignore session timeout warnings
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="MCP Quickstart" icon="rocket" href="/getting-started/mcp-quickstart">
+    Quick setup guide for Claude Desktop and Cline
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Build complex automation sequences
+  </Card>
+  <Card title="Handling Guardrails" icon="shield-halved" href="/usage-guides/handling-guardrails">
+    Respond to human-in-the-loop requests
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Watch sessions live via WebRTC
+  </Card>
+</CardGroup>

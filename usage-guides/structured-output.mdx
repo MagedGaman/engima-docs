@@ -1,0 +1,548 @@
+---
+title: "Structured Output"
+description: "Get structured, parseable data from AI agent tasks for downstream processing"
+---
+
+## Overview
+
+By default, AI agents return natural language responses. To get structured data (JSON, arrays, specific formats), you need to explicitly request it in your task details.
+
+**Benefits:**
+- Easy parsing and validation
+- Type safety in your application
+- Direct integration with databases and APIs
+- Consistent output format across tasks
+
+---
+
+## JSON Output Pattern
+
+The most common pattern for structured output is requesting JSON in your task description.
+
+### Basic Example
+
+```javascript
+const session = await fetch("https://connect.enigma.click/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: `Go to amazon.com and search for "wireless keyboard".
+    Return the results as a JSON array with this format:
+    [
+      { "title": "product name", "price": "19.99", "rating": "4.5" }
+    ]`,
+    startingUrl: "https://amazon.com"
+  })
+}).then(r => r.json());
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "[{\"title\":\"Logitech K380\",\"price\":\"29.99\",\"rating\":\"4.5\"},{\"title\":\"Arteck Wireless Keyboard\",\"price\":\"19.99\",\"rating\":\"4.3\"}]",
+    "prompt_tokens": 8500,
+    "completion_tokens": 2300,
+    "total_tokens": 10800
+  }
+}
+```
+
+### Parsing the Result
+
+```javascript
+async function getProductData(sessionId, taskId) {
+  // Poll for result
+  const result = await pollForResult(sessionId, taskId);
+
+  if (result.type === "task_completed") {
+    try {
+      // Parse JSON from message
+      const products = JSON.parse(result.data.message);
+      return products;
+    } catch (error) {
+      console.error("Failed to parse JSON:", error);
+      console.log("Raw message:", result.data.message);
+      return null;
+    }
+  }
+
+  return null;
+}
+
+// Usage
+const products = await getProductData(session.sessionId, task.taskId);
+console.log(products);
+// [
+//   { title: "Logitech K380", price: "29.99", rating: "4.5" },
+//   { title: "Arteck Wireless Keyboard", price: "19.99", rating: "4.3" }
+// ]
+```
+
+---
+
+## Array Results
+
+Request arrays for lists of items.
+
+### Example: Product Search
+
+```javascript
+const taskDetails = `
+Search Google for "best mechanical keyboards 2024".
+Extract the top 5 results and return as a JSON array:
+[
+  {
+    "title": "page title",
+    "url": "https://...",
+    "snippet": "brief description"
+  }
+]
+`;
+
+const task = await fetch("https://connect.enigma.click/start/send-message", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    sessionId: session.sessionId,
+    message: {
+      actionType: "newTask",
+      newState: "start",
+      taskDetails
+    }
+  })
+}).then(r => r.json());
+```
+
+---
+
+## Complex Nested Structures
+
+Request nested JSON for complex data.
+
+### Example: E-commerce Product Details
+
+```javascript
+const taskDetails = `
+Go to the Amazon product page at [URL].
+Extract the following information and return as JSON:
+{
+  "product": {
+    "title": "product name",
+    "price": "19.99",
+    "currency": "USD",
+    "inStock": true,
+    "rating": {
+      "stars": 4.5,
+      "count": 1234
+    },
+    "images": ["url1", "url2"],
+    "features": ["feature 1", "feature 2"],
+    "specifications": {
+      "brand": "...",
+      "model": "...",
+      "dimensions": "..."
+    }
+  }
+}
+`;
+
+const result = await sendTaskAndWait(session.sessionId, taskDetails);
+const productData = JSON.parse(result.data.message);
+
+console.log(productData.product.title);
+console.log(productData.product.rating.stars);
+```
+
+---
+
+## Validation with Zod (TypeScript)
+
+Use Zod for runtime validation and type safety.
+
+### Install Zod
+
+```bash
+npm install zod
+```
+
+### Define Schema
+
+```typescript
+import { z } from "zod";
+
+// Define expected structure
+const ProductSchema = z.object({
+  title: z.string(),
+  price: z.string(),
+  rating: z.string(),
+  url: z.string().url(),
+  inStock: z.boolean()
+});
+
+const ProductArraySchema = z.array(ProductSchema);
+
+// Type inference
+type Product = z.infer<typeof ProductSchema>;
+```
+
+### Validate Response
+
+```typescript
+async function getValidatedProducts(sessionId: string, taskId: string): Promise<Product[]> {
+  const result = await pollForResult(sessionId, taskId);
+
+  if (result.type !== "task_completed") {
+    throw new Error("Task not completed");
+  }
+
+  try {
+    // Parse JSON
+    const rawData = JSON.parse(result.data.message);
+
+    // Validate with Zod
+    const products = ProductArraySchema.parse(rawData);
+
+    return products; // Type-safe products array
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Validation failed:", error.errors);
+      throw new Error(`Invalid product data: ${error.message}`);
+    }
+    throw error;
+  }
+}
+
+// Usage (TypeScript knows the shape)
+const products = await getValidatedProducts(sessionId, taskId);
+products.forEach(product => {
+  console.log(product.title); // Type-safe
+  console.log(product.price); // Type-safe
+});
+```
+
+---
+
+## Handling Parse Errors
+
+Sometimes the AI returns malformed JSON. Implement fallback strategies:
+
+### Strategy 1: Extract JSON from Text
+
+```javascript
+function extractJSON(text) {
+  // Try direct parse first
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    // Try to find JSON within text
+    const jsonMatch = text.match(/\[[\s\S]*\]|\{[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        return JSON.parse(jsonMatch[0]);
+      } catch (innerError) {
+        console.error("Failed to extract JSON:", innerError);
+      }
+    }
+  }
+
+  return null;
+}
+
+// Usage
+const result = await pollForResult(sessionId, taskId);
+const data = extractJSON(result.data.message);
+
+if (data) {
+  console.log("Parsed:", data);
+} else {
+  console.log("Could not parse, raw response:", result.data.message);
+}
+```
+
+### Strategy 2: Request Re-formatting
+
+```javascript
+async function getStructuredDataWithRetry(sessionId, originalTaskId) {
+  const result = await pollForResult(sessionId, originalTaskId);
+
+  // Try to parse
+  try {
+    return JSON.parse(result.data.message);
+  } catch (error) {
+    console.log("Initial parse failed, requesting reformatting...");
+
+    // Send follow-up task to reformat
+    const reformatTask = await fetch("https://connect.enigma.click/start/send-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
+      },
+      body: JSON.stringify({
+        sessionId,
+        message: {
+          actionType: "newTask",
+          newState: "start",
+          taskDetails: `Take the previous response and format it as valid JSON: ${result.data.message}`
+        }
+      })
+    }).then(r => r.json());
+
+    const reformatResult = await pollForResult(sessionId, reformatTask.taskId);
+    return JSON.parse(reformatResult.data.message);
+  }
+}
+```
+
+---
+
+## Best Practices
+
+### 1. Be Specific in Schema Description
+
+```javascript
+// Bad - vague
+taskDetails: "Return product info as JSON"
+
+// Good - explicit schema
+taskDetails: `
+Return product information as JSON with this exact structure:
+{
+  "title": "string",
+  "price": "number as string (e.g., '29.99')",
+  "inStock": "boolean (true/false)",
+  "rating": "number as string (e.g., '4.5')"
+}
+`
+```
+
+### 2. Request Array Length Limits
+
+Prevent unexpectedly large responses:
+
+```javascript
+taskDetails: `
+Search for wireless keyboards and return the top 10 results (no more than 10) as JSON array:
+[
+  { "title": "...", "price": "...", "url": "..." }
+]
+`
+```
+
+### 3. Specify Data Types Clearly
+
+```javascript
+taskDetails: `
+Return product data as JSON:
+{
+  "title": "string",
+  "price": "string in format '19.99' (no currency symbol)",
+  "inStock": "boolean (true or false, not string)",
+  "rating": "number (e.g., 4.5, not string)",
+  "reviewCount": "integer (e.g., 123, not string)"
+}
+`
+```
+
+### 4. Handle Missing Data
+
+Specify how to handle missing fields:
+
+```javascript
+taskDetails: `
+Return product data as JSON:
+{
+  "title": "string (required)",
+  "price": "string or null if not available",
+  "rating": "number or null if no ratings",
+  "inStock": "boolean or null if unknown"
+}
+`
+```
+
+### 5. Use TypeScript for Type Safety
+
+```typescript
+interface Product {
+  title: string;
+  price: string | null;
+  rating: number | null;
+  inStock: boolean | null;
+}
+
+async function getProducts(sessionId: string, taskId: string): Promise<Product[]> {
+  const result = await pollForResult(sessionId, taskId);
+  const products: Product[] = JSON.parse(result.data.message);
+  return products;
+}
+```
+
+---
+
+## Complete Example: Product Comparison
+
+```javascript
+const API_KEY = "YOUR_API_KEY";
+const BASE = "https://connect.enigma.click";
+
+async function compareProducts(searchQuery) {
+  // 1. Create session
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      taskDetails: `
+        Go to Amazon and search for "${searchQuery}".
+        Return the top 5 results as a JSON array with this structure:
+        [
+          {
+            "title": "product title",
+            "price": "price as string without currency symbol (e.g., '29.99')",
+            "rating": "average rating as number (e.g., 4.5)",
+            "reviewCount": "number of reviews as integer",
+            "url": "product URL",
+            "isPrime": "boolean indicating Prime eligibility"
+          }
+        ]
+        Return ONLY the JSON array, no additional text.
+      `,
+      startingUrl: "https://amazon.com",
+      terminateOnCompletion: true
+    })
+  }).then(r => r.json());
+
+  console.log("Session created:", session.sessionId);
+
+  // 2. Poll for result
+  const result = await pollForResult(session.sessionId, session.taskId);
+
+  // 3. Parse and validate
+  try {
+    const products = JSON.parse(result.data.message);
+
+    // Validate structure
+    if (!Array.isArray(products)) {
+      throw new Error("Expected array of products");
+    }
+
+    // Process results
+    const processed = products.map(p => ({
+      ...p,
+      price: parseFloat(p.price),
+      pricePerStar: (parseFloat(p.price) / p.rating).toFixed(2)
+    }));
+
+    // Sort by value (price per rating star)
+    processed.sort((a, b) => a.pricePerStar - b.pricePerStar);
+
+    console.log("Best value products:");
+    processed.forEach((p, i) => {
+      console.log(`${i + 1}. ${p.title}`);
+      console.log(`   Price: $${p.price}, Rating: ${p.rating} (${p.reviewCount} reviews)`);
+      console.log(`   Value: $${p.pricePerStar} per star`);
+      console.log(`   URL: ${p.url}`);
+      console.log();
+    });
+
+    return processed;
+  } catch (error) {
+    console.error("Failed to parse product data:", error);
+    console.log("Raw response:", result.data.message);
+    return null;
+  }
+}
+
+async function pollForResult(sessionId, taskId) {
+  const maxAttempts = 60;
+  const interval = 2000;
+
+  for (let i = 0; i < maxAttempts; i++) {
+    const res = await fetch(`${BASE}/task/${sessionId}/${taskId}`, {
+      headers: { "Authorization": `Bearer ${API_KEY}` }
+    });
+    const data = await res.json();
+
+    if (data.type === "task_completed") return data;
+    if (data.type === "guardrail_trigger") throw new Error(`Guardrail: ${data.data.value}`);
+    if (data.status === "failed") throw new Error(data.error);
+
+    if (data.pending) {
+      await new Promise(r => setTimeout(r, interval));
+      continue;
+    }
+
+    return data;
+  }
+
+  throw new Error("Polling timeout");
+}
+
+// Run comparison
+compareProducts("wireless mechanical keyboard");
+```
+
+---
+
+## CSV Output
+
+For tabular data, CSV can be simpler than JSON:
+
+```javascript
+const taskDetails = `
+Search Amazon for "standing desk" and return the top 10 results as CSV with these columns:
+title,price,rating,reviewCount,url
+
+Example:
+"FlexiSpot Standing Desk","299.99","4.5","2341","https://..."
+"FEZIBO Electric Desk","249.99","4.3","1823","https://..."
+
+Return ONLY the CSV data with header row, no additional text.
+`;
+
+// Parse CSV
+const result = await pollForResult(sessionId, taskId);
+const csv = result.data.message;
+const lines = csv.trim().split('\n');
+const headers = lines[0].split(',');
+const products = lines.slice(1).map(line => {
+  const values = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+  const obj = {};
+  headers.forEach((header, i) => {
+    obj[header.trim()] = values[i].replace(/^"|"$/g, '').trim();
+  });
+  return obj;
+});
+
+console.log(products);
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain tasks to build complex data pipelines
+  </Card>
+  <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
+    Handle agent requests during data extraction
+  </Card>
+  <Card title="Cost Optimization" icon="dollar-sign" href="/usage-guides/cost-optimization">
+    Optimize costs for data extraction tasks
+  </Card>
+  <Card title="Events Reference" icon="bolt" href="/events">
+    Real-time task completion events
+  </Card>
+</CardGroup>

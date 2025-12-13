@@ -1,0 +1,283 @@
+---
+title: "Concept: Guardrails"
+description: "Human-in-the-loop safety mechanism for sensitive operations"
+---
+
+## What are Guardrails?
+
+Guardrails are Enigma's safety mechanism for human-in-the-loop control. When the AI agent encounters a situation requiring human judgment or sensitive information, it pauses the task and triggers a guardrail.
+
+This ensures the agent never:
+- Submits credentials without explicit permission
+- Makes purchases or financial transactions autonomously
+- Proceeds when instructions are ambiguous
+- Bypasses security challenges like CAPTCHAs
+
+---
+
+## When Guardrails Trigger
+
+| Trigger Type | Example Scenario | Agent Response |
+|--------------|------------------|----------------|
+| **Credentials Needed** | Login form encountered | "I need login credentials to proceed" |
+| **Purchase Confirmation** | Checkout page reached | "Do you want me to complete this purchase?" |
+| **CAPTCHA Detected** | Security challenge appears | "A CAPTCHA is blocking me. Please solve it." |
+| **Ambiguous Instruction** | Multiple valid interpretations | "Which item should I click? There are several options." |
+| **Security Warning** | SSL error or warning page | "I encountered a security warning. Should I proceed?" |
+
+---
+
+## Guardrail Flow
+
+When a guardrail is triggered, the workflow pauses and waits for human input:
+
+```
+Task Running
+    ↓
+Guardrail Triggered (task pauses)
+    ↓
+Human Provides Input
+    ↓
+Agent Resumes (task continues)
+    ↓
+Task Completes
+```
+
+### Detection Methods
+
+**REST API (Polling):**
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**WebSocket (Real-time):**
+```javascript
+socket.on("message", (data) => {
+  if (data.type === "guardrail_trigger") {
+    console.log("Guardrail:", data.data.value);
+    // Handle guardrail response
+  }
+});
+```
+
+---
+
+## Guardrail Response Format
+
+### Request from Agent
+```json
+{
+  "success": true,
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials for this website"
+  }
+}
+```
+
+### Response to Agent
+Provide the requested information and resume the task:
+
+**REST:**
+```bash
+POST /start/send-message
+{
+  "sessionId": "SESSION_ID",
+  "message": {
+    "actionType": "guardrail",
+    "taskDetails": "Username: demo@example.com, Password: demo123",
+    "newState": "resume"
+  }
+}
+```
+
+**WebSocket:**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Username: demo@example.com, Password: demo123",
+  newState": "resume"
+});
+```
+
+---
+
+## Common Guardrail Types
+
+### 1. Credentials Request
+
+**Trigger:** Login form detected
+**Agent Message:** "I need login credentials to proceed"
+**Response:** Provide username and password
+**Example:**
+```javascript
+taskDetails: "Username: user@example.com, Password: secretpass123"
+```
+
+### 2. Purchase Confirmation
+
+**Trigger:** Checkout or payment page reached
+**Agent Message:** "Do you want me to complete this purchase? The total is $49.99"
+**Response:** Confirm or deny
+**Example:**
+```javascript
+taskDetails: "Yes, complete the purchase"
+// or
+taskDetails: "No, stop and return to cart"
+```
+
+### 3. Ambiguous Choice
+
+**Trigger:** Multiple valid options exist
+**Agent Message:** "Which product should I select? I see 3 options with similar names"
+**Response:** Clarify the choice
+**Example:**
+```javascript
+taskDetails: "Select the first one (Logitech K380)"
+```
+
+### 4. CAPTCHA or Security Challenge
+
+**Trigger:** CAPTCHA appears
+**Agent Message:** "A CAPTCHA is blocking me. Please solve it."
+**Response:** Either solve it manually or instruct to skip
+**Example:**
+```javascript
+taskDetails: "I've solved the CAPTCHA, please continue"
+// or use manual takeover to solve it yourself
+```
+
+---
+
+## Design Philosophy
+
+Enigma's guardrails are designed around these principles:
+
+### 1. Ask, Don't Assume
+When in doubt, the agent asks for clarification rather than making assumptions.
+
+### 2. Sensitive Actions Require Confirmation
+Financial transactions, account changes, and data submission always trigger guardrails.
+
+### 3. Credentials Never Stored
+Enigma doesn't store credentials. You provide them on-demand when needed.
+
+### 4. Human Remains in Control
+You can intervene at any point, even if a guardrail hasn't triggered.
+
+---
+
+## Handling Guardrails in Code
+
+### Basic Pattern (REST)
+
+```javascript
+async function handleTask(sessionId, taskId, apiKey) {
+  // Poll for result
+  const result = await pollForResult(sessionId, taskId, apiKey);
+
+  if (result.type === "guardrail_trigger") {
+    console.log("Guardrail:", result.data.value);
+
+    // Get user input
+    const userInput = await promptUser(result.data.value);
+
+    // Respond to guardrail
+    await fetch("https://connect.enigma.click/start/send-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        sessionId,
+        message: {
+          actionType: "guardrail",
+          taskDetails: userInput,
+          newState: "resume"
+        }
+      })
+    });
+
+    // Continue polling for completion
+    return await pollForResult(sessionId, taskId, apiKey);
+  }
+
+  return result;
+}
+```
+
+### Advanced Pattern (WebSocket)
+
+```javascript
+function setupGuardrailHandler(socket) {
+  socket.on("message", async (data) => {
+    if (data.type === "guardrail_trigger") {
+      const userInput = await promptUser(data.data.value);
+
+      socket.emit("message", {
+        actionType: "guardrail",
+        taskDetails: userInput,
+        newState: "resume"
+      });
+    }
+  });
+}
+```
+
+---
+
+## Automated Guardrail Handling
+
+For common scenarios, you can build automated guardrail handlers:
+
+```javascript
+const guardrailHandlers = {
+  "login credentials": () => {
+    return `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`;
+  },
+  "purchase": (message) => {
+    const amount = extractAmount(message);
+    return amount < 100 ? "Yes, proceed" : "No, cancel";
+  },
+  "captcha": () => {
+    return "Skip this task, CAPTCHA detected";
+  }
+};
+
+function handleGuardrail(message) {
+  for (const [trigger, handler] of Object.entries(guardrailHandlers)) {
+    if (message.toLowerCase().includes(trigger)) {
+      return handler(message);
+    }
+  }
+  // Default: ask human
+  return promptUser(message);
+}
+```
+
+---
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Handling Guardrails" icon="code" href="/usage-guides/handling-guardrails">
+    Implementation guide with examples
+  </Card>
+  <Card title="Manual Interaction" icon="hand" href="/usage-guides/manual-interaction">
+    Take manual control of sessions
+  </Card>
+  <Card title="Tasks" icon="check" href="/concepts/tasks">
+    Understanding task lifecycle
+  </Card>
+  <Card title="WebSocket Events" icon="bolt" href="/integrations/websocket">
+    Real-time guardrail detection
+  </Card>
+</CardGroup>

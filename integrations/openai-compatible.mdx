@@ -1,0 +1,612 @@
+---
+title: "OpenAI-Compatible API"
+description: "Use Enigma with OpenAI SDK, LangChain, LlamaIndex, and Vercel AI SDK"
+---
+
+## When to Use OpenAI-Compatible Endpoint
+
+The OpenAI-compatible API is ideal when:
+
+- You're migrating from OpenAI and want minimal code changes
+- You're using frameworks built for OpenAI (LangChain, LlamaIndex, Vercel AI SDK)
+- You want a simple chat interface for browser automation
+- You need streaming responses
+- You prefer the familiar OpenAI SDK patterns
+
+**Choose native REST/WebSocket instead if you need:**
+- Multi-task sessions with persistent browser state
+- Manual browser control and takeover
+- Video streaming
+- Fine-grained session management
+
+<Note>
+The OpenAI-compatible endpoint creates a new session for each request and auto-terminates after completion. For multi-task workflows, use the native REST API.
+</Note>
+
+---
+
+## Setup with OpenAI SDK
+
+### Installation
+
+```bash
+npm install openai
+```
+
+### Basic Usage
+
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY' // Your Enigma API key
+});
+
+const completion = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [
+    { role: 'user', content: 'Go to google.com and search for Anthropic' }
+  ]
+});
+
+console.log(completion.choices[0].message.content);
+```
+
+**Response:**
+```json
+{
+  "id": "chatcmpl-a1b2c3d4",
+  "object": "chat.completion",
+  "created": 1704067200,
+  "model": "enigma-browser-1",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "Successfully searched for Anthropic on Google. The first result is the official Anthropic website at anthropic.com, which describes Claude as a next-generation AI assistant..."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650
+  }
+}
+```
+
+---
+
+## Framework Examples
+
+### LangChain
+
+```javascript
+import { ChatOpenAI } from "@langchain/openai";
+import { HumanMessage } from "@langchain/core/messages";
+
+const model = new ChatOpenAI({
+  modelName: "enigma-browser-1",
+  openAIApiKey: "YOUR_API_KEY",
+  configuration: {
+    baseURL: "https://connect.enigma.click/v1"
+  }
+});
+
+const response = await model.invoke([
+  new HumanMessage("Go to amazon.com and search for wireless keyboards. List the top 3 results with prices.")
+]);
+
+console.log(response.content);
+```
+
+**With Streaming:**
+```javascript
+const stream = await model.stream([
+  new HumanMessage("Search Google for Anthropic and summarize the first result")
+]);
+
+for await (const chunk of stream) {
+  process.stdout.write(chunk.content);
+}
+```
+
+**With Chains:**
+```javascript
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+
+const model = new ChatOpenAI({
+  modelName: "enigma-browser-1",
+  openAIApiKey: "YOUR_API_KEY",
+  configuration: {
+    baseURL: "https://connect.enigma.click/v1"
+  }
+});
+
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "You are a web research assistant. Extract structured data from websites."],
+  ["human", "{task}"]
+]);
+
+const chain = prompt.pipe(model).pipe(new StringOutputParser());
+
+const result = await chain.invoke({
+  task: "Go to example.com and extract all product names and prices"
+});
+
+console.log(result);
+```
+
+---
+
+### LlamaIndex
+
+```javascript
+import { OpenAI } from "llamaindex";
+
+const llm = new OpenAI({
+  model: "enigma-browser-1",
+  apiKey: "YOUR_API_KEY",
+  additionalChatOptions: {
+    baseURL: "https://connect.enigma.click/v1"
+  }
+});
+
+const response = await llm.chat({
+  messages: [
+    {
+      role: "user",
+      content: "Navigate to github.com/anthropics and list the top 5 repositories"
+    }
+  ]
+});
+
+console.log(response.message.content);
+```
+
+**With Agent:**
+```javascript
+import { OpenAI, OpenAIAgent } from "llamaindex";
+
+const llm = new OpenAI({
+  model: "enigma-browser-1",
+  apiKey: "YOUR_API_KEY",
+  additionalChatOptions: {
+    baseURL: "https://connect.enigma.click/v1"
+  }
+});
+
+const agent = new OpenAIAgent({
+  llm,
+  systemPrompt: "You are a browser automation assistant. Help users extract data from websites."
+});
+
+const response = await agent.chat({
+  message: "Go to product hunt and find the top 3 products today"
+});
+
+console.log(response.response);
+```
+
+---
+
+### Vercel AI SDK
+
+```javascript
+import { openai } from '@ai-sdk/openai';
+import { generateText } from 'ai';
+
+const model = openai('enigma-browser-1', {
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY'
+});
+
+const { text } = await generateText({
+  model,
+  prompt: 'Go to news.ycombinator.com and summarize the top 5 stories'
+});
+
+console.log(text);
+```
+
+**With Streaming:**
+```javascript
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+
+const model = openai('enigma-browser-1', {
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY'
+});
+
+const { textStream } = await streamText({
+  model,
+  prompt: 'Search Google for "AI browser automation" and summarize the results'
+});
+
+for await (const textPart of textStream) {
+  process.stdout.write(textPart);
+}
+```
+
+**In Next.js Route Handler:**
+```javascript
+// app/api/research/route.ts
+import { openai } from '@ai-sdk/openai';
+import { streamText } from 'ai';
+
+export async function POST(req: Request) {
+  const { task } = await req.json();
+
+  const model = openai('enigma-browser-1', {
+    baseURL: 'https://connect.enigma.click/v1',
+    apiKey: process.env.ENIGMA_API_KEY
+  });
+
+  const result = await streamText({
+    model,
+    prompt: task
+  });
+
+  return result.toAIStreamResponse();
+}
+
+// Usage in component:
+// const response = await fetch('/api/research', {
+//   method: 'POST',
+//   body: JSON.stringify({ task: 'Go to example.com and extract all links' })
+// });
+```
+
+---
+
+## Chat Completions Format
+
+### Request Format
+
+```bash
+POST https://connect.enigma.click/v1/chat/completions
+Content-Type: application/json
+Authorization: Bearer YOUR_API_KEY
+```
+
+```json
+{
+  "model": "enigma-browser-1",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful browser automation assistant."
+    },
+    {
+      "role": "user",
+      "content": "Go to example.com and extract all headings"
+    }
+  ],
+  "stream": false,
+  "max_tokens": 2000
+}
+```
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model` | string | Yes | Must be `"enigma-browser-1"` |
+| `messages` | array | Yes | Array of message objects with `role` and `content` |
+| `stream` | boolean | No | Enable streaming responses (default: false) |
+| `max_tokens` | number | No | Maximum tokens in response (default: 2000) |
+| `temperature` | number | No | Not used (included for compatibility) |
+
+---
+
+### Non-Streaming Response
+
+```json
+{
+  "id": "chatcmpl-a1b2c3d4e5f6",
+  "object": "chat.completion",
+  "created": 1704067200,
+  "model": "enigma-browser-1",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "I found 5 headings on example.com:\n1. Example Domain\n2. More Information\n3. Contact\n4. About\n5. Privacy Policy"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 8450,
+    "completion_tokens": 2100,
+    "total_tokens": 10550
+  },
+  "enigma": {
+    "sessionId": "a1b2c3d4e5f6",
+    "taskId": "x9y8z7w6v5u4",
+    "cost": 0.0089
+  }
+}
+```
+
+---
+
+### Streaming Response
+
+When `stream: true`, responses use Server-Sent Events (SSE):
+
+```
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"role":"assistant","content":"I"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" found"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" 5"},"finish_reason":null}]}
+
+...
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: [DONE]
+```
+
+**Handling Streams:**
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY'
+});
+
+const stream = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [
+    { role: 'user', content: 'Go to news.ycombinator.com and summarize top stories' }
+  ],
+  stream: true
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content || '';
+  process.stdout.write(content);
+}
+```
+
+---
+
+## Available Models
+
+| Model Name | Description |
+|------------|-------------|
+| `enigma-browser-1` | Default browser automation model (Claude Sonnet 3.5) |
+
+<Note>
+Currently, only `enigma-browser-1` is available. Additional models may be added in the future.
+</Note>
+
+---
+
+## Differences from Standard OpenAI API
+
+### ✅ Supported Features
+
+- Chat completions endpoint
+- Streaming responses
+- Message history
+- System messages
+- Token usage reporting
+
+### ❌ Not Supported
+
+- Function calling (use native REST API for manual control)
+- Vision (images in messages)
+- Tool use (use native REST API for multi-task workflows)
+- Fine-tuning
+- Embeddings
+- Moderation
+- Audio/Speech
+- Temperature/top_p (task execution is deterministic)
+
+### 🔄 Different Behavior
+
+**1. Session Management**
+- OpenAI: Stateless, each request is independent
+- Enigma: Each request creates a new browser session that auto-terminates
+
+**2. Response Time**
+- OpenAI: Typically 1-5 seconds
+- Enigma: Typically 10-50 seconds (real browser automation)
+
+**3. Context Window**
+- OpenAI: Based on model (e.g., 128k tokens)
+- Enigma: Task-focused, less emphasis on large context
+
+**4. Pricing**
+- OpenAI: Per-token pricing
+- Enigma: Per-task pricing with token usage included in response
+
+---
+
+## Limitations
+
+### Multi-Task Workflows
+
+The OpenAI-compatible endpoint creates a new session per request. For multi-step workflows, use the native REST API:
+
+```javascript
+// ❌ OpenAI-compatible - Each request is a new session
+const completion1 = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [{ role: 'user', content: 'Go to amazon.com' }]
+});
+
+const completion2 = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [{ role: 'user', content: 'Search for keyboards' }] // New session, not on Amazon
+});
+
+// ✅ Native REST API - Persistent session
+const session = await fetch('https://connect.enigma.click/start/start-session', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({ taskDetails: 'Go to amazon.com' })
+}).then(r => r.json());
+
+await fetch('https://connect.enigma.click/start/send-message', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
+  body: JSON.stringify({
+    sessionId: session.sessionId,
+    message: {
+      actionType: 'newTask',
+      newState: 'start',
+      taskDetails: 'Search for keyboards' // Same session, still on Amazon
+    }
+  })
+});
+```
+
+---
+
+### Guardrails
+
+Guardrails (human-in-the-loop) are not supported via OpenAI-compatible endpoint. If a guardrail triggers, the request will fail:
+
+```json
+{
+  "error": {
+    "message": "Guardrail triggered: I need login credentials to proceed",
+    "type": "guardrail_error",
+    "code": "guardrail_triggered"
+  }
+}
+```
+
+**Solution:** Use native REST or WebSocket API for guardrail handling.
+
+---
+
+### Video Streaming
+
+Live video streaming is not available via OpenAI-compatible endpoint. Use native REST API to get `webRTCURL` and `webViewURL`.
+
+---
+
+## Complete Example: Research Assistant
+
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: process.env.ENIGMA_API_KEY
+});
+
+async function researchTopic(topic) {
+  console.log(`Researching: ${topic}`);
+
+  const completion = await client.chat.completions.create({
+    model: 'enigma-browser-1',
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a research assistant. Search the web and provide concise, factual summaries.'
+      },
+      {
+        role: 'user',
+        content: `Search Google for "${topic}" and summarize the top 3 results in a structured format.`
+      }
+    ],
+    stream: false
+  });
+
+  const result = completion.choices[0].message.content;
+  const usage = completion.usage;
+  const cost = completion.enigma?.cost || 0;
+
+  console.log('\n--- Results ---');
+  console.log(result);
+  console.log('\n--- Usage ---');
+  console.log(`Tokens: ${usage.total_tokens} (${usage.prompt_tokens} prompt + ${usage.completion_tokens} completion)`);
+  console.log(`Cost: $${cost}`);
+
+  return result;
+}
+
+// Usage
+await researchTopic('Claude AI capabilities');
+await researchTopic('Browser automation with AI agents');
+```
+
+---
+
+## Error Handling
+
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY'
+});
+
+async function safeCompletion(prompt) {
+  try {
+    const completion = await client.chat.completions.create({
+      model: 'enigma-browser-1',
+      messages: [{ role: 'user', content: prompt }]
+    });
+
+    return completion.choices[0].message.content;
+  } catch (error) {
+    if (error.status === 401) {
+      console.error('Invalid API key');
+    } else if (error.status === 402) {
+      console.error('Insufficient balance');
+    } else if (error.status === 429) {
+      console.error('Rate limit exceeded');
+    } else if (error.status === 503) {
+      console.error('No browser instances available');
+    } else if (error.code === 'guardrail_triggered') {
+      console.error('Guardrail triggered:', error.message);
+      // Use native API for guardrail handling
+    } else {
+      console.error('Unexpected error:', error.message);
+    }
+
+    throw error;
+  }
+}
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="REST API Integration" icon="code" href="/integrations/rest-api">
+    Full control with native REST API
+  </Card>
+  <Card title="WebSocket Integration" icon="plug" href="/integrations/websocket">
+    Real-time events and live updates
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Build complex automation sequences
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference/introduction">
+    Complete endpoint documentation
+  </Card>
+</CardGroup>

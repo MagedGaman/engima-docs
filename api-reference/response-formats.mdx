@@ -1,0 +1,762 @@
+---
+title: "Response Formats"
+description: "Complete reference for all Enigma API response formats"
+---
+
+## Overview
+
+Enigma provides two ways to receive responses:
+
+| Method | How It Works | Best For |
+|--------|--------------|----------|
+| **REST** | Results returned inline if task completes within 50s, otherwise poll | Stateless, serverless, simple integrations |
+| **WebSocket** | Real-time events pushed as they occur | Real-time UIs, live monitoring |
+
+---
+
+## REST API Response Formats
+
+### Inline Results (< 50 seconds)
+
+Both `/run-task` and `/send-message` wait up to 50 seconds for task completion. If the task finishes in time, you get the result immediately.
+
+**Structure:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "complete",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Successfully completed the search",
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650,
+      "completion_time": 23.5
+    }
+  }
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `sessionId` | string | Session identifier |
+| `taskId` | string | Task identifier |
+| `status` | string | Task status: `"complete"` |
+| `result` | object | Task result details |
+| `result.type` | string | Result type: `"task_completed"` |
+| `result.data` | object | Result data |
+| `result.data.message` | string | Task completion message |
+| `result.data.prompt_tokens` | number | Input tokens used |
+| `result.data.completion_tokens` | number | Output tokens generated |
+| `result.data.total_tokens` | number | Total tokens used |
+| `result.data.completion_time` | number | Execution time in seconds |
+
+---
+
+### Pending Results (> 50 seconds)
+
+For longer tasks, the response returns immediately with a poll URL.
+
+**Structure:**
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "pending",
+  "pending": true,
+  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `sessionId` | string | Session identifier |
+| `taskId` | string | Task identifier for polling |
+| `status` | string | Task status: `"pending"` |
+| `pending` | boolean | `true` when task is still running |
+| `pollUrl` | string | URL to poll for task result |
+| `message` | string | Instruction to poll for result |
+
+---
+
+### Polling Responses
+
+Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is returned.
+
+#### Still Running
+
+```json
+{
+  "success": true,
+  "status": "active",
+  "pending": true,
+  "usage": {
+    "inputTokens": 8000,
+    "outputTokens": 2100,
+    "computeTime": 3,
+    "cost": 0.0067
+  }
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `status` | string | `"active"` - task is running |
+| `pending` | boolean | `true` - continue polling |
+| `usage` | object | Current usage statistics |
+
+---
+
+#### Task Completed
+
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "Task finished successfully",
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `type` | string | `"task_completed"` |
+| `data` | object | Task result data |
+| `data.message` | string | Completion message |
+| `data.prompt_tokens` | number | Total input tokens |
+| `data.completion_tokens` | number | Total output tokens |
+| `data.total_tokens` | number | Total tokens |
+| `data.completion_time` | number | Execution time in seconds |
+| `usage` | object | Final usage statistics |
+| `completedAt` | string | ISO 8601 completion timestamp |
+
+---
+
+#### Guardrail Triggered
+
+```json
+{
+  "success": true,
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `type` | string | `"guardrail_trigger"` |
+| `data` | object | Guardrail details |
+| `data.type` | string | Guardrail type |
+| `data.value` | string | Message explaining what's needed |
+
+**Next Steps:**
+
+Respond with guardrail message via `POST /start/send-message`:
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "guardrail",
+    "taskDetails": "Username: user@example.com, Password: pass123",
+    "newState": "resume"
+  }
+}
+```
+
+---
+
+#### Task Failed
+
+```json
+{
+  "success": false,
+  "status": "failed",
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT",
+  "usage": {
+    "inputTokens": 5000,
+    "outputTokens": 1200,
+    "computeTime": 2,
+    "cost": 0.0045
+  }
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | `false` |
+| `status` | string | `"failed"` |
+| `error` | string | Error message |
+| `code` | string | Error code |
+| `usage` | object | Usage statistics up to failure |
+
+---
+
+### Session Creation Response
+
+`POST /start/start-session` returns session details and streaming configuration.
+
+```json
+{
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "socketURL": "https://connect.enigma.click",
+  "streaming": {
+    "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
+    "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
+    "dimensions": {
+      "width": 1024,
+      "height": 600
+    }
+  },
+  "initialPrompt": "Go to amazon.com",
+  "expiresIn": 300000,
+  "balance": 12.50,
+  "message": "Connect to instance using sessionId in auth"
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `sessionId` | string | Unique session identifier |
+| `socketURL` | string | WebSocket connection URL |
+| `streaming` | object | Video streaming configuration |
+| `streaming.webRTCURL` | string | WebRTC WHEP endpoint |
+| `streaming.webViewURL` | string | HTTP video stream URL |
+| `streaming.dimensions` | object | Video dimensions |
+| `initialPrompt` | string | Initial task provided |
+| `expiresIn` | number | Session expiration time (ms) |
+| `balance` | number | Current account balance (USD) |
+| `message` | string | Additional information |
+
+---
+
+### State Control Response
+
+`POST /start/send-message` with `actionType: "state"`, `"interaction"`, or `"guardrail"` returns immediate confirmation.
+
+```json
+{
+  "success": true,
+  "message": "Message sent successfully"
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Request success indicator |
+| `message` | string | Confirmation message |
+
+---
+
+## WebSocket Event Formats
+
+Connect via Socket.IO and listen for `message` events:
+
+```javascript
+socket.on("message", (data) => {
+  console.log(data.type, data);
+});
+```
+
+### Event: agent
+
+Live agent thoughts and reasoning during task execution.
+
+```json
+{
+  "type": "agent",
+  "content": "I'll navigate to the search box and enter the query..."
+}
+```
+
+**Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `"agent"` |
+| `content` | string | Agent reasoning text |
+
+---
+
+### Event: action
+
+Browser action performed by the agent.
+
+```json
+{
+  "type": "action",
+  "data": {
+    "name": "click_element"
+  }
+}
+```
+
+**Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `"action"` |
+| `data` | object | Action details |
+| `data.name` | string | Action name |
+
+---
+
+### Event: response_update
+
+Status update during task execution.
+
+```json
+{
+  "type": "response_update",
+  "data": {
+    "message": "Starting task... Browsing the web now."
+  }
+}
+```
+
+**Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `"response_update"` |
+| `data` | object | Update details |
+| `data.message` | string | Status message |
+
+---
+
+### Event: task_completed
+
+Task finished successfully.
+
+```json
+{
+  "type": "task_completed",
+  "taskId": "x9y8z7w6v5u4",
+  "data": {
+    "message": "Task completed successfully",
+    "prompt_tokens": 15420,
+    "completion_tokens": 8230,
+    "total_tokens": 23650,
+    "completion_time": 45.3,
+    "usage": {
+      "cost": 0.0234
+    }
+  }
+}
+```
+
+**Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `"task_completed"` |
+| `taskId` | string | Task identifier |
+| `data` | object | Completion details |
+| `data.message` | string | Completion message |
+| `data.prompt_tokens` | number | Input tokens used |
+| `data.completion_tokens` | number | Output tokens generated |
+| `data.total_tokens` | number | Total tokens used |
+| `data.completion_time` | number | Execution time (seconds) |
+| `data.usage` | object | Usage statistics |
+| `data.usage.cost` | number | Cost in USD |
+
+---
+
+### Event: guardrail_trigger
+
+Agent needs human input to continue.
+
+```json
+{
+  "type": "guardrail_trigger",
+  "data": {
+    "type": "human_input_needed",
+    "value": "I need login credentials to proceed"
+  }
+}
+```
+
+**Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `"guardrail_trigger"` |
+| `data` | object | Guardrail details |
+| `data.type` | string | Guardrail type |
+| `data.value` | string | Message explaining what's needed |
+
+**Respond with:**
+```javascript
+socket.emit("message", {
+  actionType: "guardrail",
+  taskDetails: "Username: demo@example.com, Password: demo123",
+  newState: "resume"
+});
+```
+
+---
+
+### Event: error
+
+Task failed with error.
+
+```json
+{
+  "type": "error",
+  "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT"
+}
+```
+
+**Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `"error"` |
+| `error` | string | Error message |
+| `code` | string | Error code |
+
+---
+
+### Connection Events
+
+#### connect
+
+Socket connected successfully.
+
+```javascript
+socket.on("connect", () => {
+  console.log("Connected to session");
+});
+```
+
+---
+
+#### disconnect
+
+Socket disconnected.
+
+```javascript
+socket.on("disconnect", () => {
+  console.log("Disconnected from session");
+});
+```
+
+---
+
+#### error
+
+Socket error occurred.
+
+```javascript
+socket.on("error", (err) => {
+  console.error("Socket error:", err);
+});
+```
+
+---
+
+#### end_session
+
+Session terminated by server.
+
+```json
+{
+  "reason": "completed"
+}
+```
+
+**Possible Reasons:**
+- `"completed"` - Task completed
+- `"terminated"` - Manually terminated
+- `"expired"` - Session timeout
+- `"terminateOnCompletion"` - Auto-terminated after task
+- `"instance_lost"` - Instance connection lost
+
+```javascript
+socket.on("end_session", (data) => {
+  console.log("Session ended:", data.reason);
+});
+```
+
+---
+
+#### instance:disconnected
+
+Instance connection lost. Session enters 5-minute grace period for reconnection.
+
+```json
+{
+  "gracePeriod": 300000
+}
+```
+
+```javascript
+socket.on("instance:disconnected", (data) => {
+  console.log("Instance lost, waiting for reconnection...");
+  console.log("Grace period:", data.gracePeriod, "ms");
+});
+```
+
+---
+
+#### instance:reconnected
+
+Instance connection recovered.
+
+```javascript
+socket.on("instance:reconnected", (data) => {
+  console.log("Instance reconnected");
+});
+```
+
+---
+
+## OpenAI-Compatible Response Formats
+
+### Non-Streaming Response
+
+`POST /v1/chat/completions` with `stream: false` (default).
+
+```json
+{
+  "id": "chatcmpl-a1b2c3d4e5f6",
+  "object": "chat.completion",
+  "created": 1704067200,
+  "model": "enigma-browser-1",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "I found 5 headings on example.com:\n1. Example Domain\n2. More Information\n3. Contact\n4. About\n5. Privacy Policy"
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 8450,
+    "completion_tokens": 2100,
+    "total_tokens": 10550
+  },
+  "enigma": {
+    "sessionId": "a1b2c3d4e5f6",
+    "taskId": "x9y8z7w6v5u4",
+    "cost": 0.0089
+  }
+}
+```
+
+**Response Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Completion identifier |
+| `object` | string | `"chat.completion"` |
+| `created` | number | Unix timestamp |
+| `model` | string | Model name: `"enigma-browser-1"` |
+| `choices` | array | Array of completion choices |
+| `choices[0].index` | number | Choice index (always 0) |
+| `choices[0].message` | object | Assistant message |
+| `choices[0].message.role` | string | `"assistant"` |
+| `choices[0].message.content` | string | Response text |
+| `choices[0].finish_reason` | string | `"stop"` |
+| `usage` | object | Token usage statistics |
+| `usage.prompt_tokens` | number | Input tokens |
+| `usage.completion_tokens` | number | Output tokens |
+| `usage.total_tokens` | number | Total tokens |
+| `enigma` | object | Enigma-specific metadata |
+| `enigma.sessionId` | string | Session identifier |
+| `enigma.taskId` | string | Task identifier |
+| `enigma.cost` | number | Cost in USD |
+
+---
+
+### Streaming Response (SSE)
+
+`POST /v1/chat/completions` with `stream: true` returns Server-Sent Events.
+
+**Stream Format:**
+
+```
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"role":"assistant","content":"I"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" found"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" 5"},"finish_reason":null}]}
+
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+data: [DONE]
+```
+
+**Chunk Structure:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Completion identifier |
+| `object` | string | `"chat.completion.chunk"` |
+| `created` | number | Unix timestamp |
+| `model` | string | `"enigma-browser-1"` |
+| `choices` | array | Array of delta choices |
+| `choices[0].index` | number | Choice index (always 0) |
+| `choices[0].delta` | object | Content delta |
+| `choices[0].delta.role` | string | `"assistant"` (first chunk only) |
+| `choices[0].delta.content` | string | Text chunk |
+| `choices[0].finish_reason` | string | `null` during stream, `"stop"` at end |
+
+**Handling Streams:**
+
+```javascript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'https://connect.enigma.click/v1',
+  apiKey: 'YOUR_API_KEY'
+});
+
+const stream = await client.chat.completions.create({
+  model: 'enigma-browser-1',
+  messages: [{ role: 'user', content: 'Go to example.com' }],
+  stream: true
+});
+
+for await (const chunk of stream) {
+  const content = chunk.choices[0]?.delta?.content || '';
+  process.stdout.write(content);
+}
+```
+
+---
+
+## Error Response Format
+
+All errors follow this standard format:
+
+```json
+{
+  "success": false,
+  "message": "Human-readable error message"
+}
+```
+
+**Common HTTP Status Codes:**
+
+| Status | Meaning | Example Message |
+|--------|---------|-----------------|
+| 200 | Success | - |
+| 400 | Bad request | `"sessionId and message are required"` |
+| 401 | Unauthorized | `"Invalid or revoked API key"` |
+| 402 | Payment required | `"Insufficient balance."` |
+| 403 | Forbidden | `"Account is deactivated"` |
+| 404 | Not found | `"Session not found"` |
+| 429 | Too many requests | `"Rate limit exceeded. Please try again later."` |
+| 500 | Internal server error | `"Internal server error"` |
+| 503 | Service unavailable | `"No available instances."` |
+
+See [Rate Limits](/api-reference/rate-limits) for handling 429 errors.
+
+---
+
+## Usage Object Structure
+
+The `usage` object appears in many responses and provides token and cost information:
+
+```typescript
+interface Usage {
+  inputTokens: number;      // Number of input tokens used
+  outputTokens: number;     // Number of output tokens generated
+  computeTime: number;      // Compute time in seconds
+  cost: number;             // Cost in USD
+}
+```
+
+**Example:**
+```json
+{
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  }
+}
+```
+
+---
+
+## Complete Event Reference Table
+
+| Event Type | REST | WebSocket | Description |
+|------------|------|-----------|-------------|
+| `agent` | ✗ | ✓ | Live agent reasoning |
+| `action` | ✗ | ✓ | Browser action performed |
+| `response_update` | ✗ | ✓ | Status updates |
+| `task_completed` | ✓ (poll) | ✓ | Task finished successfully |
+| `guardrail_trigger` | ✓ (poll) | ✓ | Human input needed |
+| `error` | ✓ (poll) | ✓ | Task failed |
+| `end_session` | ✗ | ✓ | Session terminated |
+| `instance:disconnected` | ✗ | ✓ | Instance connection lost |
+| `instance:reconnected` | ✗ | ✓ | Instance recovered |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Endpoints" icon="plug" href="/api-reference/endpoints">
+    Complete endpoint reference
+  </Card>
+  <Card title="Parameters" icon="sliders" href="/api-reference/parameters">
+    Parameter documentation
+  </Card>
+  <Card title="Events & Responses" icon="bolt" href="/events">
+    Detailed event handling guide
+  </Card>
+  <Card title="WebSocket Integration" icon="plug" href="/integrations/websocket">
+    WebSocket integration guide
+  </Card>
+</CardGroup>

@@ -1,0 +1,157 @@
+---
+title: "MCP Quickstart: Claude Desktop & Cline"
+description: "Add browser automation to Claude Desktop and Cline via MCP"
+---
+
+## What is MCP?
+
+The Model Context Protocol (MCP) allows AI assistants like Claude Desktop and Cline to access external tools and services. By adding the Enigma MCP server, you give these assistants the ability to browse the web autonomously.
+
+---
+
+## Setup (2 minutes)
+
+### Claude Desktop
+
+**Step 1: Open Configuration File**
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+**Step 2: Add Enigma Server**
+```json
+{
+  "mcpServers": {
+    "enigma": {
+      "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+    }
+  }
+}
+```
+
+**Step 3: Restart Claude Desktop**
+Close and reopen the application. You'll see Enigma tools available in the tool picker.
+
+---
+
+### Cline (VS Code Extension)
+
+**Step 1: Open VS Code Settings**
+- Press `Cmd/Ctrl + Shift + P`
+- Search for "Cline: Settings"
+
+**Step 2: Add MCP Server**
+In the MCP Servers section, add:
+```json
+{
+  "enigma": {
+    "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+  }
+}
+```
+
+**Step 3: Reload Cline**
+Reload the extension or restart VS Code.
+
+---
+
+## Your First Browser Task
+
+Once configured, you can ask Claude to browse the web:
+
+**Example Prompts:**
+- "Search Google for Anthropic and summarize the first result"
+- "Go to example.com and extract all the product prices"
+- "Navigate to LinkedIn, search for software engineers in SF, and list the top 5 results"
+
+**What happens:**
+1. Claude recognizes your request requires web browsing
+2. It calls the Enigma MCP tool with your task
+3. An AI agent executes the task in a real browser
+4. Results are returned to Claude
+5. Claude presents the information to you
+
+---
+
+## Available Tools (Summary)
+
+The Enigma MCP server provides several tools:
+
+| Tool | Description | Use Case |
+|------|-------------|----------|
+| `browser_task` | Execute a single browser task | Quick one-off automations |
+| `create_session` | Start a persistent browser session | Multi-step workflows |
+| `send_task_to_session` | Send a task to an existing session | Follow-up actions |
+| `get_task_status` | Check the status of a running task | Monitoring long tasks |
+| `control_session` | Pause, resume, or stop a session | Manual control |
+| `take_over_session` | Enable manual browser control | Human-in-the-loop |
+
+[Full MCP Reference →](/integrations/mcp-server)
+
+---
+
+## Example Conversations
+
+### Simple Research
+
+**You:** "Use Enigma to search for 'Claude AI features' on Google and tell me what you find."
+
+**Claude:** *(Uses `browser_task` tool)* "I've searched Google for 'Claude AI features'. Here's what I found: Claude is Anthropic's AI assistant with features including..."
+
+### Multi-Step Workflow
+
+**You:** "Create a browser session, go to Amazon, search for wireless keyboards, and tell me the top 3 results."
+
+**Claude:** *(Uses `create_session`, then `send_task_to_session`)* "I've navigated to Amazon and searched for wireless keyboards. Here are the top 3 results:
+1. Logitech K380 - $29.99
+2. Keychron K2 - $79.00
+3. ...
+
+Would you like me to get more details on any of these?"
+
+---
+
+## Troubleshooting
+
+### Tools not appearing in Claude Desktop?
+
+1. **Check config file path:** Ensure you edited the correct file location
+2. **Verify JSON syntax:** Use a JSON validator to check for syntax errors
+3. **Restart Claude:** Fully quit and reopen the application
+4. **Check API key:** Ensure your API key is valid and starts with `enig_`
+
+### Authentication errors?
+
+- Verify your API key in the configuration
+- Check that you have sufficient balance in your Enigma account
+- Ensure the API key has not expired
+
+### Session timeout errors?
+
+- Enigma sessions have a maximum duration of 5 minutes
+- For long tasks, break them into smaller sub-tasks
+- Use `get_task_status` to monitor progress
+
+---
+
+## Advanced Usage
+
+For advanced MCP features like video streaming, manual control, and custom workflows, see the [Full MCP Server Documentation](/integrations/mcp-server).
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Full MCP Reference" icon="book" href="/integrations/mcp-server">
+    All tools, parameters, and advanced patterns
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain multiple browser tasks
+  </Card>
+  <Card title="Handling Guardrails" icon="shield-halved" href="/usage-guides/handling-guardrails">
+    Respond to human-in-the-loop requests
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Watch browser sessions live
+  </Card>
+</CardGroup>
