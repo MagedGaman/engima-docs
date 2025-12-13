@@ -28,9 +28,9 @@ Enigma uses **Chrome Desktop** running in cloud-based instances. Each session ge
 Session duration depends on your configuration:
 
 **Default Limits:**
-- **Minimum duration:** 1 second (1,000ms)
-- **Maximum duration:** 5 minutes (300,000ms)
-- **Default if not specified:** 60 seconds (60,000ms)
+- **Minimum duration:** 1 minutes (60,000ms)
+- **Maximum duration:** Unlimited
+- **Default if not specified:** 5 minutes (300,000ms)
 
 **Inactivity Timeout:**
 - Sessions expire after the `maxDuration` is reached
@@ -53,8 +53,8 @@ const session = await fetch("https://connect.enigma.click/start/start-session", 
 ```
 
 **Plan-Specific Limits:**
-- **Free Tier:** Max 60 seconds
-- **Pro Tier:** Max 5 minutes (300 seconds)
+- **Free Tier:** Max 14 minutes (900,000ms)
+- **Pro Tier:** Max 5 minutes (300,000ms)
 - **Enterprise:** Custom limits available
 
 **Related:**
