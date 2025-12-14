@@ -10,13 +10,13 @@ icon: "circle-question"
 
 Enigma uses **Chrome Desktop** running in cloud-based instances. Each session gets a dedicated browser instance with:
 
-- **Version:** Latest stable Chromium
+- **Version:** Latest stable Official Chrome
 - **User Agent:** Standard Chrome user agent
-- **Extensions:** None by default
+- **Extensions:** Cookie blocker
 - **Cookies:** Isolated per session
 - **JavaScript:** Enabled by default
 
-**Note:** You cannot currently specify browser type (Firefox, Safari, etc.) or version. All sessions use the latest Chromium.
+**Note:** You cannot currently specify browser type (Firefox, Safari, etc.) or version. All sessions uses Chrome.
 
 **Related:**
 - [Browser Specifications](/concepts/browser-specs)
@@ -855,7 +855,7 @@ ws.onmessage = (event) => {
 
 ### What User-Agent does Enigma use?
 
-Enigma uses a **standard Chrome User-Agent** that matches the Chromium version.
+Enigma uses a **standard Chrome User-Agent** that matches the Chrome version.
 
 **Example:**
 ```
