@@ -23,12 +23,6 @@
             ]
           },
           {
-            "group": "Capabilities",
-            "pages": [
-              "capabilities/supported-interactions"
-            ]
-          },
-          {
             "group": "Concepts",
             "pages": [
               "concepts/sessions",
@@ -66,6 +60,12 @@
               "api-reference/parameters",
               "api-reference/response-formats",
               "api-reference/rate-limits"
+            ]
+          },
+            {
+            "group": "Capabilities",
+            "pages": [
+              "capabilities/supported-interactions"
             ]
           },
           {
