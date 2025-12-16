@@ -23,6 +23,12 @@
             ]
           },
           {
+            "group": "Capabilities",
+            "pages": [
+              "capabilities/supported-interactions"
+            ]
+          },
+          {
             "group": "Concepts",
             "pages": [
               "concepts/sessions",
