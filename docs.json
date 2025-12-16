@@ -17,6 +17,7 @@
             "group": "Getting Started",
             "pages": [
               "getting-started/overview",
+              "getting-started/supported-interactions",
               "getting-started/quickstart",
               "getting-started/workflow-quickstart",
               "getting-started/mcp-quickstart"
