@@ -1,14 +1,14 @@
 ---
 title: "Frequently Asked Questions"
-description: "Answers to common questions about Enigma's browser automation platform"
+description: "Answers to common questions about WebRun's browser automation platform"
 icon: "circle-question"
 ---
 
 ## General Questions
 
-### What browsers does Enigma use?
+### What browsers does WebRun use?
 
-Enigma uses **Chrome Desktop** running in cloud-based instances. Each session gets a dedicated browser instance with:
+WebRun uses **Chrome Desktop** running in cloud-based instances. Each session gets a dedicated browser instance with:
 
 - **Version:** Latest stable Official Chrome
 - **User Agent:** Standard Chrome user agent
@@ -40,7 +40,7 @@ Session duration depends on your configuration:
 **Example:**
 ```javascript
 // Session that can run up to 10 minutes
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -66,7 +66,7 @@ const session = await fetch("https://connect.enigma.click/start/start-session", 
 
 ### Is my data secure?
 
-Yes, Enigma takes security seriously:
+Yes, WebRun takes security seriously:
 
 **Session Isolation:**
 - Each session runs in an isolated browser instance
@@ -84,7 +84,7 @@ Yes, Enigma takes security seriously:
 - No data is transmitted in plaintext
 
 **Privacy:**
-- Enigma does not store credentials you provide to websites
+- WebRun does not store credentials you provide to websites
 - Screenshots and recordings are deleted with the session
 - We do not track or log browsing behavior
 
@@ -100,7 +100,7 @@ Yes, Enigma takes security seriously:
 
 **Related:**
 - [Security Overview](/essentials/security)
-- [Privacy Policy](https://enigma.click/privacy)
+- [Privacy Policy](https://webrun.ai/privacy)
 
 ---
 
@@ -125,7 +125,7 @@ const sessions = await Promise.all([
 console.log("Created sessions:", sessions.map(s => s.sessionId));
 
 async function createSession(taskDetails, apiKey) {
-  const response = await fetch("https://connect.enigma.click/start/start-session", {
+  const response = await fetch("https://connect.webrun.ai/start/start-session", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -168,7 +168,7 @@ There are several approaches depending on the website:
 
 **1. Provide Credentials in Task**
 ```javascript
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -199,7 +199,7 @@ ws.onmessage = async (event) => {
   if (data.type === "guardrail_trigger") {
     if (data.data.value.includes("login") || data.data.value.includes("credentials")) {
       // Provide credentials when asked
-      await fetch("https://connect.enigma.click/start/send-message", {
+      await fetch("https://connect.webrun.ai/start/send-message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -236,17 +236,17 @@ ws.onmessage = async (event) => {
 
 **Short Answer:** No, not currently.
 
-Enigma uses its own LLM infrastructure to power the browser agent. You cannot bring your own API keys or use different models.
+WebRun uses its own LLM infrastructure to power the browser agent. You cannot bring your own API keys or use different models.
 
 **What You Get:**
 - Optimized prompting for browser automation
 - No need to manage separate API keys
-- Usage tracked and billed through Enigma
+- Usage tracked and billed through WebRun
 
 **Pricing:**
-- Costs are included in your Enigma usage
+- Costs are included in your WebRun usage
 - Charged based on input/output tokens
-- See current pricing at [enigma.click/pricing](https://enigma.click/pricing)
+- See current pricing at [webrun.ai/pricing](https://webrun.ai/pricing)
 
 **Related:**
 - [Pricing](/pricing)
@@ -254,9 +254,9 @@ Enigma uses its own LLM infrastructure to power the browser agent. You cannot br
 
 ---
 
-### Does Enigma work with [framework]?
+### Does WebRun work with [framework]?
 
-Enigma provides a **REST API**, **WebSocket interface**, **MCP** and OPENAI format, making it compatible with any framework or language that can make HTTP requests.
+WebRun provides a **REST API**, **WebSocket interface**, **MCP** and OPENAI format, making it compatible with any framework or language that can make HTTP requests.
 
 **Officially Supported:**
 - JavaScript/TypeScript (Node.js, Deno, Bun)
@@ -267,11 +267,11 @@ Enigma provides a **REST API**, **WebSocket interface**, **MCP** and OPENAI form
 
 **Next.js / React:**
 ```javascript
-// app/api/enigma/route.js
+// app/api/webrun/route.js
 export async function POST(request) {
   const { taskDetails } = await request.json();
 
-  const response = await fetch("https://connect.enigma.click/start/start-session", {
+  const response = await fetch("https://connect.webrun.ai/start/start-session", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -289,7 +289,7 @@ export async function POST(request) {
 app.post('/automate', async (req, res) => {
   const { taskDetails } = req.body;
 
-  const response = await fetch("https://connect.enigma.click/start/start-session", {
+  const response = await fetch("https://connect.webrun.ai/start/start-session", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -313,7 +313,7 @@ app = FastAPI()
 async def automate(task_details: str):
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "https://connect.enigma.click/start/start-session",
+            "https://connect.webrun.ai/start/start-session",
             json={"taskDetails": task_details},
             headers={
                 "Authorization": f"Bearer {os.getenv('ENIGMA_API_KEY')}"
@@ -329,23 +329,23 @@ async def automate(task_details: str):
 
 ---
 
-### Can I use Enigma with the MCP protocol?
+### Can I use WebRun with the MCP protocol?
 
-**Yes!** Enigma provides a native **Model Context Protocol (MCP) server**.
+**Yes!** WebRun provides a native **Model Context Protocol (MCP) server**.
 
 **What is MCP?**
 - Protocol for connecting AI models to external tools
 - Developed by Anthropic
-- Allows Claude Desktop and other MCP clients to use Enigma
+- Allows Claude Desktop and other MCP clients to use WebRun
 
 **Setup:**
 ```json
 // claude_desktop_config.json
 {
   "mcpServers": {
-    "enigma": {
+    "webrun": {
       "command": "npx",
-      "args": ["-y", "@enigma/mcp-server"],
+      "args": ["-y", "@webrun/mcp-server"],
       "env": {
         "ENIGMA_API_KEY": "your-api-key-here"
       }
@@ -355,10 +355,10 @@ async def automate(task_details: str):
 ```
 
 **Available Tools:**
-- `enigma_browser_start` - Start a new session
-- `enigma_browser_run_task` - Execute a task
-- `enigma_browser_control` - Control session state
-- `enigma_browser_get_result` - Get task results
+- `webrun_browser_start` - Start a new session
+- `webrun_browser_run_task` - Execute a task
+- `webrun_browser_control` - Control session state
+- `webrun_browser_get_result` - Get task results
 
 **Resources:**
 - Session streaming access
@@ -374,7 +374,7 @@ async def automate(task_details: str):
 
 ### Is there a free tier?
 
-**Yes!** Enigma offers a free tier for testing and small-scale usage.
+**Yes!** WebRun offers a free tier for testing and small-scale usage.
 
 **Free Tier Includes:**
 - **$5 free credits** per month
@@ -404,7 +404,7 @@ async def automate(task_details: str):
 
 **Related:**
 - [Pricing Plans](/pricing)
-- [Sign Up](https://enigma.click/signup)
+- [Sign Up](https://webrun.ai/signup)
 
 ---
 
@@ -530,7 +530,7 @@ try {
 **Yes** - You can set spending limits in your account settings.
 
 **How to Set Limits:**
-1. Go to [app.enigma.click/billing](https://app.enigma.click/billing)
+1. Go to [app.webrun.ai/billing](https://app.webrun.ai/billing)
 2. Navigate to "Spending Limits"
 3. Set daily, weekly, or monthly caps
 4. Enable alerts at threshold percentages
@@ -553,7 +553,7 @@ try {
 **Monitoring:**
 ```javascript
 // Check current usage via API
-const usage = await fetch("https://connect.enigma.click/account/usage", {
+const usage = await fetch("https://connect.webrun.ai/account/usage", {
   headers: { "Authorization": `Bearer ${apiKey}` }
 });
 
@@ -579,12 +579,12 @@ console.log("Remaining:", data.remaining);
 
 ### How do I handle CAPTCHAs?
 
-CAPTCHAs require human intervention. Enigma provides several approaches:
+CAPTCHAs require human intervention. WebRun provides several approaches:
 
 **1. Manual Takeover Mode**
 ```javascript
 // When CAPTCHA detected, switch to manual mode
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -597,10 +597,10 @@ await fetch("https://connect.enigma.click/start/send-message", {
 });
 
 // User solves CAPTCHA via video stream
-// Watch stream at: https://connect.enigma.click/stream/${sessionId}
+// Watch stream at: https://connect.webrun.ai/stream/${sessionId}
 
 // After CAPTCHA solved, resume agent
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -625,7 +625,7 @@ ws.onmessage = async (event) => {
       console.log("CAPTCHA detected - manual intervention needed");
 
       // Provide stream URL
-      console.log(`Solve at: https://connect.enigma.click/stream/${sessionId}`);
+      console.log(`Solve at: https://connect.webrun.ai/stream/${sessionId}`);
 
       // Wait for user confirmation
       const solved = await askUser("Have you solved the CAPTCHA?");
@@ -644,7 +644,7 @@ ws.onmessage = async (event) => {
 **3. Avoid CAPTCHA-Heavy Sites**
 ```javascript
 // Some sites are known for heavy CAPTCHA usage
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -671,13 +671,13 @@ const session = await fetch("https://connect.enigma.click/start/start-session", 
 
 ---
 
-### Can Enigma access sites behind login?
+### Can WebRun access sites behind login?
 
 **Yes**, but with some considerations:
 
 **Approach 1: Provide Credentials Directly**
 ```javascript
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -745,7 +745,7 @@ ws.onmessage = async (event) => {
 - **Viewport:** Full HD (1080p)
 
 **Device Emulation:**
-Currently, Enigma does not support:
+Currently, WebRun does not support:
 - Custom viewport sizes
 - Mobile device emulation
 - Different screen resolutions
@@ -759,7 +759,7 @@ Currently, Enigma does not support:
 **Workarounds for Mobile:**
 ```javascript
 // Some sites switch to mobile based on user agent
-// This is not currently supported in Enigma
+// This is not currently supported in WebRun
 ```
 
 **Future Features:**
@@ -791,7 +791,7 @@ Currently, Enigma does not support:
 - Appear as different users
 - Reduce CAPTCHA frequency
 
-**Contact:** Email sales@enigma.click for Enterprise pricing
+**Contact:** Email sales@webrun.ai for Enterprise pricing
 
 **Alternatives for Standard Plans:**
 - Use rate limiting to avoid blocks
@@ -800,7 +800,7 @@ Currently, Enigma does not support:
 
 **Related:**
 - [Enterprise Features](/pricing#enterprise)
-- [Contact Sales](mailto:sales@enigma.click)
+- [Contact Sales](mailto:sales@webrun.ai)
 
 ---
 
@@ -853,9 +853,9 @@ ws.onmessage = (event) => {
 
 ---
 
-### What User-Agent does Enigma use?
+### What User-Agent does WebRun use?
 
-Enigma uses a **standard Chrome User-Agent** that matches the Chrome version.
+WebRun uses a **standard Chrome User-Agent** that matches the Chrome version.
 
 **Example:**
 ```
@@ -876,7 +876,7 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 
 **Detection:**
 - Some sophisticated bot detection may still identify automation
-- Enigma works on most sites
+- WebRun works on most sites
 - CAPTCHAs may still appear on high-security sites
 
 **Related:**
@@ -895,8 +895,8 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 - [Integration Examples](/integrations/examples) - Framework-specific code
 
 **GitHub:**
-- [enigma-examples](https://github.com/enigma-ai/examples) - Sample projects
-- [enigma-sdk](https://github.com/enigma-ai/sdk) - Official SDKs
+- [webrun-examples](https://github.com/webrun-ai/examples) - Sample projects
+- [webrun-sdk](https://github.com/webrun-ai/sdk) - Official SDKs
 
 **Example: Complete Task Flow**
 ```javascript
@@ -908,7 +908,7 @@ async function automateTask(taskDetails) {
   try {
     // 1. Create session
     const sessionResponse = await fetch(
-      "https://connect.enigma.click/start/start-session",
+      "https://connect.webrun.ai/start/start-session",
       {
         method: "POST",
         headers: {
@@ -927,7 +927,7 @@ async function automateTask(taskDetails) {
 
     // 2. Monitor via WebSocket
     const ws = new WebSocket(
-      `wss://connect.enigma.click/ws?sessionId=${sessionId}&apiKey=${ENIGMA_API_KEY}`
+      `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${ENIGMA_API_KEY}`
     );
 
     return new Promise((resolve, reject) => {
@@ -952,7 +952,7 @@ async function automateTask(taskDetails) {
   } finally {
     // 3. Clean up
     if (sessionId) {
-      await fetch("https://connect.enigma.click/start/send-message", {
+      await fetch("https://connect.webrun.ai/start/send-message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -995,9 +995,9 @@ console.log("Result:", result);
 - Custom integrations support
 
 **Contact Information:**
-- **Email:** support@enigma.click
-- **Discord:** [discord.gg/enigma](https://discord.gg/enigma)
-- **Status:** [status.enigma.click](https://status.enigma.click)
+- **Email:** support@webrun.ai
+- **Discord:** [discord.gg/webrun](https://discord.gg/webrun)
+- **Status:** [status.webrun.ai](https://status.webrun.ai)
 
 **Before Contacting Support:**
 1. Check this documentation
