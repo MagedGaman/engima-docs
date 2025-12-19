@@ -1,12 +1,12 @@
 ---
 title: "Common Issues & Solutions"
-description: "Troubleshooting guide for frequently encountered issues with Enigma"
+description: "Troubleshooting guide for frequently encountered issues with WebRun"
 icon: "bug"
 ---
 
 ## Overview
 
-This guide covers the most common issues users encounter when working with Enigma, along with detailed solutions and preventive measures.
+This guide covers the most common issues users encounter when working with WebRun, along with detailed solutions and preventive measures.
 
 ---
 
@@ -35,7 +35,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
      while (Date.now() - startTime < maxWait) {
        const response = await fetch(
-         `https://connect.enigma.click/start/session-status/${sessionId}`,
+         `https://connect.webrun.ai/start/session-status/${sessionId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -61,7 +61,7 @@ This guide covers the most common issues users encounter when working with Enigm
 2. **Terminate and Recreate**
    ```javascript
    // If session is stuck, terminate and create new one
-   await fetch("https://connect.enigma.click/start/send-message", {
+   await fetch("https://connect.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -74,7 +74,7 @@ This guide covers the most common issues users encounter when working with Enigm
    });
 
    // Create new session
-   const newSession = await fetch("https://connect.enigma.click/start/start-session", {
+   const newSession = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -85,7 +85,7 @@ This guide covers the most common issues users encounter when working with Enigm
    ```
 
 3. **Check System Status**
-   - Visit [status.enigma.click](https://status.enigma.click)
+   - Visit [status.webrun.ai](https://status.webrun.ai)
    - Look for ongoing incidents or maintenance
    - Check response times and success rates
 
@@ -119,7 +119,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
 1. **Increase Maximum Duration**
    ```javascript
-   const response = await fetch("https://connect.enigma.click/start/run-task", {
+   const response = await fetch("https://connect.webrun.ai/start/run-task", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -155,7 +155,7 @@ This guide covers the most common issues users encounter when working with Enigm
 3. **Use Starting URL**
    ```javascript
    // Skip navigation time by starting at target page
-   const session = await fetch("https://connect.enigma.click/start/start-session", {
+   const session = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -207,7 +207,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
      while (Date.now() - startTime < maxTime) {
        const response = await fetch(
-         `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+         `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -230,7 +230,7 @@ This guide covers the most common issues users encounter when working with Enigm
 2. **Check WebSocket Events**
    ```javascript
    // If using WebSocket, monitor for task_completed event
-   const ws = new WebSocket(`wss://connect.enigma.click/ws?sessionId=${sessionId}`);
+   const ws = new WebSocket(`wss://connect.webrun.ai/ws?sessionId=${sessionId}`);
 
    ws.onmessage = (event) => {
      const data = JSON.parse(event.data);
@@ -244,7 +244,7 @@ This guide covers the most common issues users encounter when working with Enigm
 3. **Terminate and Retry**
    ```javascript
    // If stuck for > 5 minutes, terminate and retry
-   await fetch("https://connect.enigma.click/start/send-message", {
+   await fetch("https://connect.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -288,7 +288,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
 1. **Set Token Limits**
    ```javascript
-   const response = await fetch("https://connect.enigma.click/start/start-session", {
+   const response = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -305,7 +305,7 @@ This guide covers the most common issues users encounter when working with Enigm
 2. **Use Starting URL**
    ```javascript
    // Skip homepage navigation - saves tokens
-   const session = await fetch("https://connect.enigma.click/start/start-session", {
+   const session = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -320,7 +320,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
 3. **Block Unnecessary Domains**
    ```javascript
-   const session = await fetch("https://connect.enigma.click/start/start-session", {
+   const session = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -398,7 +398,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
 2. **Provide Credentials Upfront**
    ```javascript
-   const session = await fetch("https://connect.enigma.click/start/start-session", {
+   const session = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -413,7 +413,7 @@ This guide covers the most common issues users encounter when working with Enigm
 3. **Handle Guardrails Programmatically**
    ```javascript
    async function handleGuardrails(sessionId, apiKey) {
-     const ws = new WebSocket(`wss://connect.enigma.click/ws?sessionId=${sessionId}`);
+     const ws = new WebSocket(`wss://connect.webrun.ai/ws?sessionId=${sessionId}`);
 
      ws.onmessage = async (event) => {
        const data = JSON.parse(event.data);
@@ -433,7 +433,7 @@ This guide covers the most common issues users encounter when working with Enigm
          }
 
          // Resume with response
-         await fetch("https://connect.enigma.click/start/send-message", {
+         await fetch("https://connect.webrun.ai/start/send-message", {
            method: "POST",
            headers: {
              "Content-Type": "application/json",
@@ -456,7 +456,7 @@ This guide covers the most common issues users encounter when working with Enigm
 4. **Avoid Sites Requiring Auth**
    ```javascript
    // Block login-required domains
-   const session = await fetch("https://connect.enigma.click/start/start-session", {
+   const session = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -502,7 +502,7 @@ This guide covers the most common issues users encounter when working with Enigm
    async function getStreamUrl(sessionId, apiKey) {
      // Check session status first
      const statusResponse = await fetch(
-       `https://connect.enigma.click/start/session-status/${sessionId}`,
+       `https://connect.webrun.ai/start/session-status/${sessionId}`,
        {
          headers: { "Authorization": `Bearer ${apiKey}` }
        }
@@ -515,7 +515,7 @@ This guide covers the most common issues users encounter when working with Enigm
      }
 
      // Get stream URL
-     return `https://connect.enigma.click/stream/${sessionId}`;
+     return `https://connect.webrun.ai/stream/${sessionId}`;
    }
    ```
 
@@ -525,7 +525,7 @@ This guide covers the most common issues users encounter when working with Enigm
    // Required ports: TCP 443, UDP 49152-65535
 
    // Test connection
-   const streamUrl = `https://connect.enigma.click/stream/${sessionId}`;
+   const streamUrl = `https://connect.webrun.ai/stream/${sessionId}`;
    const testResponse = await fetch(streamUrl);
 
    if (!testResponse.ok) {
@@ -537,7 +537,7 @@ This guide covers the most common issues users encounter when working with Enigm
    ```javascript
    // If WebRTC fails, try SSE for updates
    const eventSource = new EventSource(
-     `https://connect.enigma.click/stream/sse/${sessionId}?apiKey=${apiKey}`
+     `https://connect.webrun.ai/stream/sse/${sessionId}?apiKey=${apiKey}`
    );
 
    eventSource.onmessage = (event) => {
@@ -574,7 +574,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
      function connect() {
        const ws = new WebSocket(
-         `wss://connect.enigma.click/ws?sessionId=${sessionId}&apiKey=${apiKey}`
+         `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${apiKey}`
        );
 
        ws.onopen = () => {
@@ -623,7 +623,7 @@ This guide covers the most common issues users encounter when working with Enigm
      // Poll every 2 seconds
      pollingInterval = setInterval(async () => {
        const result = await fetch(
-         `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+         `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -664,7 +664,7 @@ This guide covers the most common issues users encounter when working with Enigm
 1. **Verify IDs are Correct**
    ```javascript
    // Store task ID immediately after creation
-   const taskResponse = await fetch("https://connect.enigma.click/start/run-task", {
+   const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -683,7 +683,7 @@ This guide covers the most common issues users encounter when working with Enigm
 
    // Use exact IDs for polling
    const result = await fetch(
-     `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+     `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
      {
        headers: { "Authorization": `Bearer ${apiKey}` }
      }
@@ -695,7 +695,7 @@ This guide covers the most common issues users encounter when working with Enigm
    async function pollTask(sessionId, taskId, apiKey) {
      try {
        const response = await fetch(
-         `https://connect.enigma.click/task/${sessionId}/${taskId}`,
+         `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -723,7 +723,7 @@ This guide covers the most common issues users encounter when working with Enigm
    ```javascript
    // Before polling, verify session exists
    const sessionStatus = await fetch(
-     `https://connect.enigma.click/start/session-status/${sessionId}`,
+     `https://connect.webrun.ai/start/session-status/${sessionId}`,
      {
        headers: { "Authorization": `Bearer ${apiKey}` }
      }
@@ -776,7 +776,7 @@ This guide covers the most common issues users encounter when working with Enigm
          const userConfirmation = await askUser("Have you solved the CAPTCHA?");
 
          // Resume task
-         await fetch("https://connect.enigma.click/start/send-message", {
+         await fetch("https://connect.webrun.ai/start/send-message", {
            method: "POST",
            headers: {
              "Content-Type": "application/json",
@@ -799,7 +799,7 @@ This guide covers the most common issues users encounter when working with Enigm
 2. **Use Manual Takeover**
    ```javascript
    // Switch to manual control for CAPTCHA
-   await fetch("https://connect.enigma.click/start/send-message", {
+   await fetch("https://connect.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -814,7 +814,7 @@ This guide covers the most common issues users encounter when working with Enigm
    // User solves CAPTCHA via stream
 
    // Return to agent control
-   await fetch("https://connect.enigma.click/start/send-message", {
+   await fetch("https://connect.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -830,7 +830,7 @@ This guide covers the most common issues users encounter when working with Enigm
 3. **Avoid CAPTCHA-Heavy Sites**
    ```javascript
    // Add known CAPTCHA-heavy domains to avoid list
-   const session = await fetch("https://connect.enigma.click/start/start-session", {
+   const session = await fetch("https://connect.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -879,7 +879,7 @@ This guide covers the most common issues users encounter when working with Enigm
 ### Enable Verbose Logging
 
 ```javascript
-class EnigmaClient {
+class WebRunClient {
   constructor(apiKey, debug = false) {
     this.apiKey = apiKey;
     this.debug = debug;
@@ -910,7 +910,7 @@ class EnigmaClient {
 }
 
 // Usage
-const client = new EnigmaClient(apiKey, true); // Enable debug mode
+const client = new WebRunClient(apiKey, true); // Enable debug mode
 ```
 
 ### Monitor All Events
@@ -918,7 +918,7 @@ const client = new EnigmaClient(apiKey, true); // Enable debug mode
 ```javascript
 function monitorAllEvents(sessionId, apiKey) {
   const ws = new WebSocket(
-    `wss://connect.enigma.click/ws?sessionId=${sessionId}&apiKey=${apiKey}`
+    `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${apiKey}`
   );
 
   ws.onmessage = (event) => {
@@ -973,7 +973,7 @@ function monitorAllEvents(sessionId, apiKey) {
   <Card title="Best Practices" icon="star" href="/usage-guides/best-practices">
     Guidelines for optimal usage
   </Card>
-  <Card title="Get Support" icon="life-ring" href="mailto:support@enigma.click">
+  <Card title="Get Support" icon="life-ring" href="mailto:support@webrun.ai">
     Contact our support team
   </Card>
 </CardGroup>
