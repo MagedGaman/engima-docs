@@ -6,7 +6,7 @@ icon: "puzzle-piece"
 
 ## What is MCP?
 
-The Model Context Protocol (MCP) allows AI assistants like Claude, ChatGPT and Cline to access external tools and services. By adding the Enigma MCP server, you give these assistants the ability to browse the web autonomously.
+The Model Context Protocol (MCP) allows AI assistants like Claude, ChatGPT and Cline to access external tools and services. By adding the WebRun MCP server, you give these assistants the ability to browse the web autonomously.
 
 ---
 
@@ -18,19 +18,19 @@ The Model Context Protocol (MCP) allows AI assistants like Claude, ChatGPT and C
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-**Step 2: Add Enigma Server**
+**Step 2: Add WebRun Server**
 ```json
 {
   "mcpServers": {
-    "enigma": {
-      "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+    "WebRun": {
+      "url": "https://connect.WebRun.click/mcp/sse?apiKey=YOUR_API_KEY"
     }
   }
 }
 ```
 
 **Step 3: Restart Claude Desktop**
-Close and reopen the application. You'll see Enigma tools available in the tool picker.
+Close and reopen the application. You'll see WebRun tools available in the tool picker.
 
 ---
 
@@ -44,8 +44,8 @@ Close and reopen the application. You'll see Enigma tools available in the tool 
 In the MCP Servers section, add:
 ```json
 {
-  "enigma": {
-    "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+  "WebRun": {
+    "url": "https://connect.WebRun.click/mcp/sse?apiKey=YOUR_API_KEY"
   }
 }
 ```
@@ -66,7 +66,7 @@ Once configured, you can ask Claude to browse the web:
 
 **What happens:**
 1. Claude recognizes your request requires web browsing
-2. It calls the Enigma MCP tool with your task
+2. It calls the WebRun MCP tool with your task
 3. An AI agent executes the task in a real browser
 4. Results are returned to Claude
 5. Claude presents the information to you
@@ -75,7 +75,7 @@ Once configured, you can ask Claude to browse the web:
 
 ## Available Tools (Summary)
 
-The Enigma MCP server provides several tools:
+The WebRun MCP server provides several tools:
 
 | Tool | Description | Use Case |
 |------|-------------|----------|
@@ -94,7 +94,7 @@ The Enigma MCP server provides several tools:
 
 ### Simple Research
 
-**You:** "Use Enigma to search for 'Claude AI features' on Google and tell me what you find."
+**You:** "Use WebRun to search for 'Claude AI features' on Google and tell me what you find."
 
 **Claude:** *(Uses `browser_task` tool)* "I've searched Google for 'Claude AI features'. Here's what I found: Claude is Anthropic's AI assistant with features including..."
 
@@ -123,12 +123,12 @@ Would you like me to get more details on any of these?"
 ### Authentication errors?
 
 - Verify your API key in the configuration
-- Check that you have sufficient balance in your Enigma account
+- Check that you have sufficient balance in your WebRun account
 - Ensure the API key has not expired
 
 ### Session timeout errors?
 
-- Enigma sessions have a maximum duration of 5 minutes
+- WebRun sessions have a maximum duration of 5 minutes
 - For long tasks, break them into smaller sub-tasks
 - Use `get_task_status` to monitor progress
 
