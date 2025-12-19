@@ -1,13 +1,13 @@
 ---
 title: "Endpoints"
-description: "Complete reference for all Enigma API endpoints"
+description: "Complete reference for all WebRun API endpoints"
 icon: "route"
 ---
 
 ## Base URL
 
 ```
-https://connect.enigma.click
+https://connect.webrun.ai
 ```
 
 All endpoints use this base URL unless otherwise specified.
@@ -41,7 +41,7 @@ Create a new persistent session that can run multiple tasks.
 {
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
-  "socketURL": "https://connect.enigma.click",
+  "socketURL": "https://connect.webrun.ai",
   "streaming": {
     "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
     "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
@@ -130,7 +130,7 @@ Start a new task. Returns taskId for polling.
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "pending": true,
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -269,7 +269,7 @@ Execute a single task with auto-terminating session. Simplified version of start
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -414,7 +414,7 @@ The OpenAI-compatible endpoint creates a new session for each request. For multi
     "completion_tokens": 2100,
     "total_tokens": 10550
   },
-  "enigma": {
+  "webrun": {
     "sessionId": "a1b2c3d4e5f6",
     "taskId": "x9y8z7w6v5u4",
     "cost": 0.0089
