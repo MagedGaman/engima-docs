@@ -24,7 +24,7 @@ Multi-task workflows allow you to reuse a single browser session for multiple se
 Use the `/start/start-session` endpoint to create a session that remains active for multiple tasks.
 
 ```bash
-curl -X POST https://connect.enigma.click/start/start-session \
+curl -X POST https://connect.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -39,7 +39,7 @@ curl -X POST https://connect.enigma.click/start/start-session \
 {
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
-  "socketURL": "https://connect.enigma.click",
+  "socketURL": "https://connect.webrun.ai",
   "streaming": {
     "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
     "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
@@ -65,7 +65,7 @@ After creating a session, send additional tasks using the `/start/send-message` 
 <CodeGroup>
 
 ```bash REST API
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -115,7 +115,7 @@ socket.on("message", (data) => {
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "pending": true,
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
 }
 ```
 
@@ -127,7 +127,7 @@ This example demonstrates a complete multi-task workflow: creating a session, se
 
 ```javascript
 const API_KEY = "YOUR_API_KEY";
-const BASE = "https://connect.enigma.click";
+const BASE = "https://connect.webrun.ai";
 
 async function runMultiTaskWorkflow() {
   // 1. Create session
@@ -243,7 +243,7 @@ runMultiTaskWorkflow();
 When you only need to execute one task and don't need session persistence:
 
 ```bash
-curl -X POST https://connect.enigma.click/start/run-task \
+curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
