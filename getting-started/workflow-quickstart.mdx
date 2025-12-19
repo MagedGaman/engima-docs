@@ -1,12 +1,12 @@
 ---
 title: "Workflows: n8n, Make"
-description: "Integrate Enigma with no-code automation platforms"
+description: "Integrate WebRun with no-code automation platforms"
 icon: "diagram-project"
 ---
 
-## Understanding Enigma's Response Model
+## Understanding WebRun's Response Model
 
-Before setting up your workflow, understand how Enigma returns results:
+Before setting up your workflow, understand how WebRun returns results:
 
 **Fast Tasks (< 50 seconds):**
 - Single HTTP request returns the result directly
@@ -22,7 +22,7 @@ Before setting up your workflow, understand how Enigma returns results:
 
 ## Platform Compatibility
 
-| Platform | HTTP Timeout | Enigma Compatibility | Recommended Approach |
+| Platform | HTTP Timeout | WebRun Compatibility | Recommended Approach |
 |----------|--------------|---------------------|---------------------|
 | **n8n** | 100s (Cloud) | ✅ Excellent | Direct call works for most tasks |
 | **Make.com** | 30s default, up to 300s | ✅ Good | Set timeout to 60s+ |
@@ -33,14 +33,14 @@ Before setting up your workflow, understand how Enigma returns results:
 ## n8n Integration
 
 ### Why n8n Works Well
-n8n Cloud has a 100-second timeout — comfortably above Enigma's 50-second inline window. Most tasks will return results directly without polling.
+n8n Cloud has a 100-second timeout — comfortably above WebRun's 50-second inline window. Most tasks will return results directly without polling.
 
 ### Method 1: Simple Task (Direct Response)
 Use when you're confident the task takes < 50 seconds.
 
 **Step 1: Add HTTP Request Node**
 - Method: POST
-- URL: `https://connect.enigma.click/start/run-task`
+- URL: `https://connect.webrun.ai/start/run-task`
 - Authentication: Header Auth
   - Name: `Authorization`
   - Value: `Bearer YOUR_API_KEY`
@@ -72,7 +72,7 @@ Use when task might exceed 50 seconds.
 **Step-by-Step:**
 
 1. **HTTP Request Node** — Start Task
-   - URL: `https://connect.enigma.click/start/run-task`
+   - URL: `https://connect.webrun.ai/start/run-task`
    - Method: POST
    - Authentication: Header Auth (`Authorization: Bearer YOUR_API_KEY`)
    - Body:
@@ -104,14 +104,14 @@ Use when task might exceed 50 seconds.
 ## Make.com Integration
 
 ### ⚠️ Important: Increase HTTP Timeout
-Make.com's default timeout is 30 seconds — too short for Enigma. **You must increase it to 60+ seconds.**
+Make.com's default timeout is 30 seconds — too short for WebRun. **You must increase it to 60+ seconds.**
 
 ### Method 1: Simple Task (Extended Timeout)
 
 **Step 1: Add HTTP → Make a Request Module**
 
 **Step 2: Configure Request**
-- URL: `https://connect.enigma.click/start/run-task`
+- URL: `https://connect.webrun.ai/start/run-task`
 - Method: POST
 - Headers:
   - `Authorization`: `Bearer YOUR_API_KEY`
@@ -147,7 +147,7 @@ Make.com's default timeout is 30 seconds — too short for Enigma. **You must in
 **Step-by-Step:**
 
 1. **HTTP Module** — Start Task
-   - URL: `https://connect.enigma.click/start/run-task`
+   - URL: `https://connect.webrun.ai/start/run-task`
    - Method: POST
    - Headers: `Authorization`, `Content-Type`
    - Timeout: 60+ seconds
@@ -178,20 +178,20 @@ Make.com's default timeout is 30 seconds — too short for Enigma. **You must in
 ## Zapier Integration
 
 ### ⚠️ Important Limitation
-Zapier has a **fixed 30-second HTTP timeout** that cannot be changed. Since Enigma's inline response window is 50 seconds, **you must always use the polling pattern** with Zapier.
+Zapier has a **fixed 30-second HTTP timeout** that cannot be changed. Since WebRun's inline response window is 50 seconds, **you must always use the polling pattern** with Zapier.
 
 ### Why Polling is Required
-Even if your task might complete in 20 seconds, Zapier may timeout before Enigma responds. The polling pattern ensures reliable results regardless of task duration.
+Even if your task might complete in 20 seconds, Zapier may timeout before WebRun responds. The polling pattern ensures reliable results regardless of task duration.
 
 ### Step-by-Step Setup
 
 **Step 1: Trigger**
 Choose your trigger (e.g., "New Row in Google Sheets", "New Form Response", etc.)
 
-**Step 2: Start the Enigma Task**
+**Step 2: Start the WebRun Task**
 - App: Webhooks by Zapier
 - Event: POST
-- URL: `https://connect.enigma.click/start/run-task`
+- URL: `https://connect.webrun.ai/start/run-task`
 - Payload Type: JSON
 - Data:
 ```json
@@ -212,7 +212,7 @@ Choose your trigger (e.g., "New Row in Google Sheets", "New Form Response", etc.
 - App: Webhooks by Zapier
 - Event: GET
 - URL: Construct from Step 2:
-  - `https://connect.enigma.click/task/{{steps.2.sessionId}}/{{steps.2.taskId}}`
+  - `https://connect.webrun.ai/task/{{steps.2.sessionId}}/{{steps.2.taskId}}`
   - Or use `{{steps.2.pollUrl}}` if available
 - Headers:
   - `Authorization`: `Bearer YOUR_API_KEY`
@@ -250,10 +250,10 @@ If you have access to Zapier's Looping feature:
 
 ### Pattern 1: Form → Browser Task → Store Result
 **Trigger:** Form submission
-**Action:** Run Enigma task with form data
+**Action:** Run WebRun task with form data
 **Output:** Store result in database/sheet
 
-**Example Use Case:** Lead enrichment — form captures company name, Enigma researches company details, result stored in CRM.
+**Example Use Case:** Lead enrichment — form captures company name, WebRun researches company details, result stored in CRM.
 
 ### Pattern 2: Scheduled Research
 **Trigger:** Schedule (daily/weekly)
@@ -267,7 +267,7 @@ If you have access to Zapier's Looping feature:
 **Action:** Research company/person via browser
 **Output:** Update CRM record
 
-**Example Use Case:** Sales automation — new lead added to Salesforce, Enigma finds LinkedIn profile and company info, updates Salesforce.
+**Example Use Case:** Sales automation — new lead added to Salesforce, WebRun finds LinkedIn profile and company info, updates Salesforce.
 
 ---
 
@@ -292,7 +292,7 @@ Check that you're accessing the correct response path:
 ### High Costs
 
 - Set `terminateOnCompletion: true` in your task payload
-- Monitor costs in the Enigma dashboard
+- Monitor costs in the WebRun dashboard
 - See [Cost Optimization](/usage-guides/cost-optimization) for tips
 
 ---
