@@ -41,7 +41,7 @@ npm install socket.io-client
 import { io } from "socket.io-client";
 
 // Step 1: Create a session via REST API
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const session = await fetch("https://connect.enigma.click/start/start-session", 
 }).then(r => r.json());
 
 // Step 2: Connect to WebSocket with sessionId
-const socket = io("https://connect.enigma.click", {
+const socket = io("https://connect.webrun.ai", {
   auth: { sessionId: session.sessionId },
   transports: ["websocket"]
 });
@@ -302,7 +302,7 @@ import { io } from "socket.io-client";
 async function runTaskWithWebSocket(taskDetails, apiKey) {
   return new Promise(async (resolve, reject) => {
     // Step 1: Create session
-    const session = await fetch("https://connect.enigma.click/start/start-session", {
+    const session = await fetch("https://connect.webrun.ai/start/start-session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -314,7 +314,7 @@ async function runTaskWithWebSocket(taskDetails, apiKey) {
     console.log("Session created:", session.sessionId);
 
     // Step 2: Connect to WebSocket
-    const socket = io("https://connect.enigma.click", {
+    const socket = io("https://connect.webrun.ai", {
       auth: { sessionId: session.sessionId },
       transports: ["websocket"]
     });
@@ -400,7 +400,7 @@ try {
 Socket.IO automatically reconnects on connection loss. The Enigma server maintains session state during brief disconnections.
 
 ```javascript
-const socket = io("https://connect.enigma.click", {
+const socket = io("https://connect.webrun.ai", {
   auth: { sessionId: session.sessionId },
   transports: ["websocket"],
   reconnection: true,
@@ -638,7 +638,7 @@ class EnigmaWebSocketClient {
   }
 
   async createSession(taskDetails) {
-    const response = await fetch("https://connect.enigma.click/start/start-session", {
+    const response = await fetch("https://connect.webrun.ai/start/start-session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -650,7 +650,7 @@ class EnigmaWebSocketClient {
     const session = await response.json();
     this.sessionId = session.sessionId;
 
-    this.socket = io("https://connect.enigma.click", {
+    this.socket = io("https://connect.webrun.ai", {
       auth: { sessionId: this.sessionId },
       transports: ["websocket"]
     });
