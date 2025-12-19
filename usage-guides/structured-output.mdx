@@ -23,7 +23,7 @@ The most common pattern for structured output is requesting JSON in your task de
 ### Basic Example
 
 ```javascript
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -106,7 +106,7 @@ Extract the top 5 results and return as a JSON array:
 ]
 `;
 
-const task = await fetch("https://connect.enigma.click/start/send-message", {
+const task = await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -282,7 +282,7 @@ async function getStructuredDataWithRetry(sessionId, originalTaskId) {
     console.log("Initial parse failed, requesting reformatting...");
 
     // Send follow-up task to reformat
-    const reformatTask = await fetch("https://connect.enigma.click/start/send-message", {
+    const reformatTask = await fetch("https://connect.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -393,7 +393,7 @@ async function getProducts(sessionId: string, taskId: string): Promise<Product[]
 
 ```javascript
 const API_KEY = "YOUR_API_KEY";
-const BASE = "https://connect.enigma.click";
+const BASE = "https://connect.webrun.ai";
 
 async function compareProducts(searchQuery) {
   // 1. Create session
