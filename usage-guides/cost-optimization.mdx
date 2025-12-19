@@ -1,12 +1,12 @@
 ---
 title: "Cost Optimization"
-description: "Best practices and patterns for reducing costs while using Enigma AI agents"
+description: "Best practices and patterns for reducing costs while using WebRun AI agents"
 icon: "piggy-bank"
 ---
 
 ## Overview
 
-Enigma charges based on:
+WebRun charges based on:
 - **Session time:** Active browser instances
 - **Token usage:** AI model input/output tokens
 - **Compute time:** Processing duration
@@ -25,7 +25,7 @@ Always terminate sessions when done to avoid idle charges.
 
 ```javascript Single Task (Auto-Terminate)
 // Best for one-off tasks
-const session = await fetch("https://connect.enigma.click/start/run-task", {
+const session = await fetch("https://connect.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -40,7 +40,7 @@ const session = await fetch("https://connect.enigma.click/start/run-task", {
 
 ```javascript Multi-Task with Final Terminate
 // For multi-task workflows
-const finalTask = await fetch("https://connect.enigma.click/start/send-message", {
+const finalTask = await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const finalTask = await fetch("https://connect.enigma.click/start/send-message",
 
 ```javascript Explicit Terminate
 // Alternative: explicitly terminate
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -86,7 +86,7 @@ await fetch("https://connect.enigma.click/start/send-message", {
 Limit task duration to prevent runaway costs:
 
 ```javascript
-const task = await fetch("https://connect.enigma.click/start/send-message", {
+const task = await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -446,7 +446,7 @@ setInterval(() => {
 ```javascript
 async function batchProcess(items) {
   // Create one session for all items
-  const session = await fetch("https://connect.enigma.click/start/start-session", {
+  const session = await fetch("https://connect.webrun.ai/start/start-session", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -494,7 +494,7 @@ async function parallelBatchProcess(items, maxConcurrent = 3) {
   const queue = [...items];
 
   async function processItem(item) {
-    const session = await fetch("https://connect.enigma.click/start/run-task", {
+    const session = await fetch("https://connect.webrun.ai/start/run-task", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -549,7 +549,7 @@ const results = await parallelBatchProcess(items, 3);
 
 ```javascript
 const API_KEY = "YOUR_API_KEY";
-const BASE = "https://connect.enigma.click";
+const BASE = "https://connect.webrun.ai";
 
 class CostOptimizedWorkflow {
   constructor(maxDailyCost = 10.00) {
