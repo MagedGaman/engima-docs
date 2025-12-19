@@ -1,6 +1,6 @@
 ---
 title: "Error Codes Reference"
-description: "Complete reference of all Enigma API error codes, status codes, and solutions"
+description: "Complete reference of all WebRun API error codes, status codes, and solutions"
 icon: "circle-exclamation"
 ---
 
@@ -17,7 +17,7 @@ Jump to the solution for common errors:
 | [TASK_TIMEOUT](#task_timeout) | Increase maxDuration or simplify task | [Link](#task_timeout) |
 | [TASK_ALREADY_RUNNING](#task_already_running) | Wait for completion or stop with newState: "stop" | [Link](#task_already_running) |
 | [RATE_LIMIT_EXCEEDED](#rate_limit_exceeded) | Wait before retrying, implement exponential backoff | [Link](#rate_limit_exceeded) |
-| [INSUFFICIENT_BALANCE](#insufficient_balance) | Add credits at enigma.click/billing | [Link](#insufficient_balance) |
+| [INSUFFICIENT_BALANCE](#insufficient_balance) | Add credits at webrun.ai/billing | [Link](#insufficient_balance) |
 | [NAVIGATION_TIMEOUT](#navigation_timeout) | Retry request or check if website is accessible | [Link](#navigation_timeout) |
 | [ELEMENT_NOT_FOUND](#element_not_found) | Rephrase task or wait for page load | [Link](#element_not_found) |
 
@@ -104,7 +104,7 @@ All errors follow a consistent structure:
 
 **Example:**
 ```javascript
-const response = await fetch("https://connect.enigma.click/start/start-session", {
+const response = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -159,7 +159,7 @@ const response = await fetch("https://connect.enigma.click/start/start-session",
 **Best Practice:**
 ```javascript
 // Set appropriate maxDuration
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -196,7 +196,7 @@ const session = await fetch("https://connect.enigma.click/start/start-session", 
 **Clean up sessions:**
 ```javascript
 // Terminate session when done
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -232,7 +232,7 @@ await fetch("https://connect.enigma.click/start/send-message", {
 async function createSessionWithRetry(taskDetails, apiKey, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      const response = await fetch("https://connect.enigma.click/start/start-session", {
+      const response = await fetch("https://connect.webrun.ai/start/start-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -292,7 +292,7 @@ async function createSessionWithRetry(taskDetails, apiKey, maxRetries = 3) {
 
 **Stop running task:**
 ```javascript
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -329,7 +329,7 @@ await fetch("https://connect.enigma.click/start/send-message", {
 
 **Adjust timeouts:**
 ```javascript
-const response = await fetch("https://connect.enigma.click/start/run-task", {
+const response = await fetch("https://connect.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -406,7 +406,7 @@ taskDetails: "do something"
 
 **Example:**
 ```javascript
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -546,7 +546,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 }
 ```
 
-**Solution:** Add credits to your account at [enigma.click/billing](https://enigma.click/billing).
+**Solution:** Add credits to your account at [webrun.ai/billing](https://webrun.ai/billing).
 
 **Monitor balance:**
 - Check your balance regularly in the dashboard
@@ -731,7 +731,7 @@ async function robustTaskExecution(taskDetails, apiKey) {
   try {
     // Create session with retry
     const session = await makeRequestWithRetry(
-      "https://connect.enigma.click/start/start-session",
+      "https://connect.webrun.ai/start/start-session",
       {
         method: "POST",
         headers: {
@@ -767,7 +767,7 @@ async function robustTaskExecution(taskDetails, apiKey) {
 
 async function terminateSession(sessionId, apiKey) {
   try {
-    await fetch("https://connect.enigma.click/start/send-message", {
+    await fetch("https://connect.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -805,7 +805,7 @@ async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
       const userInput = await promptUser(result.data.value);
 
       // Resume with input
-      await fetch("https://connect.enigma.click/start/send-message", {
+      await fetch("https://connect.webrun.ai/start/send-message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -860,8 +860,8 @@ When encountering issues:
 If you're still experiencing issues:
 
 1. **Documentation:** Review relevant API docs
-2. **Status Page:** Check [status.enigma.click](https://status.enigma.click)
-3. **Support:** Email support@enigma.click with:
+2. **Status Page:** Check [status.webrun.ai](https://status.webrun.ai)
+3. **Support:** Email support@webrun.ai with:
    - Error code and full error response
    - Session ID and task ID
    - Task description
