@@ -6,7 +6,7 @@ icon: "shield-halved"
 
 ## What are Guardrails?
 
-Guardrails are Enigma's safety mechanism for human-in-the-loop control. When the AI agent encounters a situation requiring human judgment or sensitive information, it pauses the task and triggers a guardrail.
+Guardrails are WebRun's safety mechanism for human-in-the-loop control. When the AI agent encounters a situation requiring human judgment or sensitive information, it pauses the task and triggers a guardrail.
 
 This ensures the agent never:
 - Submits credentials without explicit permission
@@ -159,7 +159,7 @@ taskDetails: "I've solved the CAPTCHA, please continue"
 
 ## Design Philosophy
 
-Enigma's guardrails are designed around these principles:
+WebRun's guardrails are designed around these principles:
 
 ### 1. Ask, Don't Assume
 When in doubt, the agent asks for clarification rather than making assumptions.
@@ -168,7 +168,7 @@ When in doubt, the agent asks for clarification rather than making assumptions.
 Financial transactions, account changes, and data submission always trigger guardrails.
 
 ### 3. Credentials Never Stored
-Enigma doesn't store credentials. You provide them on-demand when needed.
+WebRun doesn't store credentials. You provide them on-demand when needed.
 
 ### 4. Human Remains in Control
 You can intervene at any point, even if a guardrail hasn't triggered.
@@ -191,7 +191,7 @@ async function handleTask(sessionId, taskId, apiKey) {
     const userInput = await promptUser(result.data.value);
 
     // Respond to guardrail
-    await fetch("https://connect.enigma.click/start/send-message", {
+    await fetch("https://connect.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
