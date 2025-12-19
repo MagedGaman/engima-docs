@@ -1,12 +1,12 @@
 ---
 title: "Response Formats"
-description: "Complete reference for all Enigma API response formats"
+description: "Complete reference for all WebRun API response formats"
 icon: "file-code"
 ---
 
 ## Overview
 
-Enigma provides two ways to receive responses:
+WebRun provides two ways to receive responses:
 
 | Method | How It Works | Best For |
 |--------|--------------|----------|
@@ -72,7 +72,7 @@ For longer tasks, the response returns immediately with a poll URL.
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
   "pending": true,
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -238,7 +238,7 @@ Respond with guardrail message via `POST /start/send-message`:
 {
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
-  "socketURL": "https://connect.enigma.click",
+  "socketURL": "https://connect.webrun.ai",
   "streaming": {
     "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
     "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
@@ -583,7 +583,7 @@ socket.on("instance:reconnected", (data) => {
     "completion_tokens": 2100,
     "total_tokens": 10550
   },
-  "enigma": {
+  "webrun": {
     "sessionId": "a1b2c3d4e5f6",
     "taskId": "x9y8z7w6v5u4",
     "cost": 0.0089
@@ -609,10 +609,10 @@ socket.on("instance:reconnected", (data) => {
 | `usage.prompt_tokens` | number | Input tokens |
 | `usage.completion_tokens` | number | Output tokens |
 | `usage.total_tokens` | number | Total tokens |
-| `enigma` | object | Enigma-specific metadata |
-| `enigma.sessionId` | string | Session identifier |
-| `enigma.taskId` | string | Task identifier |
-| `enigma.cost` | number | Cost in USD |
+| `webrun` | object | WebRun-specific metadata |
+| `webrun.sessionId` | string | Session identifier |
+| `webrun.taskId` | string | Task identifier |
+| `webrun.cost` | number | Cost in USD |
 
 ---
 
@@ -655,7 +655,7 @@ data: [DONE]
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.enigma.click/v1',
+  baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
