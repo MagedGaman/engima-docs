@@ -1,12 +1,12 @@
 ---
 title: "API Reference"
-description: "Complete reference for all Enigma REST API endpoints"
+description: "Complete reference for all WebRun REST API endpoints"
 ---
 
 ## Base URL
 
 ```
-https://connect.enigma.click
+https://connect.webrun.ai
 ```
 
 ## Authentication
@@ -17,7 +17,7 @@ All endpoints (except monitoring) require API key authentication:
 Authorization: Bearer YOUR_API_KEY
 ```
 
-Get your API key at [enigma.click/settings](https://enigma.click/settings)
+Get your API key at [webrun.ai/settings](https://webrun.ai/settings)
 
 ---
 
@@ -74,7 +74,7 @@ Create a new persistent session that can run multiple tasks.
 {
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
-  "socketURL": "https://connect.enigma.click",
+  "socketURL": "https://connect.webrun.ai",
   "streaming": {
     "webRTCURL": "https://74.235.190.31:8889/a1b2c3d4e5f6/whep",
     "webViewURL": "https://74.235.190.31:8889/a1b2c3d4e5f6",
@@ -177,7 +177,7 @@ Start a new task. Returns taskId for polling.
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "pending": true,
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -321,7 +321,7 @@ Execute a single task with auto-terminating session. Simplified version of start
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -456,7 +456,7 @@ View active instance connections. No authentication required.
 ### Example 1: Simple task execution
 
 ```javascript
-const response = await fetch("https://connect.enigma.click/start/run-task", {
+const response = await fetch("https://connect.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -482,7 +482,7 @@ if (data.status === "complete") {
 
 ```javascript
 // 1. Create session
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -497,7 +497,7 @@ const session = await fetch("https://connect.enigma.click/start/start-session", 
 const sessionId = session.sessionId;
 
 // 2. Send follow-up task
-const task = await fetch("https://connect.enigma.click/start/send-message", {
+const task = await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -519,7 +519,7 @@ if (task.pending) {
 }
 
 // 4. Pause execution
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -532,7 +532,7 @@ await fetch("https://connect.enigma.click/start/send-message", {
 });
 
 // 5. Resume
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -545,7 +545,7 @@ await fetch("https://connect.enigma.click/start/send-message", {
 });
 
 // 6. Terminate
-await fetch("https://connect.enigma.click/start/send-message", {
+await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
