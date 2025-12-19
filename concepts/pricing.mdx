@@ -1,12 +1,12 @@
 ---
 title: "Pricing & Costs"
-description: "Understanding Enigma's pricing model and how to optimize costs"
+description: "Understanding WebRun's pricing model and how to optimize costs"
 icon: "credit-card"
 ---
 
 ## Pricing Model
 
-Enigma charges for two components:
+WebRun charges for two components:
 
 1. **Token Usage** — AI model input/output tokens
 2. **Compute Time** — Browser instance runtime
@@ -17,7 +17,7 @@ Both are tracked per-task and returned in the `usage` object of each response.
 
 ## Token Pricing
 
-Enigma uses proprietary browser-optimized AI models:
+WebRun uses proprietary browser-optimized AI models:
 
 | Model | Input (per 1M tokens) | Output (per 1M tokens) | Best For |
 |-------|----------------------|------------------------|----------|
@@ -244,7 +244,7 @@ await terminateSession(session);
 ## Monitoring Costs
 
 ### Dashboard
-View historical usage and costs at [app.enigma.click](https://app.enigma.click/usage).
+View historical usage and costs at [app.webrun.ai](https://app.webrun.ai/usage).
 
 ### API Responses
 Every task response includes the `usage.cost` field for real-time tracking.
@@ -266,7 +266,7 @@ When polling long-running tasks, cost accumulates in real-time:
 ## Free Tier / Credits
 
 <Note>
-Check your [dashboard](https://app.enigma.click) for current credit balance and any promotional offers.
+Check your [dashboard](https://app.webrun.ai) for current credit balance and any promotional offers.
 </Note>
 
 ---
@@ -276,7 +276,7 @@ Check your [dashboard](https://app.enigma.click) for current credit balance and 
 - **Billing Cycle:** Monthly
 - **Payment Methods:** Credit card, ACH
 - **Minimum Charge:** None — pay only for what you use
-- **Billing Dashboard:** [app.enigma.click/billing](https://app.enigma.click/billing)
+- **Billing Dashboard:** [app.webrun.ai/billing](https://app.webrun.ai/billing)
 
 ---
 
@@ -284,7 +284,7 @@ Check your [dashboard](https://app.enigma.click) for current credit balance and 
 
 ### vs. Manual Labor
 
-| Task | Enigma Cost | Human Labor (@ $25/hr) | Savings |
+| Task | WebRun Cost | Human Labor (@ $25/hr) | Savings |
 |------|-------------|------------------------|---------|
 | Product research | $0.05 | $2.08 (5 min) | 98% |
 | Form filling | $0.03 | $1.25 (3 min) | 98% |
@@ -292,7 +292,7 @@ Check your [dashboard](https://app.enigma.click) for current credit balance and 
 
 ### vs. Traditional Automation
 
-| Factor | Enigma | Selenium/Playwright |
+| Factor | WebRun | Selenium/Playwright |
 |--------|--------|---------------------|
 | Development time | Minutes | Hours/Days |
 | Maintenance | Zero | Ongoing |
