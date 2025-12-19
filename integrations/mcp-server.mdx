@@ -1,12 +1,12 @@
 ---
 title: "MCP Server Reference"
-description: "Complete reference for Enigma's Model Context Protocol server"
+description: "Complete reference for WebRun's Model Context Protocol server"
 icon: "puzzle-piece"
 ---
 
 ## Overview
 
-The Enigma MCP (Model Context Protocol) server allows AI assistants like Claude Desktop and Cline to access browser automation capabilities directly through their native tool interfaces.
+The WebRun MCP (Model Context Protocol) server allows AI assistants like Claude Desktop and Cline to access browser automation capabilities directly through their native tool interfaces.
 
 **Key Features:**
 - Native integration with Claude Desktop and Cline
@@ -31,8 +31,8 @@ This is the **full reference** for the MCP server. For a quickstart guide, see [
 ```json
 {
   "mcpServers": {
-    "enigma": {
-      "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+    "webrun": {
+      "url": "https://connect.webrun.ai/mcp/sse?apiKey=YOUR_API_KEY"
     }
   }
 }
@@ -52,8 +52,8 @@ After editing, **restart Claude Desktop** completely (quit and reopen).
 **Add Configuration:**
 ```json
 {
-  "enigma": {
-    "url": "https://connect.enigma.click/mcp/sse?apiKey=YOUR_API_KEY"
+  "webrun": {
+    "url": "https://connect.webrun.ai/mcp/sse?apiKey=YOUR_API_KEY"
   }
 }
 ```
@@ -84,7 +84,7 @@ Execute a single browser automation task. Creates a session, runs the task, and 
 **Example Usage:**
 
 ```
-User: "Use Enigma to search Google for 'Anthropic Claude' and summarize the first result."
+User: "Use WebRun to search Google for 'Anthropic Claude' and summarize the first result."
 
 Claude uses browser_task:
 {
@@ -539,7 +539,7 @@ Claude's execution:
 3. **Ensure API key format:**
    - API key should start with `enig_`
    - No extra spaces or quotes
-   - Example: `"url": "https://connect.enigma.click/mcp/sse?apiKey=enig_xxxxxxxxxxxx"`
+   - Example: `"url": "https://connect.webrun.ai/mcp/sse?apiKey=enig_xxxxxxxxxxxx"`
 
 4. **Restart Claude Desktop completely:**
    - Quit Claude Desktop (don't just close window)
@@ -559,22 +559,22 @@ Claude's execution:
 **Solutions:**
 
 1. **Verify API key is active:**
-   - Go to [enigma.click/settings](https://enigma.click/settings)
+   - Go to [webrun.ai/settings](https://webrun.ai/settings)
    - Check that API key exists and is not revoked
    - Generate new API key if needed
 
 2. **Check URL format:**
    ```json
    // ❌ Wrong
-   "url": "https://connect.enigma.click/mcp/sse"
+   "url": "https://connect.webrun.ai/mcp/sse"
 
    // ✅ Correct
-   "url": "https://connect.enigma.click/mcp/sse?apiKey=enig_xxxxxxxxxxxx"
+   "url": "https://connect.webrun.ai/mcp/sse?apiKey=enig_xxxxxxxxxxxx"
    ```
 
 3. **Test API key via curl:**
    ```bash
-   curl -X POST https://connect.enigma.click/start/run-task \
+   curl -X POST https://connect.webrun.ai/start/run-task \
      -H "Authorization: Bearer enig_xxxxxxxxxxxx" \
      -H "Content-Type: application/json" \
      -d '{"taskDetails": "Go to google.com"}'
@@ -588,7 +588,7 @@ Claude's execution:
 
 **Error:** `"Session not found"` or `"Session expired"`
 
-**Cause:** Enigma sessions have a maximum duration of 5 minutes (300,000 ms).
+**Cause:** WebRun sessions have a maximum duration of 5 minutes (300,000 ms).
 
 **Solutions:**
 
@@ -748,7 +748,7 @@ Claude's execution:
 
 ### Example 1: Simple Research
 
-**User:** "Use Enigma to search for 'Claude AI features' on Google and tell me what you find."
+**User:** "Use WebRun to search for 'Claude AI features' on Google and tell me what you find."
 
 **Claude's Response:**
 ```
