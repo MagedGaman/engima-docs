@@ -397,7 +397,7 @@ try {
 
 ### Automatic Reconnection
 
-Socket.IO automatically reconnects on connection loss. The Enigma server maintains session state during brief disconnections.
+Socket.IO automatically reconnects on connection loss. The WebRun server maintains session state during brief disconnections.
 
 ```javascript
 const socket = io("https://connect.webrun.ai", {
@@ -630,7 +630,7 @@ socket.emit("message", {
 ```javascript
 import { io } from "socket.io-client";
 
-class EnigmaWebSocketClient {
+class WebRunWebSocketClient {
   constructor(apiKey) {
     this.apiKey = apiKey;
     this.socket = null;
@@ -778,7 +778,7 @@ class EnigmaWebSocketClient {
 }
 
 // Usage
-const client = new EnigmaWebSocketClient("enig_xxx");
+const client = new WebRunWebSocketClient("enig_xxx");
 
 await client.createSession("Go to amazon.com");
 await client.sendTask("Search for wireless keyboards");
