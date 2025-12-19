@@ -1,6 +1,6 @@
 ---
 title: "OpenAI-Compatible API"
-description: "Use Enigma with OpenAI SDK, LangChain, LlamaIndex, and Vercel AI SDK"
+description: "Use WebRun with OpenAI SDK, LangChain, LlamaIndex, and Vercel AI SDK"
 icon: "robot"
 ---
 
@@ -40,8 +40,8 @@ npm install openai
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.enigma.click/v1',
-  apiKey: 'YOUR_API_KEY' // Your Enigma API key
+  baseURL: 'https://connect.webrun.ai/v1',
+  apiKey: 'YOUR_API_KEY' // Your WebRun API key
 });
 
 const completion = await client.chat.completions.create({
@@ -93,7 +93,7 @@ const model = new ChatOpenAI({
   modelName: "enigma-browser-1",
   openAIApiKey: "YOUR_API_KEY",
   configuration: {
-    baseURL: "https://connect.enigma.click/v1"
+    baseURL: "https://connect.webrun.ai/v1"
   }
 });
 
@@ -125,7 +125,7 @@ const model = new ChatOpenAI({
   modelName: "enigma-browser-1",
   openAIApiKey: "YOUR_API_KEY",
   configuration: {
-    baseURL: "https://connect.enigma.click/v1"
+    baseURL: "https://connect.webrun.ai/v1"
   }
 });
 
@@ -154,7 +154,7 @@ const llm = new OpenAI({
   model: "enigma-browser-1",
   apiKey: "YOUR_API_KEY",
   additionalChatOptions: {
-    baseURL: "https://connect.enigma.click/v1"
+    baseURL: "https://connect.webrun.ai/v1"
   }
 });
 
@@ -178,7 +178,7 @@ const llm = new OpenAI({
   model: "enigma-browser-1",
   apiKey: "YOUR_API_KEY",
   additionalChatOptions: {
-    baseURL: "https://connect.enigma.click/v1"
+    baseURL: "https://connect.webrun.ai/v1"
   }
 });
 
@@ -203,7 +203,7 @@ import { openai } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 
 const model = openai('enigma-browser-1', {
-  baseURL: 'https://connect.enigma.click/v1',
+  baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
@@ -221,7 +221,7 @@ import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 
 const model = openai('enigma-browser-1', {
-  baseURL: 'https://connect.enigma.click/v1',
+  baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
@@ -245,7 +245,7 @@ export async function POST(req: Request) {
   const { task } = await req.json();
 
   const model = openai('enigma-browser-1', {
-    baseURL: 'https://connect.enigma.click/v1',
+    baseURL: 'https://connect.webrun.ai/v1',
     apiKey: process.env.ENIGMA_API_KEY
   });
 
@@ -271,7 +271,7 @@ export async function POST(req: Request) {
 ### Request Format
 
 ```bash
-POST https://connect.enigma.click/v1/chat/completions
+POST https://connect.webrun.ai/v1/chat/completions
 Content-Type: application/json
 Authorization: Bearer YOUR_API_KEY
 ```
@@ -362,7 +362,7 @@ data: [DONE]
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.enigma.click/v1',
+  baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
@@ -419,19 +419,19 @@ Currently, only `enigma-browser-1` is available. Additional models may be added 
 
 **1. Session Management**
 - OpenAI: Stateless, each request is independent
-- Enigma: Each request creates a new browser session that auto-terminates
+- WebRun: Each request creates a new browser session that auto-terminates
 
 **2. Response Time**
 - OpenAI: Typically 1-5 seconds
-- Enigma: Typically 10-50 seconds (real browser automation)
+- WebRun: Typically 10-50 seconds (real browser automation)
 
 **3. Context Window**
 - OpenAI: Based on model (e.g., 128k tokens)
-- Enigma: Task-focused, less emphasis on large context
+- WebRun: Task-focused, less emphasis on large context
 
 **4. Pricing**
 - OpenAI: Per-token pricing
-- Enigma: Per-task pricing with token usage included in response
+- WebRun: Per-task pricing with token usage included in response
 
 ---
 
@@ -454,7 +454,7 @@ const completion2 = await client.chat.completions.create({
 });
 
 // ✅ Native REST API - Persistent session
-const session = await fetch('https://connect.enigma.click/start/start-session', {
+const session = await fetch('https://connect.webrun.ai/start/start-session', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -463,7 +463,7 @@ const session = await fetch('https://connect.enigma.click/start/start-session', 
   body: JSON.stringify({ taskDetails: 'Go to amazon.com' })
 }).then(r => r.json());
 
-await fetch('https://connect.enigma.click/start/send-message', {
+await fetch('https://connect.webrun.ai/start/send-message', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -512,7 +512,7 @@ Live video streaming is not available via OpenAI-compatible endpoint. Use native
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.enigma.click/v1',
+  baseURL: 'https://connect.webrun.ai/v1',
   apiKey: process.env.ENIGMA_API_KEY
 });
 
@@ -560,7 +560,7 @@ await researchTopic('Browser automation with AI agents');
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.enigma.click/v1',
+  baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
