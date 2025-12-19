@@ -35,7 +35,7 @@ Start a new task in the current session. This is the only control action that re
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -90,7 +90,7 @@ socket.emit("message", {
   "sessionId": "SESSION_ID",
   "taskId": "TASK_ID",
   "pending": true,
-  "pollUrl": "https://connect.enigma.click/task/SESSION_ID/TASK_ID",
+  "pollUrl": "https://connect.webrun.ai/task/SESSION_ID/TASK_ID",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -113,7 +113,7 @@ Pause the current task. The agent will stop after completing its current action 
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -149,7 +149,7 @@ Resume a paused task. The agent will continue from where it left off.
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -185,7 +185,7 @@ Stop the current task immediately. The session remains active and ready for new 
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -225,7 +225,7 @@ End the session completely. This closes the browser instance and all connections
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -385,7 +385,7 @@ Complete example showing pause/resume/stop/terminate in action:
 
 ```javascript
 const API_KEY = "YOUR_API_KEY";
-const BASE = "https://connect.enigma.click";
+const BASE = "https://connect.webrun.ai";
 
 async function controlFlowDemo() {
   // Create session
