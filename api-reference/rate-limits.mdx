@@ -1,12 +1,12 @@
 ---
 title: "Rate Limits"
-description: "Understanding and working with Enigma API rate limits"
+description: "Understanding and working with WebRun API rate limits"
 icon: "gauge-high"
 ---
 
 ## Overview
 
-Enigma enforces rate limits to ensure fair usage and system stability. Rate limits are applied per user (API key owner), not per API key.
+WebRun enforces rate limits to ensure fair usage and system stability. Rate limits are applied per user (API key owner), not per API key.
 
 <Note>
 Rate limits are **per user**, not per API key. If you have multiple API keys, they all share the same rate limit.
@@ -43,15 +43,15 @@ All rate limits are tied to your user account, not individual API keys. This mea
 
 ```javascript
 // These all count toward the same 10/minute limit:
-fetch('https://connect.enigma.click/start/run-task', {
+fetch('https://connect.webrun.ai/start/run-task', {
   headers: { 'Authorization': 'Bearer API_KEY_1' }
 });
 
-fetch('https://connect.enigma.click/start/run-task', {
+fetch('https://connect.webrun.ai/start/run-task', {
   headers: { 'Authorization': 'Bearer API_KEY_2' }
 });
 
-fetch('https://connect.enigma.click/start/run-task', {
+fetch('https://connect.webrun.ai/start/run-task', {
   headers: { 'Authorization': 'Bearer API_KEY_3' }
 });
 // Total: 3 requests toward your 10/minute limit
@@ -97,7 +97,7 @@ Use polling endpoints freely for monitoring long-running tasks without worrying 
 
 ## Rate Limit Headers
 
-Enigma API responses include rate limit information in HTTP headers:
+WebRun API responses include rate limit information in HTTP headers:
 
 | Header | Description | Example |
 |--------|-------------|---------|
@@ -189,7 +189,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 
 // Usage
 const result = await makeRequestWithRetry(
-  'https://connect.enigma.click/start/run-task',
+  'https://connect.webrun.ai/start/run-task',
   {
     method: 'POST',
     headers: {
@@ -223,7 +223,7 @@ class RateLimitedClient {
       await new Promise(resolve => setTimeout(resolve, waitTime));
     }
 
-    const response = await fetch(`https://connect.enigma.click${endpoint}`, {
+    const response = await fetch(`https://connect.webrun.ai${endpoint}`, {
       ...options,
       headers: {
         ...options.headers,
@@ -264,7 +264,7 @@ Instead of making many small requests, combine operations into fewer requests:
 ```javascript
 // Each task is a separate request (10 requests)
 for (let i = 0; i < 10; i++) {
-  await fetch('https://connect.enigma.click/start/run-task', {
+  await fetch('https://connect.webrun.ai/start/run-task', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
     body: JSON.stringify({ taskDetails: `Task ${i}` })
@@ -276,7 +276,7 @@ for (let i = 0; i < 10; i++) {
 **✅ Good - Use persistent sessions:**
 ```javascript
 // Create one session (1 request)
-const session = await fetch('https://connect.enigma.click/start/start-session', {
+const session = await fetch('https://connect.webrun.ai/start/start-session', {
   method: 'POST',
   headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
   body: JSON.stringify({ taskDetails: 'Initial task' })
@@ -284,7 +284,7 @@ const session = await fetch('https://connect.enigma.click/start/start-session', 
 
 // Run multiple tasks in same session (10 requests)
 for (let i = 0; i < 10; i++) {
-  await fetch('https://connect.enigma.click/start/send-message', {
+  await fetch('https://connect.webrun.ai/start/send-message', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -306,7 +306,7 @@ Polling endpoints have no rate limit, so use them instead of creating new reques
 ```javascript
 // Repeatedly calling run-task to check status (hits rate limit)
 while (true) {
-  const result = await fetch('https://connect.enigma.click/start/run-task', {
+  const result = await fetch('https://connect.webrun.ai/start/run-task', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
     body: JSON.stringify({ taskDetails: 'Search Google' })
@@ -320,7 +320,7 @@ while (true) {
 **✅ Good:**
 ```javascript
 // Create task once, then poll (unlimited)
-const task = await fetch('https://connect.enigma.click/start/run-task', {
+const task = await fetch('https://connect.webrun.ai/start/run-task', {
   method: 'POST',
   headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
   body: JSON.stringify({ taskDetails: 'Search Google' })
@@ -379,7 +379,7 @@ class RateLimitedQueue {
       this.requestTimes.push(Date.now());
 
       try {
-        const response = await fetch(`https://connect.enigma.click${endpoint}`, {
+        const response = await fetch(`https://connect.webrun.ai${endpoint}`, {
           ...options,
           headers: {
             ...options.headers,
@@ -455,7 +455,7 @@ WebSocket connections don't count toward rate limits:
 ```javascript
 // Each poll is a rate-limited request
 setInterval(async () => {
-  const status = await fetch('https://connect.enigma.click/start/send-message', {
+  const status = await fetch('https://connect.webrun.ai/start/send-message', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -472,7 +472,7 @@ setInterval(async () => {
 ```javascript
 import { io } from 'socket.io-client';
 
-const socket = io('https://connect.enigma.click', {
+const socket = io('https://connect.webrun.ai', {
   auth: { sessionId: 'abc123' }
 });
 
@@ -542,7 +542,7 @@ import { io } from 'socket.io-client';
 const sessions = ['session1', 'session2', 'session3'];
 
 sessions.forEach(sessionId => {
-  const socket = io('https://connect.enigma.click', {
+  const socket = io('https://connect.webrun.ai', {
     auth: { sessionId }
   });
 
