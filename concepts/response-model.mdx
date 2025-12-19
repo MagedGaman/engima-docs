@@ -1,12 +1,12 @@
 ---
 title: "Response Model"
-description: "Understanding Enigma's hybrid synchronous/asynchronous response model"
+description: "Understanding WebRun's hybrid synchronous/asynchronous response model"
 icon: "reply"
 ---
 
 ## Synchronous vs Asynchronous
 
-Enigma uses a **hybrid response model** that combines the simplicity of synchronous APIs with the reliability of asynchronous polling:
+WebRun uses a **hybrid response model** that combines the simplicity of synchronous APIs with the reliability of asynchronous polling:
 
 - **Tasks completing in < 50 seconds:** Result returned inline (synchronous)
 - **Tasks taking > 50 seconds:** Poll URL returned for async polling
@@ -23,7 +23,7 @@ Typical HTTP timeouts (30-60 seconds) are too short for complex browser tasks. F
 ### The Problem with Pure Async
 Always requiring polling adds complexity and latency for simple tasks that complete in seconds.
 
-### The Enigma Solution
+### The WebRun Solution
 Wait up to 50 seconds for task completion. If it finishes in time, return the result immediately. Otherwise, return a poll URL.
 
 **Result:** 90% of tasks get instant responses, 10% use polling only when needed.
@@ -35,7 +35,7 @@ Wait up to 50 seconds for task completion. If it finishes in time, return the re
 ```
 POST /start/run-task
      ↓
-Enigma starts task
+WebRun starts task
      ↓
 Wait up to 50 seconds
      ↓
