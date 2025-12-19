@@ -82,7 +82,7 @@ Enable manual mode. The AI agent pauses, and you gain full control of the browse
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -124,7 +124,7 @@ Return control to the AI agent. The agent will resume from where it left off.
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -161,7 +161,7 @@ Click at specific coordinates.
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -196,7 +196,7 @@ Perform a double-click at specific coordinates.
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -231,7 +231,7 @@ Type text into the currently focused element.
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -269,7 +269,7 @@ Press a single key or key combination.
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.enigma.click/start/send-message \
+curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -313,7 +313,7 @@ Manual interaction is most useful when combined with video streaming so you can 
 import { io } from "socket.io-client";
 
 // 1. Create session and connect
-const session = await fetch("https://connect.enigma.click/start/start-session", {
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -333,7 +333,7 @@ const canvas = document.getElementById("clickable-overlay");
 video.src = session.streaming.webViewURL;
 
 // 3. Connect WebSocket
-const socket = io("https://connect.enigma.click", {
+const socket = io("https://connect.webrun.ai", {
   auth: { sessionId: session.sessionId },
   transports: ["websocket"]
 });
