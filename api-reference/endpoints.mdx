@@ -286,7 +286,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 
 ### GET /task/:sessionId/:taskId
 
-Poll for task result. No authentication required. No rate limit.
+Poll for task result.
 
 **Path Parameters:**
 - `sessionId` - Session identifier
@@ -474,7 +474,7 @@ List available models for OpenAI-compatible endpoint.
 
 ### GET /start/health
 
-System health check. No authentication required.
+System health check.
 
 **Response:**
 ```json
@@ -483,22 +483,6 @@ System health check. No authentication required.
   "status": "healthy",
   "instancesAvailable": true,
   "instanceCount": 5,
-  "timestamp": "2024-01-15T10:30:00.000Z"
-}
-```
-
----
-
-### GET /start/active-sockets
-
-View active instance connections. No authentication required.
-
-**Response:**
-```json
-{
-  "success": true,
-  "sockets": ["socket_id_1", "socket_id_2", "socket_id_3"],
-  "count": 3,
   "timestamp": "2024-01-15T10:30:00.000Z"
 }
 ```
@@ -516,7 +500,6 @@ View active instance connections. No authentication required.
 | `/v1/chat/completions` | POST | Required | 10/min per user | OpenAI-compatible chat |
 | `/v1/models` | GET | Required | None | List available models |
 | `/start/health` | GET | Not required | None | System health check |
-| `/start/active-sockets` | GET | Not required | None | Active connections |
 
 ---
 
