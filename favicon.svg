@@ -1,19 +1,9 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M9.06145 23.1079C5.26816 22.3769 -3.39077 20.6274 1.4173 5.06384C9.6344 6.09939 16.9728 14.0644 9.06145 23.1079Z" fill="url(#paint0_linear_17557_2021)"/>
-<path d="M8.91928 23.0939C5.27642 21.2223 0.78371 4.20891 17.0071 0C20.7569 7.19341 19.6212 16.5452 8.91928 23.0939Z" fill="url(#paint1_linear_17557_2021)"/>
-<path d="M8.91388 23.0788C8.73534 19.8817 10.1585 9.08525 23.5699 13.1107C23.1812 20.1229 18.984 26.4182 8.91388 23.0788Z" fill="url(#paint2_linear_17557_2021)"/>
-<defs>
-<linearGradient id="paint0_linear_17557_2021" x1="3.77557" y1="5.91571" x2="5.23185" y2="21.5589" gradientUnits="userSpaceOnUse">
-<stop stop-color="#18E299"/>
-<stop offset="1" stop-color="#15803D"/>
-</linearGradient>
-<linearGradient id="paint1_linear_17557_2021" x1="12.1711" y1="-0.718425" x2="10.1897" y2="22.9832" gradientUnits="userSpaceOnUse">
-<stop stop-color="#16A34A"/>
-<stop offset="1" stop-color="#4ADE80"/>
-</linearGradient>
-<linearGradient id="paint2_linear_17557_2021" x1="23.1327" y1="15.353" x2="9.33841" y2="18.5196" gradientUnits="userSpaceOnUse">
-<stop stop-color="#4ADE80"/>
-<stop offset="1" stop-color="#0D9373"/>
-</linearGradient>
-</defs>
+<svg width="24" height="24" viewBox="0 0 2139 2072" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="35" y="1" width="2070" height="2070" rx="200" fill="#1A3A32"/>
+<path d="M1069.16 233.879L1269.63 701.637L1069.16 601.403L868.694 701.637L1069.16 233.879Z" fill="white"/>
+<path d="M1904.44 1069.16L1436.69 868.694L1536.92 1069.16L1436.69 1269.63L1904.44 1069.16Z" fill="white"/>
+<path d="M1069.16 1904.44L868.694 1436.69L1069.16 1536.92L1269.63 1436.69L1069.16 1904.44Z" fill="white"/>
+<path d="M233.879 1069.16L701.637 1269.63L601.403 1069.16L701.637 868.694L233.879 1069.16Z" fill="white"/>
+<path d="M1069.16 1303.04C1198.33 1303.04 1303.04 1198.33 1303.04 1069.16C1303.04 939.993 1198.33 835.282 1069.16 835.282C939.993 835.282 835.282 939.993 835.282 1069.16C835.282 1198.33 939.993 1303.04 1069.16 1303.04Z" fill="#1A3A32" stroke="white" stroke-width="100.234"/>
+<path d="M1069.16 1149.35C1113.45 1149.35 1149.35 1113.45 1149.35 1069.16C1149.35 1024.87 1113.45 988.973 1069.16 988.973C1024.88 988.973 988.974 1024.87 988.974 1069.16C988.974 1113.45 1024.88 1149.35 1069.16 1149.35Z" fill="white"/>
 </svg>
