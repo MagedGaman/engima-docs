@@ -21,16 +21,19 @@ All control commands use the same endpoint but with different message payloads:
 
 Start a new task in the current session. This is the only control action that returns a `taskId` for result tracking.
 
-**Parameters:**
-- `actionType`: `"newTask"` (required)
-- `newState`: `"start"` (required)
-- `taskDetails`: Task description (required)
-- `maxDuration`: Max time for task in ms (optional)
-- `maxInputTokens`: Max input tokens (optional)
-- `maxOutputTokens`: Max output tokens (optional)
-- `startingUrl`: Starting URL (optional)
-- `avoidDomains`: Array of domains to avoid (optional)
-- `terminateOnCompletion`: Auto-terminate session after task (optional, default: false)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `actionType` | string | Yes | Must be `"newTask"` |
+| `newState` | string | Yes | Must be `"start"` |
+| `taskDetails` | string | Yes | Task description |
+| `maxDuration` | number | No | Max time in ms (default: 300000) |
+| `maxInputTokens` | number | No | Max input tokens (default: 100000) |
+| `maxOutputTokens` | number | No | Max output tokens (default: 100000) |
+| `startingUrl` | string | No | URL to start from |
+| `avoidDomains` | string[] | No | Domains to avoid |
+| `terminateOnCompletion` | boolean | No | Auto-terminate after task (default: false) |
+
+Use REST for simple integrations, WebSocket for real-time event handling:
 
 <CodeGroup>
 
@@ -65,7 +68,8 @@ socket.emit("message", {
 
 </CodeGroup>
 
-**Response (task completed within 50 seconds):**
+If the task completes within 50 seconds, you get the result inline:
+
 ```json
 {
   "success": true,
@@ -83,7 +87,8 @@ socket.emit("message", {
 }
 ```
 
-**Response (task still running after 50 seconds):**
+For longer tasks, you receive a `pollUrl` to check status. Poll every 2-3 seconds until complete:
+
 ```json
 {
   "success": true,
@@ -96,7 +101,7 @@ socket.emit("message", {
 ```
 
 <Tip>
-**Cost Optimization:** Set `terminateOnCompletion: true` when you're done with the session to avoid idle session charges. The session will automatically close after this task completes.
+Set `terminateOnCompletion: true` on your final task to auto-close the session and avoid idle charges.
 </Tip>
 
 ---
@@ -487,19 +492,13 @@ controlFlowDemo();
 
 ---
 
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Manual Interaction" icon="hand-pointer" href="/usage-guides/manual-interaction">
-    Take over control and interact manually
-  </Card>
-  <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
-    Respond to agent requests for input
-  </Card>
-  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
-    Send multiple tasks in sequence
-  </Card>
-  <Card title="Cost Optimization" icon="dollar-sign" href="/usage-guides/cost-optimization">
-    Reduce costs with efficient session management
-  </Card>
-</CardGroup>
+<Accordion title="Related Guides">
+  <CardGroup cols={2}>
+    <Card title="Manual Interaction" icon="hand-pointer" href="/usage-guides/manual-interaction">
+      Take over control and interact manually
+    </Card>
+    <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
+      Respond to agent requests for input
+    </Card>
+  </CardGroup>
+</Accordion>
