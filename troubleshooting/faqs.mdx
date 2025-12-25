@@ -275,7 +275,7 @@ export async function POST(request) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.ENIGMA_API_KEY}`
+      "Authorization": `Bearer ${process.env.WebRun_API_KEY}`
     },
     body: JSON.stringify({ taskDetails })
   });
@@ -293,7 +293,7 @@ app.post('/automate', async (req, res) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.ENIGMA_API_KEY}`
+      "Authorization": `Bearer ${process.env.WebRun_API_KEY}`
     },
     body: JSON.stringify({ taskDetails })
   });
@@ -316,7 +316,7 @@ async def automate(task_details: str):
             "https://connect.webrun.ai/start/start-session",
             json={"taskDetails": task_details},
             headers={
-                "Authorization": f"Bearer {os.getenv('ENIGMA_API_KEY')}"
+                "Authorization": f"Bearer {os.getenv('WebRun_API_KEY')}"
             }
         )
         return response.json()
@@ -347,7 +347,7 @@ async def automate(task_details: str):
       "command": "npx",
       "args": ["-y", "@webrun/mcp-server"],
       "env": {
-        "ENIGMA_API_KEY": "your-api-key-here"
+        "WebRun_API_KEY": "your-api-key-here"
       }
     }
   }
@@ -900,7 +900,7 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 
 **Example: Complete Task Flow**
 ```javascript
-const ENIGMA_API_KEY = process.env.ENIGMA_API_KEY;
+const WebRun_API_KEY = process.env.WebRun_API_KEY;
 
 async function automateTask(taskDetails) {
   let sessionId;
@@ -913,7 +913,7 @@ async function automateTask(taskDetails) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${ENIGMA_API_KEY}`
+          "Authorization": `Bearer ${WebRun_API_KEY}`
         },
         body: JSON.stringify({
           taskDetails,
@@ -927,7 +927,7 @@ async function automateTask(taskDetails) {
 
     // 2. Monitor via WebSocket
     const ws = new WebSocket(
-      `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${ENIGMA_API_KEY}`
+      `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${WebRun_API_KEY}`
     );
 
     return new Promise((resolve, reject) => {
@@ -956,7 +956,7 @@ async function automateTask(taskDetails) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${ENIGMA_API_KEY}`
+          "Authorization": `Bearer ${WebRun_API_KEY}`
         },
         body: JSON.stringify({
           sessionId,
