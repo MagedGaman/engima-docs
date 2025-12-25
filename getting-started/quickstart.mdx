@@ -14,6 +14,10 @@ icon: "bolt"
 enig_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
+<Warning>
+**Sessions cost money until terminated.** Sessions remain billable until they time out (5 min max) or you explicitly terminate them. Always call `terminate` when done, or set `terminateOnCompletion: true` on your last task.
+</Warning>
+
 ---
 
 ## Option A: REST API (Simplest)
@@ -113,7 +117,11 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 
 ### 3. Polling for Results
 
-When a task returns `status: "pending"`, poll until complete:
+When a task returns `status: "pending"`, poll until complete.
+
+<Tip>
+**Poll every 2-3 seconds.** Faster polling wastes API quota; slower polling adds unnecessary latency. Most tasks complete within 10-40 seconds.
+</Tip>
 
 ```javascript
 async function runTask(taskDetails, apiKey) {
@@ -332,19 +340,13 @@ console.log("Cost:", result.usage.cost);
 
 ---
 
-## What's Next?
-
-<CardGroup cols={2}>
-  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
-    Chain multiple tasks in a session
-  </Card>
-  <Card title="OpenAI Integration" icon="code" href="/integrations/openai-compatible">
-    Use with LangChain and OpenAI SDK
-  </Card>
-  <Card title="MCP Quickstart" icon="robot" href="/getting-started/mcp-quickstart">
-    Set up Claude Desktop integration
-  </Card>
-  <Card title="Workflow Automation" icon="workflow" href="/getting-started/workflow-quickstart">
-    Integrate with n8n, Make.com, Zapier
-  </Card>
-</CardGroup>
+<Accordion title="What's Next?">
+  <CardGroup cols={2}>
+    <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+      Chain multiple tasks in a session
+    </Card>
+    <Card title="MCP Quickstart" icon="robot" href="/getting-started/mcp-quickstart">
+      Set up Claude Desktop integration
+    </Card>
+  </CardGroup>
+</Accordion>

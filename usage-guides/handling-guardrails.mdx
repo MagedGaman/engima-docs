@@ -73,7 +73,7 @@ socket.on("message", (data) => {
 
 ## Responding to Guardrails
 
-Once a guardrail triggers, respond with the requested information or guidance.
+Once a guardrail triggers, respond with the requested information or guidance. The `newState: "resume"` parameter tells the agent to **continue execution from the exact point where the guardrail paused**—it doesn't restart the task.
 
 <CodeGroup>
 
@@ -107,10 +107,11 @@ socket.on("message", (data) => {
 
 </CodeGroup>
 
-**Parameters:**
-- `actionType`: `"guardrail"` (required)
-- `taskDetails`: Your response to the agent (required)
-- `newState`: `"resume"` to continue, `"stop"` to cancel (required)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `actionType` | string | Yes | Must be `"guardrail"` |
+| `taskDetails` | string | Yes | Your response to the agent |
+| `newState` | string | Yes | `"resume"` to continue, `"stop"` to cancel |
 
 **Response:**
 ```json
@@ -740,19 +741,13 @@ setInterval(() => {
 
 ---
 
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Manual Interaction" icon="hand-pointer" href="/usage-guides/manual-interaction">
-    Take direct control for CAPTCHA and complex inputs
-  </Card>
-  <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
-    Pause, resume, stop, and terminate tasks
-  </Card>
-  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
-    Chain multiple tasks together
-  </Card>
-  <Card title="Structured Output" icon="code" href="/usage-guides/structured-output">
-    Get structured data from task results
-  </Card>
-</CardGroup>
+<Accordion title="Related Guides">
+  <CardGroup cols={2}>
+    <Card title="Manual Interaction" icon="hand-pointer" href="/usage-guides/manual-interaction">
+      Take direct control for CAPTCHA and complex inputs
+    </Card>
+    <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
+      Pause, resume, stop, and terminate tasks
+    </Card>
+  </CardGroup>
+</Accordion>

@@ -153,10 +153,11 @@ socket.emit("message", {
 
 Click at specific coordinates.
 
-**Parameters:**
-- `type`: `"CLICK"` (required)
-- `x`: X coordinate (0-1024) (required)
-- `y`: Y coordinate (155-755, accounting for chrome offset) (required)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | Yes | Must be `"CLICK"` |
+| `x` | number | Yes | X coordinate (0-1024) |
+| `y` | number | Yes | Y coordinate (155-755, with chrome offset) |
 
 <CodeGroup>
 
@@ -188,10 +189,11 @@ socket.emit("message", {
 
 Perform a double-click at specific coordinates.
 
-**Parameters:**
-- `type`: `"DOUBLE_CLICK"` (required)
-- `x`: X coordinate (0-1024) (required)
-- `y`: Y coordinate (155-755) (required)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | Yes | Must be `"DOUBLE_CLICK"` |
+| `x` | number | Yes | X coordinate (0-1024) |
+| `y` | number | Yes | Y coordinate (155-755) |
 
 <CodeGroup>
 
@@ -223,10 +225,11 @@ socket.emit("message", {
 
 Type text into the currently focused element.
 
-**Parameters:**
-- `type`: `"TYPE"` (required)
-- `text`: Text to type (required)
-- `humanLike`: Simulate human typing speed (optional, default: false)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | Yes | Must be `"TYPE"` |
+| `text` | string | Yes | Text to type |
+| `humanLike` | boolean | No | Simulate human typing speed (default: false) |
 
 <CodeGroup>
 
@@ -262,9 +265,10 @@ Set `humanLike: true` to simulate realistic typing speed and patterns. This can 
 
 Press a single key or key combination.
 
-**Parameters:**
-- `type`: `"KEY_PRESS"` (required)
-- `key`: Key name (required)
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `type` | string | Yes | Must be `"KEY_PRESS"` |
+| `key` | string | Yes | Key name (see common values below) |
 
 <CodeGroup>
 
@@ -608,19 +612,13 @@ document.body.appendChild(iframe);
 
 ---
 
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
-    Setup video streaming for manual interaction
-  </Card>
-  <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
-    Pause, resume, and manage task execution
-  </Card>
-  <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
-    Respond when the agent needs help
-  </Card>
-  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
-    Chain multiple tasks together
-  </Card>
-</CardGroup>
+<Accordion title="Related Guides">
+  <CardGroup cols={2}>
+    <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+      Setup video streaming for manual interaction
+    </Card>
+    <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
+      Respond when the agent needs help
+    </Card>
+  </CardGroup>
+</Accordion>
