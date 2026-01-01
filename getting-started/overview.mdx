@@ -4,13 +4,112 @@ description: "Real-time browser automation infrastructure for AI agents"
 icon: "house"
 ---
 
-WebRun is real-time browser automation infrastructure for AI agents. Give it a task in plain English, and an AI agent executes it in a real browser—clicking, typing, navigating, and extracting data autonomously.
+Browser automation breaks when websites change. Selenium scripts fail on UI updates. Playwright selectors become brittle. Every website redesign means rewriting your automation code.
 
-**Key capabilities:**
-- Sub-100ms response times via hybrid CNN-LLM architecture
-- Live video streaming to observe sessions in real-time
-- Human-in-the-loop with guardrails and manual takeover
-- Flexible integration via REST API, WebSocket, MCP, or OpenAI-compatible endpoints
+WebRun solves this. AI agents execute browser tasks in plain English—no selectors, no brittle scripts. The agent sees the page, understands the task, and adapts in real-time. Sub-100ms response times make it fast enough for production.
+
+## How It Works
+
+Give WebRun a task in natural language. The agent navigates a real browser, executing actions autonomously until the task completes. You get structured results back via REST API, WebSocket, or OpenAI-compatible endpoints.
+
+**Core advantages:**
+- **Sub-100ms decisions** — Hybrid CNN-LLM architecture delivers production-ready speed
+- **Real-time video streaming** — Watch sessions live as they execute
+- **Human-in-the-loop controls** — Manual takeover for credentials, approvals, or edge cases
+- **Multiple integration paths** — REST, WebSocket, MCP, or OpenAI-compatible APIs
+
+---
+
+## What WebRun Handles
+
+### Data Extraction at Scale
+Extract structured data from dynamic websites without building custom scrapers.
+
+**Example task:** "Search LinkedIn for engineering managers in San Francisco with 5+ years experience. Return their profiles as JSON with name, title, company, and LinkedIn URL."
+
+### Form Automation
+Navigate multi-step forms with conditional logic and dynamic fields.
+
+**Example task:** "Fill out this insurance quote form using the customer data in the attached JSON. Handle the multi-step workflow and return the final quote amount."
+
+### E-commerce Workflows
+Search products, compare prices, add items to cart—all through natural language commands.
+
+**Example task:** "Find wireless keyboards under $50 on Amazon, filter by 4+ star ratings, and return the top 3 with price and review count."
+
+### Adaptive Testing
+Test web applications without maintaining brittle test selectors. The agent adapts to UI changes automatically.
+
+**Example task:** "Go through the signup flow with invalid email formats and document all validation errors you encounter."
+
+---
+
+## Sessions and Tasks
+
+A **session** is an isolated browser instance. A **task** is a single instruction you give that session. Sessions persist for up to 5 minutes, letting you chain multiple tasks sequentially.
+
+```
+Session (sess_abc123)
+ ├── Task 1: Navigate to site → completed
+ ├── Task 2: Search for product → completed
+ └── Task 3: Extract data → completed
+```
+
+Sessions terminate when you explicitly end them or when they hit the timeout. Always terminate sessions when finished to avoid unnecessary charges.
+
+[Sessions documentation](/concepts/sessions) | [Tasks documentation](/concepts/tasks)
+
+---
+
+## Response Model
+
+Most tasks complete in 10-40 seconds. WebRun waits up to 50 seconds before returning. If your task finishes within that window, you get the result inline. If it takes longer, you poll for the result.
+
+This gives you the simplicity of synchronous APIs for typical use cases, with async polling available for complex workflows.
+
+[Response model details](/concepts/response-model)
+
+---
+
+## Guardrails
+
+When the agent needs human input—credentials, clarification, purchase approval—it triggers a guardrail and pauses. Your application detects this via the API response and provides the needed information to continue.
+
+**Common triggers:** Login forms, payment confirmations, CAPTCHAs, ambiguous instructions
+
+[Guardrails documentation](/concepts/guardrails)
+
+---
+
+## Integration Options
+
+Choose the integration method that fits your stack:
+
+| Method | Best For | Real-time Updates |
+|--------|----------|------------------|
+| **REST API** | Serverless functions, simple integrations | Poll for updates |
+| **WebSocket** | Live dashboards, real-time monitoring | Yes |
+| **OpenAI-Compatible** | Drop-in replacement for LangChain, Vercel AI SDK | Stream or poll |
+| **MCP Server** | Claude Desktop, Cline, MCP clients | Session-based |
+
+**Quick decision tree:**
+
+- **Single task, auto-terminate?** → `POST /start/run-task`
+- **Multiple tasks in sequence?** → `POST /start/start-session` + `/send-message`
+- **Using LangChain or OpenAI SDK?** → `POST /v1/chat/completions`
+- **Claude Desktop or MCP client?** → MCP Server
+
+[REST API](/integrations/rest-api) | [WebSocket](/integrations/websocket) | [OpenAI-Compatible](/integrations/openai-compatible) | [MCP Server](/integrations/mcp-server)
+
+---
+
+## Why WebRun vs Traditional Automation
+
+Traditional browser automation (Selenium, Playwright, Puppeteer) requires writing code that targets specific page elements. When the website changes—new class names, restructured HTML, different IDs—your automation breaks.
+
+WebRun's AI agents don't rely on selectors. They see the page visually, understand the content semantically, and adapt to changes automatically. No maintenance when websites update their UI.
+
+**Speed comparison:** WebRun delivers sub-100ms response times per action. Traditional tools average ~50ms per action, but require manual coding and ongoing maintenance that compounds costs at scale.
 
 ---
 
@@ -18,154 +117,15 @@ WebRun is real-time browser automation infrastructure for AI agents. Give it a t
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/getting-started/quickstart">
-    Run your first task in 5 minutes
+    First automation task in 5 minutes
   </Card>
-  <Card title="🔌 Integrations" icon="plug" href="/integrations/rest-api">
-    REST, WebSocket, OpenAI, n8n
-  </Card>
-  <Card title="MCP Setup" icon="robot" href="/getting-started/mcp-quickstart">
-    Claude Desktop & Cline setup
-  </Card>
-  <Card title="Live Stream" icon="video" href="/usage-guides/video-streaming">
-    Watch sessions in real-time
-  </Card>
-</CardGroup>
-
----
-
-## What Can WebRun Do?
-
-### Research & Data Extraction
-Gather information from multiple sources, extract structured data, and compile research reports automatically.
-
-**Example:** "Search LinkedIn for engineering managers in San Francisco, extract their profiles, and compile contact information into a structured list."
-
-### Form Automation
-Fill out complex forms, handle multi-step workflows, and submit applications with conditional logic.
-
-**Example:** "Go to this insurance quote form, fill it out using the customer data I provide, and return the final quote."
-
-### E-commerce Operations
-Search for products, compare prices, add items to cart, and even complete checkout flows with human approval.
-
-**Example:** "Find the top 3 wireless keyboards on Amazon under $50, add the best-rated one to cart, and show me the checkout page."
-
-### Dynamic Testing
-Test web applications with natural language instructions, adapting to UI changes without brittle selectors.
-
-**Example:** "Navigate through the signup flow, try to register with invalid data, and report any validation errors you encounter."
-
----
-
-## How It Works
-
-### Sessions & Tasks
-
-A **session** is an isolated browser instance controlled by an AI agent. A **task** is a single objective for the agent to complete within that session.
-
-```
-Session (sessionId: "sess_abc")
- ├── Task 1 → completed
- ├── Task 2 → completed
- └── Task 3 → guardrail triggered
-```
-
-Sessions persist until you terminate them or they time out (max 5 minutes). One session can run multiple tasks sequentially.
-
-[Learn more about Sessions](/concepts/sessions) | [Learn more about Tasks](/concepts/tasks)
-
-### Response Model
-
-Most browser tasks complete in 10-40 seconds. WebRun waits up to 50 seconds for your task to finish—meaning you typically get results inline, in a single request.
-
-```
-POST /start/run-task
-     ↓
-┌────────────────────────────────────┐
-│  Task completes in < 50s?          │
-│  ├── Yes → Result returned inline  │
-│  └── No  → pollUrl returned        │
-└────────────────────────────────────┘
-```
-
-This gives you the simplicity of synchronous APIs for typical tasks, with the reliability of async for complex multi-step operations.
-
-[Learn more about Response Model](/concepts/response-model)
-
-### Guardrails
-
-When the agent needs human input—credentials, clarification, approval—it triggers a guardrail and pauses. Your application detects this and provides the input.
-
-**Common triggers:** Login forms, purchase confirmations, CAPTCHAs, ambiguous instructions.
-
-[Learn more about Guardrails](/concepts/guardrails)
-
----
-
-## Choose Your Integration
-
-### Which endpoint should I use?
-
-```
-Need browser automation?
-├── Single task, don't care about session? → POST /start/run-task
-├── Multiple tasks in sequence? → POST /start/start-session + /send-message
-├── Using LangChain/existing OpenAI code? → POST /v1/chat/completions
-└── Using Claude Desktop/MCP client? → MCP Server
-```
-
-### REST vs WebSocket?
-
-- **REST:** Simpler. Good enough for 90% of use cases. Poll for results.
-- **WebSocket:** Only if you need live agent thoughts or sub-second event handling.
-
----
-
-## Integration Methods
-
-| Method | Best For | Real-time Events |
-|--------|----------|------------------|
-| **REST API** | Simple integrations, serverless, stateless workflows | Poll for updates |
-| **WebSocket** | Live dashboards, interactive UIs, real-time agent thoughts | Yes |
-| **OpenAI-Compatible** | LangChain, LlamaIndex, Vercel AI SDK, existing OpenAI tooling | Poll or stream |
-| **MCP Server** | Claude Desktop, Cline, any MCP-compatible AI assistant | No |
-| **Workflows** | n8n, Make.com, Zapier | Poll for updates |
-
-### Quick Links
-
-- [REST API Integration](/integrations/rest-api)
-- [WebSocket Integration](/integrations/websocket)
-- [OpenAI-Compatible API](/integrations/openai-compatible)
-- [MCP Server Setup](/integrations/mcp-server)
-- [Workflow Integration (n8n, Make, Zapier)](/getting-started/workflow-quickstart)
-
----
-
-## WebRun vs. Traditional Automation
-
-| | WebRun | Playwright/Puppeteer |
-|--|--------|----------------------|
-| **Input** | Natural language | Code |
-| **Adaptability** | AI agent adapts to UI changes | Scripts break on changes |
-| **Maintenance** | Self-healing | Manual updates required |
-| **Latency** | Sub-100ms decisions | ~50ms per action |
-| **Best for** | Dynamic tasks, scraping, form-filling | Regression testing, CI/CD |
-
----
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card title="Quickstart" icon="rocket" href="/getting-started/quickstart">
-    Run your first task in 5 minutes
-  </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/endpoints">
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
     Complete endpoint documentation
   </Card>
-  <Card title="Concepts" icon="book" href="/concepts/sessions">
-    Understand sessions, tasks, and guardrails
+  <Card title="Integration Guides" icon="plug" href="/integrations/rest-api">
+    REST, WebSocket, OpenAI, MCP
   </Card>
-  <Card title="Troubleshooting" icon="triangle-exclamation" href="/troubleshooting/errors-reference">
-    Error handling and debugging
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Watch sessions execute in real-time
   </Card>
 </CardGroup>

@@ -1,45 +1,31 @@
 ---
 title: "Cost Optimization"
-description: "Best practices and patterns for reducing costs while using WebRun AI agents"
+description: "Reduce costs while maintaining performance"
 icon: "piggy-bank"
 ---
 
-## Overview
+WebRun charges for session time and token usage. Three quick changes can cut your costs by 50% or more.
 
-WebRun charges based on:
-- **Session time:** Active browser instances
-- **Token usage:** AI model input/output tokens
-- **Compute time:** Processing duration
+## Quick Wins
 
-Optimizing these factors can significantly reduce costs while maintaining performance.
+### 1. Terminate Sessions Explicitly
 
----
+Set `terminateOnCompletion: true` on your final task, or call terminate explicitly. This alone reduces costs by 50% if you're currently letting sessions timeout.
 
-## Session Management
-
-### 1. Use `terminateOnCompletion`
-
-Always terminate sessions when done to avoid idle charges.
-
-<CodeGroup>
-
-```javascript Single Task (Auto-Terminate)
-// Best for one-off tasks
-const session = await fetch("https://connect.webrun.ai/start/run-task", {
+```javascript
+// Single task - auto-terminates
+const result = await fetch("https://connect.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Search Google for Anthropic and return first result"
-    // terminateOnCompletion: true is automatic for /start/run-task
+    taskDetails: "Extract data from this page"
   })
-}).then(r => r.json());
-```
+});
 
-```javascript Multi-Task with Final Terminate
-// For multi-task workflows
+// Multi-task - terminate on last task
 const finalTask = await fetch("https://connect.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
@@ -47,612 +33,206 @@ const finalTask = await fetch("https://connect.webrun.ai/start/send-message", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    sessionId: session.sessionId,
+    sessionId,
     message: {
       actionType: "newTask",
-      newState: "start",
-      taskDetails: "Complete checkout",
-      terminateOnCompletion: true  // ← Session closes after this task
+      taskDetails: "Final task here",
+      terminateOnCompletion: true
     }
-  })
-}).then(r => r.json());
-```
-
-```javascript Explicit Terminate
-// Alternative: explicitly terminate
-await fetch("https://connect.webrun.ai/start/send-message", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${API_KEY}`
-  },
-  body: JSON.stringify({
-    sessionId: session.sessionId,
-    message: { actionType: "state", newState: "terminate" }
-  })
+  }
 });
 ```
 
-</CodeGroup>
+---
 
-<Warning>
-**Cost Impact:** Idle sessions continue charging until they time out (max 5 minutes). Always terminate explicitly!
-</Warning>
+### 2. Write Concise Task Descriptions
+
+Shorter descriptions = fewer input tokens. Be specific, not verbose.
+
+❌ **Verbose (150 tokens):**
+```
+"Please navigate to the Amazon website and then perform a search for wireless keyboards. After you get the results, I need you to look through them carefully and find the ones that have good ratings, preferably above 4 stars, and then return me a list of the top 5 products with their titles, prices, and rating information."
+```
+
+✅ **Concise (35 tokens):**
+```
+"Go to Amazon, search 'wireless keyboard'. Return top 5 with rating ≥ 4.0 as JSON: title, price, rating."
+```
+
+**Impact:** 75% reduction in input tokens for this task.
 
 ---
 
-### 2. Set Appropriate `maxDuration`
+### 3. Set `startingUrl` When Known
+
+Skip navigation by providing the starting URL directly.
+
+```javascript
+{
+  "taskDetails": "Search for products",
+  "startingUrl": "https://amazon.com"  // Skips "go to amazon.com" step
+}
+```
+
+**Impact:** Saves 5-10 seconds and ~500-1000 tokens per task.
+
+---
+
+## Additional Optimizations
+
+### Set Appropriate `maxDuration`
 
 Limit task duration to prevent runaway costs:
 
 ```javascript
-const task = await fetch("https://connect.webrun.ai/start/send-message", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${API_KEY}`
-  },
-  body: JSON.stringify({
-    sessionId: session.sessionId,
-    message: {
-      actionType: "newTask",
-      newState: "start",
-      taskDetails: "Search for products",
-      maxDuration: 30000  // 30 seconds max (default: 300000 = 5 min)
-    }
-  })
-}).then(r => r.json());
-```
-
-**Guidelines:**
-- Simple searches: 30,000ms (30 seconds)
-- Form filling: 60,000ms (1 minute)
-- Multi-step workflows: 120,000ms (2 minutes)
-- Complex tasks: 180,000ms (3 minutes)
-
----
-
-### 3. Stop Long-Running Tasks Early
-
-Monitor task progress and stop if taking too long:
-
-```javascript
-async function runTaskWithCostLimit(sessionId, taskDetails, maxCost = 0.10) {
-  const task = await sendMessage(sessionId, {
-    actionType: "newTask",
-    newState: "start",
-    taskDetails
-  });
-
-  // Poll with cost monitoring
-  for (let i = 0; i < 60; i++) {
-    await new Promise(r => setTimeout(r, 2000));
-
-    const status = await fetch(`${BASE}/task/${sessionId}/${task.taskId}`, {
-      headers: { "Authorization": `Bearer ${API_KEY}` }
-    }).then(r => r.json());
-
-    // Check if completed
-    if (status.type === "task_completed") {
-      return status;
-    }
-
-    // Check cost
-    if (status.usage && status.usage.cost > maxCost) {
-      console.log(`Cost threshold exceeded: $${status.usage.cost}`);
-
-      // Stop task
-      await sendMessage(sessionId, {
-        actionType: "state",
-        newState: "stop"
-      });
-
-      throw new Error(`Task stopped: cost limit ($${maxCost}) exceeded`);
-    }
-  }
-
-  throw new Error("Timeout");
+{
+  "taskDetails": "Quick search task",
+  "maxDuration": 30000  // 30 seconds (default: 300000 = 5 min)
 }
 ```
 
----
-
-## Choosing the Right Model
-
-Different models have different cost profiles.
-
-| Model | Speed | Cost | Best For |
-|-------|-------|------|----------|
-| Claude 3.5 Sonnet | Fast | Medium | General purpose, most tasks |
-| Claude 3 Opus | Slow | High | Complex reasoning, difficult tasks |
-| Claude 3.5 Haiku | Very Fast | Low | Simple tasks, high-volume automation |
-
-<Note>
-Model selection may become available in future API versions. Check documentation for current model options.
-</Note>
+**Guidelines:**
+- Simple searches: 30,000ms (30s)
+- Form filling: 60,000ms (1 min)
+- Multi-step workflows: 120,000ms (2 min)
 
 ---
 
-## Efficient Task Design
+### Batch Related Tasks in Single Sessions
 
-### 1. Be Specific and Concise
+Reuse sessions for related tasks instead of creating new ones.
 
-Reduce token usage with clear, concise instructions:
-
-<CodeGroup>
-
-```javascript Bad - Verbose
-taskDetails: `
-I would like you to please navigate to the Amazon website and then
-perform a search for wireless keyboards. After you get the results,
-I need you to look through them carefully and find the ones that have
-good ratings, preferably above 4 stars, and then return me a list of
-the top 5 products with their titles, prices, and rating information.
-Please make sure to format this nicely so I can read it easily.
-`
-```
-
-```javascript Good - Concise
-taskDetails: `
-Go to Amazon, search for "wireless keyboard".
-Return top 5 results with rating ≥ 4.0 as JSON:
-[{ "title": "...", "price": "...", "rating": "..." }]
-`
-```
-
-</CodeGroup>
-
-**Impact:** Concise prompts use fewer input tokens, reducing costs.
-
----
-
-### 2. Avoid Redundant Context
-
-Don't repeat information the agent already knows:
-
+❌ **Expensive:**
 ```javascript
-// Bad - repeating context in follow-up task
-socket.emit("message", {
-  actionType: "newTask",
-  newState: "start",
-  taskDetails: "You are on Amazon. You previously searched for keyboards. Now add the first result to cart."
-});
-
-// Good - agent remembers context
-socket.emit("message", {
-  actionType: "newTask",
-  newState: "start",
-  taskDetails: "Add the first result to cart"
-});
+await runTask("Go to amazon.com");      // New session
+await runTask("Search for keyboards");  // Another new session
+await runTask("Get first result");      // Yet another session
 ```
 
----
-
-### 3. Batch Related Actions
-
-Combine multiple small tasks into one:
-
+✅ **Optimized:**
 ```javascript
-// Bad - 3 separate tasks (3x overhead)
-await sendTask("Go to Amazon");
-await sendTask("Search for wireless keyboards");
-await sendTask("Get top 5 results");
-
-// Good - 1 combined task
-await sendTask(`
-  Go to Amazon, search for "wireless keyboards",
-  and return top 5 results as JSON
-`);
+const session = await startSession("Go to amazon.com");
+await sendTask(session, "Search for keyboards");
+await sendTask(session, "Get first result", { terminateOnCompletion: true });
 ```
+
+**Impact:** 3x reduction in session overhead costs.
 
 ---
 
-## Token Optimization
-
-### 1. Limit `maxInputTokens` and `maxOutputTokens`
+### Limit Token Usage
 
 For simple tasks, reduce token limits:
 
 ```javascript
-socket.emit("message", {
-  actionType: "newTask",
-  newState: "start",
-  taskDetails: "Get product price",
-  maxInputTokens: 10000,   // Lower for simple tasks (default: 100000)
-  maxOutputTokens: 1000    // Lower for short responses (default: 100000)
-});
-```
-
-**Guidelines:**
-- Simple data extraction: 10,000 input / 1,000 output
-- Form filling: 20,000 input / 2,000 output
-- Complex workflows: 50,000 input / 10,000 output
-
----
-
-### 2. Request Minimal Output
-
-Ask for only what you need:
-
-```javascript
-// Bad - returns verbose description
-taskDetails: "Find the product and describe it in detail"
-
-// Good - returns only what's needed
-taskDetails: "Return product price as JSON: { \"price\": \"29.99\" }"
-```
-
----
-
-## Monitoring and Alerts
-
-### 1. Track Usage Per Task
-
-Monitor costs in real-time:
-
-```javascript
-async function trackTaskCost(sessionId, taskId) {
-  const result = await pollForResult(sessionId, taskId);
-
-  if (result.usage) {
-    console.log("Task Cost Analysis:");
-    console.log(`- Input tokens: ${result.usage.inputTokens}`);
-    console.log(`- Output tokens: ${result.usage.outputTokens}`);
-    console.log(`- Compute time: ${result.usage.computeTime}s`);
-    console.log(`- Total cost: $${result.usage.cost}`);
-
-    // Log to analytics
-    analytics.track("task_completed", {
-      sessionId,
-      taskId,
-      cost: result.usage.cost,
-      tokens: result.usage.inputTokens + result.usage.outputTokens,
-      duration: result.usage.computeTime
-    });
-  }
-
-  return result;
+{
+  "taskDetails": "Get product price",
+  "maxInputTokens": 10000,   // Lower for simple tasks (default: 100000)
+  "maxOutputTokens": 1000    // Lower for short responses (default: 100000)
 }
 ```
 
 ---
 
-### 2. Set Up Cost Alerts
+### Use `avoidDomains` to Prevent Detours
 
-Alert when costs exceed thresholds:
+Block unnecessary domains to prevent wasted navigation:
 
 ```javascript
-class CostMonitor {
-  constructor(dailyLimit = 10.00) {
-    this.dailyLimit = dailyLimit;
-    this.dailySpend = 0;
-    this.resetDate = new Date().toDateString();
-  }
-
-  recordCost(cost) {
-    const today = new Date().toDateString();
-
-    // Reset if new day
-    if (today !== this.resetDate) {
-      this.dailySpend = 0;
-      this.resetDate = today;
-    }
-
-    this.dailySpend += cost;
-
-    // Check threshold
-    if (this.dailySpend > this.dailyLimit) {
-      this.sendAlert(`Daily cost limit exceeded: $${this.dailySpend.toFixed(2)}`);
-      throw new Error("Daily cost limit exceeded");
-    }
-
-    // Warn at 80%
-    if (this.dailySpend > this.dailyLimit * 0.8) {
-      console.warn(`Warning: 80% of daily budget used ($${this.dailySpend.toFixed(2)})`);
-    }
-  }
-
-  sendAlert(message) {
-    console.error(message);
-    // Send to Slack, email, etc.
-  }
+{
+  "taskDetails": "Research this topic",
+  "avoidDomains": ["facebook.com", "twitter.com", "ads.example.com"]
 }
-
-// Usage
-const monitor = new CostMonitor(10.00);
-
-socket.on("message", (data) => {
-  if (data.type === "task_completed" && data.usage) {
-    try {
-      monitor.recordCost(data.usage.cost);
-    } catch (error) {
-      // Stop creating new tasks
-      console.error("Cost limit exceeded, stopping automation");
-    }
-  }
-});
 ```
 
 ---
 
-### 3. Aggregate Usage Reports
+## Monitoring Costs
 
-Track costs over time:
+**Real-time:** Check `usage.cost` in every API response.
 
-```javascript
-class UsageReporter {
-  constructor() {
-    this.sessions = [];
-  }
-
-  recordSession(sessionData) {
-    this.sessions.push({
-      sessionId: sessionData.sessionId,
-      tasks: sessionData.tasks,
-      totalCost: sessionData.tasks.reduce((sum, t) => sum + (t.usage?.cost || 0), 0),
-      totalTokens: sessionData.tasks.reduce((sum, t) => sum + (t.usage?.inputTokens || 0) + (t.usage?.outputTokens || 0), 0),
-      timestamp: new Date()
-    });
-  }
-
-  generateReport(days = 7) {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - days);
-
-    const recent = this.sessions.filter(s => s.timestamp > cutoff);
-
-    const report = {
-      period: `${days} days`,
-      totalSessions: recent.length,
-      totalCost: recent.reduce((sum, s) => sum + s.totalCost, 0),
-      totalTokens: recent.reduce((sum, s) => sum + s.totalTokens, 0),
-      avgCostPerSession: recent.reduce((sum, s) => sum + s.totalCost, 0) / recent.length,
-      avgTokensPerSession: recent.reduce((sum, s) => sum + s.totalTokens, 0) / recent.length
-    };
-
-    console.log("Usage Report:");
-    console.log(`Period: ${report.period}`);
-    console.log(`Total Sessions: ${report.totalSessions}`);
-    console.log(`Total Cost: $${report.totalCost.toFixed(2)}`);
-    console.log(`Total Tokens: ${report.totalTokens.toLocaleString()}`);
-    console.log(`Avg Cost/Session: $${report.avgCostPerSession.toFixed(2)}`);
-    console.log(`Avg Tokens/Session: ${Math.round(report.avgTokensPerSession).toLocaleString()}`);
-
-    return report;
+```json
+{
+  "success": true,
+  "sessionId": "abc123",
+  "taskId": "xyz789",
+  "type": "task_completed",
+  "data": {
+    "message": "Task completed successfully"
+  },
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
+    "cost": 0.0124
   }
 }
-
-// Usage
-const reporter = new UsageReporter();
-
-// After each session
-reporter.recordSession({
-  sessionId: session.sessionId,
-  tasks: [/* array of completed tasks with usage data */]
-});
-
-// Generate weekly report
-setInterval(() => {
-  reporter.generateReport(7);
-}, 7 * 24 * 60 * 60 * 1000); // Weekly
 ```
 
----
+**Dashboard:** View historical usage at [app.webrun.ai/usage](https://app.webrun.ai/usage).
 
-## Batch Processing Patterns
-
-### Pattern 1: Reuse Sessions for Related Tasks
-
-```javascript
-async function batchProcess(items) {
-  // Create one session for all items
-  const session = await fetch("https://connect.webrun.ai/start/start-session", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`
-    },
-    body: JSON.stringify({
-      taskDetails: "Go to example.com",
-      startingUrl: "https://example.com"
-    })
-  }).then(r => r.json());
-
-  const results = [];
-
-  // Process items sequentially in same session
-  for (const item of items) {
-    const task = await sendMessage(session.sessionId, {
-      actionType: "newTask",
-      newState: "start",
-      taskDetails: `Process item: ${item}`,
-      // Last item terminates session
-      terminateOnCompletion: item === items[items.length - 1]
-    });
-
-    const result = await pollForResult(session.sessionId, task.taskId);
-    results.push(result);
-  }
-
-  return results;
-}
-
-// Process 10 items in 1 session instead of 10 sessions
-const items = ["item1", "item2", "item3", "item4", "item5"];
-const results = await batchProcess(items);
-```
-
-**Cost savings:** Reusing sessions eliminates session creation overhead.
-
----
-
-### Pattern 2: Parallel Sessions with Limits
-
-```javascript
-async function parallelBatchProcess(items, maxConcurrent = 3) {
-  const results = [];
-  const queue = [...items];
-
-  async function processItem(item) {
-    const session = await fetch("https://connect.webrun.ai/start/run-task", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${API_KEY}`
-      },
-      body: JSON.stringify({
-        taskDetails: `Process: ${item}`
-      })
-    }).then(r => r.json());
-
-    const result = await pollForResult(session.sessionId, session.taskId);
-    return result;
-  }
-
-  // Process in batches of maxConcurrent
-  while (queue.length > 0) {
-    const batch = queue.splice(0, maxConcurrent);
-    const batchResults = await Promise.all(batch.map(processItem));
-    results.push(...batchResults);
-  }
-
-  return results;
-}
-
-// Process 20 items, 3 at a time
-const items = Array.from({ length: 20 }, (_, i) => `item${i + 1}`);
-const results = await parallelBatchProcess(items, 3);
-```
-
-**Cost savings:** Limits concurrent sessions to avoid overwhelming costs.
+**During polling:** The `usage` object updates in real-time as tasks execute.
 
 ---
 
 ## Cost Optimization Checklist
 
-- [ ] Use `/start/run-task` for single tasks
-- [ ] Set `terminateOnCompletion: true` on final task in multi-task workflows
-- [ ] Explicitly terminate sessions with `{ actionType: "state", newState: "terminate" }`
-- [ ] Set appropriate `maxDuration` based on task complexity
-- [ ] Monitor task costs and stop expensive tasks early
+- [ ] Use `/start/run-task` for single tasks (auto-terminates)
+- [ ] Set `terminateOnCompletion: true` on final tasks in multi-task workflows
 - [ ] Write concise, specific task descriptions
+- [ ] Provide `startingUrl` when the starting point is known
+- [ ] Set appropriate `maxDuration` based on task complexity
 - [ ] Batch related tasks into single sessions
 - [ ] Limit `maxInputTokens` and `maxOutputTokens` for simple tasks
-- [ ] Request minimal output (structured data > verbose descriptions)
-- [ ] Set up cost alerts and monitoring
-- [ ] Review usage reports regularly
-- [ ] Reuse sessions for related batch processing
+- [ ] Use `avoidDomains` to prevent accidental navigation
+- [ ] Monitor `usage.cost` in responses to track spending
 
 ---
 
-## Example: Cost-Optimized Workflow
+## Example: Before & After
 
+**Before: Expensive**
 ```javascript
-const API_KEY = "YOUR_API_KEY";
-const BASE = "https://connect.webrun.ai";
-
-class CostOptimizedWorkflow {
-  constructor(maxDailyCost = 10.00) {
-    this.maxDailyCost = maxDailyCost;
-    this.dailySpend = 0;
-    this.resetDate = new Date().toDateString();
-  }
-
-  checkBudget() {
-    const today = new Date().toDateString();
-    if (today !== this.resetDate) {
-      this.dailySpend = 0;
-      this.resetDate = today;
-    }
-
-    if (this.dailySpend >= this.maxDailyCost) {
-      throw new Error("Daily budget exceeded");
-    }
-  }
-
-  async runTask(taskDetails, options = {}) {
-    this.checkBudget();
-
-    const session = await fetch(`${BASE}/start/run-task`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${API_KEY}`
-      },
-      body: JSON.stringify({
-        taskDetails,
-        maxDuration: options.maxDuration || 30000,     // 30s default
-        maxInputTokens: options.maxInputTokens || 20000,  // Reduced default
-        maxOutputTokens: options.maxOutputTokens || 2000,  // Reduced default
-        ...options
-      })
-    }).then(r => r.json());
-
-    const result = await this.pollForResult(session.sessionId, session.taskId);
-
-    // Record cost
-    if (result.usage) {
-      this.dailySpend += result.usage.cost;
-      console.log(`Task cost: $${result.usage.cost.toFixed(4)}, Daily total: $${this.dailySpend.toFixed(2)}`);
-    }
-
-    return result;
-  }
-
-  async pollForResult(sessionId, taskId) {
-    const maxAttempts = 30;
-    const interval = 2000;
-
-    for (let i = 0; i < maxAttempts; i++) {
-      const res = await fetch(`${BASE}/task/${sessionId}/${taskId}`, {
-        headers: { "Authorization": `Bearer ${API_KEY}` }
-      });
-      const data = await res.json();
-
-      if (data.type === "task_completed") return data;
-      if (data.type === "guardrail_trigger") throw new Error(`Guardrail: ${data.data.value}`);
-      if (data.status === "failed") throw new Error(data.error);
-
-      if (data.pending) {
-        await new Promise(r => setTimeout(r, interval));
-        continue;
-      }
-
-      return data;
-    }
-
-    throw new Error("Polling timeout");
-  }
-}
-
-// Usage
-const workflow = new CostOptimizedWorkflow(10.00);
-
-async function main() {
-  try {
-    const result = await workflow.runTask(
-      "Go to Amazon, search 'laptop', return top 3 as JSON",
-      { maxDuration: 45000 }
-    );
-
-    console.log("Result:", JSON.parse(result.data.message));
-  } catch (error) {
-    console.error("Error:", error.message);
-  }
-}
-
-main();
+// Creates 3 separate sessions
+const result1 = await runTask("Go to amazon.com");
+await sleep(5000); // Forgot to terminate, paying for idle time
+const result2 = await runTask("Please navigate to the search box and then type in 'wireless keyboard' and press enter");
+await sleep(5000);
+const result3 = await runTask("Get me information about the first result");
 ```
 
+**After: Optimized**
+```javascript
+// Single session, concise tasks, explicit termination
+const session = await startSession({
+  taskDetails: "Go to amazon.com",
+  startingUrl: "https://amazon.com",
+  maxDuration: 60000  // 1 minute max
+});
+
+await sendTask(session, "Search 'wireless keyboard'");
+
+await sendTask(session, "Return first result as JSON: title, price, rating", {
+  terminateOnCompletion: true
+});
+```
+
+**Savings:** ~70% cost reduction from session reuse, concise prompts, and explicit termination.
+
 ---
 
-<Accordion title="Related Guides">
-  <CardGroup cols={2}>
-    <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
-      Efficient multi-task session patterns
-    </Card>
-    <Card title="Structured Output" icon="code" href="/usage-guides/structured-output">
-      Optimize output for minimal token usage
-    </Card>
-  </CardGroup>
-</Accordion>
+<CardGroup cols={2}>
+  <Card title="Pricing" icon="credit-card" href="/concepts/pricing">
+    Understand WebRun's pricing model
+  </Card>
+  <Card title="Session Control" icon="gamepad" href="/usage-guides/controlling-sessions">
+    Manage session lifecycle
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain tasks efficiently
+  </Card>
+  <Card title="Structured Output" icon="code" href="/usage-guides/structured-output">
+    Request minimal, structured responses
+  </Card>
+</CardGroup>
