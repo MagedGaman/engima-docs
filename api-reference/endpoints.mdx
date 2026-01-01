@@ -111,14 +111,16 @@ Start a new task. Returns taskId for polling.
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Found 50 laptop results",
-      "prompt_tokens": 8500,
-      "completion_tokens": 2300,
-      "total_tokens": 10800
-    }
+  "type": "task_completed",
+  "data": {
+    "message": "Found 50 laptop results"
+  },
+  "usage": {
+    "prompt_tokens": 8500,
+    "completion_tokens": 2300,
+    "total_tokens": 10800,
+    "completion_time": 18.3,
+    "cost": 0.0087
   }
 }
 ```
@@ -129,9 +131,8 @@ Start a new task. Returns taskId for polling.
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
-  "pending": true,
-  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
-  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+  "status": "pending",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
 }
 ```
 

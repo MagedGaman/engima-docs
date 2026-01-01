@@ -27,16 +27,16 @@ Both `/run-task` and `/send-message` wait up to 50 seconds for task completion. 
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
-  "status": "complete",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Successfully completed the search",
-      "prompt_tokens": 12450,
-      "completion_tokens": 3200,
-      "total_tokens": 15650,
-      "completion_time": 23.5
-    }
+  "type": "task_completed",
+  "data": {
+    "message": "Successfully completed the search"
+  },
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
+    "cost": 0.0124
   }
 }
 ```
@@ -48,15 +48,15 @@ Both `/run-task` and `/send-message` wait up to 50 seconds for task completion. 
 | `success` | boolean | Request success indicator |
 | `sessionId` | string | Session identifier |
 | `taskId` | string | Task identifier |
-| `status` | string | Task status: `"complete"` |
-| `result` | object | Task result details |
-| `result.type` | string | Result type: `"task_completed"` |
-| `result.data` | object | Result data |
-| `result.data.message` | string | Task completion message |
-| `result.data.prompt_tokens` | number | Input tokens used |
-| `result.data.completion_tokens` | number | Output tokens generated |
-| `result.data.total_tokens` | number | Total tokens used |
-| `result.data.completion_time` | number | Execution time in seconds |
+| `type` | string | Result type: `"task_completed"` |
+| `data` | object | Task result data |
+| `data.message` | string | Task completion message |
+| `usage` | object | Usage and billing information |
+| `usage.prompt_tokens` | number | Input tokens used |
+| `usage.completion_tokens` | number | Output tokens generated |
+| `usage.total_tokens` | number | Total tokens used |
+| `usage.completion_time` | number | Execution time in seconds |
+| `usage.cost` | number | Cost in USD |
 
 ---
 
@@ -100,12 +100,14 @@ Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is 
 ```json
 {
   "success": true,
-  "status": "active",
-  "pending": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "running",
   "usage": {
-    "inputTokens": 8000,
-    "outputTokens": 2100,
-    "computeTime": 3,
+    "prompt_tokens": 8000,
+    "completion_tokens": 2100,
+    "total_tokens": 10100,
+    "completion_time": 12.3,
     "cost": 0.0067
   }
 }
@@ -116,9 +118,10 @@ Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is 
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Request success indicator |
-| `status` | string | `"active"` - task is running |
-| `pending` | boolean | `true` - continue polling |
-| `usage` | object | Current usage statistics |
+| `sessionId` | string | Session identifier |
+| `taskId` | string | Task identifier |
+| `status` | string | `"running"` - task is executing |
+| `usage` | object | Current usage statistics (updates in real-time) |
 
 ---
 
@@ -127,18 +130,17 @@ Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is 
 ```json
 {
   "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
-    "message": "Task finished successfully",
+    "message": "Task finished successfully"
+  },
+  "usage": {
     "prompt_tokens": 12450,
     "completion_tokens": 3200,
     "total_tokens": 15650,
-    "completion_time": 23.5
-  },
-  "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
-    "computeTime": 5,
+    "completion_time": 23.5,
     "cost": 0.0124
   },
   "completedAt": "2024-01-15T10:30:00Z"
@@ -150,14 +152,17 @@ Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is 
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Request success indicator |
+| `sessionId` | string | Session identifier |
+| `taskId` | string | Task identifier |
 | `type` | string | `"task_completed"` |
 | `data` | object | Task result data |
 | `data.message` | string | Completion message |
-| `data.prompt_tokens` | number | Total input tokens |
-| `data.completion_tokens` | number | Total output tokens |
-| `data.total_tokens` | number | Total tokens |
-| `data.completion_time` | number | Execution time in seconds |
 | `usage` | object | Final usage statistics |
+| `usage.prompt_tokens` | number | Total input tokens |
+| `usage.completion_tokens` | number | Total output tokens |
+| `usage.total_tokens` | number | Total tokens |
+| `usage.completion_time` | number | Execution time in seconds |
+| `usage.cost` | number | Cost in USD |
 | `completedAt` | string | ISO 8601 completion timestamp |
 
 ---
@@ -206,13 +211,16 @@ Respond with guardrail message via `POST /start/send-message`:
 ```json
 {
   "success": false,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
   "status": "failed",
   "error": "Navigation timeout after 30 seconds",
   "code": "NAVIGATION_TIMEOUT",
   "usage": {
-    "inputTokens": 5000,
-    "outputTokens": 1200,
-    "computeTime": 2,
+    "prompt_tokens": 5000,
+    "completion_tokens": 1200,
+    "total_tokens": 6200,
+    "completion_time": 30.0,
     "cost": 0.0045
   }
 }
@@ -375,16 +383,17 @@ Task finished successfully.
 ```json
 {
   "type": "task_completed",
+  "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "data": {
-    "message": "Task completed successfully",
+    "message": "Task completed successfully"
+  },
+  "usage": {
     "prompt_tokens": 15420,
     "completion_tokens": 8230,
     "total_tokens": 23650,
     "completion_time": 45.3,
-    "usage": {
-      "cost": 0.0234
-    }
+    "cost": 0.0234
   }
 }
 ```
@@ -394,15 +403,16 @@ Task finished successfully.
 | Field | Type | Description |
 |-------|------|-------------|
 | `type` | string | `"task_completed"` |
+| `sessionId` | string | Session identifier |
 | `taskId` | string | Task identifier |
 | `data` | object | Completion details |
 | `data.message` | string | Completion message |
-| `data.prompt_tokens` | number | Input tokens used |
-| `data.completion_tokens` | number | Output tokens generated |
-| `data.total_tokens` | number | Total tokens used |
-| `data.completion_time` | number | Execution time (seconds) |
-| `data.usage` | object | Usage statistics |
-| `data.usage.cost` | number | Cost in USD |
+| `usage` | object | Usage statistics |
+| `usage.prompt_tokens` | number | Input tokens used |
+| `usage.completion_tokens` | number | Output tokens generated |
+| `usage.total_tokens` | number | Total tokens used |
+| `usage.completion_time` | number | Execution time (seconds) |
+| `usage.cost` | number | Cost in USD |
 
 ---
 
@@ -708,10 +718,11 @@ The `usage` object appears in many responses and provides token and cost informa
 
 ```typescript
 interface Usage {
-  inputTokens: number;      // Number of input tokens used
-  outputTokens: number;     // Number of output tokens generated
-  computeTime: number;      // Compute time in seconds
-  cost: number;             // Cost in USD
+  prompt_tokens: number;      // Number of input tokens used
+  completion_tokens: number;  // Number of output tokens generated
+  total_tokens: number;       // Total tokens (prompt + completion)
+  completion_time: number;    // Execution time in seconds
+  cost: number;               // Cost in USD
 }
 ```
 
@@ -719,9 +730,10 @@ interface Usage {
 ```json
 {
   "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
-    "computeTime": 5,
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
     "cost": 0.0124
   }
 }
