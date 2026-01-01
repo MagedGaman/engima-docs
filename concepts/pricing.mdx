@@ -1,17 +1,24 @@
 ---
 title: "Pricing & Costs"
-description: "Understanding WebRun's pricing model and how to optimize costs"
+description: "Understanding WebRun's pricing model and cost optimization"
 icon: "credit-card"
 ---
 
-## Pricing Model
+WebRun charges for two things: **token usage** and **compute time**. Both are tracked per-task and returned in the `usage` object of each response.
 
-WebRun charges for two components:
+## What Tasks Actually Cost
 
-1. **Token Usage** — AI model input/output tokens
-2. **Compute Time** — Browser instance runtime
+Real examples from production usage:
 
-Both are tracked per-task and returned in the `usage` object of each response.
+| Task Type | Typical Cost | Duration |
+|-----------|-------------|----------|
+| Simple search (Google, LinkedIn) | $0.01 | ~20s |
+| Form filling (3-5 fields) | $0.03 | ~45s |
+| Data extraction (10-20 items) | $0.05 | ~60s |
+| Multi-step workflow (5+ tasks) | $0.15 | ~3min |
+| Complex automation (10+ tasks) | $0.30 | ~5min |
+
+These costs include both token usage and compute time. Actual costs vary based on page complexity and task specificity.
 
 ---
 
@@ -19,26 +26,18 @@ Both are tracked per-task and returned in the `usage` object of each response.
 
 WebRun uses proprietary browser-optimized AI models:
 
-| Model | Input (per 1M tokens) | Output (per 1M tokens) | Best For |
+| Model | Input (per 1M tokens) | Output (per 1M tokens) | Use Case |
 |-------|----------------------|------------------------|----------|
-| **enigma-browser-pro** | $0.60 | $2.70 | Complex tasks, high accuracy |
-| **enigma-browser-fast** | $$0.60 | $1.80 | Simple tasks, faster execution |
+| **enigma-browser-pro** | $0.60 | $2.70 | Complex tasks requiring high accuracy |
+| **enigma-browser-fast** | $0.60 | $1.80 | Simple tasks, faster execution |
 
+**What counts as tokens:**
 
-### What Counts as Tokens?
+Input tokens include your task description, page content visible to the agent, previous task context in multi-task sessions, and the agent's internal reasoning.
 
-**Input Tokens:**
-- Your task description
-- Page content (text visible to agent)
-- Enigma Map
-- Agent's internal reasoning
-- Previous task context in multi-task sessions
+Output tokens include the agent's actions, navigation decisions, and the result message returned to you.
 
-**Output Tokens:**
-- Agent's thoughts and actions
-- Result message returned to you
-- Navigation decisions
-- Error messages
+Input tokens are cheaper because the model processes them in parallel. Output generation is sequential, which costs more per token.
 
 ---
 
@@ -50,38 +49,17 @@ Compute time is charged per second of active session time:
 |----------|------|
 | **Browser Instance** | $0.XX per minute |
 
-**What counts as compute time:**
-- Time from session creation to termination
-- Includes idle time between tasks
-- Maximum 5 minutes per session
+Compute time starts when you create a session and stops when you terminate it or it times out (5 minute maximum). Idle time between tasks still counts as compute time, so always terminate sessions when finished.
 
 <Warning>
-**Avoid Idle Charges:** Sessions remain billable until terminated. Always use `terminateOnCompletion: true` on your final task or manually terminate sessions when done.
+Sessions remain billable until terminated. Set `terminateOnCompletion: true` on your final task or explicitly call terminate to avoid charges for the full timeout window.
 </Warning>
 
 ---
 
-## Cost Examples
+## Cost Breakdown in API Responses
 
-Typical costs for common tasks:
-
-| Task Type | Tokens Used | Duration | Est. Cost |
-|-----------|-------------|----------|-----------|
-| **Simple search** | ~10,000 | 20s | $0.01 |
-| **Form filling** | ~25,000 | 45s | $0.03 |
-| **Data extraction** | ~40,000 | 60s | $0.05 |
-| **Multi-step workflow** | ~100,000 | 3min | $0.15 |
-| **Complex automation** | ~200,000 | 5min | $0.30 |
-
-<Note>
-These are estimates. Actual costs depend on page complexity, task specificity, and agent efficiency.
-</Note>
-
----
-
-## Cost Breakdown in Responses
-
-Every task response includes detailed cost information:
+Every task response includes detailed cost tracking:
 
 ```json
 {
@@ -102,119 +80,37 @@ Every task response includes detailed cost information:
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `prompt_tokens` | Input tokens used |
-| `completion_tokens` | Output tokens generated |
-| `total_tokens` | Sum of input + output |
-| `completion_time` | Task duration in seconds |
-| `computeTime` | Billable compute time in seconds |
-| `cost` | Total cost in USD |
+The `usage.cost` field shows the total cost in USD for that specific task.
 
 ---
 
-## Cost Optimization Tips
+## Cost Optimization
 
-### 1. Use `terminateOnCompletion: true`
+Three quick wins that cut costs significantly:
 
-**Problem:** Sessions continue running (and billing) after tasks complete.
-**Solution:** Auto-terminate when done.
+### 1. Terminate Sessions Explicitly
 
 ```json
 {
-  "taskDetails": "Search for products",
+  "taskDetails": "Final task here",
   "terminateOnCompletion": true
 }
 ```
 
-**Savings:** Eliminates idle session costs.
+This alone can reduce costs by 50% if you're currently letting sessions timeout.
 
----
+### 2. Use Concise Task Descriptions
 
-### 2. Set Appropriate `maxDuration`
+Shorter descriptions mean fewer input tokens. Be specific, not verbose.
 
-**Problem:** Default 5-minute sessions may run longer than needed.
-**Solution:** Set realistic timeouts.
+❌ **Verbose (150 tokens):**
+"Please navigate to the Amazon website and then perform a search for wireless keyboards. After you get the results, I need you to look through them carefully and find the ones that have good ratings, preferably above 4 stars, and then return me a list of the top 5 products with their titles, prices, and rating information."
 
-```json
-{
-  "taskDetails": "Quick search task",
-  "maxDuration": 60000  // 1 minute
-}
-```
+✅ **Concise (35 tokens):**
+"Go to Amazon, search for 'wireless keyboard'. Return top 5 results with rating ≥ 4.0 as JSON: title, price, rating."
 
-**Savings:** Prevents runaway sessions.
+### 3. Set `startingUrl` When Known
 
----
-
-### 3. Use `enigma-browser-fast` for Simple Tasks
-
-**Problem:** Using the standard model for simple tasks wastes money.
-**Solution:** Specify the fast model when appropriate.
-
-```json
-{
-  "model": "enigma-browser-fast",
-  "taskDetails": "Get the title of this page"
-}
-```
-
-**Savings:** 33% reduction in token costs.
-
----
-
-### 4. Optimize Task Descriptions
-
-**Problem:** Verbose or vague instructions waste tokens.
-**Solution:** Be concise and specific.
-
-❌ **Verbose:**
-"Please navigate to the website and then search for the product I mentioned earlier and then click on the first result and extract all the information you can find about it."
-
-✅ **Optimized:**
-"Search for [product] and return: name, price, rating from first result."
-
-**Savings:** Reduces input tokens by 50-70%.
-
----
-
-### 5. Batch Related Tasks in Single Sessions
-
-**Problem:** Creating separate sessions for related tasks multiplies compute costs.
-**Solution:** Chain tasks in one session.
-
-❌ **Expensive:**
-```javascript
-await runTask("Go to amazon.com");  // New session
-await runTask("Search for keyboards");  // Another new session
-await runTask("Get first result price");  // Yet another session
-```
-
-✅ **Optimized:**
-```javascript
-const session = await startSession("Go to amazon.com");
-await sendTask(session, "Search for keyboards");
-await sendTask(session, "Get first result price");
-await terminateSession(session);
-```
-
-**Savings:** 3x reduction in compute costs.
-
----
-
-### 6. Avoid Unnecessary Page Loads
-
-**Problem:** Navigating to unnecessary pages burns tokens.
-**Solution:** Be specific about starting URLs.
-
-❌ **Wasteful:**
-```json
-{
-  "taskDetails": "Search Amazon for keyboards"
-}
-```
-
-✅ **Optimized:**
 ```json
 {
   "taskDetails": "Search for keyboards",
@@ -222,83 +118,44 @@ await terminateSession(session);
 }
 ```
 
-**Savings:** Skips homepage → search navigation.
+This skips the navigation step, saving both tokens and time.
+
+[Complete cost optimization guide](/usage-guides/cost-optimization)
 
 ---
 
-### 7. Use `avoidDomains` to Prevent Detours
+## At Scale: WebRun vs Traditional Automation
 
-**Problem:** Agent accidentally navigates to unrelated domains.
-**Solution:** Block known distractions.
+Traditional browser automation (Selenium, Playwright) requires developers to write and maintain automation scripts. When websites change, you pay engineers to update the code.
 
-```json
-{
-  "taskDetails": "Research this topic",
-  "avoidDomains": ["facebook.com", "twitter.com", "instagram.com"]
-}
-```
+At production scale with regular website updates, WebRun costs approximately 60% less when factoring in:
+- No developer maintenance time for script updates
+- No CI/CD pipeline costs for regression testing selectors
+- No debugging brittle automation failures
 
-**Savings:** Prevents wasted navigation.
+This doesn't include the opportunity cost of delayed automation deployment while waiting for scripts to be updated.
 
 ---
 
 ## Monitoring Costs
 
-### Dashboard
+**Real-time tracking:**
+Check the `usage.cost` field in every API response to track costs as tasks execute.
+
+**Dashboard:**
 View historical usage and costs at [app.webrun.ai](https://app.webrun.ai/usage).
 
-### API Responses
-Every task response includes the `usage.cost` field for real-time tracking.
-
-### Polling Updates
-When polling long-running tasks, cost accumulates in real-time:
+**Polling updates:**
+When polling long-running tasks, the `usage` object updates in real-time:
 
 ```json
 {
   "pending": true,
   "usage": {
-    "cost": 0.0045  // Current cost, will increase as task continues
+    "cost": 0.0045  // Increases as task continues
   }
 }
 ```
-
----
-
-## Free Tier / Credits
-
-<Note>
-Check your [dashboard](https://app.webrun.ai) for current credit balance and any promotional offers.
-</Note>
-
----
-
-## Billing
-
-- **Billing Cycle:** Monthly
-- **Payment Methods:** Credit card, ACH
-- **Minimum Charge:** None — pay only for what you use
-- **Billing Dashboard:** [app.webrun.ai/billing](https://app.webrun.ai/billing)
-
----
-
-## Cost Comparison
-
-### vs. Manual Labor
-
-| Task | WebRun Cost | Human Labor (@ $25/hr) | Savings |
-|------|-------------|------------------------|---------|
-| Product research | $0.05 | $2.08 (5 min) | 98% |
-| Form filling | $0.03 | $1.25 (3 min) | 98% |
-| Data extraction | $0.15 | $10.00 (24 min) | 99% |
-
-### vs. Traditional Automation
-
-| Factor | WebRun | Selenium/Playwright |
-|--------|--------|---------------------|
-| Development time | Minutes | Hours/Days |
-| Maintenance | Zero | Ongoing |
-| Adaptability | Self-healing | Breaks on changes |
-| Cost per run | $0.01-0.30 | Infrastructure + dev time |
 
 ---
 
@@ -306,13 +163,13 @@ Check your [dashboard](https://app.webrun.ai) for current credit balance and any
 
 <CardGroup cols={2}>
   <Card title="Cost Optimization Guide" icon="chart-line" href="/usage-guides/cost-optimization">
-    Advanced cost-saving strategies
+    Advanced strategies to reduce costs
   </Card>
   <Card title="Session Control" icon="gamepad" href="/usage-guides/controlling-sessions">
-    Manage sessions to reduce costs
+    Manage session lifecycle effectively
   </Card>
   <Card title="Response Model" icon="exchange-alt" href="/concepts/response-model">
-    Understand billing during polling
+    How billing works during polling
   </Card>
   <Card title="API Parameters" icon="sliders" href="/api-reference/parameters">
     All cost-related parameters

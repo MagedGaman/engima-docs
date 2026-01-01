@@ -4,51 +4,48 @@ description: "Run your first browser automation task in under 5 minutes"
 icon: "bolt"
 ---
 
-## Prerequisites
+## Get Your API Key
 
-1. Sign up at [WebRun.ai](https://webrun.ai)
-2. Go to **Settings → API Keys**
-3. Click **Create API Key** and copy it
+1. Sign up at [webrun.ai](https://webrun.ai)
+2. Navigate to **Settings → API Keys**
+3. Click **Create API Key** and save it
 
 ```
 enig_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 <Warning>
-**Sessions cost money until terminated.** Sessions remain billable until they time out (5 min max) or you explicitly terminate them. Always call `terminate` when done, or set `terminateOnCompletion: true` on your last task.
+Sessions cost money until terminated. Set `terminateOnCompletion: true` on your final task or explicitly terminate when done.
 </Warning>
 
 ---
 
-## Option A: REST API (Simplest)
+## Run Your First Task
 
-The simplest way to start: one API call that creates a session, runs your task, and returns the result.
-
-### 1. Single Task (run-task)
-
-Perfect for one-off tasks that auto-terminate when complete.
+The simplest approach: one API call that creates a session, runs your task, and auto-terminates.
 
 ```bash
 curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{"taskDetails": "Go to google.com and search for Anthropic"}'
+  -d '{
+    "taskDetails": "Go to google.com and search for Anthropic"
+  }'
 ```
 
-**Response (completed within 50 seconds):**
+**If the task completes within 50 seconds**, you get the result immediately:
+
 ```json
 {
   "success": true,
-  "sessionId": "a1b2c3d4e5f6",
-  "taskId": "x9y8z7w6v5u4",
+  "sessionId": "a1b2c3",
+  "taskId": "x9y8z7",
   "status": "complete",
   "result": {
     "type": "task_completed",
     "data": {
       "message": "Successfully searched for Anthropic on Google",
       "completion_time": 23.5,
-      "prompt_tokens": 12450,
-      "completion_tokens": 3200,
       "total_tokens": 15650
     },
     "usage": { "cost": 0.0124 }
@@ -56,25 +53,28 @@ curl -X POST https://connect.webrun.ai/start/run-task \
 }
 ```
 
-**Response (still running after 50 seconds):**
+**If the task takes longer**, you'll get a polling URL:
+
 ```json
 {
   "success": true,
-  "sessionId": "a1b2c3d4e5f6",
-  "taskId": "x9y8z7w6v5u4",
+  "sessionId": "a1b2c3",
+  "taskId": "x9y8z7",
   "status": "pending",
-  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
-  "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3/x9y8z7"
 }
 ```
 
+Poll the URL every 2-3 seconds until the task completes. Most tasks finish in 10-40 seconds, so faster polling wastes API quota while slower polling adds latency.
+
 ---
 
-### 2. Multi-Task Session (start-session + send-message)
+## Multi-Task Sessions
 
 For multiple tasks in sequence, create a persistent session:
 
-**Step 1: Create session**
+**1. Create the session**
+
 ```bash
 curl -X POST https://connect.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
@@ -85,7 +85,8 @@ curl -X POST https://connect.webrun.ai/start/start-session \
   }'
 ```
 
-**Step 2: Send follow-up task**
+**2. Send follow-up tasks**
+
 ```bash
 curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
@@ -100,31 +101,34 @@ curl -X POST https://connect.webrun.ai/start/send-message \
   }'
 ```
 
-**Step 3: Terminate when done**
+**3. Terminate when finished**
+
 ```bash
 curl -X POST https://connect.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
     "sessionId": "SESSION_ID",
-    "message": { "actionType": "state", "newState": "terminate" }
+    "message": {
+      "actionType": "state",
+      "newState": "terminate"
+    }
   }'
 ```
 
-[Learn more about multi-task workflows](/usage-guides/multi-task-workflows)
+Alternatively, set `terminateOnCompletion: true` on your last task to auto-terminate the session.
+
+[Multi-task workflows guide](/usage-guides/multi-task-workflows)
 
 ---
 
-### 3. Polling for Results
+## Polling for Results
 
-When a task returns `status: "pending"`, poll until complete.
-
-<Tip>
-**Poll every 2-3 seconds.** Faster polling wastes API quota; slower polling adds unnecessary latency. Most tasks complete within 10-40 seconds.
-</Tip>
+When a task returns `status: "pending"`, poll the URL until completion.
 
 ```javascript
 async function runTask(taskDetails, apiKey) {
+  // Start the task
   const response = await fetch("https://connect.webrun.ai/start/run-task", {
     method: "POST",
     headers: {
@@ -136,12 +140,12 @@ async function runTask(taskDetails, apiKey) {
 
   const data = await response.json();
 
-  // Inline result - return immediately
+  // Return immediately if complete
   if (data.status === "complete") {
     return data.result;
   }
 
-  // Pending - poll for result
+  // Poll if still running
   if (data.status === "pending") {
     return await pollForResult(data.sessionId, data.taskId, apiKey);
   }
@@ -150,7 +154,7 @@ async function runTask(taskDetails, apiKey) {
 }
 
 async function pollForResult(sessionId, taskId, apiKey) {
-  const maxAttempts = 60; // 2 minutes max
+  const maxAttempts = 60; // 2 minutes
   const interval = 2000; // Poll every 2 seconds
 
   for (let i = 0; i < maxAttempts; i++) {
@@ -161,12 +165,12 @@ async function pollForResult(sessionId, taskId, apiKey) {
 
     const data = await res.json();
 
-    // Check for completion
     if (data.type === "task_completed") return data;
     if (data.type === "guardrail_trigger") return data;
-    if (!data.success && data.type === "failed") throw new Error(data.error);
+    if (!data.success && data.type === "failed") {
+      throw new Error(data.error);
+    }
 
-    // Still running - wait and retry
     await new Promise(r => setTimeout(r, interval));
   }
 
@@ -179,174 +183,31 @@ console.log(result.data.message);
 console.log(`Cost: $${result.usage.cost}`);
 ```
 
-<Tip>
-Copy this `runTask` function as your starting point. It handles both response types and is production-ready.
-</Tip>
+This handles both instant and long-running tasks automatically.
 
 ---
 
-## Option B: WebSocket (Real-time)
+## Real-Time Updates with WebSocket
 
-Use WebSocket when you need live agent thoughts, action notifications, and real-time updates.
+For live agent thoughts and action notifications, use WebSocket. This requires more setup but gives you sub-second visibility into task execution.
 
-### 1. Socket.IO Connection
-
-```javascript
-import { io } from "socket.io-client";
-
-// Create a session first
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer YOUR_API_KEY"
-  },
-  body: JSON.stringify({
-    taskDetails: "Go to google.com and search for Anthropic"
-  })
-}).then(r => r.json());
-
-// Connect to WebSocket
-const socket = io("https://connect.webrun.ai", {
-  auth: { sessionId: session.sessionId },
-  transports: ["websocket"]
-});
-```
+[WebSocket integration guide](/integrations/websocket)
 
 ---
 
-### 2. Listening for Events
+## Next Steps
 
-```javascript
-socket.on("connect", () => {
-  console.log("Connected to session");
-});
-
-socket.on("message", (data) => {
-  switch (data.type) {
-    case "agent":
-      // Live agent reasoning
-      console.log("Agent thinking:", data.content);
-      break;
-
-    case "action":
-      // Browser action performed
-      console.log("Agent action:", data.data.name);
-      break;
-
-    case "task_completed":
-      // Task finished
-      console.log("Task done:", data.data.message);
-      console.log("Cost:", data.usage.cost);
-      socket.disconnect();
-      break;
-
-    case "guardrail_trigger":
-      // Agent needs human input
-      console.log("Guardrail:", data.data.value);
-      // Respond with required input
-      socket.emit("message", {
-        actionType: "guardrail",
-        taskDetails: "Provide the required information here",
-        newState: "resume"
-      });
-      break;
-
-    case "error":
-      // Task failed
-      console.error("Error:", data.error);
-      socket.disconnect();
-      break;
-  }
-});
-
-socket.on("end_session", (data) => {
-  console.log("Session ended:", data.reason);
-  socket.disconnect();
-});
-```
-
----
-
-### 3. Full Working Example
-
-```javascript
-import { io } from "socket.io-client";
-
-async function runTaskWithWebSocket(taskDetails, apiKey) {
-  return new Promise(async (resolve, reject) => {
-    // Step 1: Create session
-    const session = await fetch("https://connect.webrun.ai/start/start-session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({ taskDetails })
-    }).then(r => r.json());
-
-    // Step 2: Connect to WebSocket
-    const socket = io("https://connect.webrun.ai", {
-      auth: { sessionId: session.sessionId },
-      transports: ["websocket"]
-    });
-
-    // Step 3: Handle events
-    socket.on("message", (data) => {
-      switch (data.type) {
-        case "agent":
-          console.log("💭", data.content);
-          break;
-
-        case "action":
-          console.log("🎯", data.data.name);
-          break;
-
-        case "task_completed":
-          console.log("✅ Done:", data.data.message);
-          socket.disconnect();
-          resolve(data);
-          break;
-
-        case "guardrail_trigger":
-          console.error("⚠️ Guardrail triggered:", data.data.value);
-          socket.disconnect();
-          reject(new Error(`Guardrail: ${data.data.value}`));
-          break;
-
-        case "error":
-          console.error("❌ Error:", data.error);
-          socket.disconnect();
-          reject(new Error(data.error));
-          break;
-      }
-    });
-
-    socket.on("error", (err) => {
-      console.error("Socket error:", err);
-      reject(err);
-    });
-  });
-}
-
-// Usage
-const result = await runTaskWithWebSocket(
-  "Go to google.com and search for Anthropic",
-  "enig_xxx"
-);
-console.log("Result:", result.data.message);
-console.log("Cost:", result.usage.cost);
-```
-
----
-
-<Accordion title="What's Next?">
-  <CardGroup cols={2}>
-    <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
-      Chain multiple tasks in a session
-    </Card>
-    <Card title="MCP Quickstart" icon="robot" href="/getting-started/mcp-quickstart">
-      Set up Claude Desktop integration
-    </Card>
-  </CardGroup>
-</Accordion>
+<CardGroup cols={2}>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain multiple tasks in a session
+  </Card>
+  <Card title="MCP Integration" icon="robot" href="/getting-started/mcp-quickstart">
+    Set up Claude Desktop integration
+  </Card>
+  <Card title="Video Streaming" icon="video" href="/usage-guides/video-streaming">
+    Watch sessions execute in real-time
+  </Card>
+  <Card title="Cost Optimization" icon="piggy-bank" href="/usage-guides/cost-optimization">
+    Reduce costs and improve efficiency
+  </Card>
+</CardGroup>

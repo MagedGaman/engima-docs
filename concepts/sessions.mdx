@@ -4,146 +4,159 @@ description: "Understanding browser sessions and their lifecycle"
 icon: "window-restore"
 ---
 
-## What is a Session?
+A session is an isolated browser instance running your automation tasks. You get a dedicated environment with a unique `sessionId` that persists until you terminate it or it times out (5 minute maximum).
 
-A **session** is an isolated browser instance controlled by an AI agent. When you create a session, WebRun provisions a dedicated browser environment and returns connection details.
-
-Think of a session as a private browsing window that persists for the duration of your automation workflow. Each session:
-- Has a unique `sessionId` for tracking
-- Runs in complete isolation from other sessions
-- Can execute multiple tasks sequentially
-- Persists until terminated or timed out
+Sessions run completely isolated—no shared cookies, no shared state. This lets you run multiple concurrent sessions without interference. Run tasks sequentially within the same session: navigate to a site, authenticate, then execute your workflow. Terminate when done, or you'll pay for the full timeout window.
 
 ---
 
 ## Session Lifecycle
 
-Sessions progress through several states from creation to completion:
+Sessions progress through these states:
 
-```
-┌─────────┐     ┌──────────┐     ┌─────────────┐
-│ Pending │────►│  Active  │────►│  Completed  │
-└─────────┘     └──────────┘     └─────────────┘
-                     │
-                     ├───────────► Orphaned ───► Failed
-                     │
-                     ├───────────► Terminated
-                     │
-                     └───────────► Failed
-```
+**Pending** → Browser instance initializing
+**Active** → Task currently executing
+**Completed** → Session ended successfully
+**Terminated** → Ended by user or timeout
+**Failed** → Session ended due to error
+**Orphaned** → Instance disconnected unexpectedly (5-minute reconnection window)
 
-### Session States
-
-| State | Description | What Happens Next |
-|-------|-------------|-------------------|
-| `pending` | Session initialized, waiting for browser instance assignment | Transitions to `active` when browser is ready |
-| `active` | Task currently running | Can transition to `completed`, `terminated`, `orphaned`, or `failed` |
-| `orphaned` | Instance disconnected unexpectedly | 5-minute grace period for reconnection, then transitions to `failed` |
-| `completed` | Session ended successfully | Final state — session closed |
-| `terminated` | Session ended by user request or timeout | Final state — session closed |
-| `failed` | Session ended due to error | Final state — session closed |
-
-<Tip>
-**Orphaned Sessions:** If a browser instance loses connection (rare), the session enters a 5-minute grace period. If the instance reconnects within this window, the session resumes. Otherwise, it transitions to `failed`.
-</Tip>
+Orphaned sessions are rare. If a browser instance loses connection, the session waits 5 minutes for reconnection. If it doesn't reconnect, the session fails.
 
 ---
 
-## Session Parameters
+## Configuration Parameters
 
-When creating a session, you can configure these parameters:
+Configure sessions when creating them:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `taskDetails` | string | `""` | Initial task description (can be empty) |
-| `maxDuration` | number | 300000 | Session timeout in ms (max: 300000 = 5 minutes) |
-| `maxInputTokens` | number | 100000 | Max input tokens for AI model |
-| `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
-| `startingUrl` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
-| `avoidDomains` | string[] | `[]` | Domains agent should not visit |
-| `mode` | string | `"default"` | Session mode (currently only "default" supported) |
-| `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
-
-### Example Configuration
-
-```json
+```javascript
 {
-  "taskDetails": "Search for wireless keyboards",
-  "maxDuration": 180000,
-  "maxInputTokens": 50000,
-  "maxOutputTokens": 50000,
-  "startingUrl": "https://amazon.com",
-  "avoidDomains": ["facebook.com", "twitter.com"],
-  "mode": "default",
-  "terminateOnCompletion": true
+  "taskDetails": "What to do",                    // Initial task (can be empty)
+  "maxDuration": 300000,                          // Timeout in ms (max: 300000 = 5 min)
+  "maxInputTokens": 100000,                       // AI model input limit
+  "maxOutputTokens": 100000,                      // AI model output limit
+  "startingUrl": "https://example.com",           // Skip navigation
+  "avoidDomains": ["ads.example.com"],            // Domains to block
+  "terminateOnCompletion": false                  // Auto-terminate after first task
 }
 ```
 
-<Note>
-- `maxDuration` is enforced server-side; sessions cannot exceed 5 minutes (300000ms)
-- `taskDetails` can be empty if you plan to send tasks later
-- `terminateOnCompletion: true` is automatically set for the `/start/run-task` endpoint
-</Note>
+**Key parameters:**
 
----
-
-## Key Behaviors
-
-### One Task at a Time
-Each session runs tasks sequentially, not in parallel. If you send a new task while one is running, the new task will queue and start after the current one completes.
-
-### Session Timeouts
-Sessions have a maximum lifetime of 5 minutes (300000ms). After this duration:
-- The session automatically terminates
-- Any running task is stopped
-- You're billed only for actual compute time used
-
-### Isolation
-Sessions are completely isolated from each other:
-- No shared cookies or session state
-- No shared cache
-- Each session starts with a clean browser profile
-
-### Auto-Termination
-To avoid idle charges, use `terminateOnCompletion: true` on your final task, or manually terminate the session when done.
+- **maxDuration**: Enforced server-side. Sessions cannot exceed 5 minutes.
+- **taskDetails**: Can be empty if you plan to send tasks later via `/send-message`.
+- **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
+- **startingUrl**: Saves tokens and time by skipping navigation.
+- **avoidDomains**: Prevents accidental navigation to unwanted domains.
 
 ---
 
 ## Session Types
 
 ### Persistent Session
+
 Create a session that stays open for multiple tasks:
 
 ```bash
 POST /start/start-session
 ```
 
-**Use when:**
-- You need to execute multiple related tasks
-- Tasks depend on previous state (e.g., staying logged in)
-- Building complex multi-step workflows
+Use persistent sessions when you need to execute multiple related tasks or when tasks depend on previous state (like staying logged in).
 
 ### Single-Task Session
+
 Create a session that auto-terminates after one task:
 
 ```bash
 POST /start/run-task
 ```
 
-**Use when:**
-- You only need one task executed
-- No follow-up actions required
-- Simplest integration pattern
+Use single-task sessions for one-off automations with no follow-up actions. This is the simplest integration pattern.
 
 ---
 
-<Accordion title="Related">
-  <CardGroup cols={2}>
-    <Card title="Session Control" icon="gamepad" href="/usage-guides/controlling-sessions">
-      Pause, resume, stop, and terminate
-    </Card>
-    <Card title="Tasks" icon="check" href="/concepts/tasks">
-      Understanding task lifecycle
-    </Card>
-  </CardGroup>
-</Accordion>
+## Key Behaviors
+
+**One task at a time:**
+Sessions execute tasks sequentially, not in parallel. If you send a new task while one is running, it queues and starts after the current task completes.
+
+**5-minute maximum:**
+Sessions automatically terminate after 5 minutes. Any running task stops, and you're billed only for actual compute time used.
+
+**Complete isolation:**
+No shared cookies, cache, or session state between sessions. Each session starts with a clean browser profile.
+
+**Billing:**
+Sessions are billable from creation until termination or timeout. Idle time between tasks counts as compute time. Always terminate sessions when finished.
+
+---
+
+## Common Patterns
+
+**Pattern 1: Single task**
+```javascript
+// Create and auto-terminate
+POST /start/run-task
+{
+  "taskDetails": "Extract data from this page"
+}
+```
+
+**Pattern 2: Multi-task sequence**
+```javascript
+// Create session
+POST /start/start-session
+{ "taskDetails": "Navigate to site" }
+
+// Send follow-up task
+POST /start/send-message
+{
+  "sessionId": "sess_abc",
+  "message": {
+    "actionType": "newTask",
+    "taskDetails": "Extract data"
+  }
+}
+
+// Terminate explicitly
+POST /start/send-message
+{
+  "sessionId": "sess_abc",
+  "message": { "actionType": "state", "newState": "terminate" }
+}
+```
+
+**Pattern 3: Multi-task with auto-terminate**
+```javascript
+// Create session
+POST /start/start-session
+{ "taskDetails": "Navigate to site" }
+
+// Final task with auto-terminate
+POST /start/send-message
+{
+  "sessionId": "sess_abc",
+  "message": {
+    "actionType": "newTask",
+    "taskDetails": "Extract data",
+    "terminateOnCompletion": true  // Auto-terminates after this task
+  }
+}
+```
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Session Control" icon="gamepad" href="/usage-guides/controlling-sessions">
+    Pause, resume, stop, and terminate sessions
+  </Card>
+  <Card title="Tasks" icon="check" href="/concepts/tasks">
+    Understanding task lifecycle and execution
+  </Card>
+  <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+    Chain tasks effectively
+  </Card>
+  <Card title="Cost Optimization" icon="piggy-bank" href="/usage-guides/cost-optimization">
+    Reduce costs with session management
+  </Card>
+</CardGroup>
