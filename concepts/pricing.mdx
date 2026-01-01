@@ -4,9 +4,9 @@ description: "Understanding WebRun's pricing model and cost optimization"
 icon: "credit-card"
 ---
 
-WebRun charges for two things: **token usage** and **compute time**. Both are tracked per-task and returned in the `usage` object of each response.
+WebRun charges for **token usage** and **compute time**.
 
-## What Tasks Actually Cost
+## What Tasks Cost
 
 Real examples from production usage:
 
@@ -18,38 +18,24 @@ Real examples from production usage:
 | Multi-step workflow (5+ tasks) | $0.15 | ~3min |
 | Complex automation (10+ tasks) | $0.30 | ~5min |
 
-These costs include both token usage and compute time. Actual costs vary based on page complexity and task specificity.
+Actual costs vary based on page complexity and task specificity.
 
 ---
 
-## Token Pricing
+## Pricing
 
-WebRun uses proprietary browser-optimized AI models:
+### Tokens
 
-| Model | Input (per 1M tokens) | Output (per 1M tokens) | Use Case |
-|-------|----------------------|------------------------|----------|
-| **enigma-browser-pro** | $0.60 | $2.70 | Complex tasks requiring high accuracy |
-| **enigma-browser-fast** | $0.60 | $1.80 | Simple tasks, faster execution |
+| Model | Input (per 1M tokens) | Output (per 1M tokens) |
+|-------|----------------------|------------------------|
+| **enigma-browser-pro** | $0.60 | $2.70 |
+| **enigma-browser-fast** | $0.60 | $1.80 |
 
-**What counts as tokens:**
+### Compute
 
-Input tokens include your task description, page content visible to the agent, previous task context in multi-task sessions, and the agent's internal reasoning.
+**$0.02 per minute** of active session time.
 
-Output tokens include the agent's actions, navigation decisions, and the result message returned to you.
-
-Input tokens are cheaper because the model processes them in parallel. Output generation is sequential, which costs more per token.
-
----
-
-## Compute Pricing
-
-Compute time is charged per second of active session time:
-
-| Resource | Rate |
-|----------|------|
-| **Browser Instance** | $0.XX per minute |
-
-Compute time starts when you create a session and stops when you terminate it or it times out (5 minute maximum). Idle time between tasks still counts as compute time, so always terminate sessions when finished.
+Compute time runs from session creation until termination or timeout (5 minute maximum). WebRun provisions real desktop environments with dedicated resources for each session, ensuring consistent browser behavior across all tasks.
 
 <Warning>
 Sessions remain billable until terminated. Set `terminateOnCompletion: true` on your final task or explicitly call terminate to avoid charges for the full timeout window.
@@ -57,9 +43,9 @@ Sessions remain billable until terminated. Set `terminateOnCompletion: true` on 
 
 ---
 
-## Cost Breakdown in API Responses
+## Usage Tracking
 
-Every task response includes detailed cost tracking:
+Every response includes a `usage` object with real-time cost tracking:
 
 ```json
 {
@@ -80,89 +66,7 @@ Every task response includes detailed cost tracking:
 }
 ```
 
-The `usage.cost` field shows the total cost in USD for that specific task.
-
----
-
-## Cost Optimization
-
-Three quick wins that cut costs significantly:
-
-### 1. Terminate Sessions Explicitly
-
-```json
-{
-  "taskDetails": "Final task here",
-  "terminateOnCompletion": true
-}
-```
-
-This alone can reduce costs by 50% if you're currently letting sessions timeout.
-
-### 2. Use Concise Task Descriptions
-
-Shorter descriptions mean fewer input tokens. Be specific, not verbose.
-
-❌ **Verbose (150 tokens):**
-"Please navigate to the Amazon website and then perform a search for wireless keyboards. After you get the results, I need you to look through them carefully and find the ones that have good ratings, preferably above 4 stars, and then return me a list of the top 5 products with their titles, prices, and rating information."
-
-✅ **Concise (35 tokens):**
-"Go to Amazon, search for 'wireless keyboard'. Return top 5 results with rating ≥ 4.0 as JSON: title, price, rating."
-
-### 3. Set `startingUrl` When Known
-
-```json
-{
-  "taskDetails": "Search for keyboards",
-  "startingUrl": "https://amazon.com"
-}
-```
-
-This skips the navigation step, saving both tokens and time.
-
-[Complete cost optimization guide](/usage-guides/cost-optimization)
-
----
-
-## At Scale: WebRun vs Traditional Automation
-
-Traditional browser automation (Selenium, Playwright) requires developers to write and maintain automation scripts. When websites change, you pay engineers to update the code.
-
-At production scale with regular website updates, WebRun costs approximately 60% less when factoring in:
-- No developer maintenance time for script updates
-- No CI/CD pipeline costs for regression testing selectors
-- No debugging brittle automation failures
-
-This doesn't include the opportunity cost of delayed automation deployment while waiting for scripts to be updated.
-
----
-
-## Monitoring Costs
-
-**Real-time tracking:**
-Check the `usage.cost` field in every API response to track costs as tasks execute.
-
-**Dashboard:**
-View historical usage and costs at [app.webrun.ai](https://app.webrun.ai/usage).
-
-**Polling updates:**
-When polling long-running tasks, the `usage` object updates in real-time:
-
-```json
-{
-  "success": true,
-  "sessionId": "abc123",
-  "taskId": "xyz789",
-  "status": "running",
-  "usage": {
-    "prompt_tokens": 8000,
-    "completion_tokens": 1500,
-    "total_tokens": 9500,
-    "completion_time": 15.2,
-    "cost": 0.0045
-  }
-}
-```
+View historical usage and costs at [app.webrun.ai/usage](https://app.webrun.ai/usage).
 
 ---
 
@@ -170,13 +74,13 @@ When polling long-running tasks, the `usage` object updates in real-time:
 
 <CardGroup cols={2}>
   <Card title="Cost Optimization Guide" icon="chart-line" href="/usage-guides/cost-optimization">
-    Advanced strategies to reduce costs
+    Reduce costs with best practices
   </Card>
   <Card title="Session Control" icon="gamepad" href="/usage-guides/controlling-sessions">
-    Manage session lifecycle effectively
+    Manage session lifecycle
   </Card>
   <Card title="Response Model" icon="exchange-alt" href="/concepts/response-model">
-    How billing works during polling
+    Understanding polling and responses
   </Card>
   <Card title="API Parameters" icon="sliders" href="/api-reference/parameters">
     All cost-related parameters
