@@ -1,5 +1,33 @@
 # Documentation Humanization Plan
 
+## WebRun Brand Voice (Official Guidelines)
+
+**Primary:** **Bold Challenger** — "We're faster. Here's proof."
+**Secondary:** **Thought Leader** — Industry insights with technical depth
+
+### Words to Embrace
+✅ Fast, real-time, instant, seamless, reliable
+✅ Real browsers, real desktops
+✅ Sees the page, understands
+✅ Works for you
+
+### Words to Avoid
+❌ Slow, eventually, waiting
+❌ Hacky, workaround, bot, script, robotic
+❌ Complicated, complex, legacy, old-fashioned
+❌ Hedging: maybe, might, could, possibly
+
+### Core Messaging Principles
+1. **Lead with benefit, not feature** — Show impact before technical details
+2. **One idea per section** — Maintain clarity and focus
+3. **Quantify claims** — Use concrete numbers (e.g., "sub-100ms response times")
+4. **Prove assertions** — Back bold statements with evidence
+
+### Writing Style
+**Confident, direct language emphasizing tangible results.** Use plain language over jargon. Balance urgency with credibility—enthusiasm without desperation.
+
+---
+
 ## Problem Analysis
 
 Your friend is right—the documentation has several characteristics that make it feel AI-generated:
@@ -44,17 +72,21 @@ Your friend is right—the documentation has several characteristics that make i
 - ASCII diagrams feel impersonal
 
 **Improvements:**
-1. **Rewrite Opening**: Start with a problem/solution narrative instead of a clinical definition
+1. **Lead with the Problem**: Start with the pain point developers face, then position WebRun as the solution
    - Before: "WebRun is real-time browser automation infrastructure for AI agents..."
-   - After: "Ever wish you could tell a browser what to do in plain English? That's WebRun..."
+   - After: "Browser automation breaks when websites change. WebRun's AI agents adapt in real-time, executing tasks in plain English without brittle selectors."
 
 2. **Consolidate Card Groups**: Reduce from 3 card groups to 1 strategic CTA section
 
-3. **Add Voice**: Include a casual "Why we built this" or "The problem" section
+3. **Add Technical Credibility**: Show the architecture advantage, don't just claim it
+   - Include the sub-100ms claim with context: "Hybrid CNN-LLM architecture delivers sub-100ms response times—fast enough for production."
 
-4. **Replace Comparison Table**: Turn the "WebRun vs Traditional Automation" table into a narrative paragraph explaining the key difference
+4. **Replace Comparison Table**: Use a problem-solution format instead of feature comparison
+   - Show what breaks with traditional automation, then how WebRun's AI solves it
 
-5. **Simplify "How It Works"**: Use plain language instead of technical terms upfront
+5. **Concrete Examples First**: Lead "What Can WebRun Do?" with specific, real scenarios
+   - "Extract engineering manager profiles from LinkedIn, filtered by location and seniority"
+   - Not: "Research & Data Extraction: Gather information from multiple sources"
 
 ---
 
@@ -94,20 +126,23 @@ Your friend is right—the documentation has several characteristics that make i
 - Missing the human angle (anxiety about costs)
 
 **Improvements:**
-1. **Reframe Opening**: Address the elephant in the room
-   - "Let's talk about costs. You're probably wondering how much this will run you..."
+1. **Lead with Transparency**: Start with the pricing model directly
+   - "WebRun charges for two things: token usage and compute time. Here's exactly how it works."
 
-2. **Merge Tables**: Combine token pricing and compute pricing into one section with prose explanation
+2. **Show Real Numbers First**: Open with concrete examples before diving into rates
+   - "Simple search: $0.01. Form automation: $0.03. Multi-step workflow: $0.15."
+   - Then explain why with the pricing model
 
-3. **Real Cost Examples**: Instead of "typical costs" table, use narratives:
-   - "We ran 1,000 product searches last month and spent $12."
-   - "A typical form-fill costs about 3 cents."
+3. **Table for Rates, Prose for Context**: Keep the pricing table (it's useful reference), but add explanation
+   - "Input tokens are cheaper because the model processes them in parallel. Output generation is sequential, so it costs more."
 
-4. **Move Optimization**: Optimize tips should be their own guide, not buried here
+4. **Cost Optimization Gets Its Own Section**: Move optimization tips to a dedicated guide
 
-5. **Add Transparency**: "We built this pricing to be predictable. Here's how..."
+5. **Include Benchmarks**: Compare against actual alternatives with numbers
+   - "At scale, WebRun costs 60% less than traditional automation when you factor in maintenance."
+   - Not generic "98% savings" claims
 
-6. **Remove Comparison Tables**: The "vs Manual Labor" table feels like marketing. Cut it.
+6. **Remove Fluffy Sections**: Cut "Free Tier / Credits" unless there's something specific to announce
 
 ---
 
@@ -206,24 +241,23 @@ Your friend is right—the documentation has several characteristics that make i
 - Doesn't anticipate actual user frustrations
 
 **Improvements:**
-1. **Reorganize by Frustration**:
-   - "I'm getting charged too much"
-   - "My tasks keep failing"
-   - "I can't log into sites"
+1. **Reorganize by Category**: Group by technical area, not emotion
+   - "Sessions & Performance"
+   - "Authentication & Security"
+   - "Pricing & Billing"
+   - "Integration & Compatibility"
 
-2. **Conversational Answers**:
+2. **Direct, Technical Answers**:
    - Before: "WebRun uses Chrome Desktop running in cloud-based instances..."
-   - After: "We use Chrome. Latest version, always. Can't change it to Firefox or Safari right now."
+   - After: "Chrome only. Latest stable version. We don't support Firefox, Safari, or custom versions yet."
 
-3. **Cut Redundant Questions**:
-   - Half these questions are answered in other docs
-   - Link instead of repeating
+3. **Cut Redundant Questions**: If it's covered in depth elsewhere, link instead of duplicating
 
-4. **Add Honest Limitations**:
-   - "Can't do mobile emulation yet. Working on it."
-   - "CAPTCHAs are annoying for us too. Here's the workaround..."
+4. **State Limitations Clearly**: No hedging
+   - "Mobile emulation isn't supported yet."
+   - "CAPTCHAs require manual intervention. Use the manual takeover feature."
 
-5. **Remove Example Code**: FAQs should answer questions, not teach. Link to guides.
+5. **Remove Example Code**: FAQs answer questions. Link to implementation guides for code.
 
 ---
 
@@ -275,11 +309,50 @@ Your friend is right—the documentation has several characteristics that make i
 
 ## General Writing Guidelines
 
-### **Voice & Tone**
-- **Write like you're helping a friend** over coffee, not filing a technical report
-- **Use contractions**: "you'll" not "you will", "it's" not "it is"
-- **Show personality**: Opinions, honest limitations, real experiences
-- **Vary sentence length**: Short. Medium sentences work well too. And sometimes you need a longer sentence to explain something complex, which is fine as long as you don't do it everywhere.
+### **Voice & Tone** (Official Brand Guidelines + Blog Analysis)
+
+WebRun's brand is a **Bold Challenger** with **Thought Leader** depth. The voice is confident, direct, and results-focused.
+
+#### Apply These Principles:
+
+**1. Lead with Benefit, Not Feature**
+- ❌ "WebRun has a hybrid CNN-LLM architecture"
+- ✅ "Get sub-100ms response times with WebRun's hybrid architecture"
+
+**2. Quantify Every Claim**
+- ❌ "WebRun is fast"
+- ✅ "WebRun delivers sub-100ms response times"
+- ❌ "Costs less than alternatives"
+- ✅ "60% lower cost than traditional automation at scale"
+
+**3. Prove Assertions with Evidence**
+- Include benchmarks, metrics, real examples
+- "Three years building production browsers taught us where they break"
+- Show, don't just tell
+
+**4. State Facts Directly (No Hedging)**
+- ❌ "WebRun might help with..." / "could possibly..."
+- ✅ "WebRun handles..." / "solves..."
+- ❌ "This may work for most cases"
+- ✅ "Works for production environments"
+
+**5. Use Brand-Aligned Language**
+- Embrace: Fast, real-time, instant, seamless, reliable, real browsers
+- Avoid: Slow, eventually, waiting, hacky, workaround, bot, complicated, complex
+
+**6. Problem-Solution Narrative**
+- Lead with the pain point developers face
+- Show how WebRun solves it with concrete results
+
+**7. Plain Language, Technical Depth**
+- Use industry terms, but explain them clearly
+- Don't dumb down—assume developer intelligence
+- Balance accessibility with credibility
+
+**8. Enthusiasm with Credibility**
+- Bold and confident, not desperate or salesy
+- Back claims with evidence
+- One clear idea per section
 
 ### **Structure**
 - **Don't template everything**: Each page should have its own natural structure
@@ -300,20 +373,23 @@ Your friend is right—the documentation has several characteristics that make i
 - **Cut redundancy**: Say it once, well
 
 ### **Specific Patterns to Avoid**
-❌ "Use when: ..."
-❌ "Best for: ..."
-❌ "What This Means:"
+❌ "Use when: ..." / "Best for: ..." / "What This Means:" templates
+❌ Hedging language: "might", "could", "possibly", "maybe"
+❌ Apologetic tone: "sorry for the inconvenience"
+❌ Words to avoid per brand guidelines: slow, eventually, waiting, hacky, workaround, bot, script, complicated, complex, legacy
 ❌ Starting every sentence with a verb (Do this, Set that, Use this)
-❌ Excessive bullet points
+❌ Excessive bullet points replacing prose
 ❌ Three different formats for the same info
-❌ Generic error format: "Status | Meaning" tables
+❌ Generic error format: "Status | Meaning" tables without context
 
 ### **Patterns to Embrace**
-✅ Questions as headers: "Why would I use this?"
-✅ Honest admissions: "This is a bit tricky..."
-✅ Real scenarios: "Last week, a user needed to..."
-✅ Opinions: "We recommend X because..."
-✅ Casual explanations: "Think of it like..."
+✅ **Lead with benefit**: "Get results in under 100ms" not "WebRun has a fast response time"
+✅ **Quantify claims**: "Sub-100ms response times" not "fast performance"
+✅ **Prove assertions**: Include benchmarks, metrics, concrete examples
+✅ **Direct statements**: "WebRun handles this" not "WebRun can help with this"
+✅ **Real scenarios**: "Extract LinkedIn profiles filtered by location" not "automate research tasks"
+✅ **Plain language**: Explain technical concepts clearly, don't dumb down
+✅ **Confident tone**: State facts assertively. Bold challenger voice.
 
 ---
 
@@ -343,18 +419,29 @@ Your friend is right—the documentation has several characteristics that make i
 
 ## Quality Checklist
 
-For each rewritten page, ask:
+For each rewritten page, verify:
 
-- [ ] Could this have been written by a human with opinions?
-- [ ] Does it flow naturally when read aloud?
-- [ ] Would I send this to a friend, or does it sound corporate?
-- [ ] Are there varied sentence structures and paragraph lengths?
-- [ ] Is formatting used strategically, not automatically?
-- [ ] Do examples feel real, not generic?
-- [ ] Is there personality and voice?
-- [ ] Have I removed redundant content?
-- [ ] Does it answer "why" not just "what"?
-- [ ] Would I actually want to read this?
+### Brand Voice Alignment
+- [ ] **Bold Challenger tone?** Direct, confident statements without hedging
+- [ ] **Benefits before features?** Impact shown before technical details
+- [ ] **Quantified claims?** Numbers and metrics, not vague assertions
+- [ ] **Proven with evidence?** Benchmarks, examples, concrete proof
+- [ ] **Brand language?** Uses "fast, real-time, instant, seamless" not "slow, eventually, complicated"
+- [ ] **No hedging?** Eliminated "might, could, possibly, maybe"
+
+### Human Writing Quality
+- [ ] Flows naturally when read aloud?
+- [ ] Varied sentence structures and paragraph lengths?
+- [ ] Formatting used strategically, not automatically?
+- [ ] Examples feel real and specific, not generic?
+- [ ] Removed AI-generated patterns ("Use when:", "Best for:", excessive bullets)?
+- [ ] Removed redundant content?
+
+### Technical Credibility
+- [ ] One clear idea per section?
+- [ ] Technical terms explained clearly without dumbing down?
+- [ ] Assumes developer intelligence?
+- [ ] Balances urgency with credibility?
 
 ---
 
@@ -373,21 +460,25 @@ Think of a session as a private browsing window that persists for the duration o
 - Persists until terminated or timed out
 ```
 
-### After (Humanized)
+### After (WebRun Brand Voice)
 ```markdown
-## Sessions: Your Private Browser Instance
+## Sessions
 
-When you start a session, you're basically renting a browser. It's yours to use however long you need it (up to 5 minutes), then you give it back.
+A session is an isolated browser instance running your automation tasks. You get a dedicated environment with a unique `sessionId` that persists until you terminate it or it times out (5 minute maximum).
 
-Each session gets a unique ID and runs completely isolated from others. You can run multiple tasks in sequence within the same session—like navigating to Amazon, searching for a product, then adding it to cart. When you're done, terminate it. (Seriously, don't forget to terminate, or you'll pay for the full 5 minutes even if you only used 30 seconds.)
+Sessions run completely isolated—no shared cookies, no shared state. This lets you run multiple concurrent sessions without interference. Run tasks sequentially within the same session: navigate to a site, authenticate, then execute your workflow. Just remember to terminate when done, or you'll pay for the full timeout window.
+
+**Common pattern:** Create session → Run task sequence → Terminate explicitly.
 ```
 
 **Key Differences:**
-- Removed bullet point list for prose
-- Added parenthetical aside (personality)
-- Casual language ("basically", "Seriously")
-- Removed redundant metaphor
-- Honest warning instead of formal note
+- Lead with what it is, not a metaphor
+- Direct, assertive statements
+- Technical precision ("no shared cookies, no shared state")
+- Clear consequences ("you'll pay for the full timeout")
+- Shows common usage pattern
+- No bullet lists for simple sequences
+- Removed the overly friendly "basically renting" metaphor
 
 ---
 
