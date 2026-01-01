@@ -153,11 +153,18 @@ Block unnecessary domains to prevent wasted navigation:
 
 ```json
 {
+  "success": true,
+  "sessionId": "abc123",
+  "taskId": "xyz789",
   "type": "task_completed",
+  "data": {
+    "message": "Task completed successfully"
+  },
   "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
-    "computeTime": 5,
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
     "cost": 0.0124
   }
 }

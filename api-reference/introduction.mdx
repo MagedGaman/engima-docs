@@ -74,15 +74,16 @@ Execute a single task with auto-termination. Simplest integration method.
   "success": true,
   "sessionId": "a1b2c3",
   "taskId": "x9y8z7",
-  "status": "complete",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Successfully searched for Anthropic on Google",
-      "completion_time": 23.5,
-      "total_tokens": 15650
-    },
-    "usage": { "cost": 0.0124 }
+  "type": "task_completed",
+  "data": {
+    "message": "Successfully searched for Anthropic on Google"
+  },
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
+    "cost": 0.0124
   }
 }
 ```
@@ -199,10 +200,15 @@ Poll for task result. No rate limit.
 ```json
 {
   "success": true,
-  "status": "active",
-  "pending": true,
+  "sessionId": "a1b2c3",
+  "taskId": "x9y8z7",
+  "status": "running",
   "usage": {
-    "cost": 0.0067  // Increases as task continues
+    "prompt_tokens": 8000,
+    "completion_tokens": 1500,
+    "total_tokens": 9500,
+    "completion_time": 15.2,
+    "cost": 0.0067
   }
 }
 ```
@@ -211,17 +217,20 @@ Poll for task result. No rate limit.
 ```json
 {
   "success": true,
+  "sessionId": "a1b2c3",
+  "taskId": "x9y8z7",
   "type": "task_completed",
   "data": {
-    "message": "Task finished successfully",
-    "total_tokens": 15650,
-    "completion_time": 23.5
+    "message": "Task finished successfully"
   },
   "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
     "cost": 0.0124
-  }
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
 }
 ```
 
@@ -309,9 +318,9 @@ const response = await fetch("https://connect.webrun.ai/start/run-task", {
 
 const data = await response.json();
 
-if (data.status === "complete") {
-  console.log("Result:", data.result);
-} else if (data.pending) {
+if (data.type === "task_completed") {
+  console.log("Result:", data);
+} else if (data.status === "pending") {
   // Poll for result
   const pollResponse = await fetch(data.pollUrl, {
     headers: { "Authorization": "Bearer enig_xxxx" }
