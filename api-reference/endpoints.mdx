@@ -262,16 +262,13 @@ Execute a single task with auto-terminating session. Simplified version of start
 **Request Body:**
 ```json
 {
-  "mode": "default",
-  "initialTask": {
-    "taskDetails": "Search Google for Anthropic",
-    "startingPoint": "https://google.com",
-    "maxDuration": 300000,
-    "maxInputTokens": 100000,
-    "maxOutputTokens": 100000,
-    "avoidDomains": [],
-    "outputType": "text"
-  }
+  "taskDetails": "Search Google for Anthropic",
+  "maxDuration": 300000,
+  "maxInputTokens": 100000,
+  "maxOutputTokens": 100000,
+  "startingUrl": "https://google.com",
+  "avoidDomains": [],
+  "mode": "default"
 }
 ```
 

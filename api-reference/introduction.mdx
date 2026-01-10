@@ -62,12 +62,9 @@ Execute a single task with auto-termination. Simplest integration method.
 **Request:**
 ```json
 {
-  "mode": "default",
-  "initialTask": {
-    "taskDetails": "Go to google.com and search for Anthropic",
-    "startingPoint": "https://google.com",
-    "maxDuration": 60000
-  }
+  "taskDetails": "Go to google.com and search for Anthropic",
+  "maxDuration": 60000,
+  "startingUrl": "https://google.com"
 }
 ```
 
