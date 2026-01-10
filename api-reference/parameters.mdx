@@ -149,6 +149,126 @@ Setting a `startingUrl` can speed up task execution by starting the browser at t
 
 ---
 
+### outputType
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `"text"`
+- **Values:** `"text"`, `"structured"`
+- **Description:** Specifies the output format. Use `"structured"` with `outputSchema` to get validated JSON output.
+
+**Example:**
+```json
+{
+  "outputType": "structured"
+}
+```
+
+<Note>
+When using `outputType: "structured"`, you must also provide an `outputSchema` to define the expected response structure.
+</Note>
+
+---
+
+### outputSchema
+
+- **Type:** `object` (JSON Schema)
+- **Required:** No (required when `outputType` is `"structured"`)
+- **Description:** JSON Schema defining the expected response structure. The AI agent's output will be validated against this schema.
+
+**Example:**
+```json
+{
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "title": { "type": "string" },
+      "price": { "type": "number" },
+      "inStock": { "type": "boolean" },
+      "features": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "required": ["title", "price"],
+    "additionalProperties": false
+  }
+}
+```
+
+**Supported Types:**
+- `string` - Text values
+- `number` - Numeric values (integers and decimals)
+- `boolean` - True/false values
+- `object` - Nested objects with defined properties
+- `array` - Arrays with defined item structure
+
+<Tip>
+Use `"additionalProperties": false` to ensure the output contains only the fields you specify.
+</Tip>
+
+---
+
+### webhook
+
+- **Type:** `object`
+- **Required:** No
+- **Description:** Webhook configuration for receiving task completion notifications.
+
+**Webhook Object Structure:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | `string` | Yes | Identifier for this webhook |
+| `url` | `string` | Yes | Endpoint URL to receive the webhook |
+| `auth` | `string` | No | Authorization header value |
+| `submittedData` | `string` | Yes | Data to include in the payload |
+
+**submittedData Options:**
+- `"full_response"` - Complete task response including all metadata
+- `"structured_output"` - Only the JSON data matching the schema
+- `"just_ping"` - Notification only, no data payload
+
+**Example:**
+```json
+{
+  "webhook": {
+    "name": "Product Webhook",
+    "url": "https://api.yoursite.com/webhooks/products",
+    "auth": "Bearer your-secret-token",
+    "submittedData": "structured_output"
+  }
+}
+```
+
+**Complete Example with Structured Output:**
+```json
+{
+  "taskDetails": "Extract product information from the page",
+  "startingUrl": "https://example.com/product",
+  "maxDuration": 300000,
+  "outputType": "structured",
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "title": { "type": "string" },
+      "price": { "type": "number" },
+      "inStock": { "type": "boolean" }
+    },
+    "required": ["title", "price"],
+    "additionalProperties": false
+  },
+  "webhook": {
+    "name": "Product Webhook",
+    "url": "https://api.mysite.com/products",
+    "auth": "Bearer token123",
+    "submittedData": "structured_output"
+  }
+}
+```
+
+---
+
 ## Task Parameters
 
 Parameters used when starting a new task via `POST /start/send-message` with `actionType: "newTask"`.
@@ -567,6 +687,41 @@ type InteractionType =
 
 ---
 
+### OutputType
+
+```typescript
+type OutputType = "text" | "structured";
+```
+
+---
+
+### OutputSchema
+
+```typescript
+interface OutputSchema {
+  type: "object" | "array" | "string" | "number" | "boolean";
+  properties?: Record<string, OutputSchema>;
+  items?: OutputSchema;
+  required?: string[];
+  additionalProperties?: boolean;
+}
+```
+
+---
+
+### WebhookConfig
+
+```typescript
+interface WebhookConfig {
+  name: string;
+  url: string;
+  auth?: string;
+  submittedData: "full_response" | "structured_output" | "just_ping";
+}
+```
+
+---
+
 ### SessionConfig
 
 ```typescript
@@ -579,6 +734,9 @@ interface SessionConfig {
   avoidDomains?: string[];
   mode?: string;
   terminateOnCompletion?: boolean;
+  outputType?: OutputType;
+  outputSchema?: OutputSchema;
+  webhook?: WebhookConfig;
 }
 ```
 
@@ -597,6 +755,9 @@ interface TaskMessage {
   startingUrl?: string | null;
   avoidDomains?: string[];
   terminateOnCompletion?: boolean;
+  outputType?: OutputType;
+  outputSchema?: OutputSchema;
+  webhook?: WebhookConfig;
 }
 ```
 

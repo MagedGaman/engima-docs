@@ -6,17 +6,207 @@ icon: "code"
 
 ## Overview
 
-By default, AI agents return natural language responses. To get structured data (JSON, arrays, specific formats), you need to explicitly request it in your task details.
+By default, AI agents return natural language responses. To get structured data (JSON, arrays, specific formats), use the native JSON Schema validation feature in the API.
 
 **Benefits:**
+- Native JSON Schema validation
+- Guaranteed valid output structure
 - Easy parsing and validation
 - Type safety in your application
 - Direct integration with databases and APIs
-- Consistent output format across tasks
+- Webhook notifications for completed tasks
 
 ---
 
-## JSON Output Pattern
+## Native JSON Schema Support
+
+The API supports native JSON Schema validation through dedicated request parameters. This is the recommended approach for structured output.
+
+### API Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `outputType` | `string` | `"text"` or `"structured"` - Specifies output format |
+| `outputSchema` | `object` | JSON Schema defining the expected response structure |
+
+### Defining Your Schema
+
+The `outputSchema` parameter accepts a standard JSON Schema object:
+
+```json
+{
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "title": { "type": "string" },
+      "price": { "type": "number" },
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" }
+          }
+        }
+      }
+    },
+    "required": ["title", "price"],
+    "additionalProperties": false
+  }
+}
+```
+
+### Supported Types
+
+The following JSON Schema types are supported:
+
+- `string` - Text values
+- `number` - Numeric values (integers and decimals)
+- `boolean` - True/false values
+- `object` - Nested objects with defined properties
+- `array` - Arrays with defined item structure
+
+### Basic Example
+
+```javascript
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to amazon.com and search for 'wireless keyboard'. Extract the first 3 results.",
+    startingUrl: "https://amazon.com",
+    outputType: "structured",
+    outputSchema: {
+      type: "object",
+      properties: {
+        products: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              title: { type: "string" },
+              price: { type: "number" },
+              rating: { type: "number" }
+            },
+            required: ["title", "price"]
+          }
+        }
+      },
+      required: ["products"],
+      additionalProperties: false
+    }
+  })
+}).then(r => r.json());
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "{\"products\":[{\"title\":\"Logitech K380\",\"price\":29.99,\"rating\":4.5},{\"title\":\"Arteck Wireless Keyboard\",\"price\":19.99,\"rating\":4.3},{\"title\":\"Microsoft Designer Compact\",\"price\":49.99,\"rating\":4.4}]}",
+    "prompt_tokens": 8500,
+    "completion_tokens": 2300,
+    "total_tokens": 10800
+  }
+}
+```
+
+<Note>
+When using `outputType: "structured"`, the response is guaranteed to match your schema. The `data.message` field contains a valid JSON string that can be directly parsed.
+</Note>
+
+---
+
+## Webhook Integration
+
+Configure webhooks to receive notifications when tasks complete. This is useful for async workflows and integrations.
+
+### Webhook Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `webhook.name` | `string` | Identifier for this webhook |
+| `webhook.url` | `string` | Endpoint URL to receive the webhook |
+| `webhook.auth` | `string` | Authorization header value (e.g., `"Bearer your-token"`) |
+| `webhook.submittedData` | `string` | Data to include in the webhook payload |
+
+### submittedData Options
+
+| Value | Description |
+|-------|-------------|
+| `"full_response"` | Complete task response including all metadata |
+| `"structured_output"` | Only the JSON data matching the schema |
+| `"just_ping"` | Notification only, no data payload |
+
+### Webhook Configuration Example
+
+```json
+{
+  "webhook": {
+    "name": "Product Extraction Webhook",
+    "url": "https://api.yoursite.com/webhooks/products",
+    "auth": "Bearer your-secret-token",
+    "submittedData": "structured_output"
+  }
+}
+```
+
+### Complete Request with Webhook
+
+```javascript
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Extract product information from the page",
+    startingUrl: "https://example.com/product",
+    maxDuration: 300000,
+    outputType: "structured",
+    outputSchema: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        price: { type: "number" },
+        inStock: { type: "boolean" }
+      },
+      required: ["title", "price"],
+      additionalProperties: false
+    },
+    webhook: {
+      name: "Product Webhook",
+      url: "https://api.mysite.com/products",
+      auth: "Bearer token123",
+      submittedData: "structured_output"
+    }
+  })
+}).then(r => r.json());
+```
+
+<Tip>
+Use webhooks with `submittedData: "structured_output"` when you only need the extracted data. This reduces payload size and simplifies your webhook handler.
+</Tip>
+
+---
+
+## Legacy Approach (Deprecated)
+
+<Warning>
+The approach of embedding schema descriptions in `taskDetails` is deprecated. Use the native `outputType` and `outputSchema` parameters instead for guaranteed validation and consistent output.
+</Warning>
+
+The examples below show the legacy pattern for reference. New implementations should use the [Native JSON Schema Support](#native-json-schema-support) documented above.
+
+---
+
+## JSON Output Pattern (Legacy)
 
 The most common pattern for structured output is requesting JSON in your task description.
 
