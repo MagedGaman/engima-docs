@@ -76,27 +76,30 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Go to amazon.com and search for 'wireless keyboard'. Extract the first 3 results.",
-    startingUrl: "https://amazon.com",
-    outputType: "structured",
-    outputSchema: {
-      type: "object",
-      properties: {
-        products: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              title: { type: "string" },
-              price: { type: "number" },
-              rating: { type: "number" }
-            },
-            required: ["title", "price"]
+    mode: "default",
+    initialTask: {
+      taskDetails: "Go to amazon.com and search for 'wireless keyboard'. Extract the first 3 results.",
+      startingPoint: "https://amazon.com",
+      outputType: "structured",
+      outputSchema: {
+        type: "object",
+        properties: {
+          products: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                price: { type: "number" },
+                rating: { type: "number" }
+              },
+              required: ["title", "price"]
+            }
           }
-        }
-      },
-      required: ["products"],
-      additionalProperties: false
+        },
+        required: ["products"],
+        additionalProperties: false
+      }
     }
   })
 }).then(r => r.json());
@@ -134,24 +137,27 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Extract product information from the page",
-    startingUrl: "https://example.com/product",
-    outputType: "structured",
-    outputSchema: {
-      type: "object",
-      properties: {
-        title: { type: "string" },
-        price: { type: "number" },
-        inStock: { type: "boolean" }
+    mode: "default",
+    initialTask: {
+      taskDetails: "Extract product information from the page",
+      startingPoint: "https://example.com/product",
+      outputType: "structured",
+      outputSchema: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          price: { type: "number" },
+          inStock: { type: "boolean" }
+        },
+        required: ["title", "price"],
+        additionalProperties: false
       },
-      required: ["title", "price"],
-      additionalProperties: false
-    },
-    webhook: {
-      name: "Product Webhook",
-      url: "https://api.mysite.com/products",
-      auth: "Bearer token123",
-      submittedData: "structured_output"
+      webhook: {
+        name: "Product Webhook",
+        url: "https://api.mysite.com/products",
+        auth: "Bearer token123",
+        submittedData: "structured_output"
+      }
     }
   })
 }).then(r => r.json());

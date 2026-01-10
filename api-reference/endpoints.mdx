@@ -25,16 +25,29 @@ Create a new persistent session that can run multiple tasks.
 **Request Body:**
 ```json
 {
-  "taskDetails": "Go to amazon.com",
-  "maxDuration": 300000,
-  "maxInputTokens": 100000,
-  "maxOutputTokens": 100000,
-  "startingUrl": "https://amazon.com",
-  "avoidDomains": ["facebook.com"],
   "mode": "default",
-  "terminateOnCompletion": false
+  "initialTask": {
+    "taskDetails": "Go to amazon.com and search for laptops",
+    "startingPoint": "https://amazon.com",
+    "maxDuration": 300000,
+    "maxInputTokens": 100000,
+    "maxOutputTokens": 100000,
+    "avoidDomains": ["facebook.com"],
+    "terminateOnCompletion": false,
+    "outputType": "structured",
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "results": { "type": "array" }
+      }
+    }
+  }
 }
 ```
+
+<Note>
+The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin.
+</Note>
 
 **Response (200 OK):**
 ```json
@@ -95,12 +108,28 @@ Start a new task. Returns taskId for polling.
     "actionType": "newTask",
     "newState": "start",
     "taskDetails": "Search for laptops",
+    "startingPoint": "https://amazon.com",
     "maxDuration": 60000,
     "maxInputTokens": 50000,
     "maxOutputTokens": 50000,
-    "startingUrl": "https://amazon.com",
     "avoidDomains": ["facebook.com"],
-    "terminateOnCompletion": true
+    "terminateOnCompletion": true,
+    "outputType": "structured",
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "price": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
   }
 }
 ```

@@ -63,14 +63,17 @@ Shorter descriptions = fewer input tokens. Be specific, not verbose.
 
 ---
 
-### 3. Set `startingUrl` When Known
+### 3. Set `startingPoint` When Known
 
 Skip navigation by providing the starting URL directly.
 
 ```javascript
 {
-  "taskDetails": "Search for products",
-  "startingUrl": "https://amazon.com"  // Skips "go to amazon.com" step
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Search for products",
+    "startingPoint": "https://amazon.com"  // Skips "go to amazon.com" step
+  }
 }
 ```
 
@@ -181,7 +184,7 @@ Block unnecessary domains to prevent wasted navigation:
 - [ ] Use `/start/run-task` for single tasks (auto-terminates)
 - [ ] Set `terminateOnCompletion: true` on final tasks in multi-task workflows
 - [ ] Write concise, specific task descriptions
-- [ ] Provide `startingUrl` when the starting point is known
+- [ ] Provide `startingPoint` when the starting point is known
 - [ ] Set appropriate `maxDuration` based on task complexity
 - [ ] Batch related tasks into single sessions
 - [ ] Limit `maxInputTokens` and `maxOutputTokens` for simple tasks
@@ -206,9 +209,12 @@ const result3 = await runTask("Get me information about the first result");
 ```javascript
 // Single session, concise tasks, explicit termination
 const session = await startSession({
-  taskDetails: "Go to amazon.com",
-  startingUrl: "https://amazon.com",
-  maxDuration: 60000  // 1 minute max
+  mode: "default",
+  initialTask: {
+    taskDetails: "Go to amazon.com",
+    startingPoint: "https://amazon.com",
+    maxDuration: 60000  // 1 minute max
+  }
 });
 
 await sendTask(session, "Search 'wireless keyboard'");

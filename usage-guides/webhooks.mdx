@@ -49,13 +49,16 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Extract the main headline from the page",
-    startingUrl: "https://news.ycombinator.com",
-    webhook: {
-      name: "HN Headlines",
-      url: "https://api.yoursite.com/webhooks/headlines",
-      auth: "Bearer your-secret-token",
-      submittedData: "full_response"
+    mode: "default",
+    initialTask: {
+      taskDetails: "Extract the main headline from the page",
+      startingPoint: "https://news.ycombinator.com",
+      webhook: {
+        name: "HN Headlines",
+        url: "https://api.yoursite.com/webhooks/headlines",
+        auth: "Bearer your-secret-token",
+        submittedData: "full_response"
+      }
     }
   })
 }).then(r => r.json());
@@ -75,26 +78,29 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Extract product information from the page",
-    startingUrl: "https://example.com/product",
-    maxDuration: 300000,
-    outputType: "structured",
-    outputSchema: {
-      type: "object",
-      properties: {
-        title: { type: "string" },
-        price: { type: "number" },
-        inStock: { type: "boolean" },
-        description: { type: "string" }
+    mode: "default",
+    initialTask: {
+      taskDetails: "Extract product information from the page",
+      startingPoint: "https://example.com/product",
+      maxDuration: 300000,
+      outputType: "structured",
+      outputSchema: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          price: { type: "number" },
+          inStock: { type: "boolean" },
+          description: { type: "string" }
+        },
+        required: ["title", "price"],
+        additionalProperties: false
       },
-      required: ["title", "price"],
-      additionalProperties: false
-    },
-    webhook: {
-      name: "Product Webhook",
-      url: "https://api.mysite.com/products",
-      auth: "Bearer token123",
-      submittedData: "structured_output"
+      webhook: {
+        name: "Product Webhook",
+        url: "https://api.mysite.com/products",
+        auth: "Bearer token123",
+        submittedData: "structured_output"
+      }
     }
   })
 }).then(r => r.json());
