@@ -124,39 +124,7 @@ When using `outputType: "structured"`, the response is guaranteed to match your 
 
 ## Webhook Integration
 
-Configure webhooks to receive notifications when tasks complete. This is useful for async workflows and integrations.
-
-### Webhook Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `webhook.name` | `string` | Identifier for this webhook |
-| `webhook.url` | `string` | Endpoint URL to receive the webhook |
-| `webhook.auth` | `string` | Authorization header value (e.g., `"Bearer your-token"`) |
-| `webhook.submittedData` | `string` | Data to include in the webhook payload |
-
-### submittedData Options
-
-| Value | Description |
-|-------|-------------|
-| `"full_response"` | Complete task response including all metadata |
-| `"structured_output"` | Only the JSON data matching the schema |
-| `"just_ping"` | Notification only, no data payload |
-
-### Webhook Configuration Example
-
-```json
-{
-  "webhook": {
-    "name": "Product Extraction Webhook",
-    "url": "https://api.yoursite.com/webhooks/products",
-    "auth": "Bearer your-secret-token",
-    "submittedData": "structured_output"
-  }
-}
-```
-
-### Complete Request with Webhook
+Combine structured output with [webhooks](/usage-guides/webhooks) to automatically deliver validated JSON data to your systems when tasks complete.
 
 ```javascript
 const session = await fetch("https://connect.webrun.ai/start/start-session", {
@@ -168,7 +136,6 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   body: JSON.stringify({
     taskDetails: "Extract product information from the page",
     startingUrl: "https://example.com/product",
-    maxDuration: 300000,
     outputType: "structured",
     outputSchema: {
       type: "object",
@@ -191,7 +158,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 ```
 
 <Tip>
-Use webhooks with `submittedData: "structured_output"` when you only need the extracted data. This reduces payload size and simplifies your webhook handler.
+Use `submittedData: "structured_output"` to receive only the validated JSON data matching your schema. See the [Webhooks guide](/usage-guides/webhooks) for complete documentation.
 </Tip>
 
 ---
@@ -723,11 +690,11 @@ console.log(products);
 
 <Accordion title="Related Guides">
   <CardGroup cols={2}>
+    <Card title="Webhooks" icon="webhook" href="/usage-guides/webhooks">
+      Receive automated notifications when tasks complete
+    </Card>
     <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
       Chain tasks to build complex data pipelines
-    </Card>
-    <Card title="Cost Optimization" icon="dollar-sign" href="/usage-guides/cost-optimization">
-      Optimize costs for data extraction tasks
     </Card>
   </CardGroup>
 </Accordion>
