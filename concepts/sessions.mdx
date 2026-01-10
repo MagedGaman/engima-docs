@@ -31,22 +31,29 @@ Configure sessions when creating them:
 
 ```javascript
 {
-  "taskDetails": "What to do",                    // Initial task (can be empty)
-  "maxDuration": 300000,                          // Timeout in ms (max: 300000 = 5 min)
-  "maxInputTokens": 100000,                       // AI model input limit
-  "maxOutputTokens": 100000,                      // AI model output limit
-  "startingUrl": "https://example.com",           // Skip navigation
-  "avoidDomains": ["ads.example.com"],            // Domains to block
-  "terminateOnCompletion": false                  // Auto-terminate after first task
+  "mode": "default",                              // Session mode
+  "initialTask": {
+    "taskDetails": "What to do",                  // Initial task (can be empty)
+    "startingPoint": "https://example.com",       // Skip navigation
+    "maxDuration": 300000,                        // Timeout in ms (max: 300000 = 5 min)
+    "maxInputTokens": 100000,                     // AI model input limit
+    "maxOutputTokens": 100000,                    // AI model output limit
+    "avoidDomains": ["ads.example.com"],          // Domains to block
+    "terminateOnCompletion": false,               // Auto-terminate after first task
+    "outputType": "structured",                   // "text" or "structured"
+    "outputSchema": { ... }                       // JSON Schema for structured output
+  }
 }
 ```
 
 **Key parameters:**
 
-- **maxDuration**: Enforced server-side. Sessions cannot exceed 5 minutes.
+- **mode**: Session mode (currently only `"default"` is supported).
+- **initialTask**: Contains all task-specific parameters.
 - **taskDetails**: Can be empty if you plan to send tasks later via `/send-message`.
+- **startingPoint**: Saves tokens and time by skipping navigation.
+- **maxDuration**: Enforced server-side. Sessions cannot exceed 5 minutes.
 - **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
-- **startingUrl**: Saves tokens and time by skipping navigation.
 - **avoidDomains**: Prevents accidental navigation to unwanted domains.
 
 ---

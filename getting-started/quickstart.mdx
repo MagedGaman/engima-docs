@@ -81,8 +81,11 @@ curl -X POST https://connect.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "taskDetails": "Go to amazon.com",
-    "startingUrl": "https://amazon.com"
+    "mode": "default",
+    "initialTask": {
+      "taskDetails": "Go to amazon.com",
+      "startingPoint": "https://amazon.com"
+    }
   }'
 ```
 
@@ -97,7 +100,8 @@ curl -X POST https://connect.webrun.ai/start/send-message \
     "message": {
       "actionType": "newTask",
       "newState": "start",
-      "taskDetails": "Search for wireless keyboards"
+      "taskDetails": "Search for wireless keyboards",
+      "startingPoint": "https://amazon.com"
     }
   }'
 ```

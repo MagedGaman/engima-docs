@@ -8,19 +8,97 @@ icon: "sliders"
 
 Parameters used when creating a new session via `POST /start/start-session`.
 
+### mode
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `"default"`
+- **Description:** Session mode. Currently only `"default"` is supported.
+
+**Example:**
+```json
+{
+  "mode": "default"
+}
+```
+
+---
+
+### initialTask
+
+- **Type:** `object`
+- **Required:** No
+- **Description:** Configuration for the initial task to run when the session starts. Contains all task-specific parameters.
+
+**Example:**
+```json
+{
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Find the price of iPhone 15 Pro on Apple.com",
+    "startingPoint": "https://apple.com",
+    "maxDuration": 300000,
+    "outputType": "structured",
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "productName": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string" }
+      }
+    }
+  }
+}
+```
+
+<Note>
+All task-specific parameters like `taskDetails`, `startingPoint`, `outputType`, and `outputSchema` are now nested inside the `initialTask` object.
+</Note>
+
+---
+
+## Initial Task Parameters
+
+Parameters used inside the `initialTask` object when creating a session, or in the message body when sending a new task via `POST /start/send-message`.
+
 ### taskDetails
 
 - **Type:** `string`
 - **Required:** No
 - **Default:** `""`
-- **Description:** Initial task description for the session. The AI agent will execute this task when the session starts.
+- **Description:** Task description for the AI agent to execute.
 
 **Example:**
 ```json
 {
-  "taskDetails": "Go to amazon.com and search for wireless keyboards"
+  "initialTask": {
+    "taskDetails": "Go to amazon.com and search for wireless keyboards"
+  }
 }
 ```
+
+---
+
+### startingPoint
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `null`
+- **Description:** URL where the browser should navigate before starting the task. Speeds up task execution by starting at the relevant page.
+
+**Example:**
+```json
+{
+  "initialTask": {
+    "taskDetails": "Search for laptops",
+    "startingPoint": "https://amazon.com"
+  }
+}
+```
+
+<Tip>
+Setting a `startingPoint` eliminates the need to navigate from a blank page, reducing task execution time and cost.
+</Tip>
 
 ---
 
@@ -77,26 +155,6 @@ Sessions automatically terminate after `maxDuration` even if tasks are still run
 
 ---
 
-### startingUrl
-
-- **Type:** `string`
-- **Required:** No
-- **Default:** `null`
-- **Description:** URL where the browser session should start. If not provided, starts with a blank page.
-
-**Example:**
-```json
-{
-  "startingUrl": "https://google.com"
-}
-```
-
-<Tip>
-Setting a `startingUrl` can speed up task execution by starting the browser at the relevant page.
-</Tip>
-
----
-
 ### avoidDomains
 
 - **Type:** `string[]` (array of strings)
@@ -108,22 +166,6 @@ Setting a `startingUrl` can speed up task execution by starting the browser at t
 ```json
 {
   "avoidDomains": ["facebook.com", "twitter.com", "ads.example.com"]
-}
-```
-
----
-
-### mode
-
-- **Type:** `string`
-- **Required:** No
-- **Default:** `"default"`
-- **Description:** Session mode. Currently only `"default"` is supported.
-
-**Example:**
-```json
-{
-  "mode": "default"
 }
 ```
 
@@ -241,28 +283,31 @@ Use `"additionalProperties": false` to ensure the output contains only the field
 }
 ```
 
-**Complete Example with Structured Output:**
+**Complete Example with Structured Output and Webhook:**
 ```json
 {
-  "taskDetails": "Extract product information from the page",
-  "startingUrl": "https://example.com/product",
-  "maxDuration": 300000,
-  "outputType": "structured",
-  "outputSchema": {
-    "type": "object",
-    "properties": {
-      "title": { "type": "string" },
-      "price": { "type": "number" },
-      "inStock": { "type": "boolean" }
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Extract product information from the page",
+    "startingPoint": "https://example.com/product",
+    "maxDuration": 300000,
+    "outputType": "structured",
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "price": { "type": "number" },
+        "inStock": { "type": "boolean" }
+      },
+      "required": ["title", "price"],
+      "additionalProperties": false
     },
-    "required": ["title", "price"],
-    "additionalProperties": false
-  },
-  "webhook": {
-    "name": "Product Webhook",
-    "url": "https://api.mysite.com/products",
-    "auth": "Bearer token123",
-    "submittedData": "structured_output"
+    "webhook": {
+      "name": "Product Webhook",
+      "url": "https://api.mysite.com/products",
+      "auth": "Bearer token123",
+      "submittedData": "structured_output"
+    }
   }
 }
 ```
@@ -273,7 +318,7 @@ Use `"additionalProperties": false` to ensure the output contains only the field
 
 Parameters used when starting a new task via `POST /start/send-message` with `actionType: "newTask"`.
 
-All [Session Parameters](#session-parameters) are available for tasks, plus:
+All [Initial Task Parameters](#initial-task-parameters) are available, plus:
 
 ### actionType
 
@@ -722,21 +767,31 @@ interface WebhookConfig {
 
 ---
 
-### SessionConfig
+### InitialTaskConfig
 
 ```typescript
-interface SessionConfig {
+interface InitialTaskConfig {
   taskDetails?: string;
+  startingPoint?: string | null;
   maxDuration?: number;
   maxInputTokens?: number;
   maxOutputTokens?: number;
-  startingUrl?: string | null;
   avoidDomains?: string[];
-  mode?: string;
   terminateOnCompletion?: boolean;
   outputType?: OutputType;
   outputSchema?: OutputSchema;
   webhook?: WebhookConfig;
+}
+```
+
+---
+
+### SessionConfig
+
+```typescript
+interface SessionConfig {
+  mode?: string;
+  initialTask?: InitialTaskConfig;
 }
 ```
 
@@ -749,10 +804,10 @@ interface TaskMessage {
   actionType: "newTask";
   newState: "start";
   taskDetails: string;
+  startingPoint?: string | null;
   maxDuration?: number;
   maxInputTokens?: number;
   maxOutputTokens?: number;
-  startingUrl?: string | null;
   avoidDomains?: string[];
   terminateOnCompletion?: boolean;
   outputType?: OutputType;

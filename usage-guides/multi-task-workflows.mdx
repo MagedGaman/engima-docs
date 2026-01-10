@@ -28,9 +28,12 @@ curl -X POST https://connect.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "taskDetails": "Go to amazon.com",
-    "maxDuration": 300000,
-    "startingUrl": "https://amazon.com"
+    "mode": "default",
+    "initialTask": {
+      "taskDetails": "Go to amazon.com",
+      "startingPoint": "https://amazon.com",
+      "maxDuration": 300000
+    }
   }'
 ```
 
@@ -138,8 +141,11 @@ async function runMultiTaskWorkflow() {
       "Authorization": `Bearer ${API_KEY}`
     },
     body: JSON.stringify({
-      taskDetails: "Go to amazon.com",
-      startingUrl: "https://amazon.com"
+      mode: "default",
+      initialTask: {
+        taskDetails: "Go to amazon.com",
+        startingPoint: "https://amazon.com"
+      }
     })
   }).then(r => r.json());
 
@@ -284,28 +290,38 @@ POST /start/send-message { actionType: "state", newState: "terminate" }
 
 Configure your session behavior with these parameters:
 
+**Top-level parameters:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `mode` | string | "default" | Session mode (currently only "default" supported) |
+| `initialTask` | object | null | Initial task configuration (see below) |
+
+**initialTask parameters:**
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `taskDetails` | string | "" | Initial task description (can be empty for sessions without initial task) |
+| `startingPoint` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
 | `maxDuration` | number | 300000 | Session timeout in ms (max: 300000 = 5 minutes) |
 | `maxInputTokens` | number | 100000 | Max input tokens for AI model |
 | `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
-| `startingUrl` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
 | `avoidDomains` | string[] | [] | Domains agent should not visit (e.g., `["facebook.com"]`) |
-| `mode` | string | "default" | Session mode (currently only "default" supported) |
 | `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
+| `outputType` | string | "text" | Output format: `"text"` or `"structured"` |
+| `outputSchema` | object | null | JSON Schema for structured output |
 
 **Example with parameters:**
 ```json
 {
-  "taskDetails": "Search for wireless keyboards",
-  "maxDuration": 180000,
-  "maxInputTokens": 50000,
-  "maxOutputTokens": 50000,
-  "startingUrl": "https://amazon.com",
-  "avoidDomains": ["facebook.com", "twitter.com"],
   "mode": "default",
-  "terminateOnCompletion": false
+  "initialTask": {
+    "taskDetails": "Search for wireless keyboards",
+    "startingPoint": "https://amazon.com",
+    "maxDuration": 180000,
+    "maxInputTokens": 50000,
+    "maxOutputTokens": 50000,
+    "avoidDomains": ["facebook.com", "twitter.com"],
+    "terminateOnCompletion": false
+  }
 }
 ```
 

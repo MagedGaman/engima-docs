@@ -26,12 +26,14 @@ Start a new task in the current session. This is the only control action that re
 | `actionType` | string | Yes | Must be `"newTask"` |
 | `newState` | string | Yes | Must be `"start"` |
 | `taskDetails` | string | Yes | Task description |
+| `startingPoint` | string | No | URL to start from |
 | `maxDuration` | number | No | Max time in ms (default: 300000) |
 | `maxInputTokens` | number | No | Max input tokens (default: 100000) |
 | `maxOutputTokens` | number | No | Max output tokens (default: 100000) |
-| `startingUrl` | string | No | URL to start from |
 | `avoidDomains` | string[] | No | Domains to avoid |
 | `terminateOnCompletion` | boolean | No | Auto-terminate after task (default: false) |
+| `outputType` | string | No | Output format: `"text"` or `"structured"` |
+| `outputSchema` | object | No | JSON Schema for structured output |
 
 Use REST for simple integrations, WebSocket for real-time event handling:
 
@@ -58,10 +60,10 @@ socket.emit("message", {
   actionType: "newTask",
   newState: "start",
   taskDetails: "Search for wireless keyboards",
+  startingPoint: "https://amazon.com",
   maxDuration: 60000,
   maxInputTokens: 100000,
   maxOutputTokens: 100000,
-  startingUrl: "https://amazon.com",
   avoidDomains: ["facebook.com", "twitter.com"]
 });
 ```
@@ -401,8 +403,11 @@ async function controlFlowDemo() {
       "Authorization": `Bearer ${API_KEY}`
     },
     body: JSON.stringify({
-      taskDetails: "Go to amazon.com",
-      startingUrl: "https://amazon.com"
+      mode: "default",
+      initialTask: {
+        taskDetails: "Go to amazon.com",
+        startingPoint: "https://amazon.com"
+      }
     })
   }).then(r => r.json());
 

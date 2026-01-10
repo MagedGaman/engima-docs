@@ -62,9 +62,12 @@ Execute a single task with auto-termination. Simplest integration method.
 **Request:**
 ```json
 {
-  "taskDetails": "Go to google.com and search for Anthropic",
-  "maxDuration": 60000,
-  "startingUrl": "https://google.com"
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Go to google.com and search for Anthropic",
+    "startingPoint": "https://google.com",
+    "maxDuration": 60000
+  }
 }
 ```
 
@@ -110,9 +113,12 @@ Create a persistent session for multiple tasks.
 **Request:**
 ```json
 {
-  "taskDetails": "Go to amazon.com",
-  "startingUrl": "https://amazon.com",
-  "maxDuration": 300000
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Go to amazon.com",
+    "startingPoint": "https://amazon.com",
+    "maxDuration": 300000
+  }
 }
 ```
 
@@ -252,15 +258,24 @@ Poll for task result. No rate limit.
 
 ## Common Parameters
 
+**Session-level:**
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `mode` | string | `"default"` | Session mode |
+| `initialTask` | object | null | Initial task configuration |
+
+**Task-level (inside `initialTask`):**
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `taskDetails` | string | `""` | Task description in natural language |
+| `startingPoint` | string | null | Starting URL (skips navigation) |
 | `maxDuration` | number | 300000 | Session timeout in ms (max: 300000 = 5 min) |
 | `maxInputTokens` | number | 100000 | AI model input token limit |
 | `maxOutputTokens` | number | 100000 | AI model output token limit |
-| `startingUrl` | string | null | Starting URL (skips navigation) |
 | `avoidDomains` | string[] | `[]` | Domains to block |
 | `terminateOnCompletion` | boolean | false | Auto-terminate after task completes |
+| `outputType` | string | `"text"` | Output format: `"text"` or `"structured"` |
+| `outputSchema` | object | null | JSON Schema for structured output |
 
 [All parameters](/api-reference/parameters)
 
@@ -342,8 +357,11 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": "Bearer enig_xxxx"
   },
   body: JSON.stringify({
-    taskDetails: "Go to amazon.com",
-    startingUrl: "https://amazon.com"
+    mode: "default",
+    initialTask: {
+      taskDetails: "Go to amazon.com",
+      startingPoint: "https://amazon.com"
+    }
   })
 }).then(r => r.json());
 
