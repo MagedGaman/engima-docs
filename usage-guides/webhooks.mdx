@@ -1,0 +1,403 @@
+---
+title: "Webhooks"
+description: "Receive automated notifications when tasks complete for seamless integration with your systems"
+icon: "webhook"
+---
+
+## Overview
+
+Webhooks enable your application to receive real-time notifications when tasks complete. Instead of polling for results, configure a webhook endpoint to receive data automatically when the AI agent finishes its work.
+
+**Use cases:**
+- Automated data pipelines that trigger on task completion
+- Real-time notifications to downstream systems
+- Integration with third-party services and APIs
+- Event-driven architectures without polling overhead
+
+---
+
+## Configuration
+
+Add a `webhook` object to your session or task request to enable webhook notifications.
+
+### Webhook Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | `string` | Yes | Identifier for this webhook (useful for logging) |
+| `url` | `string` | Yes | HTTPS endpoint URL to receive the webhook |
+| `auth` | `string` | No | Authorization header value sent with the request |
+| `submittedData` | `string` | Yes | Specifies what data to include in the payload |
+
+### submittedData Options
+
+| Value | Description | Best For |
+|-------|-------------|----------|
+| `"full_response"` | Complete task response including all metadata, tokens, and timing | Debugging, audit logging |
+| `"structured_output"` | Only the JSON data matching your schema | Production data pipelines |
+| `"just_ping"` | Notification only, no data payload | Triggering external workflows |
+
+---
+
+## Basic Example
+
+```javascript
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Extract the main headline from the page",
+    startingUrl: "https://news.ycombinator.com",
+    webhook: {
+      name: "HN Headlines",
+      url: "https://api.yoursite.com/webhooks/headlines",
+      auth: "Bearer your-secret-token",
+      submittedData: "full_response"
+    }
+  })
+}).then(r => r.json());
+```
+
+---
+
+## With Structured Output
+
+Combine webhooks with [structured output](/usage-guides/structured-output) for validated JSON delivered directly to your endpoint.
+
+```javascript
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Extract product information from the page",
+    startingUrl: "https://example.com/product",
+    maxDuration: 300000,
+    outputType: "structured",
+    outputSchema: {
+      type: "object",
+      properties: {
+        title: { type: "string" },
+        price: { type: "number" },
+        inStock: { type: "boolean" },
+        description: { type: "string" }
+      },
+      required: ["title", "price"],
+      additionalProperties: false
+    },
+    webhook: {
+      name: "Product Webhook",
+      url: "https://api.mysite.com/products",
+      auth: "Bearer token123",
+      submittedData: "structured_output"
+    }
+  })
+}).then(r => r.json());
+```
+
+<Tip>
+Use `submittedData: "structured_output"` with structured output to receive only the validated JSON data, reducing payload size and simplifying your webhook handler.
+</Tip>
+
+---
+
+## Webhook Payload
+
+The payload sent to your endpoint depends on the `submittedData` setting.
+
+### full_response Payload
+
+```json
+{
+  "type": "task_completed",
+  "sessionId": "sess_abc123",
+  "taskId": "task_xyz789",
+  "data": {
+    "message": "{\"title\":\"Product Name\",\"price\":29.99}",
+    "prompt_tokens": 8500,
+    "completion_tokens": 2300,
+    "total_tokens": 10800,
+    "completion_time": 12.5
+  },
+  "usage": {
+    "inputTokens": 8500,
+    "outputTokens": 2300,
+    "computeTime": 12.5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00.000Z"
+}
+```
+
+### structured_output Payload
+
+```json
+{
+  "title": "Product Name",
+  "price": 29.99,
+  "inStock": true,
+  "description": "A great product"
+}
+```
+
+### just_ping Payload
+
+```json
+{
+  "event": "task_completed",
+  "sessionId": "sess_abc123",
+  "taskId": "task_xyz789",
+  "completedAt": "2024-01-15T10:30:00.000Z"
+}
+```
+
+---
+
+## Receiving Webhooks
+
+Your webhook endpoint should:
+
+1. Accept POST requests with JSON body
+2. Return a 2xx status code to acknowledge receipt
+3. Process the webhook asynchronously if needed
+
+### Example Webhook Handler (Node.js/Express)
+
+```javascript
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/webhooks/products', (req, res) => {
+  // Verify authorization (recommended)
+  const authHeader = req.headers['authorization'];
+  if (authHeader !== 'Bearer your-secret-token') {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  // Process the webhook payload
+  const productData = req.body;
+  console.log('Received product data:', productData);
+
+  // Store in database, trigger workflows, etc.
+  saveToDatabase(productData);
+
+  // Acknowledge receipt
+  res.status(200).json({ received: true });
+});
+
+app.listen(3000);
+```
+
+### Example Webhook Handler (Python/Flask)
+
+```python
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/webhooks/products', methods=['POST'])
+def receive_webhook():
+    # Verify authorization (recommended)
+    auth_header = request.headers.get('Authorization')
+    if auth_header != 'Bearer your-secret-token':
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # Process the webhook payload
+    product_data = request.json
+    print('Received product data:', product_data)
+
+    # Store in database, trigger workflows, etc.
+    save_to_database(product_data)
+
+    # Acknowledge receipt
+    return jsonify({'received': True}), 200
+
+if __name__ == '__main__':
+    app.run(port=3000)
+```
+
+---
+
+## Security Best Practices
+
+### 1. Use HTTPS
+
+Always use HTTPS endpoints for webhooks to encrypt data in transit.
+
+```json
+{
+  "webhook": {
+    "url": "https://api.yoursite.com/webhooks/data"
+  }
+}
+```
+
+### 2. Verify Authorization
+
+Include an `auth` token and verify it in your webhook handler.
+
+```json
+{
+  "webhook": {
+    "auth": "Bearer your-secret-token"
+  }
+}
+```
+
+### 3. Validate Payload Structure
+
+Validate incoming data matches your expected schema before processing.
+
+```javascript
+const { z } = require('zod');
+
+const ProductSchema = z.object({
+  title: z.string(),
+  price: z.number(),
+  inStock: z.boolean().optional()
+});
+
+app.post('/webhooks/products', (req, res) => {
+  try {
+    const validated = ProductSchema.parse(req.body);
+    processProduct(validated);
+    res.status(200).json({ received: true });
+  } catch (error) {
+    console.error('Invalid payload:', error);
+    res.status(400).json({ error: 'Invalid payload' });
+  }
+});
+```
+
+### 4. Use Unique Tokens Per Webhook
+
+Generate unique tokens for different webhook endpoints to limit exposure if one is compromised.
+
+---
+
+## Error Handling
+
+If your webhook endpoint fails to respond or returns an error, the webhook delivery will not be retried. Ensure your endpoint is reliable and returns quickly.
+
+<Warning>
+Webhook deliveries are not retried on failure. Design your endpoint to be highly available and respond within 30 seconds.
+</Warning>
+
+### Recommended Approach
+
+1. Acknowledge receipt immediately with a 200 status
+2. Process the data asynchronously
+3. Implement your own retry logic if needed
+
+```javascript
+app.post('/webhooks/products', async (req, res) => {
+  // Acknowledge immediately
+  res.status(200).json({ received: true });
+
+  // Process asynchronously
+  try {
+    await processProductAsync(req.body);
+  } catch (error) {
+    console.error('Processing failed:', error);
+    // Queue for retry in your own system
+    await queueForRetry(req.body);
+  }
+});
+```
+
+---
+
+## Use Cases
+
+### Data Pipeline Automation
+
+Automatically ingest extracted data into your database or data warehouse.
+
+```javascript
+{
+  taskDetails: "Extract all product listings from the category page",
+  outputType: "structured",
+  outputSchema: {
+    type: "object",
+    properties: {
+      products: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            sku: { type: "string" },
+            name: { type: "string" },
+            price: { type: "number" }
+          }
+        }
+      }
+    }
+  },
+  webhook: {
+    name: "Product Ingestion",
+    url: "https://api.yoursite.com/ingest/products",
+    auth: "Bearer ingestion-token",
+    submittedData: "structured_output"
+  }
+}
+```
+
+### Notification Systems
+
+Trigger alerts or notifications when tasks complete.
+
+```javascript
+{
+  taskDetails: "Monitor the page for price changes",
+  webhook: {
+    name: "Price Alert",
+    url: "https://api.yoursite.com/alerts/price-change",
+    auth: "Bearer alert-token",
+    submittedData: "just_ping"
+  }
+}
+```
+
+### Third-Party Integrations
+
+Send data directly to external services like Zapier, Make, or n8n.
+
+```javascript
+{
+  taskDetails: "Extract contact information from the page",
+  outputType: "structured",
+  outputSchema: {
+    type: "object",
+    properties: {
+      name: { type: "string" },
+      email: { type: "string" },
+      phone: { type: "string" }
+    }
+  },
+  webhook: {
+    name: "Zapier Integration",
+    url: "https://hooks.zapier.com/hooks/catch/123456/abcdef",
+    submittedData: "structured_output"
+  }
+}
+```
+
+---
+
+<Accordion title="Related Guides">
+  <CardGroup cols={2}>
+    <Card title="Structured Output" icon="code" href="/usage-guides/structured-output">
+      Get validated JSON responses with native schema support
+    </Card>
+    <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
+      Chain tasks for complex data pipelines
+    </Card>
+  </CardGroup>
+</Accordion>
