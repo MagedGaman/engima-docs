@@ -46,6 +46,7 @@
               "usage-guides/handling-guardrails",
               "usage-guides/video-streaming",
               "usage-guides/structured-output",
+              "usage-guides/webhooks",
               "usage-guides/cost-optimization"
             ]
           },
