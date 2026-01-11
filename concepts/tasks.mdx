@@ -30,8 +30,6 @@ Tasks progress through several states from initiation to completion:
                      └───────────► failed
 ```
 
-### Task States
-
 | State | Description | What Happens |
 |-------|-------------|--------------|
 | `started` | Task has been accepted and queued | Agent prepares to execute |
@@ -44,23 +42,23 @@ Tasks progress through several states from initiation to completion:
 
 ## Task Patterns
 
-There are two ways to execute tasks:
-
-### Pattern 1: Single Task (`run-task`)
+### Single Task (`run-task`)
 
 For one-off tasks where you don't need to maintain browser state. The session auto-terminates after completion.
 
 ```bash
 POST /start/run-task
+Content-Type: application/json
 
 {
-  "taskDetails": "Go to google.com and search for Anthropic"
+  "taskDetails": "Go to news.ycombinator.com and return the titles of the top 3 posts",
+  "maxDuration": 60000
 }
 ```
 
-### Pattern 2: Multi-Task Session
+### Multi-Task Session
 
-For workflows requiring sequential tasks within the same browser context (e.g., login → navigate → extract). The session persists across tasks, preserving cookies, authentication, and page state.
+For workflows requiring sequential tasks within the same browser context. The session persists across tasks, preserving cookies, authentication, and page state.
 
 ```bash
 # 1. Create session with initial task
@@ -81,7 +79,8 @@ POST /start/send-message
   "message": {
     "actionType": "newTask",
     "newState": "start",
-    "taskDetails": "Navigate to billing settings"
+    "taskDetails": "Navigate to billing settings",
+    "terminateOnCompletion": true
   }
 }
 ```
@@ -91,10 +90,6 @@ POST /start/send-message
 | **Session lifecycle** | Auto-closes after task | Persists until terminated |
 | **Use case** | Isolated, simple tasks | Multi-step workflows |
 | **State sharing** | None | Cookies, auth, page context preserved |
-
-<Tip>
-For multi-task sessions, set `terminateOnCompletion: true` on your final task to avoid idle session charges.
-</Tip>
 
 ---
 
@@ -120,76 +115,6 @@ Each task gets a unique `taskId` when created. Use this ID to:
 
 ---
 
-## Example: Complete Task Flow
-
-Here's a practical example of sending a task and receiving the result:
-
-**Request:**
-```bash
-POST /start/run-task
-Content-Type: application/json
-
-{
-  "taskDetails": "Go to news.ycombinator.com and return the titles of the top 3 posts",
-  "maxDuration": 60000
-}
-```
-
-**Response:**
-```json
-{
-  "status": "complete",
-  "sessionId": "sess_7f8a9b2c",
-  "taskId": "task_3e4f5a6b",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Here are the top 3 posts:\n1. Show HN: I built a new programming language\n2. The future of web browsers\n3. Why SQLite is so popular"
-    }
-  }
-}
-```
-
----
-
-## Task Results
-
-When a task completes successfully, you receive a structured result:
-
-```json
-{
-  "type": "task_completed",
-  "data": {
-    "message": "Successfully completed the search",
-    "completion_time": 23.5,
-    "prompt_tokens": 12450,
-    "completion_tokens": 3200,
-    "total_tokens": 15650
-  },
-  "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
-    "computeTime": 5,
-    "cost": 0.0124
-  },
-  "completedAt": "2024-01-15T10:30:00Z"
-}
-```
-
-### Result Fields
-
-| Field | Description |
-|-------|-------------|
-| `message` | Natural language result from the agent |
-| `completion_time` | Time taken to complete task (seconds) |
-| `prompt_tokens` | Input tokens used |
-| `completion_tokens` | Output tokens generated |
-| `total_tokens` | Sum of input and output tokens |
-| `cost` | Total cost in USD |
-| `completedAt` | ISO 8601 timestamp |
-
----
-
 ## Task Execution
 
 ### Sequential Execution
@@ -212,29 +137,44 @@ Most tasks complete in 10-40 seconds. The API waits up to 50 seconds before retu
 - Form filling: 20-40 seconds
 - Complex multi-step: 60-120 seconds
 
-### Task Dependencies
-Tasks can build on previous state within a session. Use the `send-message` endpoint to add tasks to an existing session:
+---
 
-```bash
-POST /start/send-message
-Content-Type: application/json
+## Task Results
 
+When a task completes, you receive a structured result:
+
+```json
 {
-  "sessionId": "sess_abc123",
-  "message": {
-    "actionType": "newTask",
-    "newState": "start",
-    "taskDetails": "Go to my account settings and extract my email address",
-    "terminateOnCompletion": true
-  }
+  "status": "complete",
+  "sessionId": "sess_7f8a9b2c",
+  "taskId": "task_3e4f5a6b",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Here are the top 3 posts:\n1. Show HN: I built a new programming language\n2. The future of web browsers\n3. Why SQLite is so popular",
+      "completion_time": 23.5,
+      "prompt_tokens": 12450,
+      "completion_tokens": 3200,
+      "total_tokens": 15650
+    }
+  },
+  "usage": {
+    "inputTokens": 12450,
+    "outputTokens": 3200,
+    "computeTime": 5,
+    "cost": 0.0124
+  },
+  "completedAt": "2024-01-15T10:30:00Z"
 }
 ```
 
-This is useful for multi-step workflows where each task depends on the previous one:
-
-1. **Task 1:** Log into the website → session now authenticated
-2. **Task 2:** Navigate to settings → page context preserved
-3. **Task 3:** Extract data → has access to authenticated page
+| Field | Description |
+|-------|-------------|
+| `message` | Natural language result from the agent |
+| `completion_time` | Time taken to complete task (seconds) |
+| `prompt_tokens` / `completion_tokens` | Token usage |
+| `cost` | Total cost in USD |
+| `completedAt` | ISO 8601 timestamp |
 
 ---
 
@@ -252,9 +192,19 @@ This is useful for multi-step workflows where each task depends on the previous 
 ❌ "Get the data"
 ✅ "Extract the product name, price, and rating as a JSON object"
 
+### Common Patterns
+
+| Pattern | Template |
+|---------|----------|
+| Research & Extraction | "Search for [topic] and return [specific data]" |
+| Navigation & Screenshot | "Go to [URL] and take a screenshot of [element]" |
+| Form Filling | "Fill out the form with: Name=[value], Email=[value], then submit" |
+| Verification | "Check if [condition] is true on [page]" |
+| Conditional Actions | "If [condition], then [action], otherwise [alternative]" |
+
 ### Break Down Complex Tasks
 ❌ "Research this company and create a report"
-✅
+✅ Send as separate tasks:
 1. "Search Google for [company name] and find their website"
 2. "Navigate to their About page and extract the company description"
 3. "Find their contact information and return it in structured format"
@@ -276,25 +226,6 @@ If `avoidDomains` is set, the agent will:
 - Refuse to navigate to those domains
 - Trigger a guardrail if instructed to visit them
 - Skip links to those domains in search results
-
----
-
-## Common Task Patterns
-
-### Research & Extraction
-"Search for [topic] and return [specific data]"
-
-### Navigation & Screenshot
-"Go to [URL] and take a screenshot of [element]"
-
-### Form Filling
-"Fill out the form with: Name=[value], Email=[value], then submit"
-
-### Verification
-"Check if [condition] is true on [page]"
-
-### Conditional Actions
-"If [condition], then [action], otherwise [alternative action]"
 
 ---
 
