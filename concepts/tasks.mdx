@@ -42,6 +42,62 @@ Tasks progress through several states from initiation to completion:
 
 ---
 
+## Task Patterns
+
+There are two ways to execute tasks:
+
+### Pattern 1: Single Task (`run-task`)
+
+For one-off tasks where you don't need to maintain browser state. The session auto-terminates after completion.
+
+```bash
+POST /start/run-task
+
+{
+  "taskDetails": "Go to google.com and search for Anthropic"
+}
+```
+
+### Pattern 2: Multi-Task Session
+
+For workflows requiring sequential tasks within the same browser context (e.g., login → navigate → extract). The session persists across tasks, preserving cookies, authentication, and page state.
+
+```bash
+# 1. Create session with initial task
+POST /start/start-session
+
+{
+  "initialTask": {
+    "taskDetails": "Log into the dashboard",
+    "startingPoint": "https://example.com/login"
+  }
+}
+
+# 2. Send follow-up tasks to the session
+POST /start/send-message
+
+{
+  "sessionId": "sess_abc123",
+  "message": {
+    "actionType": "newTask",
+    "newState": "start",
+    "taskDetails": "Navigate to billing settings"
+  }
+}
+```
+
+| Aspect | Single Task | Multi-Task Session |
+|--------|-------------|-------------------|
+| **Session lifecycle** | Auto-closes after task | Persists until terminated |
+| **Use case** | Isolated, simple tasks | Multi-step workflows |
+| **State sharing** | None | Cookies, auth, page context preserved |
+
+<Tip>
+For multi-task sessions, set `terminateOnCompletion: true` on your final task to avoid idle session charges.
+</Tip>
+
+---
+
 ## Task Properties
 
 ### Task Identification
@@ -61,6 +117,38 @@ Each task gets a unique `taskId` when created. Use this ID to:
 | `startingUrl` | string | null | Starting URL (optional) |
 | `avoidDomains` | string[] | `[]` | Domains to avoid |
 | `terminateOnCompletion` | boolean | false | Auto-terminate session after this task |
+
+---
+
+## Example: Complete Task Flow
+
+Here's a practical example of sending a task and receiving the result:
+
+**Request:**
+```bash
+POST /start/run-task
+Content-Type: application/json
+
+{
+  "taskDetails": "Go to news.ycombinator.com and return the titles of the top 3 posts",
+  "maxDuration": 60000
+}
+```
+
+**Response:**
+```json
+{
+  "status": "complete",
+  "sessionId": "sess_7f8a9b2c",
+  "taskId": "task_3e4f5a6b",
+  "result": {
+    "type": "task_completed",
+    "data": {
+      "message": "Here are the top 3 posts:\n1. Show HN: I built a new programming language\n2. The future of web browsers\n3. Why SQLite is so popular"
+    }
+  }
+}
+```
 
 ---
 
@@ -125,18 +213,28 @@ Most tasks complete in 10-40 seconds. The API waits up to 50 seconds before retu
 - Complex multi-step: 60-120 seconds
 
 ### Task Dependencies
-Tasks can build on previous state within a session:
+Tasks can build on previous state within a session. Use the `send-message` endpoint to add tasks to an existing session:
 
-```javascript
-// Task 1: Login
-await sendTask("Log into the website with these credentials");
+```bash
+POST /start/send-message
+Content-Type: application/json
 
-// Task 2: Navigate (depends on being logged in)
-await sendTask("Go to my account settings");
-
-// Task 3: Extract (depends on being in settings)
-await sendTask("Extract my email address");
+{
+  "sessionId": "sess_abc123",
+  "message": {
+    "actionType": "newTask",
+    "newState": "start",
+    "taskDetails": "Go to my account settings and extract my email address",
+    "terminateOnCompletion": true
+  }
+}
 ```
+
+This is useful for multi-step workflows where each task depends on the previous one:
+
+1. **Task 1:** Log into the website → session now authenticated
+2. **Task 2:** Navigate to settings → page context preserved
+3. **Task 3:** Extract data → has access to authenticated page
 
 ---
 
