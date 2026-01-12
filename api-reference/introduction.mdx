@@ -266,7 +266,7 @@ Poll for task result. No rate limit.
 |-----------|------|---------|-------------|
 | `taskDetails` | string | `""` | Task description in natural language |
 | `startingPoint` | string | null | Starting URL (skips navigation) |
-| `maxDuration` | number | 300000 | Inactivity timeout in ms (sessions expire after 5 min of inactivity) |
+| `maxDuration` | number | 300000 | Max task duration in ms (max: 5 min) |
 | `maxInputTokens` | number | 100000 | AI model input token limit |
 | `maxOutputTokens` | number | 100000 | AI model output token limit |
 | `avoidDomains` | string[] | `[]` | Domains to block |

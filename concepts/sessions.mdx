@@ -35,7 +35,7 @@ Configure sessions when creating them:
   "initialTask": {
     "taskDetails": "What to do",                  // Initial task (can be empty)
     "startingPoint": "https://example.com",       // Skip navigation
-    "maxDuration": 300000,                        // Inactivity timeout in ms (optional)
+    "maxDuration": 300000,                        // Task timeout in ms (max 5 min)
     "maxInputTokens": 100000,                     // AI model input limit
     "maxOutputTokens": 100000,                    // AI model output limit
     "avoidDomains": ["ads.example.com"],          // Domains to block
@@ -52,7 +52,7 @@ Configure sessions when creating them:
 - **initialTask**: Contains all task-specific parameters.
 - **taskDetails**: Can be empty if you plan to send tasks later via `/send-message`.
 - **startingPoint**: Saves tokens and time by skipping navigation.
-- **maxDuration**: Optional inactivity timeout. Sessions expire after 5 minutes of inactivity by default, but can run indefinitely while active.
+- **maxDuration**: Maximum time a task can run before automatic termination (default: 5 minutes). Note: Session inactivity timeout is fixed at 5 minutes.
 - **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
 - **avoidDomains**: Prevents accidental navigation to unwanted domains.
 

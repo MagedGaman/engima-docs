@@ -264,7 +264,7 @@ This is useful for multi-step workflows where each task depends on the previous 
 ## Task Constraints
 
 ### Maximum Duration
-Tasks inherit the session's `maxDuration` inactivity timeout (default 5 minutes of inactivity) but can have a shorter limit specified per-task.
+Tasks can have a `maxDuration` limit specifying the maximum execution time (default and max: 5 minutes). Session inactivity timeout is separate and fixed at 5 minutes.
 
 ### Token Limits
 Tasks are constrained by `maxInputTokens` and `maxOutputTokens`. If limits are exceeded:

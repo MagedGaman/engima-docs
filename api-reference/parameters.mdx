@@ -106,8 +106,9 @@ Setting a `startingPoint` eliminates the need to navigate from a blank page, red
 
 - **Type:** `number` (milliseconds)
 - **Required:** No
-- **Default:** `300000` (5 minutes of inactivity)
-- **Description:** Inactivity timeout before automatic termination. Sessions can run indefinitely while active. The timer resets each time activity occurs.
+- **Default:** `300000` (5 minutes)
+- **Maximum:** `300000` (5 minutes)
+- **Description:** Maximum time a task can run before automatic termination. This is a task-level parameter, not a session-level setting. Note: Session inactivity timeout is fixed at 5 minutes.
 
 **Example:**
 ```json
@@ -117,7 +118,7 @@ Setting a `startingPoint` eliminates the need to navigate from a blank page, red
 ```
 
 <Warning>
-Sessions automatically terminate after `maxDuration` even if tasks are still running. Set this value based on your expected task completion time.
+Tasks automatically terminate after `maxDuration`. Set this value based on your expected task completion time.
 </Warning>
 
 ---
@@ -862,7 +863,7 @@ interface GuardrailMessage {
 
 | Parameter | Min | Max | Notes |
 |-----------|-----|-----|-------|
-| `maxDuration` | 0 | unlimited | Milliseconds (inactivity timeout) |
+| `maxDuration` | 1000 | 300000 | Milliseconds (max task duration) |
 | `maxInputTokens` | 0 | 100000 | Default: 100000 |
 | `maxOutputTokens` | 0 | 100000 | Default: 100000 |
 | `max_tokens` | 0 | unlimited | OpenAI-compatible endpoint |

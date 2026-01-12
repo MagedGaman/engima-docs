@@ -167,7 +167,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     taskDetails: "Your task",
-    maxDuration: 300000 // inactivity timeout in milliseconds
+    maxDuration: 300000 // max task duration in milliseconds
   })
 });
 ```
@@ -599,7 +599,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 **Solution:** Check parameter requirements in API documentation.
 
 **Parameter Ranges:**
-- `maxDuration`: 1,000+ ms (inactivity timeout, default 5 minutes)
+- `maxDuration`: 1,000 - 300,000 ms (max task duration, default 5 minutes)
 - `maxInputTokens`: 1,000 - 100,000 tokens
 - `maxOutputTokens`: 100 - 50,000 tokens
 

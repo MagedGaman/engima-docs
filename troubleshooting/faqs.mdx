@@ -8,9 +8,9 @@ icon: "circle-question"
 
 ### How long can sessions run?
 
-Sessions can run indefinitely while active and expire after 5 minutes of inactivity. Configure the inactivity timeout with `maxDuration` (in milliseconds). Default is 300000 (5 minutes of inactivity) if not specified.
+Sessions can run indefinitely while active and expire after 5 minutes of inactivity. The session inactivity timeout is fixed at 5 minutes and cannot be configured.
 
-Sessions timeout at `maxDuration` or when explicitly terminated. Always terminate sessions when finished.
+Tasks have a configurable `maxDuration` (in milliseconds) for maximum task execution time. Default and max is 300000 (5 minutes). Always terminate sessions when finished.
 
 [Session lifecycle documentation](/concepts/sessions#lifecycle)
 
