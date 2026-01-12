@@ -237,7 +237,7 @@ socket.on("end_session", (data) => {
   // reasons: "completed", "terminated", "expired", "terminateOnCompletion", "instance_lost"
 });
 
-// Instance connection issues (session enters 5-min grace period)
+// Instance connection issues (session enters grace period)
 socket.on("instance:disconnected", (data) => {
   console.log("Instance lost, waiting for reconnection...");
   console.log("Grace period:", data.gracePeriod, "ms");

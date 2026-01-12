@@ -81,7 +81,7 @@ All errors follow a consistent structure:
 ```
 **Causes:**
 - Session was terminated
-- Session expired (5 min timeout)
+- Session expired (5 min of inactivity)
 - Invalid sessionId
 
 **Solution:** Create a new session with `POST /start/start-session`.
@@ -277,13 +277,12 @@ All errors follow a consistent structure:
 ```json
 {
   "success": false,
-  "error": "Invalid parameter 'maxDuration': must be between 1000 and 300000",
+  "error": "Invalid parameter 'maxDuration': must be at least 1000",
   "code": "INVALID_PARAMETER",
   "details": {
     "parameter": "maxDuration",
     "value": 500000,
-    "min": 1000,
-    "max": 300000
+    "min": 1000
   }
 }
 ```
@@ -522,7 +521,7 @@ async function terminateSession(sessionId, apiKey) {
 - Task completed but notification lost
 
 **Solutions:**
-1. Continue polling for up to 5 minutes
+1. Continue polling until completion
 2. Check WebSocket events if available
 3. Terminate and retry task
 
