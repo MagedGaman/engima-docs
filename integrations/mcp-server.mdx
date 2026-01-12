@@ -79,7 +79,7 @@ Execute a single browser automation task. Creates a session, runs the task, and 
 |-----------|------|----------|---------|-------------|
 | `taskDetails` | string | Yes | - | Natural language description of the task |
 | `startingUrl` | string | No | null | URL to start from (e.g., "https://google.com") |
-| `maxDuration` | number | No | 300000 | Max task duration in milliseconds (max: 300000) |
+| `maxDuration` | number | No | 300000 | Inactivity timeout in milliseconds |
 
 **Example Usage:**
 
@@ -127,7 +127,7 @@ Create a persistent browser session for multi-step workflows.
 |-----------|------|----------|---------|-------------|
 | `taskDetails` | string | No | "" | Initial task (can be empty to just create session) |
 | `startingUrl` | string | No | null | Starting URL |
-| `maxDuration` | number | No | 300000 | Session timeout in ms (max: 300000) |
+| `maxDuration` | number | No | 300000 | Inactivity timeout in ms |
 
 **Example Usage:**
 
@@ -588,7 +588,7 @@ Claude's execution:
 
 **Error:** `"Session not found"` or `"Session expired"`
 
-**Cause:** WebRun sessions have a maximum duration of 5 minutes (300,000 ms).
+**Cause:** WebRun sessions expire after 5 minutes of inactivity (300,000 ms default timeout).
 
 **Solutions:**
 
@@ -715,13 +715,13 @@ Claude's execution:
   - `"https://example.com/products"`
 
 **maxDuration** (number)
-- In milliseconds
-- Maximum: 300000 (5 minutes)
-- Default: 300000
+- Inactivity timeout in milliseconds
+- Default: 300000 (5 minutes of inactivity)
+- Sessions can run indefinitely while active
 - Examples:
-  - `60000` = 1 minute
-  - `120000` = 2 minutes
-  - `300000` = 5 minutes
+  - `60000` = 1 minute of inactivity
+  - `120000` = 2 minutes of inactivity
+  - `300000` = 5 minutes of inactivity (default)
 
 **sessionId** (string)
 - Returned from `create_session`

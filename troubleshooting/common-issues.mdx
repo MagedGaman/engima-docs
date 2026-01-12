@@ -223,7 +223,7 @@ This guide covers the most common issues users encounter when working with WebRu
        await new Promise(r => setTimeout(r, 2000));
      }
 
-     throw new Error("Task polling timeout - no result after 5 minutes");
+     throw new Error("Task polling timeout - no result received");
    }
    ```
 
@@ -243,7 +243,7 @@ This guide covers the most common issues users encounter when working with WebRu
 
 3. **Terminate and Retry**
    ```javascript
-   // If stuck for > 5 minutes, terminate and retry
+   // If stuck for too long, terminate and retry
    await fetch("https://connect.webrun.ai/start/send-message", {
      method: "POST",
      headers: {

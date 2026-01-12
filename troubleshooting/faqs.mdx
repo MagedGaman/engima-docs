@@ -8,7 +8,7 @@ icon: "circle-question"
 
 ### How long can sessions run?
 
-Sessions have a 5-minute maximum. Configure with `maxDuration` (in milliseconds, max: 300000). Default is 5 minutes if not specified.
+Sessions can run indefinitely while active and expire after 5 minutes of inactivity. Configure the inactivity timeout with `maxDuration` (in milliseconds). Default is 300000 (5 minutes of inactivity) if not specified.
 
 Sessions timeout at `maxDuration` or when explicitly terminated. Always terminate sessions when finished.
 
@@ -135,7 +135,7 @@ Costs are included in your WebRun usage and billed based on input/output tokens.
 
 ### Is there a free tier?
 
-Yes. $5 free credits per month, 2 concurrent sessions, 5-minute session duration. All API features enabled.
+Yes. $5 free credits per month, 2 concurrent sessions, unlimited session duration (expires after 5 minutes of inactivity). All API features enabled.
 
 Credits reset monthly and don't roll over.
 

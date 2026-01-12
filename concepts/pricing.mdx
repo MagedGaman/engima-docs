@@ -35,7 +35,7 @@ Actual costs vary based on page complexity and task specificity.
 
 **$0.02 per minute** of active session time.
 
-Compute time runs from session creation until termination or timeout (5 minute maximum). WebRun provisions real desktop environments with dedicated resources for each session, ensuring consistent browser behavior across all tasks.
+Compute time runs from session creation until termination or inactivity timeout. Sessions can run indefinitely while active, but expire after 5 minutes of inactivity by default. WebRun provisions real desktop environments with dedicated resources for each session, ensuring consistent browser behavior across all tasks.
 
 <Warning>
 Sessions remain billable until terminated. Set `terminateOnCompletion: true` on your final task or explicitly call terminate to avoid charges for the full timeout window.

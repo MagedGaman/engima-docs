@@ -523,7 +523,7 @@ Session terminated by server.
 **Possible Reasons:**
 - `"completed"` - Task completed
 - `"terminated"` - Manually terminated
-- `"expired"` - Session timeout
+- `"expired"` - Session expired due to inactivity
 - `"terminateOnCompletion"` - Auto-terminated after task
 - `"instance_lost"` - Instance connection lost
 
@@ -537,7 +537,7 @@ socket.on("end_session", (data) => {
 
 #### instance:disconnected
 
-Instance connection lost. Session enters 5-minute grace period for reconnection.
+Instance connection lost. Session enters grace period for reconnection.
 
 ```json
 {

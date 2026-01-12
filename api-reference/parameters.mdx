@@ -106,9 +106,8 @@ Setting a `startingPoint` eliminates the need to navigate from a blank page, red
 
 - **Type:** `number` (milliseconds)
 - **Required:** No
-- **Default:** `300000` (5 minutes)
-- **Maximum:** `300000` (5 minutes)
-- **Description:** Maximum time the session can run before automatic termination. Prevents runaway costs.
+- **Default:** `300000` (5 minutes of inactivity)
+- **Description:** Inactivity timeout before automatic termination. Sessions can run indefinitely while active. The timer resets each time activity occurs.
 
 **Example:**
 ```json
@@ -863,7 +862,7 @@ interface GuardrailMessage {
 
 | Parameter | Min | Max | Notes |
 |-----------|-----|-----|-------|
-| `maxDuration` | 0 | 300000 | Milliseconds (5 minutes max) |
+| `maxDuration` | 0 | unlimited | Milliseconds (inactivity timeout) |
 | `maxInputTokens` | 0 | 100000 | Default: 100000 |
 | `maxOutputTokens` | 0 | 100000 | Default: 100000 |
 | `max_tokens` | 0 | unlimited | OpenAI-compatible endpoint |

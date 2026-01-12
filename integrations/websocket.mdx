@@ -234,7 +234,7 @@ Session terminated by server.
 **Reasons:**
 - `"completed"` - Task completed successfully
 - `"terminated"` - User terminated session
-- `"expired"` - Session timeout (5 minutes)
+- `"expired"` - Session expired (5 minutes of inactivity)
 - `"terminateOnCompletion"` - Auto-terminated after task
 - `"instance_lost"` - Instance connection permanently lost
 
@@ -250,7 +250,7 @@ socket.on("end_session", (data) => {
 
 ### instance:disconnected
 
-Instance connection lost, entering 5-minute grace period.
+Instance connection lost, entering grace period.
 
 **Event:**
 ```json
@@ -440,10 +440,10 @@ Two types of disconnections:
 
 **2. Instance Disconnection** (browser instance connection)
 - Server loses connection to browser instance
-- 5-minute grace period to recover
+- Grace period to recover
 - You receive `instance:disconnected` event
 - If recovered: `instance:reconnected` event
-- If not recovered within 5 min: session terminates
+- If not recovered within grace period: session terminates
 
 ```javascript
 let instanceDisconnected = false;

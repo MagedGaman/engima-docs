@@ -301,7 +301,7 @@ Configure your session behavior with these parameters:
 |-----------|------|---------|-------------|
 | `taskDetails` | string | "" | Initial task description (can be empty for sessions without initial task) |
 | `startingPoint` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
-| `maxDuration` | number | 300000 | Session timeout in ms (max: 300000 = 5 minutes) |
+| `maxDuration` | number | 300000 | Inactivity timeout in ms (sessions expire after 5 min of inactivity by default) |
 | `maxInputTokens` | number | 100000 | Max input tokens for AI model |
 | `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
 | `avoidDomains` | string[] | [] | Domains agent should not visit (e.g., `["facebook.com"]`) |
@@ -326,7 +326,7 @@ Configure your session behavior with these parameters:
 ```
 
 <Note>
-- `maxDuration` is enforced server-side; sessions cannot exceed 5 minutes (300000ms)
+- `maxDuration` is the inactivity timeout; sessions can run indefinitely while active but expire after 5 minutes of inactivity by default
 - `taskDetails` can be empty if you plan to send tasks later via `/start/send-message`
 - Always terminate sessions when done to avoid unnecessary charges
 </Note>

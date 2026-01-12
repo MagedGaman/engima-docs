@@ -256,7 +256,7 @@ socket.emit("message", { actionType: "state", newState: "terminate" });
 ```
 
 <Warning>
-Always terminate sessions when you're done to avoid unnecessary charges. Idle sessions continue to incur costs until they time out (max 5 minutes) or are explicitly terminated.
+Always terminate sessions when you're done to avoid unnecessary charges. Idle sessions expire after 5 minutes of inactivity, but you should terminate explicitly to avoid unnecessary costs.
 </Warning>
 
 ---
