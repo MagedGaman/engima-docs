@@ -304,7 +304,7 @@ All errors follow this format:
 **Common mistakes:**
 
 - **Forgot to terminate?** Sessions cost money until terminated. Set `terminateOnCompletion: true` or call terminate explicitly.
-- **Session ID not found?** Sessions expire after `maxDuration` of inactivity (default: 5 minutes). Check if the session expired due to inactivity.
+- **Session ID not found?** Sessions expire after 5 minutes of inactivity.
 - **Got a 401?** API key is invalid. Verify it's correct and hasn't been revoked.
 - **Getting 429?** You're sending requests too fast. Rate limit is 10 req/min per endpoint.
 
