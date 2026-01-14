@@ -6,67 +6,31 @@ icon: "code"
 
 ## Overview
 
-By default, AI agents return natural language responses. To get structured data (JSON, arrays, specific formats), use the native JSON Schema validation feature in the API.
+By default, AI agents return natural language responses in markdown format. To get structured data, use the `outputType` parameter to specify the desired format.
+
+**Output Types:**
+
+| Type | Description | Schema Format |
+|------|-------------|---------------|
+| `text` | Markdown formatted text (default) | Not required |
+| `structured_json` | Validated JSON output | JSON Schema object |
+| `structured_csv` | CSV formatted data | Array of column names |
 
 **Benefits:**
-- Native JSON Schema validation
+- Native validation for JSON and CSV formats
 - Guaranteed valid output structure
-- Easy parsing and validation
+- Easy parsing and integration
 - Type safety in your application
 - Direct integration with databases and APIs
 - Webhook notifications for completed tasks
 
 ---
 
-## Native JSON Schema Support
+## Output Type: text
 
-The API supports native JSON Schema validation through dedicated request parameters. This is the recommended approach for structured output.
+The default output type returns natural language responses formatted as markdown. No `outputSchema` is required.
 
-### API Parameters
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `outputType` | `string` | `"text"` or `"structured"` - Specifies output format |
-| `outputSchema` | `object` | JSON Schema defining the expected response structure |
-
-### Defining Your Schema
-
-The `outputSchema` parameter accepts a standard JSON Schema object:
-
-```json
-{
-  "outputSchema": {
-    "type": "object",
-    "properties": {
-      "title": { "type": "string" },
-      "price": { "type": "number" },
-      "items": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": { "type": "string" }
-          }
-        }
-      }
-    },
-    "required": ["title", "price"],
-    "additionalProperties": false
-  }
-}
-```
-
-### Supported Types
-
-The following JSON Schema types are supported:
-
-- `string` - Text values
-- `number` - Numeric values (integers and decimals)
-- `boolean` - True/false values
-- `object` - Nested objects with defined properties
-- `array` - Arrays with defined item structure
-
-### Basic Example
+### Request Example
 
 ```javascript
 const session = await fetch("https://connect.webrun.ai/start/start-session", {
@@ -78,26 +42,82 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   body: JSON.stringify({
     mode: "default",
     initialTask: {
-      taskDetails: "Go to amazon.com and search for 'wireless keyboard'. Extract the first 3 results.",
-      startingPoint: "https://amazon.com",
-      outputType: "structured",
+      taskDetails: "Give me the latest prices of the top performing cryptos",
+      taskId: "3e0f4258511fc909775b9f1a74656004",
+      maxDuration: 5,
+      maxInputTokens: 400000,
+      maxOutputTokens: 200000,
+      avoidDomains: [],
+      outputType: "text"
+    }
+  })
+}).then(r => r.json());
+```
+
+### Response
+
+The response contains markdown-formatted text:
+
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "## Top Cryptocurrency Prices\n\n| Name | Price |\n|------|-------|\n| Bitcoin | $95,360.97 |\n| Ethereum | $3,325.94 |\n...",
+    "prompt_tokens": 8500,
+    "completion_tokens": 2300,
+    "total_tokens": 10800
+  }
+}
+```
+
+---
+
+## Output Type: structured_json
+
+Use `structured_json` to get validated JSON output. The `outputSchema` parameter accepts a standard JSON Schema object that defines the expected response structure.
+
+### Supported JSON Schema Types
+
+- `string` - Text values
+- `number` - Numeric values (integers and decimals)
+- `boolean` - True/false values
+- `object` - Nested objects with defined properties
+- `array` - Arrays with defined item structure
+
+### Request Example
+
+```javascript
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    mode: "default",
+    initialTask: {
+      taskDetails: "Give me the latest prices of the top performing cryptos",
+      taskId: "2444180416485ba80be9f12ef51134dc",
+      maxDuration: 60,
+      maxInputTokens: 4000,
+      maxOutputTokens: 2000,
+      avoidDomains: [],
+      outputType: "structured_json",
       outputSchema: {
         type: "object",
         properties: {
-          products: {
+          top: {
             type: "array",
             items: {
               type: "object",
               properties: {
-                title: { type: "string" },
-                price: { type: "number" },
-                rating: { type: "number" }
-              },
-              required: ["title", "price"]
+                name: { type: "string" },
+                price: { type: "string" }
+              }
             }
           }
         },
-        required: ["products"],
         additionalProperties: false
       }
     }
@@ -105,13 +125,16 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 }).then(r => r.json());
 ```
 
-**Response:**
+### Response
+
+The response is guaranteed to match your schema:
+
 ```json
 {
   "success": true,
   "type": "task_completed",
   "data": {
-    "message": "{\"products\":[{\"title\":\"Logitech K380\",\"price\":29.99,\"rating\":4.5},{\"title\":\"Arteck Wireless Keyboard\",\"price\":19.99,\"rating\":4.3},{\"title\":\"Microsoft Designer Compact\",\"price\":49.99,\"rating\":4.4}]}",
+    "message": "{\"top\":[{\"name\":\"Bitcoin\",\"price\":\"$95,187.71\"},{\"name\":\"Ethereum\",\"price\":\"$3,319.17\"},{\"name\":\"Tether\",\"price\":\"$0.9995\"},{\"name\":\"XRP\",\"price\":\"$2.15\"},{\"name\":\"BNB\",\"price\":\"$942.50\"},{\"name\":\"Solana\",\"price\":\"$145.42\"},{\"name\":\"USDC\",\"price\":\"$0.9997\"},{\"name\":\"TRON\",\"price\":\"$0.3064\"},{\"name\":\"Dogecoin\",\"price\":\"$0.1482\"},{\"name\":\"Cardano\",\"price\":\"$0.4199\"}]}",
     "prompt_tokens": 8500,
     "completion_tokens": 2300,
     "total_tokens": 10800
@@ -120,14 +143,90 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 ```
 
 <Note>
-When using `outputType: "structured"`, the response is guaranteed to match your schema. The `data.message` field contains a valid JSON string that can be directly parsed.
+When using `outputType: "structured_json"`, the response is guaranteed to match your schema. The `data.message` field contains a valid JSON string that can be directly parsed.
+</Note>
+
+---
+
+## Output Type: structured_csv
+
+Use `structured_csv` to get CSV formatted output. The `outputSchema` parameter accepts an array of column names that define the CSV structure.
+
+### Request Example
+
+```javascript
+const session = await fetch("https://connect.webrun.ai/start/start-session", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    mode: "default",
+    initialTask: {
+      taskDetails: "Give me the latest prices of the top performing cryptos",
+      taskId: "3e0f4258511fc909775b9f1a74656004",
+      maxDuration: 5,
+      maxInputTokens: 400000,
+      maxOutputTokens: 200000,
+      avoidDomains: [],
+      outputType: "structured_csv",
+      outputSchema: ["name", "price"]
+    }
+  })
+}).then(r => r.json());
+```
+
+### Response
+
+The response contains CSV formatted data with the specified columns:
+
+```json
+{
+  "success": true,
+  "type": "task_completed",
+  "data": {
+    "message": "name,price\nBitcoin,$95,360.97\nEthereum,$3,325.94\nTether,$0.9994\nXRP,$2.16\nBNB,$943.70\nSolana,$145.38\nUSDC,$0.9996\nTRON,$0.3070\nDogecoin,$0.1483\nCardano,$0.4220",
+    "prompt_tokens": 8500,
+    "completion_tokens": 2300,
+    "total_tokens": 10800
+  }
+}
+```
+
+### Parsing CSV Response
+
+```javascript
+const result = await pollForResult(sessionId, taskId);
+const csv = result.data.message;
+const lines = csv.trim().split('\n');
+const headers = lines[0].split(',');
+const data = lines.slice(1).map(line => {
+  const values = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+  const obj = {};
+  headers.forEach((header, i) => {
+    obj[header.trim()] = values[i]?.replace(/^"|"$/g, '').trim();
+  });
+  return obj;
+});
+
+console.log(data);
+// [
+//   { name: "Bitcoin", price: "$95,360.97" },
+//   { name: "Ethereum", price: "$3,325.94" },
+//   ...
+// ]
+```
+
+<Note>
+When using `outputType: "structured_csv"`, the `outputSchema` must be an array of column name strings. The first row of the output will be the header row containing these column names.
 </Note>
 
 ---
 
 ## Webhook Integration
 
-Combine structured output with [webhooks](/usage-guides/webhooks) to automatically deliver validated JSON data to your systems when tasks complete.
+Combine structured output with [webhooks](/usage-guides/webhooks) to automatically deliver validated data to your systems when tasks complete.
 
 ```javascript
 const session = await fetch("https://connect.webrun.ai/start/start-session", {
@@ -141,7 +240,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     initialTask: {
       taskDetails: "Extract product information from the page",
       startingPoint: "https://example.com/product",
-      outputType: "structured",
+      outputType: "structured_json",
       outputSchema: {
         type: "object",
         properties: {
@@ -164,7 +263,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 ```
 
 <Tip>
-Use `submittedData: "structured_output"` to receive only the validated JSON data matching your schema. See the [Webhooks guide](/usage-guides/webhooks) for complete documentation.
+Use `submittedData: "structured_output"` to receive only the validated data matching your schema (works with both `structured_json` and `structured_csv`). See the [Webhooks guide](/usage-guides/webhooks) for complete documentation.
 </Tip>
 
 ---
