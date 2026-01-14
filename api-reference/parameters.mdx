@@ -30,7 +30,7 @@ Parameters used when creating a new session via `POST /start/start-session`.
 - **Required:** No
 - **Description:** Configuration for the initial task to run when the session starts. Contains all task-specific parameters.
 
-**Example:**
+**Example with structured_json:**
 ```json
 {
   "mode": "default",
@@ -38,7 +38,7 @@ Parameters used when creating a new session via `POST /start/start-session`.
     "taskDetails": "Find the price of iPhone 15 Pro on Apple.com",
     "startingPoint": "https://apple.com",
     "maxDuration": 300000,
-    "outputType": "structured",
+    "outputType": "structured_json",
     "outputSchema": {
       "type": "object",
       "properties": {
@@ -47,6 +47,19 @@ Parameters used when creating a new session via `POST /start/start-session`.
         "currency": { "type": "string" }
       }
     }
+  }
+}
+```
+
+**Example with structured_csv:**
+```json
+{
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Get the top 10 cryptocurrency prices",
+    "maxDuration": 300000,
+    "outputType": "structured_csv",
+    "outputSchema": ["name", "price", "market_cap"]
   }
 }
 ```
@@ -196,31 +209,59 @@ Tasks automatically terminate after `maxDuration`. Set this value based on your 
 - **Type:** `string`
 - **Required:** No
 - **Default:** `"text"`
-- **Values:** `"text"`, `"structured"`
-- **Description:** Specifies the output format. Use `"structured"` with `outputSchema` to get validated JSON output.
+- **Values:** `"text"`, `"structured_json"`, `"structured_csv"`
+- **Description:** Specifies the output format.
 
-**Example:**
+| Value | Description | Schema Format |
+|-------|-------------|---------------|
+| `text` | Markdown formatted text (default) | Not required |
+| `structured_json` | Validated JSON output | JSON Schema object |
+| `structured_csv` | CSV formatted data | Array of column names |
+
+**Examples:**
 ```json
+// Text output (default)
 {
-  "outputType": "structured"
+  "outputType": "text"
+}
+
+// JSON output with schema
+{
+  "outputType": "structured_json",
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "name": { "type": "string" },
+      "price": { "type": "number" }
+    }
+  }
+}
+
+// CSV output with column names
+{
+  "outputType": "structured_csv",
+  "outputSchema": ["name", "price", "quantity"]
 }
 ```
 
 <Note>
-When using `outputType: "structured"`, you must also provide an `outputSchema` to define the expected response structure.
+When using `outputType: "structured_json"` or `"structured_csv"`, you must also provide an `outputSchema` to define the expected response structure.
 </Note>
 
 ---
 
 ### outputSchema
 
-- **Type:** `object` (JSON Schema)
-- **Required:** No (required when `outputType` is `"structured"`)
-- **Description:** JSON Schema defining the expected response structure. The AI agent's output will be validated against this schema.
+- **Type:** `object` (JSON Schema) or `array` (column names)
+- **Required:** No (required when `outputType` is `"structured_json"` or `"structured_csv"`)
+- **Description:** Defines the expected response structure. The format depends on the `outputType`:
+  - For `structured_json`: A JSON Schema object
+  - For `structured_csv`: An array of column name strings
 
-**Example:**
+**Example for structured_json:**
 ```json
 {
+  "outputType": "structured_json",
   "outputSchema": {
     "type": "object",
     "properties": {
@@ -238,15 +279,25 @@ When using `outputType: "structured"`, you must also provide an `outputSchema` t
 }
 ```
 
-**Supported Types:**
+**Supported JSON Schema Types:**
 - `string` - Text values
 - `number` - Numeric values (integers and decimals)
 - `boolean` - True/false values
 - `object` - Nested objects with defined properties
 - `array` - Arrays with defined item structure
 
+**Example for structured_csv:**
+```json
+{
+  "outputType": "structured_csv",
+  "outputSchema": ["name", "price", "quantity", "category"]
+}
+```
+
+The CSV output will include a header row with the specified column names, followed by data rows.
+
 <Tip>
-Use `"additionalProperties": false` to ensure the output contains only the fields you specify.
+For JSON schemas, use `"additionalProperties": false` to ensure the output contains only the fields you specify.
 </Tip>
 
 ---
@@ -291,7 +342,7 @@ Use `"additionalProperties": false` to ensure the output contains only the field
     "taskDetails": "Extract product information from the page",
     "startingPoint": "https://example.com/product",
     "maxDuration": 300000,
-    "outputType": "structured",
+    "outputType": "structured_json",
     "outputSchema": {
       "type": "object",
       "properties": {
@@ -735,21 +786,35 @@ type InteractionType =
 ### OutputType
 
 ```typescript
-type OutputType = "text" | "structured";
+type OutputType = "text" | "structured_json" | "structured_csv";
 ```
 
 ---
 
 ### OutputSchema
 
+For `structured_json`, use a JSON Schema object:
+
 ```typescript
-interface OutputSchema {
+interface JsonOutputSchema {
   type: "object" | "array" | "string" | "number" | "boolean";
-  properties?: Record<string, OutputSchema>;
-  items?: OutputSchema;
+  properties?: Record<string, JsonOutputSchema>;
+  items?: JsonOutputSchema;
   required?: string[];
   additionalProperties?: boolean;
 }
+```
+
+For `structured_csv`, use an array of column names:
+
+```typescript
+type CsvOutputSchema = string[];
+```
+
+Combined type:
+
+```typescript
+type OutputSchema = JsonOutputSchema | CsvOutputSchema;
 ```
 
 ---
