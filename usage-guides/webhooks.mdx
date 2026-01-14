@@ -33,9 +33,9 @@ Add a `webhook` object to your session or task request to enable webhook notific
 
 | Value | Description | Best For |
 |-------|-------------|----------|
-| `"full_response"` | Complete task response including all metadata, tokens, and timing | Debugging, audit logging |
-| `"structured_output"` | Only the JSON data matching your schema | Production data pipelines |
-| `"just_ping"` | Notification only, no data payload | Triggering external workflows |
+| `"ai_response"` | The response from the AI (text, structured_json, or structured_csv) — only the results/output from the LLM | Production data pipelines |
+| `"full_response"` | Full body response that includes the usage info | Debugging, audit logging |
+| `"just_ping"` | Just a ping notification, no data payload | Triggering external workflows |
 
 ---
 
@@ -99,7 +99,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
         name: "Product Webhook",
         url: "https://api.mysite.com/products",
         auth: "Bearer token123",
-        submittedData: "structured_output"
+        submittedData: "ai_response"
       }
     }
   })
@@ -107,7 +107,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 ```
 
 <Tip>
-Use `submittedData: "structured_output"` with structured output to receive only the validated JSON data, reducing payload size and simplifying your webhook handler.
+Use `submittedData: "ai_response"` to receive only the AI's output (text, structured_json, or structured_csv), reducing payload size and simplifying your webhook handler.
 </Tip>
 
 ---
@@ -140,7 +140,7 @@ The payload sent to your endpoint depends on the `submittedData` setting.
 }
 ```
 
-### structured_output Payload
+### ai_response Payload
 
 ```json
 {
@@ -350,7 +350,7 @@ Automatically ingest extracted data into your database or data warehouse.
     name: "Product Ingestion",
     url: "https://api.yoursite.com/ingest/products",
     auth: "Bearer ingestion-token",
-    submittedData: "structured_output"
+    submittedData: "ai_response"
   }
 }
 ```
@@ -390,7 +390,7 @@ Send data directly to external services like Zapier, Make, or n8n.
   webhook: {
     name: "Zapier Integration",
     url: "https://hooks.zapier.com/hooks/catch/123456/abcdef",
-    submittedData: "structured_output"
+    submittedData: "ai_response"
   }
 }
 ```
