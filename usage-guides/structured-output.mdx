@@ -255,7 +255,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
         name: "Product Webhook",
         url: "https://api.mysite.com/products",
         auth: "Bearer token123",
-        submittedData: "structured_output"
+        submittedData: "ai_response"
       }
     }
   })
@@ -263,7 +263,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 ```
 
 <Tip>
-Use `submittedData: "structured_output"` to receive only the validated data matching your schema (works with both `structured_json` and `structured_csv`). See the [Webhooks guide](/usage-guides/webhooks) for complete documentation.
+Use `submittedData: "ai_response"` to receive only the AI's output (text, structured_json, or structured_csv). See the [Webhooks guide](/usage-guides/webhooks) for complete documentation.
 </Tip>
 
 ---

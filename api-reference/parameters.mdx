@@ -318,9 +318,9 @@ For JSON schemas, use `"additionalProperties": false` to ensure the output conta
 | `submittedData` | `string` | Yes | Data to include in the payload |
 
 **submittedData Options:**
-- `"full_response"` - Complete task response including all metadata
-- `"structured_output"` - Only the JSON data matching the schema
-- `"just_ping"` - Notification only, no data payload
+- `"ai_response"` - The response from the AI (text, structured_json, or structured_csv) — only the results/output from the LLM
+- `"full_response"` - Full body response that includes the usage info
+- `"just_ping"` - Just a ping notification, no data payload
 
 **Example:**
 ```json
@@ -329,7 +329,7 @@ For JSON schemas, use `"additionalProperties": false` to ensure the output conta
     "name": "Product Webhook",
     "url": "https://api.yoursite.com/webhooks/products",
     "auth": "Bearer your-secret-token",
-    "submittedData": "structured_output"
+    "submittedData": "ai_response"
   }
 }
 ```
@@ -357,7 +357,7 @@ For JSON schemas, use `"additionalProperties": false` to ensure the output conta
       "name": "Product Webhook",
       "url": "https://api.mysite.com/products",
       "auth": "Bearer token123",
-      "submittedData": "structured_output"
+      "submittedData": "ai_response"
     }
   }
 }
@@ -826,7 +826,7 @@ interface WebhookConfig {
   name: string;
   url: string;
   auth?: string;
-  submittedData: "full_response" | "structured_output" | "just_ping";
+  submittedData: "ai_response" | "full_response" | "just_ping";
 }
 ```
 
