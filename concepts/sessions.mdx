@@ -40,6 +40,9 @@ Configure sessions when creating them:
     "maxOutputTokens": 100000,                    // AI model output limit
     "avoidDomains": ["ads.example.com"],          // Domains to block
     "terminateOnCompletion": false,               // Auto-terminate after first task
+    "secrets": [                                   // Credentials for website auth
+      { "match": "*.example.com", "fields": { "email": "user@co.com", "password": "pass" } }
+    ],
     "outputType": "structured_json",              // "text", "structured_json", or "structured_csv"
     "outputSchema": { ... }                       // JSON Schema for structured output
   }
@@ -55,6 +58,7 @@ Configure sessions when creating them:
 - **maxDuration**: Maximum time a task can run before automatic termination (default: 5 minutes). Note: Session inactivity timeout is fixed at 5 minutes.
 - **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
 - **avoidDomains**: Prevents accidental navigation to unwanted domains.
+- **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
 
 ---
 

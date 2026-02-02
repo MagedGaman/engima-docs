@@ -49,22 +49,35 @@ Custom viewport sizes and mobile device emulation aren't supported yet.
 
 ### How do I handle website login?
 
-Three approaches:
+Four approaches:
 
-**1. Provide credentials in task description:**
+**1. Secrets (recommended):**
+Provide credentials upfront using the `secrets` parameter. The agent authenticates automatically without pausing. Secrets are matched by domain pattern and are never stored — they are discarded when the session ends.
+```json
+{
+  "initialTask": {
+    "taskDetails": "Log in and export the report",
+    "secrets": [
+      { "match": "*.example.com", "fields": { "email": "user@example.com", "password": "pass123" } }
+    ]
+  }
+}
+```
+
+**2. Provide credentials in task description:**
 ```json
 {
   "taskDetails": "Navigate to example.com/login, enter username 'user@example.com' and password 'pass123', then go to dashboard"
 }
 ```
 
-**2. Handle via guardrails:**
+**3. Handle via guardrails:**
 When the agent encounters a login form, it triggers a guardrail. Your app provides credentials through the guardrail response.
 
-**3. Manual takeover:**
+**4. Manual takeover:**
 Use manual control to enter credentials yourself while watching the video stream.
 
-[Guardrails guide](/usage-guides/handling-guardrails) | [Manual control](/usage-guides/manual-interaction)
+[Secrets guide](/usage-guides/secrets) | [Guardrails guide](/usage-guides/handling-guardrails) | [Manual control](/usage-guides/manual-interaction)
 
 ---
 
@@ -76,7 +89,7 @@ Use manual control to enter credentials yourself while watching the video stream
 
 **Data retention:** Session logs are deleted after 30 days. Screenshots and recordings are deleted with the session.
 
-**Credentials:** WebRun doesn't store credentials you provide to websites. Don't hardcode credentials—use environment variables.
+**Credentials:** WebRun doesn't store credentials you provide to websites. When using [secrets](/usage-guides/secrets), credentials are only attached to the active session and immediately discarded when the session is destroyed — they are never persisted to a database or disk. Don't hardcode credentials—use environment variables.
 
 ---
 
@@ -236,9 +249,9 @@ Yes, with considerations:
 **Works:** Username/password forms, cookie-based auth
 **Limited:** 2FA/MFA (requires manual intervention), OAuth flows (complex), session persistence (cookies don't persist across different sessions)
 
-Provide credentials directly in task description or handle via guardrails.
+Recommended approach: use [secrets](/usage-guides/secrets) to provide credentials upfront. Alternatively, provide credentials in the task description or handle via guardrails.
 
-[Authentication patterns](/usage-guides/handling-guardrails)
+[Secrets guide](/usage-guides/secrets) | [Authentication patterns](/usage-guides/handling-guardrails)
 
 ---
 

@@ -302,6 +302,50 @@ For JSON schemas, use `"additionalProperties": false` to ensure the output conta
 
 ---
 
+### secrets
+
+- **Type:** `array`
+- **Required:** No
+- **Default:** `[]`
+- **Description:** Array of secret entries to provide credentials for websites the agent visits. Secrets are matched by domain pattern so the agent uses the right credentials for each site.
+
+**Secret Entry Structure:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `match` | `string` | Yes | Domain pattern to match (e.g. `*.salesforce.com`) or `all` to match every site |
+| `fields` | `object` | Yes | Key-value pairs of credential fields (e.g. `email`, `password`, `apiKey`) |
+
+**Example:**
+```json
+{
+  "secrets": [
+    {
+      "match": "*.salesforce.com",
+      "fields": {
+        "email": "user@company.com",
+        "password": "secretpass"
+      }
+    },
+    {
+      "match": "all",
+      "fields": {
+        "email": "user@company.com",
+        "password": "defaultpass"
+      }
+    }
+  ]
+}
+```
+
+<Note>
+Secrets are never stored in a database or persisted anywhere. They are only attached to the active session and immediately discarded once the session is destroyed. Secrets are never included in task output or webhook payloads.
+</Note>
+
+See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, and best practices.
+
+---
+
 ### webhook
 
 - **Type:** `object`
@@ -832,6 +876,17 @@ interface WebhookConfig {
 
 ---
 
+### SecretEntry
+
+```typescript
+interface SecretEntry {
+  match: string;       // Domain pattern (e.g. "*.salesforce.com") or "all"
+  fields: Record<string, string>; // Key-value credential fields
+}
+```
+
+---
+
 ###TaskConfig
 
 ```typescript
@@ -846,6 +901,7 @@ interface TaskConfig {
   outputType?: OutputType;
   outputSchema?: OutputSchema;
   webhook?: WebhookConfig;
+  secrets?: SecretEntry[];
 }
 ```
 
@@ -878,6 +934,7 @@ interface TaskMessage {
   outputType?: OutputType;
   outputSchema?: OutputSchema;
   webhook?: WebhookConfig;
+  secrets?: SecretEntry[];
 }
 ```
 

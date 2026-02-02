@@ -341,7 +341,49 @@ console.log(results);
 
 ---
 
-### Example 3: Handling Guardrails
+### Example 3: Authenticated Task with Secrets
+
+Use [secrets](/usage-guides/secrets) to provide credentials upfront so the agent can authenticate without guardrail interruptions:
+
+```javascript
+async function loginAndExtractWithSecrets(url) {
+  const BASE = "https://connect.webrun.ai";
+  const API_KEY = "enig_xxxxxxxxxxxx";
+
+  const session = await fetch(`${BASE}/start/start-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${API_KEY}`
+    },
+    body: JSON.stringify({
+      mode: "default",
+      initialTask: {
+        taskDetails: `Go to ${url}, log in, and extract all user data from the dashboard`,
+        startingPoint: url,
+        terminateOnCompletion: true,
+        secrets: [
+          {
+            match: `*.${new URL(url).hostname}`,
+            fields: {
+              email: process.env.SITE_EMAIL,
+              password: process.env.SITE_PASSWORD
+            }
+          }
+        ]
+      }
+    })
+  }).then(r => r.json());
+
+  // Poll for result — no guardrail handling needed
+  const taskId = session.taskId || session.sessionId;
+  return await pollForResult(session.sessionId, taskId, API_KEY);
+}
+```
+
+---
+
+### Example 4: Handling Guardrails
 
 ```javascript
 async function loginAndExtractData(url, credentials) {
