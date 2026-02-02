@@ -44,6 +44,7 @@
               "usage-guides/controlling-sessions",
               "usage-guides/manual-interaction",
               "usage-guides/handling-guardrails",
+              "usage-guides/secrets",
               "usage-guides/video-streaming",
               "usage-guides/structured-output",
               "usage-guides/webhooks",

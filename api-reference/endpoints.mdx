@@ -40,7 +40,13 @@ Create a new persistent session that can run multiple tasks.
       "properties": {
         "results": { "type": "array" }
       }
-    }
+    },
+    "secrets": [
+      {
+        "match": "*.amazon.com",
+        "fields": { "email": "user@example.com", "password": "pass123" }
+      }
+    ]
   }
 }
 ```
