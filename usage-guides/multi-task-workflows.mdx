@@ -13,6 +13,10 @@ Multi-task workflows allow you to reuse a single browser session for multiple se
 - Workflows that build on previous actions (e.g., login → search → checkout)
 - Scenarios where maintaining browser state (cookies, local storage) is important
 
+<Tip>
+For workflows that span multiple sessions (e.g., daily recurring tasks that need to stay logged in), use [browser profiles](/profiles/overview) to persist cookies and browser data between sessions.
+</Tip>
+
 **When not to use:**
 - Single, isolated tasks (use `/start/run-task` instead)
 - Unrelated tasks across different websites
@@ -294,6 +298,7 @@ Configure your session behavior with these parameters:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `mode` | string | "default" | Session mode (currently only "default" supported) |
+| `profileId` | string | null | [Browser profile](/profiles/overview) ID to attach |
 | `initialTask` | object | null | Initial task configuration (see below) |
 
 **initialTask parameters:**
@@ -416,6 +421,9 @@ socket.on("message", (data) => {
     </Card>
     <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
       Respond to agent requests for input
+    </Card>
+    <Card title="Browser Profiles" icon="user-gear" href="/profiles/overview">
+      Persist browser data across sessions
     </Card>
   </CardGroup>
 </Accordion>

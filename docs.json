@@ -61,6 +61,13 @@
             ]
           },
           {
+            "group": "Profiles",
+            "pages": [
+              "profiles/overview",
+              "profiles/profile-management-api"
+            ]
+          },
+          {
             "group": "API Reference",
             "pages": [
               "api-reference/endpoints",

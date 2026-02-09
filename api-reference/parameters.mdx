@@ -8,6 +8,30 @@ icon: "sliders"
 
 Parameters used when creating a new session via `POST /start/start-session`.
 
+### profileId
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `null`
+- **Description:** ID of a [browser profile](/profiles/overview) to attach to the session. When set, the browser loads the profile's saved cookies, local storage, extensions, and other data before starting the task. This maintains consistent browser state (e.g., login sessions) across multiple sessions.
+
+**Example:**
+```json
+{
+  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Go to amazon.com and check my orders"
+  }
+}
+```
+
+<Tip>
+Use profiles to skip login steps. Log in once with a profile attached, then reuse that profile for future sessions — the saved cookies keep you authenticated.
+</Tip>
+
+---
+
 ### mode
 
 - **Type:** `string`
@@ -911,6 +935,7 @@ interface TaskConfig {
 
 ```typescript
 interface SessionConfig {
+  profileId?: string;
   mode?: string;
   initialTask?: TaskConfig;
 }

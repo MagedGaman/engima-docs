@@ -1,0 +1,176 @@
+---
+title: "Profiles"
+description: "Persistent Chrome browser profiles for maintaining cookies, cache, and session data across tasks"
+icon: "user-gear"
+---
+
+## What are Profiles?
+
+Profiles are persistent Chrome browser data stores that maintain cookies, local storage, extensions, cache, and other browser state across sessions. Instead of starting every session with a clean browser, you can attach a profile to reuse saved login sessions, preferences, and site data.
+
+**Without profiles:** Each session starts with a blank browser. You must log in every time, re-accept cookie banners, and rebuild any site-specific state.
+
+**With profiles:** Sessions start with your saved browser data already loaded. Logged-in sessions persist, cookies carry over, and site preferences are remembered.
+
+---
+
+## Common Use Cases
+
+### Maintaining Login Sessions
+
+Save authenticated sessions so tasks skip the login step entirely:
+
+1. Create a profile
+2. Run a session with the profile attached — log in to the target site
+3. The profile now contains your login cookies
+4. Future sessions using this profile start already authenticated
+
+### Preserving Site Preferences
+
+Keep cookie consent choices, language settings, dark mode preferences, and other site-specific configurations across sessions.
+
+### Reusing Cart or Workspace State
+
+For e-commerce or SaaS workflows, maintain cart contents, workspace configurations, or application state between sessions.
+
+---
+
+## How Profiles Work
+
+### Lifecycle
+
+```
+Create Profile → Upload Data (optional) → Use in Sessions → Download/Update → Delete
+```
+
+1. **Create** a profile via the API. It starts with status `empty`.
+2. **Populate** the profile either by uploading a `.tar.gz` archive of Chrome profile data, or by running a session with the profile attached (the browser state is saved automatically).
+3. **Use** the profile by passing its ID when starting a session. The browser loads with the profile's saved data.
+4. **Download** the profile data as a backup or to transfer it.
+5. **Delete** the profile when no longer needed.
+
+### Profile Status
+
+| Status | Description |
+|--------|-------------|
+| `empty` | Profile created but has no browser data yet |
+| `uploading` | Data upload is in progress |
+| `ready` | Profile has browser data and can be used in sessions |
+
+---
+
+## Using a Profile with a Session
+
+Pass the `profileId` when starting a session or running a task:
+
+### With start-session
+
+```bash
+curl -X POST https://connect.webrun.ai/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "initialTask": {
+      "taskDetails": "Go to facebook.com and check notifications",
+      "startingPoint": "https://facebook.com"
+    }
+  }'
+```
+
+### With run-task
+
+```bash
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "taskDetails": "Go to amazon.com and check my order status"
+  }'
+```
+
+<Tip>
+Profiles with status `ready` can be used in sessions. If you attach a profile with status `empty`, the session starts with a clean browser and the profile gets populated when the session ends.
+</Tip>
+
+---
+
+## Quick Example: Skip Login with Profiles
+
+```javascript
+const API_KEY = "enig_xxxxxxxxxxxx";
+const BASE = "https://connect.webrun.ai";
+
+// Step 1: Create a profile
+const profile = await fetch(`${BASE}/profiles`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    name: "My Shopping Profile",
+    description: "Amazon logged-in session"
+  })
+}).then(r => r.json());
+
+const profileId = profile.profile._id;
+
+// Step 2: Run a session to log in (profile saves the cookies)
+await fetch(`${BASE}/start/run-task`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    profileId,
+    taskDetails: "Go to amazon.com and log in with my credentials",
+    startingPoint: "https://amazon.com"
+  })
+});
+
+// Step 3: Future sessions skip login — cookies are already saved
+const result = await fetch(`${BASE}/start/run-task`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    profileId,
+    taskDetails: "Go to amazon.com and check my recent orders"
+  })
+}).then(r => r.json());
+
+console.log(result);
+```
+
+---
+
+## Limits
+
+- Maximum **20 profiles** per user
+- Maximum upload size: **500 MB** per profile
+- Accepted upload format: `.tar.gz` or `.tgz`
+- Download URLs expire after **1 hour**
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Profile Management API" icon="code" href="/profiles/profile-management-api">
+    Full API reference for managing profiles
+  </Card>
+  <Card title="REST API Integration" icon="server" href="/integrations/rest-api">
+    Using profiles with the REST API
+  </Card>
+  <Card title="Sessions" icon="window-restore" href="/concepts/sessions">
+    Understanding browser sessions
+  </Card>
+  <Card title="Cost Optimization" icon="piggy-bank" href="/usage-guides/cost-optimization">
+    Reduce costs by reusing authenticated sessions
+  </Card>
+</CardGroup>
