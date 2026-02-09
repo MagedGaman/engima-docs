@@ -1,10 +1,10 @@
 ---
 title: "Profile Management API"
-description: "API reference for creating, uploading, downloading, and deleting browser profiles"
+description: "Create, upload, download, and delete browser profiles via the API"
 icon: "code"
 ---
 
-Manage browser profiles programmatically. Profiles store persistent Chrome browser data (cookies, local storage, extensions, etc.) that can be reused across sessions to maintain consistent browser state.
+Manage browser profiles programmatically. Profiles store persistent Chrome browser data — cookies, local storage, extensions — that you can reuse across sessions.
 
 ## Authentication
 
@@ -24,7 +24,7 @@ https://connect.webrun.ai/profiles
 
 ## List Profiles
 
-Returns all profiles belonging to the authenticated user, sorted by newest first.
+Returns all profiles for the authenticated user, sorted by newest first.
 
 ```
 GET /profiles
@@ -48,7 +48,6 @@ curl https://connect.webrun.ai/profiles \
       "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
       "name": "My Shopping Profile",
       "description": "Amazon and eBay sessions",
-      "blobPath": "683a1f2e4b0c1d2e3f4a5b6c.tar.gz",
       "blobSize": 4521984,
       "blobUploadedAt": "2026-02-08T14:30:00.000Z",
       "lastUsedAt": "2026-02-09T10:15:00.000Z",
@@ -69,7 +68,6 @@ curl https://connect.webrun.ai/profiles \
 | `userId` | string | Owner's user ID |
 | `name` | string | Profile name |
 | `description` | string | Profile description |
-| `blobPath` | string | Storage path for profile data |
 | `blobSize` | number | Size of profile data in bytes |
 | `blobUploadedAt` | string | ISO 8601 timestamp of last upload |
 | `lastUsedAt` | string | ISO 8601 timestamp of last session usage |
@@ -82,7 +80,7 @@ curl https://connect.webrun.ai/profiles \
 
 ## Create Profile
 
-Creates a new empty profile. Populate it by uploading data via the [upload endpoint](#upload-profile-data) or by running a session with the profile attached.
+Creates a new empty profile. You can populate it by [uploading data](#upload-profile-data) or by running a session with the profile attached.
 
 ```
 POST /profiles
@@ -116,7 +114,6 @@ curl -X POST https://connect.webrun.ai/profiles \
     "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
     "name": "My Profile",
     "description": "For social media automation",
-    "blobPath": "683a1f2e4b0c1d2e3f4a5b6c.tar.gz",
     "blobSize": 0,
     "status": "empty",
     "usageCount": 0,
@@ -137,7 +134,7 @@ curl -X POST https://connect.webrun.ai/profiles \
 
 ## Delete Profile
 
-Permanently deletes a profile and its associated blob data from storage.
+Permanently deletes a profile and its stored browser data.
 
 ```
 DELETE /profiles/:id
@@ -175,7 +172,7 @@ curl -X DELETE https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c \
 
 ## Download Profile Data
 
-Generates a temporary signed URL to download the profile's browser data as a `.tar.gz` archive. The URL expires after 1 hour.
+Returns a temporary signed URL to download the profile's browser data as a `.tar.gz` archive. The URL expires after 1 hour.
 
 ```
 GET /profiles/:id/download
@@ -199,7 +196,7 @@ curl https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
 ```json
 {
   "success": true,
-  "downloadUrl": "https://enigmablobs.blob.core.windows.net/profiles/683a1f2e4b0c1d2e3f4a5b6c.tar.gz?sv=2024-11-04&se=..."
+  "downloadUrl": "https://storage.example.com/profiles/683a1f2e4b0c1d2e3f4a5b6c.tar.gz?token=eyJhbGciOi..."
 }
 ```
 
@@ -220,7 +217,7 @@ curl -o profile-backup.tar.gz "<downloadUrl>"
 
 ## Upload Profile Data
 
-Uploads browser profile data as a `.tar.gz` archive. If the profile already has data, the existing data is replaced.
+Uploads browser profile data as a `.tar.gz` archive. Replaces any existing data on the profile.
 
 ```
 POST /profiles/:id/upload
@@ -274,9 +271,9 @@ curl -X POST https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload 
 
 | Status | Description |
 |--------|-------------|
-| `empty` | Profile created but has no browser data |
-| `uploading` | Data upload is in progress |
-| `ready` | Profile has browser data and can be used in sessions |
+| `empty` | Created but has no browser data |
+| `uploading` | Data upload in progress |
+| `ready` | Has browser data and can be used in sessions |
 
 ---
 
