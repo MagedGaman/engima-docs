@@ -1,0 +1,350 @@
+---
+title: "Profile Management API"
+description: "Create, upload, download, and delete browser profiles via the API"
+icon: "code"
+---
+
+Manage browser profiles programmatically. Profiles store persistent Chrome browser data — cookies, local storage, extensions — that you can reuse across sessions.
+
+## Authentication
+
+All profile endpoints require an API key with `task:create` permission.
+
+```bash
+Authorization: Bearer <api_key>
+```
+
+## Base URL
+
+```
+https://connect.webrun.ai/profiles
+```
+
+---
+
+## List Profiles
+
+Returns all profiles for the authenticated user, sorted by newest first.
+
+```
+GET /profiles
+```
+
+**Example:**
+
+```bash
+curl https://connect.webrun.ai/profiles \
+  -H "Authorization: Bearer enig_abc123..."
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "profiles": [
+    {
+      "_id": "683a1f2e4b0c1d2e3f4a5b6c",
+      "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
+      "name": "My Shopping Profile",
+      "description": "Amazon and eBay sessions",
+      "blobSize": 4521984,
+      "blobUploadedAt": "2026-02-08T14:30:00.000Z",
+      "lastUsedAt": "2026-02-09T10:15:00.000Z",
+      "usageCount": 12,
+      "status": "ready",
+      "createdAt": "2026-02-01T09:00:00.000Z",
+      "updatedAt": "2026-02-09T10:15:00.000Z"
+    }
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | string | Unique profile identifier |
+| `userId` | string | Owner's user ID |
+| `name` | string | Profile name |
+| `description` | string | Profile description |
+| `blobSize` | number | Size of profile data in bytes |
+| `blobUploadedAt` | string | ISO 8601 timestamp of last upload |
+| `lastUsedAt` | string | ISO 8601 timestamp of last session usage |
+| `usageCount` | number | Number of times used in sessions |
+| `status` | string | Profile status: `empty`, `uploading`, or `ready` |
+| `createdAt` | string | ISO 8601 creation timestamp |
+| `updatedAt` | string | ISO 8601 last update timestamp |
+
+---
+
+## Create Profile
+
+Creates a new empty profile. You can populate it by [uploading data](#upload-profile-data) or by running a session with the profile attached.
+
+```
+POST /profiles
+Content-Type: application/json
+```
+
+### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Profile name (max 100 characters) |
+| `description` | string | No | Profile description (max 500 characters) |
+
+**Example:**
+
+```bash
+curl -X POST https://connect.webrun.ai/profiles \
+  -H "Authorization: Bearer enig_abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{"name": "My Profile", "description": "For social media automation"}'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Profile created",
+  "profile": {
+    "_id": "683a1f2e4b0c1d2e3f4a5b6c",
+    "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
+    "name": "My Profile",
+    "description": "For social media automation",
+    "blobSize": 0,
+    "status": "empty",
+    "usageCount": 0,
+    "createdAt": "2026-02-09T12:00:00.000Z",
+    "updatedAt": "2026-02-09T12:00:00.000Z"
+  }
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | Profile name is required | Missing or empty `name` field |
+| 400 | Maximum of 20 profiles allowed | User already has 20 profiles |
+
+---
+
+## Delete Profile
+
+Permanently deletes a profile and its stored browser data.
+
+```
+DELETE /profiles/:id
+```
+
+### Parameters
+
+| Parameter | Location | Description |
+|-----------|----------|-------------|
+| `id` | URL path | The profile ID |
+
+**Example:**
+
+```bash
+curl -X DELETE https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c \
+  -H "Authorization: Bearer enig_abc123..."
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Profile deleted"
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Profile not found | Invalid ID or profile belongs to another user |
+
+---
+
+## Download Profile Data
+
+Returns a temporary signed URL to download the profile's browser data as a `.tar.gz` archive. The URL expires after 1 hour.
+
+```
+GET /profiles/:id/download
+```
+
+### Parameters
+
+| Parameter | Location | Description |
+|-----------|----------|-------------|
+| `id` | URL path | The profile ID |
+
+**Example:**
+
+```bash
+curl https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
+  -H "Authorization: Bearer enig_abc123..."
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "downloadUrl": "https://storage.example.com/profiles/683a1f2e4b0c1d2e3f4a5b6c.tar.gz?token=eyJhbGciOi..."
+}
+```
+
+Use the `downloadUrl` to download the file directly:
+
+```bash
+curl -o profile-backup.tar.gz "<downloadUrl>"
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | Profile has no data to download | Profile status is not `ready` or has no uploaded data |
+| 404 | Profile not found | Invalid ID or profile belongs to another user |
+
+---
+
+## Upload Profile Data
+
+Uploads browser profile data as a `.tar.gz` archive. Replaces any existing data on the profile.
+
+```
+POST /profiles/:id/upload
+Content-Type: multipart/form-data
+```
+
+### Parameters
+
+| Parameter | Location | Description |
+|-----------|----------|-------------|
+| `id` | URL path | The profile ID |
+| `file` | Form field | The `.tar.gz` file (max 500 MB) |
+
+**Example:**
+
+```bash
+curl -X POST https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload \
+  -H "Authorization: Bearer enig_abc123..." \
+  -F "file=@my-profile.tar.gz"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Profile uploaded successfully",
+  "profile": {
+    "_id": "683a1f2e4b0c1d2e3f4a5b6c",
+    "name": "My Profile",
+    "status": "ready",
+    "blobSize": 4521984,
+    "blobUploadedAt": "2026-02-09T12:30:00.000Z"
+  }
+}
+```
+
+**Accepted file types:** `.tar.gz`, `.tgz`
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | No file provided | Missing `file` field in form data |
+| 400 | Only .tar.gz files are allowed | File is not a valid tar.gz archive |
+| 404 | Profile not found | Invalid ID or profile belongs to another user |
+
+---
+
+## Profile Status Values
+
+| Status | Description |
+|--------|-------------|
+| `empty` | Created but has no browser data |
+| `uploading` | Data upload in progress |
+| `ready` | Has browser data and can be used in sessions |
+
+---
+
+## Using Profiles with Sessions
+
+Once a profile has data (status: `ready`), pass its ID when starting a session:
+
+```bash
+curl -X POST https://connect.webrun.ai/start/start-session \
+  -H "Authorization: Bearer enig_abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "initialTask": {
+      "taskDetails": "Navigate to example.com and check login status"
+    }
+  }'
+```
+
+Or with the single-task endpoint:
+
+```bash
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Authorization: Bearer enig_abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "taskDetails": "Navigate to example.com and check login status"
+  }'
+```
+
+<Note>
+The `profileId` is a top-level parameter, not nested inside `initialTask`. The browser loads the profile's saved cookies, local storage, and other data before starting the task.
+</Note>
+
+---
+
+## Rate Limits
+
+Profile endpoints share the server's global rate limit of **100 requests per 15 minutes per IP**.
+
+---
+
+## Common Error Responses
+
+All error responses follow this format:
+
+```json
+{
+  "success": false,
+  "message": "Description of the error"
+}
+```
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 401 | API key required | Missing Authorization header |
+| 401 | Invalid or revoked API key | API key is incorrect or has been revoked |
+| 403 | Account is deactivated | User account is disabled |
+| 403 | API key missing required permission: task:create | API key lacks the `task:create` permission |
+| 500 | Authentication error | Server-side authentication failure |
+
+---
+
+<Accordion title="Related">
+  <CardGroup cols={2}>
+    <Card title="Profiles Overview" icon="user-gear" href="/profiles/overview">
+      Understanding browser profiles
+    </Card>
+    <Card title="Sessions" icon="window-restore" href="/concepts/sessions">
+      Session lifecycle and configuration
+    </Card>
+  </CardGroup>
+</Accordion>

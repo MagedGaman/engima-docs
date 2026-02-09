@@ -25,6 +25,7 @@ Create a new persistent session that can run multiple tasks.
 **Request Body:**
 ```json
 {
+  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
   "initialTask": {
     "taskDetails": "Go to amazon.com and search for laptops",
@@ -52,7 +53,7 @@ Create a new persistent session that can run multiple tasks.
 ```
 
 <Note>
-The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin.
+The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin. Use `profileId` (top-level) to attach a [browser profile](/profiles/overview) with saved cookies and browser state.
 </Note>
 
 **Response (200 OK):**
@@ -268,6 +269,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 **Request Body:**
 ```json
 {
+  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
   "taskDetails": "Search Google for Anthropic",
   "maxDuration": 300000,
   "maxInputTokens": 100000,
@@ -536,6 +538,11 @@ System health check.
 | `/v1/chat/completions` | POST | Required | 10/min per user | OpenAI-compatible chat |
 | `/v1/models` | GET | Required | None | List available models |
 | `/start/health` | GET | Not required | None | System health check |
+| `/profiles` | GET | Required | 100/15min per IP | List all profiles |
+| `/profiles` | POST | Required | 100/15min per IP | Create a profile |
+| `/profiles/:id` | DELETE | Required | 100/15min per IP | Delete a profile |
+| `/profiles/:id/download` | GET | Required | 100/15min per IP | Download profile data |
+| `/profiles/:id/upload` | POST | Required | 100/15min per IP | Upload profile data |
 
 ---
 
