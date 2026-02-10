@@ -64,6 +64,7 @@
             "group": "Profiles",
             "pages": [
               "profiles/overview",
+              "profiles/sync-profiles",
               "profiles/profile-management-api"
             ]
           },

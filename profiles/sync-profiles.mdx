@@ -1,0 +1,67 @@
+---
+title: "Sync Profiles"
+description: "Sync your local Chrome profile to WebRun's cloud with a single command"
+icon: "arrows-rotate"
+---
+
+Use the sync command to upload your local Chrome browser profile — cookies, local storage, extensions, and saved state — directly to WebRun's cloud. This is the fastest way to get a profile ready for use in sessions.
+
+---
+
+## Sync an Existing Profile
+
+If you've already [created a profile](/profiles/profile-management-api#create-profile) via the API or dashboard, sync your local browser data to it:
+
+```bash
+bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --profileId <profileId> --key <apiKey>
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `--profileId` | The ID of the existing profile to sync to |
+| `--key` | Your WebRun API key |
+
+This uploads your local Chrome profile data to the specified profile, replacing any existing data. The profile status changes to `ready` once the upload completes.
+
+---
+
+## Create and Upload in One Step
+
+To create a new profile and upload your local data in a single command, omit the `--profileId` flag:
+
+```bash
+bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --key <apiKey>
+```
+
+This will:
+
+1. Create a new profile on your account
+2. Upload your local Chrome profile data to it
+3. Return the new profile ID for use in sessions
+
+<Tip>
+Save the profile ID returned by the command — you'll need it to attach the profile to sessions via `profileId`.
+</Tip>
+
+---
+
+## When to Use Sync
+
+| Scenario | Approach |
+|----------|----------|
+| You're already logged into sites locally and want to reuse that state | **Sync** your local profile |
+| You want to set up a profile from scratch via automation | Use the [API](/profiles/profile-management-api) to create a profile, then run a session to populate it |
+| You need to back up or transfer a cloud profile | Use the [download endpoint](/profiles/profile-management-api#download-profile-data) |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Profiles Overview" icon="user-gear" href="/profiles/overview">
+    How profiles work, use cases, and limits
+  </Card>
+  <Card title="Profile Management API" icon="code" href="/profiles/profile-management-api">
+    Full API reference for managing profiles
+  </Card>
+</CardGroup>

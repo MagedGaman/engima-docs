@@ -277,40 +277,6 @@ curl -X POST https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload 
 
 ---
 
-## Using Profiles with Sessions
-
-Once a profile has data (status: `ready`), pass its ID when starting a session:
-
-```bash
-curl -X POST https://connect.webrun.ai/start/start-session \
-  -H "Authorization: Bearer enig_abc123..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
-    "initialTask": {
-      "taskDetails": "Navigate to example.com and check login status"
-    }
-  }'
-```
-
-Or with the single-task endpoint:
-
-```bash
-curl -X POST https://connect.webrun.ai/start/run-task \
-  -H "Authorization: Bearer enig_abc123..." \
-  -H "Content-Type: application/json" \
-  -d '{
-    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
-    "taskDetails": "Navigate to example.com and check login status"
-  }'
-```
-
-<Note>
-The `profileId` is a top-level parameter, not nested inside `initialTask`. The browser loads the profile's saved cookies, local storage, and other data before starting the task.
-</Note>
-
----
-
 ## Rate Limits
 
 Profile endpoints share the server's global rate limit of **100 requests per 15 minutes per IP**.
