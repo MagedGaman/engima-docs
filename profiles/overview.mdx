@@ -42,7 +42,7 @@ Create → Upload Data (optional) → Use in Sessions → Download / Update → 
 ```
 
 1. **Create** a profile via the API. It starts with status `empty`.
-2. **Populate** the profile by uploading a `.tar.gz` archive of Chrome profile data, or by running a session with the profile attached — the browser state saves automatically.
+2. **Populate** the profile by [syncing from your local machine](/profiles/sync-profiles), uploading a `.tar.gz` archive via the API, or by running a session with the profile attached — the browser state saves automatically.
 3. **Use** the profile by passing its ID when starting a session. The browser loads the profile's saved data before executing any tasks.
 4. **Download** the profile data as a backup or to transfer it elsewhere.
 5. **Delete** the profile when you no longer need it.
@@ -61,23 +61,6 @@ Create → Upload Data (optional) → Use in Sessions → Download / Update → 
 
 Pass `profileId` as a top-level parameter when starting a session or running a task:
 
-### With start-session
-
-```bash
-curl -X POST https://connect.webrun.ai/start/start-session \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -d '{
-    "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
-    "initialTask": {
-      "taskDetails": "Go to facebook.com and check notifications",
-      "startingPoint": "https://facebook.com"
-    }
-  }'
-```
-
-### With run-task
-
 ```bash
 curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
@@ -94,59 +77,6 @@ Profiles with status `ready` can be used in sessions. If you attach a profile wi
 
 ---
 
-## Quick Example: Skip Login with Profiles
-
-```javascript
-const API_KEY = "enig_xxxxxxxxxxxx";
-const BASE = "https://connect.webrun.ai";
-
-// 1. Create a profile
-const profile = await fetch(`${BASE}/profiles`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${API_KEY}`
-  },
-  body: JSON.stringify({
-    name: "My Shopping Profile",
-    description: "Amazon logged-in session"
-  })
-}).then(r => r.json());
-
-const profileId = profile.profile._id;
-
-// 2. Run a session to log in (profile saves the cookies)
-await fetch(`${BASE}/start/run-task`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${API_KEY}`
-  },
-  body: JSON.stringify({
-    profileId,
-    taskDetails: "Go to amazon.com and log in with my credentials",
-    startingPoint: "https://amazon.com"
-  })
-});
-
-// 3. Future sessions skip login — cookies are already saved
-const result = await fetch(`${BASE}/start/run-task`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${API_KEY}`
-  },
-  body: JSON.stringify({
-    profileId,
-    taskDetails: "Go to amazon.com and check my recent orders"
-  })
-}).then(r => r.json());
-
-console.log(result);
-```
-
----
-
 ## Limits
 
 - Maximum **20 profiles** per user
@@ -158,17 +88,14 @@ console.log(result);
 
 ## Next Steps
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
+  <Card title="Sync Profiles" icon="arrows-rotate" href="/profiles/sync-profiles">
+    Sync a local Chrome profile to the cloud with one command
+  </Card>
   <Card title="Profile Management API" icon="code" href="/profiles/profile-management-api">
     Full API reference for managing profiles
   </Card>
-  <Card title="REST API Integration" icon="server" href="/integrations/rest-api">
-    Using profiles with the REST API
-  </Card>
   <Card title="Sessions" icon="window-restore" href="/concepts/sessions">
     Session lifecycle and configuration
-  </Card>
-  <Card title="Cost Optimization" icon="piggy-bank" href="/usage-guides/cost-optimization">
-    Reduce costs by reusing authenticated sessions
   </Card>
 </CardGroup>
