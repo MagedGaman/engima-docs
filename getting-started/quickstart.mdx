@@ -29,9 +29,14 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "taskDetails": "Go to google.com and search for Anthropic"
+    "taskDetails": "Go to google.com and search for Anthropic",
+    "profileId": "PROFILE_ID"
   }'
 ```
+
+<Tip>
+`profileId` is optional. Pass it to reuse saved cookies, logins, and browser state from a [profile](/profiles/overview). Omit it to start with a clean browser.
+</Tip>
 
 **If the task completes within 50 seconds**, you get the result immediately:
 
@@ -82,6 +87,7 @@ curl -X POST https://connect.webrun.ai/start/start-session \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
     "mode": "default",
+    "profileId": "PROFILE_ID",
     "initialTask": {
       "taskDetails": "Go to amazon.com",
       "startingPoint": "https://amazon.com"
@@ -132,7 +138,7 @@ Alternatively, set `terminateOnCompletion: true` on your last task to auto-termi
 When a task returns `status: "pending"`, poll the URL until completion.
 
 ```javascript
-async function runTask(taskDetails, apiKey) {
+async function runTask(taskDetails, apiKey, profileId = null) {
   // Start the task
   const response = await fetch("https://connect.webrun.ai/start/run-task", {
     method: "POST",
@@ -140,7 +146,7 @@ async function runTask(taskDetails, apiKey) {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`
     },
-    body: JSON.stringify({ taskDetails })
+    body: JSON.stringify({ taskDetails, profileId })
   });
 
   const data = await response.json();
