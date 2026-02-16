@@ -141,14 +141,32 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-  "status": "complete",
+  "success": true,
   "sessionId": "sess_7f8a9b2c",
   "taskId": "task_3e4f5a6b",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Here are the top 3 posts:\n1. Show HN: I built a new programming language\n2. The future of web browsers\n3. Why SQLite is so popular"
-    }
+  "type": "task_completed",
+  "data": {
+    "message": "Here are the top 3 posts:\n1. Show HN: I built a new programming language\n2. The future of web browsers\n3. Why SQLite is so popular",
+    "files": [],
+    "network": [
+      {
+        "id": "hn001",
+        "taskId": "task_3e4f5a6b",
+        "urls": [
+          {
+            "url": "https://news.ycombinator.com/",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 8200,
+    "completion_tokens": 1500,
+    "total_tokens": 9700,
+    "completion_time": 15.2,
+    "cost": 0.0072
   }
 }
 ```
@@ -161,18 +179,38 @@ When a task completes successfully, you receive a structured result:
 
 ```json
 {
+  "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
     "message": "Successfully completed the search",
-    "completion_time": 23.5,
-    "prompt_tokens": 12450,
-    "completion_tokens": 3200,
-    "total_tokens": 15650
+    "files": [
+      {
+        "source": "https://example.com/report.zip",
+        "downloadUrl": "https://blobs.webrun.ai/files/report.zip",
+        "filename": "report.zip",
+        "timestamp": 1771138379108
+      }
+    ],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://example.com/api/data",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
   },
   "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
-    "computeTime": 5,
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
     "cost": 0.0124
   },
   "completedAt": "2024-01-15T10:30:00Z"
@@ -183,12 +221,21 @@ When a task completes successfully, you receive a structured result:
 
 | Field | Description |
 |-------|-------------|
-| `message` | Natural language result from the agent |
-| `completion_time` | Time taken to complete task (seconds) |
-| `prompt_tokens` | Input tokens used |
-| `completion_tokens` | Output tokens generated |
-| `total_tokens` | Sum of input and output tokens |
-| `cost` | Total cost in USD |
+| `data.message` | Natural language result from the agent |
+| `data.files` | Array of files downloaded during task execution (optional) |
+| `data.files[].source` | Original URL the file was downloaded from |
+| `data.files[].downloadUrl` | WebRun-hosted URL to download the file |
+| `data.files[].filename` | Name of the downloaded file |
+| `data.files[].timestamp` | Unix timestamp (ms) when the file was downloaded |
+| `data.network` | Array of network requests captured during task execution (optional) |
+| `data.network[].id` | Unique identifier for the network entry |
+| `data.network[].taskId` | Task that generated the network activity |
+| `data.network[].urls` | Array of URLs requested with timestamps |
+| `usage.prompt_tokens` | Input tokens used |
+| `usage.completion_tokens` | Output tokens generated |
+| `usage.total_tokens` | Sum of input and output tokens |
+| `usage.completion_time` | Time taken to complete task (seconds) |
+| `usage.cost` | Total cost in USD |
 | `completedAt` | ISO 8601 timestamp |
 
 ---

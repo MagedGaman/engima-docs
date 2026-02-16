@@ -149,7 +149,20 @@ Start a new task. Returns taskId for polling.
   "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
-    "message": "Found 50 laptop results"
+    "message": "Found 50 laptop results",
+    "files": [],
+    "network": [
+      {
+        "id": "abc12",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://www.amazon.com/s?k=laptops",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
   },
   "usage": {
     "prompt_tokens": 8500,
@@ -286,16 +299,29 @@ Execute a single task with auto-terminating session. Simplified version of start
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
-  "status": "complete",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Successfully searched for Anthropic",
-      "prompt_tokens": 12450,
-      "completion_tokens": 3200,
-      "total_tokens": 15650,
-      "completion_time": 23.5
-    }
+  "type": "task_completed",
+  "data": {
+    "message": "Successfully searched for Anthropic",
+    "files": [],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://www.google.com/search?q=Anthropic",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
+    "cost": 0.0124
   }
 }
 ```
@@ -334,12 +360,14 @@ Poll for task result.
 ```json
 {
   "success": true,
-  "status": "active",
-  "pending": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "running",
   "usage": {
-    "inputTokens": 8000,
-    "outputTokens": 2100,
-    "computeTime": 3,
+    "prompt_tokens": 8000,
+    "completion_tokens": 2100,
+    "total_tokens": 10100,
+    "completion_time": 12.3,
     "cost": 0.0067
   }
 }
@@ -349,18 +377,37 @@ Poll for task result.
 ```json
 {
   "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
     "message": "Task finished successfully",
+    "files": [
+      {
+        "source": "https://example.com/report.zip",
+        "downloadUrl": "https://blobs.webrun.ai/files/report.zip",
+        "filename": "report.zip",
+        "timestamp": 1771138379108
+      }
+    ],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://example.com/api/data",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
     "prompt_tokens": 12450,
     "completion_tokens": 3200,
     "total_tokens": 15650,
-    "completion_time": 23.5
-  },
-  "usage": {
-    "inputTokens": 12450,
-    "outputTokens": 3200,
-    "computeTime": 5,
+    "completion_time": 23.5,
     "cost": 0.0124
   },
   "completedAt": "2024-01-15T10:30:00Z"
@@ -383,12 +430,16 @@ Poll for task result.
 ```json
 {
   "success": false,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
   "status": "failed",
   "error": "Navigation timeout after 30 seconds",
+  "code": "NAVIGATION_TIMEOUT",
   "usage": {
-    "inputTokens": 5000,
-    "outputTokens": 1200,
-    "computeTime": 2,
+    "prompt_tokens": 5000,
+    "completion_tokens": 1200,
+    "total_tokens": 6200,
+    "completion_time": 30.0,
     "cost": 0.0045
   }
 }
