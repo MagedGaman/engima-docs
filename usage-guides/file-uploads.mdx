@@ -104,7 +104,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -d '{
     "taskDetails": "Upload this document to the website",
     "startingUrl": "https://example.com/upload",
-    "files": ["abc123..."]
+    "fileIds": ["abc123..."]
   }'
 ```
 
@@ -173,7 +173,7 @@ const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
   body: JSON.stringify({
     taskDetails: "Go to the upload page and submit the attached PDF report",
     startingUrl: "https://example.com/submit",
-    files: [fileId]
+    fileIds: [fileId]
   })
 }).then(r => r.json());
 
@@ -190,7 +190,7 @@ console.log(taskResponse);
 |----------|-------|----------|
 | `POST /files/upload` | `files` (multipart) | Form data |
 | `POST /start/start-session` | `fileIds` | Request body (top-level) |
-| `POST /start/run-task` | `files` | Request body |
+| `POST /start/run-task` | `fileIds` | Request body |
 | `POST /start/send-message` | `fileIds` | `message` object (for `newTask` actions) |
 
 ---
@@ -209,7 +209,7 @@ Tell the agent what to do with the files and where to upload them:
 {
   "taskDetails": "Go to the document submission form and upload the attached PDF, then click Submit",
   "startingUrl": "https://example.com/forms/submit",
-  "files": ["abc123..."]
+  "fileIds": ["abc123..."]
 }
 ```
 
@@ -221,7 +221,7 @@ File uploads work alongside all other task parameters — secrets, structured ou
 {
   "taskDetails": "Log into the portal and upload the quarterly report",
   "startingUrl": "https://portal.example.com",
-  "files": ["abc123..."],
+  "fileIds": ["abc123..."],
   "secrets": [
     {
       "match": "*.example.com",

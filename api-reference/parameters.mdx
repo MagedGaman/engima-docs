@@ -370,27 +370,19 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 
 ---
 
-### fileIds / files
+### fileIds
 
 - **Type:** `string[]` (array of file ID strings)
 - **Required:** No
 - **Default:** `[]`
 - **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form.
 
-**Field name varies by endpoint:**
-
-| Endpoint | Field | Location |
-|----------|-------|----------|
-| `/start/start-session` | `fileIds` | Request body (top-level) |
-| `/start/run-task` | `files` | Request body |
-| `/start/send-message` | `fileIds` | `message` object (for `newTask` actions) |
-
 **Example with /start/run-task:**
 ```json
 {
   "taskDetails": "Upload this document to the submission form",
   "startingUrl": "https://example.com/upload",
-  "files": ["abc123...", "def456..."]
+  "fileIds": ["abc123...", "def456..."]
 }
 ```
 
