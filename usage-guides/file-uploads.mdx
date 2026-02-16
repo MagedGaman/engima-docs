@@ -1,0 +1,257 @@
+---
+title: "File Uploads"
+description: "Upload files and attach them to tasks so the AI agent can use them during browser automation"
+icon: "file-arrow-up"
+---
+
+## Overview
+
+When your agent needs to upload files to a website — such as submitting a PDF to a form, attaching a document to an email, or uploading an image to a CMS — you can provide files using the file upload API. Files are uploaded first, then referenced by `fileId` when starting a task.
+
+This is a two-step process:
+
+1. **Upload files** to get `fileId` references
+2. **Attach fileIds** to a task so the agent can use them
+
+---
+
+## Step 1: Upload Files
+
+Upload one or more files using the `/files/upload` endpoint. Files are sent as multipart form data.
+
+**Endpoint:** `POST /files/upload`
+
+**Authentication:** Required
+
+```bash
+curl -X POST https://connect.webrun.ai/files/upload \
+  -H "Authorization: Bearer enig_xxx" \
+  -F "files=@document.pdf"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "files": [
+    {
+      "fileId": "abc123...",
+      "originalName": "document.pdf",
+      "size": 102400
+    }
+  ]
+}
+```
+
+### Uploading Multiple Files
+
+You can upload multiple files in a single request by repeating the `files` field:
+
+```bash
+curl -X POST https://connect.webrun.ai/files/upload \
+  -H "Authorization: Bearer enig_xxx" \
+  -F "files=@document.pdf" \
+  -F "files=@photo.png" \
+  -F "files=@spreadsheet.xlsx"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "files": [
+    {
+      "fileId": "abc123...",
+      "originalName": "document.pdf",
+      "size": 102400
+    },
+    {
+      "fileId": "def456...",
+      "originalName": "photo.png",
+      "size": 204800
+    },
+    {
+      "fileId": "ghi789...",
+      "originalName": "spreadsheet.xlsx",
+      "size": 51200
+    }
+  ]
+}
+```
+
+### Upload Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the upload succeeded |
+| `files` | array | Array of uploaded file metadata |
+| `files[].fileId` | string | Unique identifier to reference the file in tasks |
+| `files[].originalName` | string | Original filename as uploaded |
+| `files[].size` | number | File size in bytes |
+
+---
+
+## Step 2: Attach Files to a Task
+
+Once you have `fileId` values, include them in the request body when starting a task. All three task endpoints accept file references:
+
+### Using /start/run-task
+
+```bash
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Authorization: Bearer enig_xxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskDetails": "Upload this document to the website",
+    "startingUrl": "https://example.com/upload",
+    "files": ["abc123..."]
+  }'
+```
+
+### Using /start/start-session
+
+Include `fileIds` in the request body alongside the `initialTask`:
+
+```json
+{
+  "mode": "default",
+  "fileIds": ["abc123...", "def456..."],
+  "initialTask": {
+    "taskDetails": "Upload these documents to the portal",
+    "startingPoint": "https://example.com/portal"
+  }
+}
+```
+
+### Using /start/send-message
+
+Include `fileIds` in the `message` object when sending a `newTask` action:
+
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "newTask",
+    "newState": "start",
+    "taskDetails": "Upload the attached spreadsheet to the data import page",
+    "startingPoint": "https://example.com/import",
+    "fileIds": ["ghi789..."]
+  }
+}
+```
+
+---
+
+## Complete Example
+
+Here's a full workflow that uploads a PDF and instructs the agent to submit it to a website:
+
+```javascript
+const API_KEY = process.env.WEBRUN_API_KEY;
+
+// Step 1: Upload the file
+const formData = new FormData();
+formData.append("files", fs.createReadStream("report.pdf"));
+
+const uploadResponse = await fetch("https://connect.webrun.ai/files/upload", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: formData
+}).then(r => r.json());
+
+const fileId = uploadResponse.files[0].fileId;
+
+// Step 2: Run a task with the uploaded file
+const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to the upload page and submit the attached PDF report",
+    startingUrl: "https://example.com/submit",
+    files: [fileId]
+  })
+}).then(r => r.json());
+
+console.log(taskResponse);
+```
+
+---
+
+## Endpoint Reference
+
+### File IDs Across Endpoints
+
+| Endpoint | Field | Location |
+|----------|-------|----------|
+| `POST /files/upload` | `files` (multipart) | Form data |
+| `POST /start/start-session` | `fileIds` | Request body (top-level) |
+| `POST /start/run-task` | `files` | Request body |
+| `POST /start/send-message` | `fileIds` | `message` object (for `newTask` actions) |
+
+---
+
+## Best Practices
+
+### Upload Before Starting the Task
+
+Always upload files first and wait for the `fileId` response before creating a task. File uploads are separate from task execution — the agent cannot access files that haven't been uploaded yet.
+
+### Use Descriptive Task Instructions
+
+Tell the agent what to do with the files and where to upload them:
+
+```json
+{
+  "taskDetails": "Go to the document submission form and upload the attached PDF, then click Submit",
+  "startingUrl": "https://example.com/forms/submit",
+  "files": ["abc123..."]
+}
+```
+
+### Combine with Other Parameters
+
+File uploads work alongside all other task parameters — secrets, structured output, webhooks, and more:
+
+```json
+{
+  "taskDetails": "Log into the portal and upload the quarterly report",
+  "startingUrl": "https://portal.example.com",
+  "files": ["abc123..."],
+  "secrets": [
+    {
+      "match": "*.example.com",
+      "fields": { "email": "user@co.com", "password": "pass" }
+    }
+  ],
+  "terminateOnCompletion": true,
+  "webhook": {
+    "name": "Upload Complete",
+    "url": "https://api.mysite.com/webhooks/upload",
+    "submittedData": "ai_response"
+  }
+}
+```
+
+---
+
+<Accordion title="Related Guides">
+  <CardGroup cols={2}>
+    <Card title="Endpoints Reference" icon="route" href="/api-reference/endpoints">
+      Complete endpoint documentation
+    </Card>
+    <Card title="Parameters Reference" icon="sliders" href="/api-reference/parameters">
+      All API parameters explained
+    </Card>
+    <Card title="Secrets" icon="key" href="/usage-guides/secrets">
+      Provide credentials for authenticated uploads
+    </Card>
+    <Card title="Webhooks" icon="bell" href="/usage-guides/webhooks">
+      Get notified when upload tasks complete
+    </Card>
+  </CardGroup>
+</Accordion>

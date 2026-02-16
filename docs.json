@@ -47,6 +47,7 @@
               "usage-guides/secrets",
               "usage-guides/video-streaming",
               "usage-guides/structured-output",
+              "usage-guides/file-uploads",
               "usage-guides/webhooks",
               "usage-guides/cost-optimization"
             ]

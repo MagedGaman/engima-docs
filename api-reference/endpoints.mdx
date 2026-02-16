@@ -27,6 +27,7 @@ Create a new persistent session that can run multiple tasks.
 {
   "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
+  "fileIds": ["abc123..."],
   "initialTask": {
     "taskDetails": "Go to amazon.com and search for laptops",
     "startingPoint": "https://amazon.com",
@@ -116,6 +117,7 @@ Start a new task. Returns taskId for polling.
     "newState": "start",
     "taskDetails": "Search for laptops",
     "startingPoint": "https://amazon.com",
+    "fileIds": ["abc123..."],
     "maxDuration": 60000,
     "maxInputTokens": 50000,
     "maxOutputTokens": 50000,
@@ -284,6 +286,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 {
   "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
   "taskDetails": "Search Google for Anthropic",
+  "files": ["abc123..."],
   "maxDuration": 300000,
   "maxInputTokens": 100000,
   "maxOutputTokens": 100000,
@@ -343,6 +346,43 @@ Execute a single task with auto-terminating session. Simplified version of start
 - `401` - Missing or invalid API key
 - `402` - Insufficient balance
 - `503` - No available instances
+
+---
+
+## File Upload Endpoints
+
+### POST /files/upload
+
+Upload one or more files to use in tasks. Returns `fileId` references that can be attached to any task endpoint.
+
+**Authentication:** Required
+
+**Content-Type:** `multipart/form-data`
+
+**Request:**
+```bash
+curl -X POST https://connect.webrun.ai/files/upload \
+  -H "Authorization: Bearer enig_xxx" \
+  -F "files=@document.pdf"
+```
+
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "files": [
+    {
+      "fileId": "abc123...",
+      "originalName": "document.pdf",
+      "size": 102400
+    }
+  ]
+}
+```
+
+Use the returned `fileId` values in `/start/start-session` (top-level `fileIds`), `/start/run-task` (`files`), or `/start/send-message` (`message.fileIds` for `newTask` actions).
+
+See [File Uploads guide](/usage-guides/file-uploads) for complete examples.
 
 ---
 
@@ -588,6 +628,7 @@ System health check.
 | `/task/:sessionId/:taskId` | GET | Not required | None | Poll for task result |
 | `/v1/chat/completions` | POST | Required | 10/min per user | OpenAI-compatible chat |
 | `/v1/models` | GET | Required | None | List available models |
+| `/files/upload` | POST | Required | 10/min per user | Upload files for tasks |
 | `/start/health` | GET | Not required | None | System health check |
 | `/profiles` | GET | Required | 100/15min per IP | List all profiles |
 | `/profiles` | POST | Required | 100/15min per IP | Create a profile |

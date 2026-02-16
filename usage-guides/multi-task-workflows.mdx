@@ -313,6 +313,7 @@ Configure your session behavior with these parameters:
 | `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
 | `outputType` | string | "text" | Output format: `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | null | JSON Schema for structured output |
+| `fileIds` | string[] | [] | File IDs to attach to the task ([details](/usage-guides/file-uploads)) |
 
 **Example with parameters:**
 ```json
@@ -424,6 +425,9 @@ socket.on("message", (data) => {
     </Card>
     <Card title="Browser Profiles" icon="user-gear" href="/profiles/overview">
       Persist browser data across sessions
+    </Card>
+    <Card title="File Uploads" icon="file-arrow-up" href="/usage-guides/file-uploads">
+      Upload and attach files to tasks
     </Card>
   </CardGroup>
 </Accordion>
