@@ -27,7 +27,6 @@ Create a new persistent session that can run multiple tasks.
 {
   "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
-  "fileIds": ["abc123..."],
   "initialTask": {
     "taskDetails": "Go to amazon.com and search for laptops",
     "startingPoint": "https://amazon.com",
@@ -117,7 +116,7 @@ Start a new task. Returns taskId for polling.
     "newState": "start",
     "taskDetails": "Search for laptops",
     "startingPoint": "https://amazon.com",
-    "fileIds": ["abc123..."],
+    "files": ["abc123..."],
     "maxDuration": 60000,
     "maxInputTokens": 50000,
     "maxOutputTokens": 50000,
@@ -286,7 +285,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 {
   "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
   "taskDetails": "Search Google for Anthropic",
-  "fileIds": ["abc123..."],
+  "files": ["abc123..."],
   "maxDuration": 300000,
   "maxInputTokens": 100000,
   "maxOutputTokens": 100000,
@@ -380,7 +379,7 @@ curl -X POST https://connect.webrun.ai/files/upload \
 }
 ```
 
-Use the returned `fileId` values in `/start/start-session` (top-level `fileIds`), `/start/run-task` (`files`), or `/start/send-message` (`message.fileIds` for `newTask` actions).
+Use the returned `fileId` values in the `files` array at the task level — inside `initialTask` for `/start/start-session`, in the request body for `/start/run-task`, or inside `message` for `/start/send-message`.
 
 See [File Uploads guide](/usage-guides/file-uploads) for complete examples.
 
