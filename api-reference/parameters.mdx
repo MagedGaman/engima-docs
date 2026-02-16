@@ -370,6 +370,46 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 
 ---
 
+### fileIds / files
+
+- **Type:** `string[]` (array of file ID strings)
+- **Required:** No
+- **Default:** `[]`
+- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form.
+
+**Field name varies by endpoint:**
+
+| Endpoint | Field | Location |
+|----------|-------|----------|
+| `/start/start-session` | `fileIds` | Request body (top-level) |
+| `/start/run-task` | `files` | Request body |
+| `/start/send-message` | `fileIds` | `message` object (for `newTask` actions) |
+
+**Example with /start/run-task:**
+```json
+{
+  "taskDetails": "Upload this document to the submission form",
+  "startingUrl": "https://example.com/upload",
+  "files": ["abc123...", "def456..."]
+}
+```
+
+**Example with /start/start-session:**
+```json
+{
+  "mode": "default",
+  "fileIds": ["abc123..."],
+  "initialTask": {
+    "taskDetails": "Upload the attached file to the portal",
+    "startingPoint": "https://example.com/portal"
+  }
+}
+```
+
+See [File Uploads guide](/usage-guides/file-uploads) for the full upload workflow.
+
+---
+
 ### webhook
 
 - **Type:** `object`
@@ -926,6 +966,7 @@ interface TaskConfig {
   outputSchema?: OutputSchema;
   webhook?: WebhookConfig;
   secrets?: SecretEntry[];
+  fileIds?: string[];
 }
 ```
 
@@ -937,6 +978,7 @@ interface TaskConfig {
 interface SessionConfig {
   profileId?: string;
   mode?: string;
+  fileIds?: string[];
   initialTask?: TaskConfig;
 }
 ```
@@ -960,6 +1002,7 @@ interface TaskMessage {
   outputSchema?: OutputSchema;
   webhook?: WebhookConfig;
   secrets?: SecretEntry[];
+  fileIds?: string[];
 }
 ```
 
