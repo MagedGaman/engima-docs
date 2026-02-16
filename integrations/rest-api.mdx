@@ -59,19 +59,29 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
-  "status": "complete",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Successfully searched for Anthropic on Google",
-      "completion_time": 23.5,
-      "prompt_tokens": 12450,
-      "completion_tokens": 3200,
-      "total_tokens": 15650
-    },
-    "usage": {
-      "cost": 0.0124
-    }
+  "type": "task_completed",
+  "data": {
+    "message": "Successfully searched for Anthropic on Google",
+    "files": [],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://www.google.com/search?q=Anthropic",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
+    "cost": 0.0124
   }
 }
 ```

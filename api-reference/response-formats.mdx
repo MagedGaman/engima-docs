@@ -29,7 +29,27 @@ Both `/run-task` and `/send-message` wait up to 50 seconds for task completion. 
   "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
-    "message": "Successfully completed the search"
+    "message": "Successfully completed the search",
+    "files": [
+      {
+        "source": "https://example.com/report.zip",
+        "downloadUrl": "https://blobs.webrun.ai/files/report.zip",
+        "filename": "report.zip",
+        "timestamp": 1771138379108
+      }
+    ],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://example.com/api/data",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
   },
   "usage": {
     "prompt_tokens": 12450,
@@ -51,6 +71,17 @@ Both `/run-task` and `/send-message` wait up to 50 seconds for task completion. 
 | `type` | string | Result type: `"task_completed"` |
 | `data` | object | Task result data |
 | `data.message` | string | Task completion message |
+| `data.files` | array | Files downloaded during task execution (optional) |
+| `data.files[].source` | string | Original URL the file was downloaded from |
+| `data.files[].downloadUrl` | string | WebRun-hosted URL to download the file |
+| `data.files[].filename` | string | Name of the downloaded file |
+| `data.files[].timestamp` | number | Unix timestamp (ms) when the file was downloaded |
+| `data.network` | array | Network requests captured during task execution (optional) |
+| `data.network[].id` | string | Unique identifier for the network entry |
+| `data.network[].taskId` | string | Task that generated the network activity |
+| `data.network[].urls` | array | URLs requested in this network entry |
+| `data.network[].urls[].url` | string | Full URL of the network request |
+| `data.network[].urls[].timestamp` | number | Unix timestamp (ms) of the request |
 | `usage` | object | Usage and billing information |
 | `usage.prompt_tokens` | number | Input tokens used |
 | `usage.completion_tokens` | number | Output tokens generated |
@@ -134,7 +165,27 @@ Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is 
   "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
-    "message": "Task finished successfully"
+    "message": "Task finished successfully",
+    "files": [
+      {
+        "source": "https://example.com/report.zip",
+        "downloadUrl": "https://blobs.webrun.ai/files/report.zip",
+        "filename": "report.zip",
+        "timestamp": 1771138379108
+      }
+    ],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://example.com/api/data",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
   },
   "usage": {
     "prompt_tokens": 12450,
@@ -157,6 +208,17 @@ Poll `GET /task/:sessionId/:taskId` until `pending: false` or a final `type` is 
 | `type` | string | `"task_completed"` |
 | `data` | object | Task result data |
 | `data.message` | string | Completion message |
+| `data.files` | array | Files downloaded during task execution (optional) |
+| `data.files[].source` | string | Original URL the file was downloaded from |
+| `data.files[].downloadUrl` | string | WebRun-hosted URL to download the file |
+| `data.files[].filename` | string | Name of the downloaded file |
+| `data.files[].timestamp` | number | Unix timestamp (ms) when the file was downloaded |
+| `data.network` | array | Network requests captured during task execution (optional) |
+| `data.network[].id` | string | Unique identifier for the network entry |
+| `data.network[].taskId` | string | Task that generated the network activity |
+| `data.network[].urls` | array | URLs requested in this network entry |
+| `data.network[].urls[].url` | string | Full URL of the network request |
+| `data.network[].urls[].timestamp` | number | Unix timestamp (ms) of the request |
 | `usage` | object | Final usage statistics |
 | `usage.prompt_tokens` | number | Total input tokens |
 | `usage.completion_tokens` | number | Total output tokens |
@@ -386,7 +448,27 @@ Task finished successfully.
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "data": {
-    "message": "Task completed successfully"
+    "message": "Task completed successfully",
+    "files": [
+      {
+        "source": "https://example.com/report.zip",
+        "downloadUrl": "https://blobs.webrun.ai/files/report.zip",
+        "filename": "report.zip",
+        "timestamp": 1771138379108
+      }
+    ],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://example.com/api/data",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
   },
   "usage": {
     "prompt_tokens": 15420,
@@ -407,6 +489,17 @@ Task finished successfully.
 | `taskId` | string | Task identifier |
 | `data` | object | Completion details |
 | `data.message` | string | Completion message |
+| `data.files` | array | Files downloaded during task execution (optional) |
+| `data.files[].source` | string | Original URL the file was downloaded from |
+| `data.files[].downloadUrl` | string | WebRun-hosted URL to download the file |
+| `data.files[].filename` | string | Name of the downloaded file |
+| `data.files[].timestamp` | number | Unix timestamp (ms) when the file was downloaded |
+| `data.network` | array | Network requests captured during task execution (optional) |
+| `data.network[].id` | string | Unique identifier for the network entry |
+| `data.network[].taskId` | string | Task that generated the network activity |
+| `data.network[].urls` | array | URLs requested in this network entry |
+| `data.network[].urls[].url` | string | Full URL of the network request |
+| `data.network[].urls[].timestamp` | number | Unix timestamp (ms) of the request |
 | `usage` | object | Usage statistics |
 | `usage.prompt_tokens` | number | Input tokens used |
 | `usage.completion_tokens` | number | Output tokens generated |

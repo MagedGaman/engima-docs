@@ -67,24 +67,34 @@ POST /start/run-task
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
-  "status": "complete",
-  "result": {
-    "type": "task_completed",
-    "data": {
-      "message": "Successfully searched for Anthropic on Google",
-      "completion_time": 23.5,
-      "prompt_tokens": 12450,
-      "completion_tokens": 3200,
-      "total_tokens": 15650
-    },
-    "usage": {
-      "cost": 0.0124
-    }
+  "type": "task_completed",
+  "data": {
+    "message": "Successfully searched for Anthropic on Google",
+    "files": [],
+    "network": [
+      {
+        "id": "tevo9",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://www.google.com/search?q=Anthropic",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
+    "prompt_tokens": 12450,
+    "completion_tokens": 3200,
+    "total_tokens": 15650,
+    "completion_time": 23.5,
+    "cost": 0.0124
   }
 }
 ```
 
-**Key indicator:** `status: "complete"`
+**Key indicator:** `type: "task_completed"`
 
 ---
 
@@ -134,12 +144,14 @@ Poll every 2-3 seconds until you receive a final state:
 ```json
 {
   "success": true,
-  "status": "active",
-  "pending": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
+  "status": "running",
   "usage": {
-    "inputTokens": 8000,
-    "outputTokens": 2100,
-    "computeTime": 3,
+    "prompt_tokens": 8000,
+    "completion_tokens": 2100,
+    "total_tokens": 10100,
+    "completion_time": 12.3,
     "cost": 0.0067
   }
 }
@@ -149,15 +161,30 @@ Poll every 2-3 seconds until you receive a final state:
 ```json
 {
   "success": true,
+  "sessionId": "a1b2c3d4e5f6",
+  "taskId": "x9y8z7w6v5u4",
   "type": "task_completed",
   "data": {
     "message": "Task finished successfully",
+    "files": [],
+    "network": [
+      {
+        "id": "abc12",
+        "taskId": "x9y8z7w6v5u4",
+        "urls": [
+          {
+            "url": "https://example.com/page",
+            "timestamp": 1771138379087.646
+          }
+        ]
+      }
+    ]
+  },
+  "usage": {
     "prompt_tokens": 15420,
     "completion_tokens": 4200,
     "total_tokens": 19620,
-    "completion_time": 87.3
-  },
-  "usage": {
+    "completion_time": 87.3,
     "cost": 0.0187
   }
 }
