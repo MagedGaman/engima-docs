@@ -273,6 +273,7 @@ Poll for task result. No rate limit.
 | `terminateOnCompletion` | boolean | false | Auto-terminate after task completes |
 | `outputType` | string | `"text"` | Output format: `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | null | JSON Schema for structured output |
+| `fileIds` / `files` | string[] | `[]` | File IDs to attach ([details](/usage-guides/file-uploads)) |
 
 [All parameters](/api-reference/parameters)
 
@@ -411,5 +412,8 @@ await fetch("https://connect.webrun.ai/start/send-message", {
   </Card>
   <Card title="Error Reference" icon="triangle-exclamation" href="/troubleshooting/errors-reference">
     Error handling guide
+  </Card>
+  <Card title="File Uploads" icon="file-arrow-up" href="/usage-guides/file-uploads">
+    Upload and attach files to tasks
   </Card>
 </CardGroup>
