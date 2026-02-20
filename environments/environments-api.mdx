@@ -1,0 +1,313 @@
+---
+title: "Environments API"
+description: "Create, list, and delete environments; upload browser profiles and manage attached files"
+icon: "code"
+---
+
+Manage environments programmatically. All endpoints require authentication.
+
+## Authentication
+
+```bash
+Authorization: Bearer <api_key>
+```
+
+## Base URL
+
+```
+https://connect.webrun.ai
+```
+
+---
+
+## Create Environment
+
+Creates a new environment with an optional name and description.
+
+```
+POST /environments
+Content-Type: application/json
+```
+
+### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Environment name |
+| `description` | string | No | Optional description |
+
+**Example:**
+
+```bash
+curl -X POST https://connect.webrun.ai/environments \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-environment", "description": "optional description"}'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Environment created",
+  "environment": {
+    "_id": "<ENV_ID>",
+    "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
+    "name": "my-environment",
+    "description": "optional description",
+    "status": "empty",
+    "createdAt": "2026-02-09T12:00:00.000Z",
+    "updatedAt": "2026-02-09T12:00:00.000Z"
+  }
+}
+```
+
+---
+
+## List Environments
+
+Returns all environments for the authenticated user.
+
+```
+GET /environments
+```
+
+**Example:**
+
+```bash
+curl https://connect.webrun.ai/environments \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "environments": [
+    {
+      "_id": "<ENV_ID>",
+      "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
+      "name": "my-environment",
+      "description": "optional description",
+      "status": "ready",
+      "createdAt": "2026-02-09T12:00:00.000Z",
+      "updatedAt": "2026-02-09T12:30:00.000Z"
+    }
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `_id` | string | Unique environment identifier |
+| `userId` | string | Owner's user ID |
+| `name` | string | Environment name |
+| `description` | string | Environment description |
+| `status` | string | `empty`, `uploading`, or `ready` |
+| `createdAt` | string | ISO 8601 creation timestamp |
+| `updatedAt` | string | ISO 8601 last update timestamp |
+
+---
+
+## Delete Environment
+
+Permanently deletes an environment, its browser profile data, and all attached files.
+
+```
+DELETE /environments/<ENV_ID>
+```
+
+**Example:**
+
+```bash
+curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID> \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Environment deleted"
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Environment not found | Invalid ID or environment belongs to another user |
+
+---
+
+## Upload Browser Profile Data
+
+Uploads a `.tar.gz` Chrome browser profile archive to an environment. This replaces any existing profile data and sets the environment status to `ready`.
+
+```
+POST /environments/<ENV_ID>/upload
+Content-Type: multipart/form-data
+```
+
+### Parameters
+
+| Parameter | Location | Description |
+|-----------|----------|-------------|
+| `ENV_ID` | URL path | The environment ID |
+| `file` | Form field | The `.tar.gz` browser profile archive (max 500 MB) |
+
+**Example:**
+
+```bash
+curl -X POST https://connect.webrun.ai/environments/<ENV_ID>/upload \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -F "file=@/path/to/profile.tar.gz"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Profile uploaded successfully",
+  "environment": {
+    "_id": "<ENV_ID>",
+    "name": "my-environment",
+    "status": "ready",
+    "blobSize": 4521984,
+    "blobUploadedAt": "2026-02-09T12:30:00.000Z"
+  }
+}
+```
+
+**Accepted file types:** `.tar.gz`, `.tgz`
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | No file provided | Missing `file` field in form data |
+| 400 | Only .tar.gz files are allowed | File is not a valid tar.gz archive |
+| 404 | Environment not found | Invalid ID or environment belongs to another user |
+
+<Tip>
+To sync a local Chrome profile to an environment instead of uploading a manual archive, use the [Sync Profiles](/environments/sync-profiles) tool.
+</Tip>
+
+---
+
+## List Files in an Environment
+
+Returns all files attached to an environment.
+
+```
+GET /environments/<ENV_ID>/files
+```
+
+**Example:**
+
+```bash
+curl https://connect.webrun.ai/environments/<ENV_ID>/files \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "files": [
+    {
+      "fileId": "abc123...",
+      "originalName": "sample.zip",
+      "size": 204800,
+      "createdAt": "2026-02-09T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `fileId` | string | Unique file identifier |
+| `originalName` | string | Original filename as uploaded |
+| `size` | number | File size in bytes |
+| `createdAt` | string | ISO 8601 upload timestamp |
+
+---
+
+## Delete a File from an Environment
+
+Permanently removes a specific file from an environment.
+
+```
+DELETE /environments/<ENV_ID>/files/<FILE_ID>
+```
+
+**Example:**
+
+```bash
+curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "File deleted"
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | File not found | Invalid file ID or file does not belong to this environment |
+
+---
+
+## Common Error Responses
+
+All error responses follow this format:
+
+```json
+{
+  "success": false,
+  "message": "Description of the error"
+}
+```
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 401 | API key required | Missing Authorization header |
+| 401 | Invalid or revoked API key | API key is incorrect or has been revoked |
+| 403 | Account is deactivated | User account is disabled |
+| 500 | Authentication error | Server-side authentication failure |
+
+---
+
+<Accordion title="Related">
+  <CardGroup cols={2}>
+    <Card title="Environments Overview" icon="box" href="/environments/overview">
+      What environments are and how they work
+    </Card>
+    <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
+      Upload files to environments for use in sessions
+    </Card>
+    <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
+      Sync a local Chrome profile to an environment
+    </Card>
+    <Card title="Profile Management API" icon="user-gear" href="/environments/profile-management-api">
+      Full API reference for managing browser profiles
+    </Card>
+  </CardGroup>
+</Accordion>
