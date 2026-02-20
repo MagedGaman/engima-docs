@@ -13,12 +13,12 @@ Use the sync command to upload your local Chrome browser profile — cookies, lo
 If you've already [created an environment](/environments/environments-api#create-environment), sync your local browser data to it:
 
 ```bash
-bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --profileId <environmentId> --key <apiKey>
+bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --environmentId <environmentId> --key <apiKey>
 ```
 
 | Parameter | Description |
 |-----------|-------------|
-| `--profileId` | The ID of the existing environment to sync to |
+| `--environmentId` | The ID of the existing environment to sync to |
 | `--key` | Your WebRun API key |
 
 This uploads your local Chrome profile data to the specified environment, replacing any existing profile data. The environment status changes to `ready` once the upload completes.
@@ -27,7 +27,7 @@ This uploads your local Chrome profile data to the specified environment, replac
 
 ## Create and Upload in One Step
 
-To create a new environment and upload your local data in a single command, omit the `--profileId` flag:
+To create a new environment and upload your local data in a single command, omit the `--environmentId` flag:
 
 ```bash
 bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --key <apiKey>
