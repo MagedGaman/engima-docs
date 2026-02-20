@@ -31,7 +31,7 @@ Configure sessions when creating them:
 
 ```javascript
 {
-  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",       // Optional: reuse browser profile
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",     // Optional: reuse browser profile & files
   "mode": "default",                              // Session mode
   "initialTask": {
     "taskDetails": "What to do",                  // Initial task (can be empty)
@@ -60,7 +60,7 @@ Configure sessions when creating them:
 - **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
 - **avoidDomains**: Prevents accidental navigation to unwanted domains.
 - **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
-- **profileId**: Attach a [browser profile](/profiles/overview) to reuse saved cookies, local storage, and other browser data. The profile ID is a top-level parameter, not nested inside `initialTask`.
+- **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `initialTask`.
 
 ---
 
@@ -97,7 +97,7 @@ Sessions execute tasks sequentially, not in parallel. If you send a new task whi
 Sessions automatically terminate after 5 minutes of inactivity. Active sessions can run indefinitely. You're billed only for actual compute time used.
 
 **Complete isolation:**
-No shared cookies, cache, or session state between sessions. Each session starts with a clean browser — unless a [profile](/profiles/overview) is attached. Profiles let you persist cookies, local storage, and other browser data across sessions.
+No shared cookies, cache, or session state between sessions. Each session starts with a clean browser — unless an [environment](/environments/overview) is attached. Environments let you persist cookies, local storage, files, and other browser data across sessions.
 
 **Billing:**
 Sessions are billable from creation until termination or timeout. Idle time between tasks counts as compute time. Always terminate sessions when finished.
@@ -172,7 +172,7 @@ POST /start/send-message
   <Card title="Cost Optimization" icon="piggy-bank" href="/usage-guides/cost-optimization">
     Reduce costs with session management
   </Card>
-  <Card title="Browser Profiles" icon="user-gear" href="/profiles/overview">
-    Persist browser data across sessions
+  <Card title="Environments" icon="box" href="/environments/overview">
+    Persist browser data and files across sessions
   </Card>
 </CardGroup>

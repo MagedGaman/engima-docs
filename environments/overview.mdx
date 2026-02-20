@@ -1,57 +1,66 @@
 ---
 title: "Environments"
-description: "Named containers that bundle a browser profile and persistent file storage for use across automation sessions"
+description: "Bundle a browser profile and persistent file storage into a reusable container for your automation sessions"
 icon: "box"
 ---
 
-An environment is a named container that groups together two types of persistent state:
-
-- **Browser profile** — cookies, local storage, extensions, and saved browser data
-- **File storage** — files you upload that sessions can access at any time
-
-Attach an environment to a session or task using `environmentId`, and the session starts with that browser state loaded and those files available — no re-authentication, no re-uploading.
+An environment is a named container that holds two things: a **browser profile** (cookies, local storage, extensions, cached credentials) and **persistent file storage**. Pass `environmentId` when starting a session and it loads that browser state and makes those files available — no re-authentication, no re-uploading.
 
 ---
 
-## Why Use Environments
+## Why Environments Matter
 
-**Without an environment:** Every session starts from a blank browser. You log in each time, upload files on every run, and lose any accumulated state between tasks.
-
-**With an environment:** Sessions inherit saved login state, site preferences, and any files you've stored. Data persists across runs and is only removed when you explicitly delete it.
+| Without an environment | With an environment |
+|------------------------|---------------------|
+| Every session starts from a blank browser | Sessions inherit saved login state and site preferences |
+| You log in every time | Log in once, reuse across all future sessions |
+| Files must be uploaded on every run | Files persist and are available to any session |
+| No shared state between tasks | Browser data and files carry over until you delete them |
 
 ---
 
-## What an Environment Contains
+## What's Inside
 
 ### Browser Profile
 
-The browser profile carries Chrome data — cookies, local storage, IndexedDB, cached credentials — from one session to the next. Log in once during a session and subsequent sessions on the same environment skip authentication entirely.
+Stores Chrome data — cookies, local storage, IndexedDB, extensions, cached credentials — and carries it from one session to the next. Log in once and every subsequent session on the same environment skips authentication.
 
-### Persistent File Storage
+See [Profiles](/environments/profiles) for details on how browser profiles work, and [Sync Profiles](/environments/sync-profiles) to upload your local Chrome data with one command.
 
-Files attached to an environment stay until you delete them. Any session running under that environment can access those files without you uploading them again. This is useful for reference documents, configuration files, templates, or any asset your automation relies on repeatedly.
+### File Storage
+
+Files attached to an environment stay until you explicitly delete them. Any session running under that environment can access those files without re-uploading. Useful for reference documents, configuration files, templates, or any asset your automation uses repeatedly.
+
+See [File Uploads](/environments/file-uploads) for persistent and temporary upload modes.
 
 ---
 
 ## Lifecycle
 
 ```
-Create Environment → Upload Profile Data (optional) → Upload Files (optional) → Use in Sessions → Delete
+Create → Upload profile data (optional) → Upload files (optional) → Use in sessions → Delete
 ```
 
 1. **Create** an environment with a name and optional description.
-2. **Upload** browser profile data (`.tar.gz`) if you have existing browser state to restore.
-3. **Upload** any files the sessions need to access.
-4. **Use** the environment by passing `environmentId` when starting a session or task.
-5. **Delete** the environment when you no longer need it. This removes the profile data and all attached files.
+2. **Upload** browser profile data (`.tar.gz`) if you have existing state to restore, or [sync](/environments/sync-profiles) from your local Chrome.
+3. **Upload** any files sessions need to access.
+4. **Use** the environment by passing `environmentId` when starting a session or task. The session loads the profile and has access to all stored files.
+5. **Delete** when no longer needed. This removes the profile and all attached files.
 
 ---
 
-## Using an Environment in a Session
+## Quick Example
 
-Pass `environmentId` as a parameter when starting a session or running a task:
+Create an environment, then run a task with it:
 
 ```bash
+# Create the environment
+curl -X POST https://connect.webrun.ai/environments \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-environment"}'
+
+# Use it in a task
 curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
@@ -61,15 +70,16 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   }'
 ```
 
-The session loads the environment's browser profile and has access to all files stored in that environment.
-
 ---
 
 ## Limits
 
-- Maximum **20 environments** per user
-- Browser profile upload: **500 MB** max, `.tar.gz` or `.tgz` format only
-- Profile download URLs expire after **1 hour**
+| Resource | Limit |
+|----------|-------|
+| Environments per user | 20 |
+| Browser profile upload size | 500 MB |
+| Accepted profile format | `.tar.gz`, `.tgz` |
+| Profile download URL expiry | 1 hour |
 
 ---
 
@@ -77,15 +87,15 @@ The session loads the environment's browser profile and has access to all files 
 
 <CardGroup cols={2}>
   <Card title="Environments API" icon="code" href="/environments/environments-api">
-    Create, list, and delete environments; manage attached files
-  </Card>
-  <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
-    Upload files to environments and use them in sessions
+    Create, list, and delete environments; upload profiles and manage files
   </Card>
   <Card title="Profiles" icon="user-gear" href="/environments/profiles">
     How browser profiles work within environments
   </Card>
+  <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
+    Persistent and temporary file upload modes
+  </Card>
   <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
-    Sync a local Chrome profile to an environment
+    Upload your local Chrome profile with one command
   </Card>
 </CardGroup>

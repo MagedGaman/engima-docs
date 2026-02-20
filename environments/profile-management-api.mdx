@@ -1,14 +1,18 @@
 ---
 title: "Profile Management API"
-description: "Upload, download, and manage the browser profile stored in an environment"
-icon: "code"
+description: "Upload, download, and manage browser profile data stored in environments"
+icon: "book"
 ---
 
-Manage the browser profile stored within an environment. Profiles store persistent Chrome browser data — cookies, local storage, extensions — that is reused across sessions.
+These endpoints operate on browser profile data stored within environments. They use the `/profiles` path and provide operations like **downloading** profile archives that complement the [Environments API](/environments/environments-api).
+
+<Tip>
+To create, list, or delete environments, use the [Environments API](/environments/environments-api). The endpoints below focus on managing the browser profile data inside an environment.
+</Tip>
 
 ## Authentication
 
-All profile endpoints require an API key with `task:create` permission.
+All endpoints require an API key with `task:create` permission:
 
 ```bash
 Authorization: Bearer <api_key>
@@ -24,13 +28,11 @@ https://connect.webrun.ai
 
 ## List Profiles
 
-Returns all environments (and their profile data) for the authenticated user, sorted by newest first.
+Returns all environments with their profile metadata, sorted by newest first. This is equivalent to listing environments but includes additional profile-specific fields like `blobSize`, `lastUsedAt`, and `usageCount`.
 
 ```
 GET /profiles
 ```
-
-**Example:**
 
 ```bash
 curl https://connect.webrun.ai/profiles \
@@ -64,15 +66,14 @@ curl https://connect.webrun.ai/profiles \
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `_id` | string | Unique environment identifier |
-| `userId` | string | Owner's user ID |
+| `_id` | string | Environment identifier (same as the environment ID) |
 | `name` | string | Environment name |
 | `description` | string | Environment description |
 | `blobSize` | number | Size of profile data in bytes |
-| `blobUploadedAt` | string | ISO 8601 timestamp of last upload |
+| `blobUploadedAt` | string | ISO 8601 timestamp of last profile upload |
 | `lastUsedAt` | string | ISO 8601 timestamp of last session usage |
 | `usageCount` | number | Number of times used in sessions |
-| `status` | string | Profile status: `empty`, `uploading`, or `ready` |
+| `status` | string | `empty`, `uploading`, or `ready` |
 | `createdAt` | string | ISO 8601 creation timestamp |
 | `updatedAt` | string | ISO 8601 last update timestamp |
 
@@ -80,21 +81,17 @@ curl https://connect.webrun.ai/profiles \
 
 ## Create Profile
 
-Creates a new environment with an empty browser profile. You can populate it by [uploading data](#upload-profile-data) or by running a session with the environment attached.
+Creates a new environment with an empty browser profile. You can populate it by [uploading data](#upload-profile-data), [syncing from your local machine](/environments/sync-profiles), or by running a session with the environment attached.
 
 ```
 POST /profiles
 Content-Type: application/json
 ```
 
-### Request Body
-
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Environment name (max 100 characters) |
 | `description` | string | No | Description (max 500 characters) |
-
-**Example:**
 
 ```bash
 curl -X POST https://connect.webrun.ai/profiles \
@@ -134,19 +131,15 @@ curl -X POST https://connect.webrun.ai/profiles \
 
 ## Delete Profile
 
-Permanently deletes an environment and its stored browser data.
+Permanently deletes an environment and all its stored data (profile and files).
 
 ```
 DELETE /profiles/:id
 ```
 
-### Parameters
-
 | Parameter | Location | Description |
 |-----------|----------|-------------|
 | `id` | URL path | The environment ID |
-
-**Example:**
 
 ```bash
 curl -X DELETE https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c \
@@ -166,25 +159,21 @@ curl -X DELETE https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c \
 
 | Status | Message | Cause |
 |--------|---------|-------|
-| 404 | Profile not found | Invalid ID or profile belongs to another user |
+| 404 | Profile not found | Invalid ID or environment belongs to another user |
 
 ---
 
 ## Download Profile Data
 
-Returns a temporary signed URL to download the environment's browser data as a `.tar.gz` archive. The URL expires after 1 hour.
+Returns a temporary signed URL to download the browser profile as a `.tar.gz` archive. The URL expires after **1 hour**.
 
 ```
 GET /profiles/:id/download
 ```
 
-### Parameters
-
 | Parameter | Location | Description |
 |-----------|----------|-------------|
 | `id` | URL path | The environment ID |
-
-**Example:**
 
 ```bash
 curl https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
@@ -200,7 +189,7 @@ curl https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
 }
 ```
 
-Use the `downloadUrl` to download the file directly:
+Use the returned URL to download the file:
 
 ```bash
 curl -o profile-backup.tar.gz "<downloadUrl>"
@@ -211,27 +200,23 @@ curl -o profile-backup.tar.gz "<downloadUrl>"
 | Status | Message | Cause |
 |--------|---------|-------|
 | 400 | Profile has no data to download | Profile status is not `ready` or has no uploaded data |
-| 404 | Profile not found | Invalid ID or profile belongs to another user |
+| 404 | Profile not found | Invalid ID or environment belongs to another user |
 
 ---
 
 ## Upload Profile Data
 
-Uploads browser profile data as a `.tar.gz` archive to an environment. Replaces any existing profile data.
+Uploads browser profile data as a `.tar.gz` archive to an environment. Replaces any existing profile data and sets the status to `ready`.
 
 ```
 POST /profiles/:id/upload
 Content-Type: multipart/form-data
 ```
 
-### Parameters
-
 | Parameter | Location | Description |
 |-----------|----------|-------------|
 | `id` | URL path | The environment ID |
-| `file` | Form field | The `.tar.gz` file (max 500 MB) |
-
-**Example:**
+| `file` | Form field | `.tar.gz` file (max 500 MB) |
 
 ```bash
 curl -X POST https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload \
@@ -255,35 +240,27 @@ curl -X POST https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload 
 }
 ```
 
-**Accepted file types:** `.tar.gz`, `.tgz`
-
 ### Errors
 
 | Status | Message | Cause |
 |--------|---------|-------|
 | 400 | No file provided | Missing `file` field in form data |
-| 400 | Only .tar.gz files are allowed | File is not a valid tar.gz archive |
-| 404 | Profile not found | Invalid ID or profile belongs to another user |
+| 400 | Only .tar.gz files are allowed | File is not a valid `.tar.gz` archive |
+| 404 | Profile not found | Invalid ID or environment belongs to another user |
 
----
-
-## Profile Status Values
-
-| Status | Description |
-|--------|-------------|
-| `empty` | Created but has no browser data |
-| `uploading` | Data upload in progress |
-| `ready` | Has browser data and can be used in sessions |
+<Tip>
+You can also upload profile data via the [Environments API](/environments/environments-api#upload-browser-profile-data) at `POST /environments/<ENV_ID>/upload`. Both endpoints produce the same result.
+</Tip>
 
 ---
 
 ## Rate Limits
 
-Profile endpoints share the server's global rate limit of **100 requests per 15 minutes per IP**.
+Profile endpoints share the global rate limit of **100 requests per 15 minutes per IP**.
 
 ---
 
-## Common Error Responses
+## Common Errors
 
 All error responses follow this format:
 
@@ -296,7 +273,7 @@ All error responses follow this format:
 
 | Status | Message | Cause |
 |--------|---------|-------|
-| 401 | API key required | Missing Authorization header |
+| 401 | API key required | Missing `Authorization` header |
 | 401 | Invalid or revoked API key | API key is incorrect or has been revoked |
 | 403 | Account is deactivated | User account is disabled |
 | 403 | API key missing required permission: task:create | API key lacks the `task:create` permission |
@@ -306,11 +283,14 @@ All error responses follow this format:
 
 <Accordion title="Related">
   <CardGroup cols={2}>
-    <Card title="Profiles Overview" icon="user-gear" href="/environments/profiles">
-      Understanding browser profiles within environments
+    <Card title="Browser Profiles" icon="user-gear" href="/environments/profiles">
+      How browser profiles work within environments
     </Card>
-    <Card title="Environments API" icon="box" href="/environments/environments-api">
-      Create and manage environments
+    <Card title="Environments API" icon="code" href="/environments/environments-api">
+      Create, list, and delete environments; manage files
+    </Card>
+    <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
+      Upload your local Chrome profile with one command
     </Card>
   </CardGroup>
 </Accordion>

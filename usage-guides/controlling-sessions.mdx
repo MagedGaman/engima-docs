@@ -34,7 +34,7 @@ Start a new task in the current session. This is the only control action that re
 | `terminateOnCompletion` | boolean | No | Auto-terminate after task (default: false) |
 | `outputType` | string | No | Output format: `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | No | JSON Schema for structured output |
-| `files` | string[] | No | File IDs to attach ([details](/usage-guides/file-uploads)) |
+| `files` | string[] | No | File IDs to attach ([details](/environments/file-uploads)) |
 
 Use REST for simple integrations, WebSocket for real-time event handling:
 
@@ -506,8 +506,8 @@ controlFlowDemo();
     <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
       Respond to agent requests for input
     </Card>
-    <Card title="File Uploads" icon="file-arrow-up" href="/usage-guides/file-uploads">
-      Upload and attach files to tasks
+    <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
+      Upload files for the agent to use in sessions
     </Card>
   </CardGroup>
 </Accordion>

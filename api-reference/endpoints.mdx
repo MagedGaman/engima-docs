@@ -25,7 +25,7 @@ Create a new persistent session that can run multiple tasks.
 **Request Body:**
 ```json
 {
-  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
   "initialTask": {
     "taskDetails": "Go to amazon.com and search for laptops",
@@ -53,7 +53,7 @@ Create a new persistent session that can run multiple tasks.
 ```
 
 <Note>
-The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin. Use `profileId` (top-level) to attach a [browser profile](/profiles/overview) with saved cookies and browser state.
+The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin. Use `environmentId` (top-level) to attach an [environment](/environments/overview) with saved cookies, browser state, and persistent files.
 </Note>
 
 **Response (200 OK):**
@@ -283,7 +283,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 **Request Body:**
 ```json
 {
-  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "taskDetails": "Search Google for Anthropic",
   "files": ["abc123..."],
   "maxDuration": 300000,
@@ -381,7 +381,7 @@ curl -X POST https://connect.webrun.ai/files/upload \
 
 Use the returned `fileId` values in the `files` array at the task level — inside `initialTask` for `/start/start-session`, in the request body for `/start/run-task`, or inside `message` for `/start/send-message`.
 
-See [File Uploads guide](/usage-guides/file-uploads) for complete examples.
+See [File Uploads guide](/environments/file-uploads) for complete examples.
 
 ---
 

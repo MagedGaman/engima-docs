@@ -1,26 +1,28 @@
 ---
 title: "File Uploads"
-description: "Upload files to environments for persistent access, or upload standalone files for temporary use in a single task"
+description: "Upload files to environments for persistent access, or upload standalone files for temporary use"
 icon: "file-arrow-up"
 ---
 
+When your agent needs to work with files — submitting a PDF to a form, importing a spreadsheet, or uploading an image — you upload them first and then reference them by `fileId` in your tasks.
+
 Files can be uploaded in two modes:
 
-- **Persistent** — attached to an environment, available to any session running under that environment, and only deleted when you explicitly remove them.
-- **Orphan** — uploaded without an environment, automatically deleted after **1 hour**. Can be promoted to an environment later.
+| Mode | Behavior |
+|------|----------|
+| **Persistent** | Attached to an environment. Available to any session on that environment. Only deleted when you explicitly remove them. |
+| **Orphan** | No environment attached. Automatically deleted after **1 hour**. Can be promoted to an environment later. |
 
 ---
 
-## Upload a File to an Environment (Persistent)
+## Upload to an Environment (Persistent)
 
-Files uploaded with an `environmentId` are stored permanently under that environment. Any automation session using that environment can access them at any time.
-
-**Endpoint:** `POST /files/upload`
+Include `environmentId` in the form data to attach the file permanently to an environment. Any session using that environment can access the file at any time.
 
 ```bash
 curl -X POST https://connect.webrun.ai/files/upload \
   -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
-  -F "files=@/Users/a/Downloads/sample.zip" \
+  -F "files=@/path/to/sample.zip" \
   -F "environmentId=<ENV_ID>"
 ```
 
@@ -41,33 +43,18 @@ curl -X POST https://connect.webrun.ai/files/upload \
 
 ---
 
-## Upload a File Without an Environment (Orphan)
+## Upload Without an Environment (Orphan)
 
-Omit `environmentId` to upload a standalone file. The file is deleted after 1 hour unless it gets promoted to an environment.
+Omit `environmentId` to upload a standalone file. It is automatically deleted after 1 hour unless promoted to an environment.
 
 ```bash
 curl -X POST https://connect.webrun.ai/files/upload \
   -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
-  -F "files=@/Users/a/Downloads/sample.zip"
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "files": [
-    {
-      "fileId": "abc123...",
-      "originalName": "sample.zip",
-      "size": 204800
-    }
-  ]
-}
+  -F "files=@/path/to/sample.zip"
 ```
 
 <Tip>
-An orphan file can be promoted to an environment by passing its `fileId` in a session or task that also includes an `environmentId`. Once the session runs, the file is persisted to that environment.
+An orphan file is automatically promoted to an environment when you pass its `fileId` in a session or task that also includes an `environmentId`. Once the session runs, the file is persisted to that environment and won't expire.
 </Tip>
 
 ---
@@ -78,7 +65,7 @@ An orphan file can be promoted to an environment by passing its `fileId` in a se
 |-------|------|-------------|
 | `success` | boolean | Whether the upload succeeded |
 | `files` | array | Array of uploaded file metadata |
-| `files[].fileId` | string | Unique identifier to reference the file in tasks |
+| `files[].fileId` | string | Unique identifier — use this to reference the file in tasks |
 | `files[].originalName` | string | Original filename as uploaded |
 | `files[].size` | number | File size in bytes |
 
@@ -101,11 +88,9 @@ curl -X POST https://connect.webrun.ai/files/upload \
 
 ## Using Files in a Session
 
-Reference uploaded files by their `fileId` when starting a task. Pass the file IDs in the `files` array alongside an `environmentId` to persist them to the environment.
+Reference uploaded files by `fileId` when starting a task. Pass them in the `files` array alongside `environmentId` to use the environment's browser profile and persist orphan files at the same time.
 
-### Start session with environment and files
-
-When you pass an orphan `fileId` together with an `environmentId`, the file is persisted to that environment after the session runs.
+### With /start/run-task
 
 ```bash
 curl -X POST https://connect.webrun.ai/start/run-task \
@@ -118,7 +103,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   }'
 ```
 
-### Using /start/start-session
+### With /start/start-session
 
 Include `files` inside the `initialTask` object:
 
@@ -134,7 +119,7 @@ Include `files` inside the `initialTask` object:
 }
 ```
 
-### Using /start/send-message
+### With /start/send-message
 
 Include `files` in the `message` object when sending a `newTask` action:
 
@@ -155,28 +140,26 @@ Include `files` in the `message` object when sending a `newTask` action:
 
 ## Complete Example
 
-Upload a file to an environment, then run a task that uses it:
+Upload an orphan file, then run a task with an environment — the file gets persisted automatically:
 
 ```javascript
 const API_KEY = process.env.WEBRUN_API_KEY;
 const ENV_ID = "<ENV_ID>";
 
-// Step 1: Upload the file to the environment
+// Step 1: Upload the file (orphan — no environmentId yet)
 const formData = new FormData();
 formData.append("files", fs.createReadStream("report.pdf"));
-formData.append("environmentId", ENV_ID);
 
 const uploadResponse = await fetch("https://connect.webrun.ai/files/upload", {
   method: "POST",
-  headers: {
-    "Authorization": `Bearer ${API_KEY}`
-  },
+  headers: { "Authorization": `Bearer ${API_KEY}` },
   body: formData
 }).then(r => r.json());
 
 const fileId = uploadResponse.files[0].fileId;
 
-// Step 2: Run a task using the environment and file
+// Step 2: Run a task with the environment and file
+// The orphan file is promoted to the environment automatically
 const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
@@ -196,44 +179,44 @@ console.log(taskResponse);
 
 ---
 
+## Managing Environment Files
+
+List or delete files attached to an environment using the [Environments API](/environments/environments-api):
+
+```bash
+# List all files in an environment
+curl https://connect.webrun.ai/environments/<ENV_ID>/files \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+
+# Delete a specific file
+curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+```
+
+---
+
 ## Endpoint Reference
 
 | Endpoint | Field | Location |
 |----------|-------|----------|
 | `POST /files/upload` | `files` (multipart) | Form data |
-| `POST /files/upload` | `environmentId` | Form data (optional) |
-| `POST /start/run-task` | `files` | Request body (task-level) |
+| `POST /files/upload` | `environmentId` | Form data (optional — omit for orphan upload) |
+| `POST /start/run-task` | `files` | Request body |
 | `POST /start/run-task` | `environmentId` | Request body |
 | `POST /start/start-session` | `files` | Inside `initialTask` object |
 | `POST /start/send-message` | `files` | Inside `message` object |
+| `GET /environments/<ENV_ID>/files` | — | List files in an environment |
+| `DELETE /environments/<ENV_ID>/files/<FILE_ID>` | — | Delete a file from an environment |
 
 ---
 
-## Managing Environment Files
-
-To list or delete files attached to an environment, use the environment file management endpoints:
-
-```bash
-# List files in an environment
-curl https://connect.webrun.ai/environments/<ENV_ID>/files \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
-
-# Delete a specific file from an environment
-curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
-```
-
-See the [Environments API](/environments/environments-api) for full details.
-
----
-
-<Accordion title="Related Guides">
+<Accordion title="Related">
   <CardGroup cols={2}>
     <Card title="Environments API" icon="code" href="/environments/environments-api">
-      Create environments and manage their files
+      Create environments and manage attached files
     </Card>
     <Card title="Environments Overview" icon="box" href="/environments/overview">
-      How environments work
+      What environments are and when to use them
     </Card>
     <Card title="Secrets" icon="key" href="/usage-guides/secrets">
       Provide credentials for authenticated sessions

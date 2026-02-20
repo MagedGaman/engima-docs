@@ -1,100 +1,123 @@
 ---
-title: "Profiles"
+title: "Browser Profiles"
 description: "Persist cookies, local storage, and browser state across sessions using an environment's browser profile"
 icon: "user-gear"
 ---
 
-The browser profile inside an environment stores persistent Chrome data — cookies, local storage, extensions, cache — that carries over between sessions. Attach an environment to a session and it starts with your saved state already loaded instead of a blank browser.
+Every environment includes a browser profile that stores persistent Chrome data — cookies, local storage, extensions, IndexedDB, cached credentials. When you attach an environment to a session, the browser starts with that saved state already loaded.
 
-**Without a profile:** Every session starts fresh. You log in each time, re-accept cookie banners, and lose any site-specific state.
+**Without a profile:** every session opens a blank browser. You log in each time, re-accept cookie banners, and lose any site-specific data.
 
-**With a profile:** Sessions pick up where you left off. Login cookies persist, site preferences carry over, and previously saved data is available immediately.
+**With a profile:** sessions pick up where you left off. Login cookies persist, preferences carry over, and previously saved data is available immediately.
 
 ---
 
-## Common Use Cases
+## Use Cases
 
 ### Skip Repeated Logins
 
-Log in once, then reuse that session across future tasks:
+Log in once, then reuse that session state across future tasks:
 
-1. Create an environment
-2. Run a session with the environment attached and log in to the target site
-3. The environment saves your login cookies in its profile
-4. Future sessions using this environment start already authenticated
+1. Create an environment and run a session with it attached
+2. Log in to the target site during the session
+3. The profile saves your login cookies automatically when the session ends
+4. Future sessions on the same environment start already authenticated
 
 ### Preserve Site Preferences
 
-Carry over cookie consent choices, language settings, dark mode preferences, and other site-specific configuration between sessions.
+Cookie consent choices, language settings, dark mode preferences, and other site-specific configuration carry over between sessions without any extra setup.
 
-### Maintain Cart or Workspace State
+### Maintain Application State
 
 For e-commerce or SaaS workflows, keep cart contents, workspace configurations, or application state intact between sessions.
 
 ---
 
-## How Profiles Work
+## Profile Status
 
-### Lifecycle
+Each environment tracks the state of its browser profile:
 
-```
-Create Environment → Upload Profile Data (optional) → Use in Sessions → Download / Update → Delete
-```
+| Status | Meaning |
+|--------|---------|
+| `empty` | No browser data yet — sessions start with a clean browser and populate the profile on exit |
+| `uploading` | A profile upload is in progress |
+| `ready` | Has browser data — sessions load the saved state before executing tasks |
 
-1. **Create** an environment via the API. Its profile starts with status `empty`.
-2. **Populate** the profile by [syncing from your local machine](/environments/sync-profiles), uploading a `.tar.gz` archive via the [Environments API](/environments/environments-api#upload-browser-profile-data), or by running a session with the environment attached — the browser state saves automatically.
-3. **Use** the environment by passing its ID when starting a session. The browser loads the profile's saved data before executing any tasks.
-4. **Delete** the environment when you no longer need it.
+<Tip>
+You can attach an environment with status `empty` to a session. The session starts with a clean browser, and the profile is populated automatically when the session ends.
+</Tip>
 
-### Profile Status
+---
 
-| Status | Description |
+## Populating a Profile
+
+There are three ways to get browser data into an environment's profile:
+
+| Method | When to use |
 |--------|-------------|
-| `empty` | Created but has no browser data yet |
-| `uploading` | Data upload in progress |
-| `ready` | Has browser data and can be used in sessions |
+| **Run a session** | Easiest — just run a session with the environment attached, log in, and the profile saves automatically |
+| **[Sync from local Chrome](/environments/sync-profiles)** | You're already logged into sites locally and want to transfer that state |
+| **[Upload a `.tar.gz` archive](/environments/environments-api#upload-browser-profile-data)** | You have an exported Chrome profile archive to restore |
 
 ---
 
 ## Using a Profile in a Session
 
-Pass `environmentId` as a parameter when starting a session or running a task:
+Pass `environmentId` when starting a session or task. The browser loads the profile's saved data before executing anything:
 
 ```bash
 curl -X POST https://connect.webrun.ai/start/run-task \
-  -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
   -d '{
     "environmentId": "<ENV_ID>",
     "taskDetails": "Go to amazon.com and check my order status"
   }'
 ```
 
-<Tip>
-Environments with profile status `ready` load saved browser state immediately. If you attach an environment with status `empty`, the session starts with a clean browser and the profile is populated when the session ends.
-</Tip>
+After the session ends, any changes to the browser state (new cookies, updated local storage) are saved back to the profile automatically.
+
+---
+
+## Downloading Profile Data
+
+You can download an environment's browser profile as a `.tar.gz` archive for backup or transfer. The download endpoint returns a signed URL that expires after 1 hour:
+
+```bash
+curl https://connect.webrun.ai/profiles/<ENV_ID>/download \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{
+  "success": true,
+  "downloadUrl": "https://storage.example.com/profiles/<ENV_ID>.tar.gz?token=..."
+}
+```
+
+See the [Profile Management API](/environments/profile-management-api#download-profile-data) for full details.
 
 ---
 
 ## Limits
 
-- Maximum **20 environments** per user
-- Maximum upload size: **500 MB** per profile
-- Accepted upload format: `.tar.gz` or `.tgz`
-- Download URLs expire after **1 hour**
+| Resource | Limit |
+|----------|-------|
+| Environments per user | 20 |
+| Profile upload size | 500 MB |
+| Accepted format | `.tar.gz`, `.tgz` |
+| Download URL expiry | 1 hour |
 
 ---
 
-## Next Steps
-
 <CardGroup cols={3}>
   <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
-    Sync a local Chrome profile to an environment with one command
+    Upload your local Chrome profile with one command
   </Card>
-  <Card title="Profile Management API" icon="code" href="/environments/profile-management-api">
-    Full API reference for managing profiles
+  <Card title="Environments API" icon="code" href="/environments/environments-api">
+    Create environments and upload profile data via the API
   </Card>
-  <Card title="Environments API" icon="box" href="/environments/environments-api">
-    Create and manage environments
+  <Card title="Profile Management API" icon="book" href="/environments/profile-management-api">
+    Download, upload, and manage profile data
   </Card>
 </CardGroup>

@@ -8,17 +8,17 @@ icon: "sliders"
 
 Parameters used when creating a new session via `POST /start/start-session`.
 
-### profileId
+### environmentId
 
 - **Type:** `string`
 - **Required:** No
 - **Default:** `null`
-- **Description:** ID of a [browser profile](/profiles/overview) to attach to the session. When set, the browser loads the profile's saved cookies, local storage, extensions, and other data before starting the task. This maintains consistent browser state (e.g., login sessions) across multiple sessions.
+- **Description:** ID of an [environment](/environments/overview) to attach to the session. When set, the browser loads the environment's saved cookies, local storage, extensions, and other browser data before starting the task. Files stored in the environment are also available to the session. This maintains consistent browser state (e.g., login sessions) and persistent file access across multiple sessions.
 
 **Example:**
 ```json
 {
-  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
   "initialTask": {
     "taskDetails": "Go to amazon.com and check my orders"
@@ -398,7 +398,7 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 }
 ```
 
-See [File Uploads guide](/usage-guides/file-uploads) for the full upload workflow.
+See [File Uploads guide](/environments/file-uploads) for the full upload workflow.
 
 ---
 
@@ -968,7 +968,7 @@ interface TaskConfig {
 
 ```typescript
 interface SessionConfig {
-  profileId?: string;
+  environmentId?: string;
   mode?: string;
   initialTask?: TaskConfig;
 }

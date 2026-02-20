@@ -4,9 +4,11 @@ description: "Create, list, and delete environments; upload browser profiles and
 icon: "code"
 ---
 
-Manage environments programmatically. All endpoints require authentication.
+Manage environments programmatically. These endpoints let you create and delete environments, upload browser profile data, and manage files attached to an environment.
 
 ## Authentication
+
+All endpoints require an API key in the `Authorization` header:
 
 ```bash
 Authorization: Bearer <api_key>
@@ -20,23 +22,17 @@ https://connect.webrun.ai
 
 ---
 
-## Create Environment
-
-Creates a new environment with an optional name and description.
+## Create an Environment
 
 ```
 POST /environments
 Content-Type: application/json
 ```
 
-### Request Body
-
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `name` | string | Yes | Environment name |
 | `description` | string | No | Optional description |
-
-**Example:**
 
 ```bash
 curl -X POST https://connect.webrun.ai/environments \
@@ -63,6 +59,13 @@ curl -X POST https://connect.webrun.ai/environments \
 }
 ```
 
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | Environment name is required | Missing or empty `name` field |
+| 400 | Maximum of 20 environments allowed | User already has 20 environments |
+
 ---
 
 ## List Environments
@@ -72,8 +75,6 @@ Returns all environments for the authenticated user.
 ```
 GET /environments
 ```
-
-**Example:**
 
 ```bash
 curl https://connect.webrun.ai/environments \
@@ -113,15 +114,13 @@ curl https://connect.webrun.ai/environments \
 
 ---
 
-## Delete Environment
+## Delete an Environment
 
 Permanently deletes an environment, its browser profile data, and all attached files.
 
 ```
 DELETE /environments/<ENV_ID>
 ```
-
-**Example:**
 
 ```bash
 curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID> \
@@ -147,21 +146,17 @@ curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID> \
 
 ## Upload Browser Profile Data
 
-Uploads a `.tar.gz` Chrome browser profile archive to an environment. This replaces any existing profile data and sets the environment status to `ready`.
+Uploads a `.tar.gz` Chrome profile archive to an environment. Replaces any existing profile data and sets the status to `ready`.
 
 ```
 POST /environments/<ENV_ID>/upload
 Content-Type: multipart/form-data
 ```
 
-### Parameters
-
 | Parameter | Location | Description |
 |-----------|----------|-------------|
 | `ENV_ID` | URL path | The environment ID |
-| `file` | Form field | The `.tar.gz` browser profile archive (max 500 MB) |
-
-**Example:**
+| `file` | Form field | `.tar.gz` profile archive (max 500 MB) |
 
 ```bash
 curl -X POST https://connect.webrun.ai/environments/<ENV_ID>/upload \
@@ -185,18 +180,16 @@ curl -X POST https://connect.webrun.ai/environments/<ENV_ID>/upload \
 }
 ```
 
-**Accepted file types:** `.tar.gz`, `.tgz`
-
 ### Errors
 
 | Status | Message | Cause |
 |--------|---------|-------|
 | 400 | No file provided | Missing `file` field in form data |
-| 400 | Only .tar.gz files are allowed | File is not a valid tar.gz archive |
+| 400 | Only .tar.gz files are allowed | File is not a valid `.tar.gz` archive |
 | 404 | Environment not found | Invalid ID or environment belongs to another user |
 
 <Tip>
-To sync a local Chrome profile to an environment instead of uploading a manual archive, use the [Sync Profiles](/environments/sync-profiles) tool.
+To upload your local Chrome profile instead of a manual archive, use the [sync tool](/environments/sync-profiles) — it packages and uploads your browser data in one command.
 </Tip>
 
 ---
@@ -208,8 +201,6 @@ Returns all files attached to an environment.
 ```
 GET /environments/<ENV_ID>/files
 ```
-
-**Example:**
 
 ```bash
 curl https://connect.webrun.ai/environments/<ENV_ID>/files \
@@ -251,8 +242,6 @@ Permanently removes a specific file from an environment.
 DELETE /environments/<ENV_ID>/files/<FILE_ID>
 ```
 
-**Example:**
-
 ```bash
 curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
   -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
@@ -275,7 +264,7 @@ curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
 
 ---
 
-## Common Error Responses
+## Common Errors
 
 All error responses follow this format:
 
@@ -288,7 +277,7 @@ All error responses follow this format:
 
 | Status | Message | Cause |
 |--------|---------|-------|
-| 401 | API key required | Missing Authorization header |
+| 401 | API key required | Missing `Authorization` header |
 | 401 | Invalid or revoked API key | API key is incorrect or has been revoked |
 | 403 | Account is deactivated | User account is disabled |
 | 500 | Authentication error | Server-side authentication failure |
@@ -298,16 +287,16 @@ All error responses follow this format:
 <Accordion title="Related">
   <CardGroup cols={2}>
     <Card title="Environments Overview" icon="box" href="/environments/overview">
-      What environments are and how they work
+      What environments are and when to use them
     </Card>
     <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
-      Upload files to environments for use in sessions
+      Upload files for use in sessions
     </Card>
     <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
-      Sync a local Chrome profile to an environment
+      Upload your local Chrome profile with one command
     </Card>
-    <Card title="Profile Management API" icon="user-gear" href="/environments/profile-management-api">
-      Full API reference for managing browser profiles
+    <Card title="Profile Management API" icon="book" href="/environments/profile-management-api">
+      Download, upload, and manage browser profile data
     </Card>
   </CardGroup>
 </Accordion>
