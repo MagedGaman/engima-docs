@@ -1,16 +1,16 @@
 ---
 title: "Sync Profiles"
-description: "Sync your local Chrome profile to an environment with a single command"
+description: "Upload your local Chrome browser profile to an environment with a single command"
 icon: "arrows-rotate"
 ---
 
-Use the sync command to upload your local Chrome browser profile — cookies, local storage, extensions, and saved state — directly to an environment. This is the fastest way to get an environment's browser profile ready for use in sessions.
+The sync command packages your local Chrome browser data — cookies, local storage, extensions, saved state — and uploads it directly to an environment. This is the fastest way to populate an environment's browser profile.
 
 ---
 
 ## Sync to an Existing Environment
 
-If you've already [created an environment](/environments/environments-api#create-environment), sync your local browser data to it:
+If you've already [created an environment](/environments/environments-api#create-an-environment), sync your local browser data to it:
 
 ```bash
 bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --environmentId <environmentId> --key <apiKey>
@@ -18,29 +18,25 @@ bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --environmentId <environmentId
 
 | Parameter | Description |
 |-----------|-------------|
-| `--environmentId` | The ID of the existing environment to sync to |
+| `--environmentId` | The ID of the environment to sync to |
 | `--key` | Your WebRun API key |
 
-This uploads your local Chrome profile data to the specified environment, replacing any existing profile data. The environment status changes to `ready` once the upload completes.
+This uploads your local Chrome profile to the specified environment, replacing any existing profile data. The environment status changes to `ready` once the upload completes.
 
 ---
 
-## Create and Upload in One Step
+## Create and Sync in One Step
 
-To create a new environment and upload your local data in a single command, omit the `--environmentId` flag:
+To create a new environment and upload your local data in a single command, omit `--environmentId`:
 
 ```bash
 bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --key <apiKey>
 ```
 
-This will:
-
-1. Create a new environment on your account
-2. Upload your local Chrome profile data to it
-3. Return the new environment ID for use in sessions
+This creates a new environment on your account, uploads your Chrome profile, and returns the new environment ID.
 
 <Tip>
-Save the environment ID returned by the command — you'll need it to attach the environment to sessions via `environmentId`.
+Save the environment ID returned by the command — you'll need it to pass as `environmentId` when starting sessions.
 </Tip>
 
 ---
@@ -50,18 +46,16 @@ Save the environment ID returned by the command — you'll need it to attach the
 | Scenario | Approach |
 |----------|----------|
 | You're already logged into sites locally and want to reuse that state | **Sync** your local profile |
-| You want to set up an environment from scratch via automation | Use the [API](/environments/environments-api#create-environment) to create an environment, then run a session to populate it |
+| You want to set up an environment from scratch via automation | Use the [Environments API](/environments/environments-api#create-an-environment) to create one, then run a session to populate it |
 | You need to back up or transfer a profile | Use the [download endpoint](/environments/profile-management-api#download-profile-data) |
 
 ---
 
-## Next Steps
-
 <CardGroup cols={2}>
   <Card title="Environments Overview" icon="box" href="/environments/overview">
-    How environments work, use cases, and limits
+    What environments are and when to use them
   </Card>
-  <Card title="Profile Management API" icon="code" href="/environments/profile-management-api">
-    Full API reference for managing profiles
+  <Card title="Profile Management API" icon="book" href="/environments/profile-management-api">
+    Download, upload, and manage profile data via the API
   </Card>
 </CardGroup>
