@@ -219,51 +219,6 @@ To sync a local Chrome profile instead of uploading a manual archive, use the [S
 
 ---
 
-## Download Profile Data
-
-Returns a temporary signed URL to download the environment's browser profile as a `.tar.gz` archive. The URL expires after 1 hour.
-
-```
-GET /profiles/<ENV_ID>/download
-```
-
-### Parameters
-
-| Parameter | Location | Description |
-|-----------|----------|-------------|
-| `ENV_ID` | URL path | The environment ID |
-
-**Example:**
-
-```bash
-curl https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "downloadUrl": "https://storage.example.com/profiles/683a1f2e4b0c1d2e3f4a5b6c.tar.gz?token=eyJhbGciOi..."
-}
-```
-
-Use the `downloadUrl` to download the file:
-
-```bash
-curl -o profile-backup.tar.gz "<downloadUrl>"
-```
-
-### Errors
-
-| Status | Message | Cause |
-|--------|---------|-------|
-| 400 | Profile has no data to download | Environment status is not `ready` |
-| 404 | Profile not found | Invalid ID or environment belongs to another user |
-
----
-
 ## Profile Status Values
 
 | Status | Description |
