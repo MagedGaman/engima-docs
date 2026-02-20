@@ -47,7 +47,6 @@
               "usage-guides/secrets",
               "usage-guides/video-streaming",
               "usage-guides/structured-output",
-              "usage-guides/file-uploads",
               "usage-guides/webhooks",
               "usage-guides/cost-optimization"
             ]
@@ -62,11 +61,14 @@
             ]
           },
           {
-            "group": "Profiles",
+            "group": "Environments",
             "pages": [
-              "profiles/overview",
-              "profiles/sync-profiles",
-              "profiles/profile-management-api"
+              "environments/overview",
+              "environments/environments-api",
+              "environments/profiles",
+              "environments/sync-profiles",
+              "environments/profile-management-api",
+              "environments/file-uploads"
             ]
           },
           {
@@ -168,6 +170,22 @@
     {
       "source": "/api-reference/introduction",
       "destination": "/api-reference/endpoints"
+    },
+    {
+      "source": "/profiles/overview",
+      "destination": "/environments/profiles"
+    },
+    {
+      "source": "/profiles/sync-profiles",
+      "destination": "/environments/sync-profiles"
+    },
+    {
+      "source": "/profiles/profile-management-api",
+      "destination": "/environments/profile-management-api"
+    },
+    {
+      "source": "/usage-guides/file-uploads",
+      "destination": "/environments/file-uploads"
     }
   ]
 }

@@ -1,0 +1,91 @@
+---
+title: "Environments"
+description: "Named containers that bundle a browser profile and persistent file storage for use across automation sessions"
+icon: "box"
+---
+
+An environment is a named container that groups together two types of persistent state:
+
+- **Browser profile** — cookies, local storage, extensions, and saved browser data
+- **File storage** — files you upload that sessions can access at any time
+
+Attach an environment to a session or task using `environmentId`, and the session starts with that browser state loaded and those files available — no re-authentication, no re-uploading.
+
+---
+
+## Why Use Environments
+
+**Without an environment:** Every session starts from a blank browser. You log in each time, upload files on every run, and lose any accumulated state between tasks.
+
+**With an environment:** Sessions inherit saved login state, site preferences, and any files you've stored. Data persists across runs and is only removed when you explicitly delete it.
+
+---
+
+## What an Environment Contains
+
+### Browser Profile
+
+The browser profile carries Chrome data — cookies, local storage, IndexedDB, cached credentials — from one session to the next. Log in once during a session and subsequent sessions on the same environment skip authentication entirely.
+
+### Persistent File Storage
+
+Files attached to an environment stay until you delete them. Any session running under that environment can access those files without you uploading them again. This is useful for reference documents, configuration files, templates, or any asset your automation relies on repeatedly.
+
+---
+
+## Lifecycle
+
+```
+Create Environment → Upload Profile Data (optional) → Upload Files (optional) → Use in Sessions → Delete
+```
+
+1. **Create** an environment with a name and optional description.
+2. **Upload** browser profile data (`.tar.gz`) if you have existing browser state to restore.
+3. **Upload** any files the sessions need to access.
+4. **Use** the environment by passing `environmentId` when starting a session or task.
+5. **Delete** the environment when you no longer need it. This removes the profile data and all attached files.
+
+---
+
+## Using an Environment in a Session
+
+Pass `environmentId` as a parameter when starting a session or running a task:
+
+```bash
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskDetails": "Go to my dashboard and export the monthly report",
+    "environmentId": "<ENV_ID>"
+  }'
+```
+
+The session loads the environment's browser profile and has access to all files stored in that environment.
+
+---
+
+## Limits
+
+- Maximum **20 environments** per user
+- Browser profile upload: **500 MB** max, `.tar.gz` or `.tgz` format only
+- Profile download URLs expire after **1 hour**
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Environments API" icon="code" href="/environments/environments-api">
+    Create, list, and delete environments; manage attached files
+  </Card>
+  <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
+    Upload files to environments and use them in sessions
+  </Card>
+  <Card title="Profiles" icon="user-gear" href="/environments/profiles">
+    How browser profiles work within environments
+  </Card>
+  <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
+    Sync a local Chrome profile to an environment
+  </Card>
+</CardGroup>

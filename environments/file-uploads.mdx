@@ -1,0 +1,245 @@
+---
+title: "File Uploads"
+description: "Upload files to environments for persistent access, or upload standalone files for temporary use in a single task"
+icon: "file-arrow-up"
+---
+
+Files can be uploaded in two modes:
+
+- **Persistent** — attached to an environment, available to any session running under that environment, and only deleted when you explicitly remove them.
+- **Orphan** — uploaded without an environment, automatically deleted after **1 hour**. Can be promoted to an environment later.
+
+---
+
+## Upload a File to an Environment (Persistent)
+
+Files uploaded with an `environmentId` are stored permanently under that environment. Any automation session using that environment can access them at any time.
+
+**Endpoint:** `POST /files/upload`
+
+```bash
+curl -X POST https://connect.webrun.ai/files/upload \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -F "files=@/Users/a/Downloads/sample.zip" \
+  -F "environmentId=<ENV_ID>"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "files": [
+    {
+      "fileId": "abc123...",
+      "originalName": "sample.zip",
+      "size": 204800
+    }
+  ]
+}
+```
+
+---
+
+## Upload a File Without an Environment (Orphan)
+
+Omit `environmentId` to upload a standalone file. The file is deleted after 1 hour unless it gets promoted to an environment.
+
+```bash
+curl -X POST https://connect.webrun.ai/files/upload \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -F "files=@/Users/a/Downloads/sample.zip"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "files": [
+    {
+      "fileId": "abc123...",
+      "originalName": "sample.zip",
+      "size": 204800
+    }
+  ]
+}
+```
+
+<Tip>
+An orphan file can be promoted to an environment by passing its `fileId` in a session or task that also includes an `environmentId`. Once the session runs, the file is persisted to that environment.
+</Tip>
+
+---
+
+## Upload Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether the upload succeeded |
+| `files` | array | Array of uploaded file metadata |
+| `files[].fileId` | string | Unique identifier to reference the file in tasks |
+| `files[].originalName` | string | Original filename as uploaded |
+| `files[].size` | number | File size in bytes |
+
+---
+
+## Uploading Multiple Files
+
+Repeat the `files` field to upload several files in one request:
+
+```bash
+curl -X POST https://connect.webrun.ai/files/upload \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -F "files=@document.pdf" \
+  -F "files=@photo.png" \
+  -F "files=@spreadsheet.xlsx" \
+  -F "environmentId=<ENV_ID>"
+```
+
+---
+
+## Using Files in a Session
+
+Reference uploaded files by their `fileId` when starting a task. Pass the file IDs in the `files` array alongside an `environmentId` to persist them to the environment.
+
+### Start session with environment and files
+
+When you pass an orphan `fileId` together with an `environmentId`, the file is persisted to that environment after the session runs.
+
+```bash
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskDetails": "Open the uploaded spreadsheet and extract the data",
+    "environmentId": "<ENV_ID>",
+    "files": ["<FILE_ID>"]
+  }'
+```
+
+### Using /start/start-session
+
+Include `files` inside the `initialTask` object:
+
+```json
+{
+  "mode": "default",
+  "environmentId": "<ENV_ID>",
+  "initialTask": {
+    "taskDetails": "Process the attached report",
+    "startingPoint": "https://example.com/dashboard",
+    "files": ["abc123..."]
+  }
+}
+```
+
+### Using /start/send-message
+
+Include `files` in the `message` object when sending a `newTask` action:
+
+```json
+{
+  "sessionId": "a1b2c3d4e5f6",
+  "message": {
+    "actionType": "newTask",
+    "newState": "start",
+    "taskDetails": "Upload the attached spreadsheet to the data import page",
+    "startingPoint": "https://example.com/import",
+    "files": ["ghi789..."]
+  }
+}
+```
+
+---
+
+## Complete Example
+
+Upload a file to an environment, then run a task that uses it:
+
+```javascript
+const API_KEY = process.env.WEBRUN_API_KEY;
+const ENV_ID = "<ENV_ID>";
+
+// Step 1: Upload the file to the environment
+const formData = new FormData();
+formData.append("files", fs.createReadStream("report.pdf"));
+formData.append("environmentId", ENV_ID);
+
+const uploadResponse = await fetch("https://connect.webrun.ai/files/upload", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: formData
+}).then(r => r.json());
+
+const fileId = uploadResponse.files[0].fileId;
+
+// Step 2: Run a task using the environment and file
+const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${API_KEY}`
+  },
+  body: JSON.stringify({
+    taskDetails: "Go to the upload page and submit the attached PDF report",
+    startingPoint: "https://example.com/submit",
+    environmentId: ENV_ID,
+    files: [fileId]
+  })
+}).then(r => r.json());
+
+console.log(taskResponse);
+```
+
+---
+
+## Endpoint Reference
+
+| Endpoint | Field | Location |
+|----------|-------|----------|
+| `POST /files/upload` | `files` (multipart) | Form data |
+| `POST /files/upload` | `environmentId` | Form data (optional) |
+| `POST /start/run-task` | `files` | Request body (task-level) |
+| `POST /start/run-task` | `environmentId` | Request body |
+| `POST /start/start-session` | `files` | Inside `initialTask` object |
+| `POST /start/send-message` | `files` | Inside `message` object |
+
+---
+
+## Managing Environment Files
+
+To list or delete files attached to an environment, use the environment file management endpoints:
+
+```bash
+# List files in an environment
+curl https://connect.webrun.ai/environments/<ENV_ID>/files \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+
+# Delete a specific file from an environment
+curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
+  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+```
+
+See the [Environments API](/environments/environments-api) for full details.
+
+---
+
+<Accordion title="Related Guides">
+  <CardGroup cols={2}>
+    <Card title="Environments API" icon="code" href="/environments/environments-api">
+      Create environments and manage their files
+    </Card>
+    <Card title="Environments Overview" icon="box" href="/environments/overview">
+      How environments work
+    </Card>
+    <Card title="Secrets" icon="key" href="/usage-guides/secrets">
+      Provide credentials for authenticated sessions
+    </Card>
+    <Card title="Webhooks" icon="bell" href="/usage-guides/webhooks">
+      Get notified when tasks complete
+    </Card>
+  </CardGroup>
+</Accordion>
