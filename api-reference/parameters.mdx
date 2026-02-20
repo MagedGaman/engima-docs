@@ -8,17 +8,17 @@ icon: "sliders"
 
 Parameters used when creating a new session via `POST /start/start-session`.
 
-### profileId
+### environmentId
 
 - **Type:** `string`
 - **Required:** No
 - **Default:** `null`
-- **Description:** ID of a [browser profile](/profiles/overview) to attach to the session. When set, the browser loads the profile's saved cookies, local storage, extensions, and other data before starting the task. This maintains consistent browser state (e.g., login sessions) across multiple sessions.
+- **Description:** ID of an [environment](/environments/overview) to attach to the session. When set, the browser loads the environment's saved profile data (cookies, local storage, extensions) before starting the task, and the session has access to all files stored in that environment.
 
 **Example:**
 ```json
 {
-  "profileId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
   "initialTask": {
     "taskDetails": "Go to amazon.com and check my orders"
@@ -27,7 +27,7 @@ Parameters used when creating a new session via `POST /start/start-session`.
 ```
 
 <Tip>
-Use profiles to skip login steps. Log in once with a profile attached, then reuse that profile for future sessions — the saved cookies keep you authenticated.
+Use environments to skip login steps. Log in once with an environment attached, then reuse that environment for future sessions — the saved cookies keep you authenticated.
 </Tip>
 
 ---
@@ -375,13 +375,14 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 - **Type:** `string[]` (array of file ID strings)
 - **Required:** No
 - **Default:** `[]`
-- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form. This is a task-level parameter — place it alongside `taskDetails`.
+- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form. This is a task-level parameter — place it alongside `taskDetails`. Combine with `environmentId` to persist the files to that environment.
 
 **Example with /start/run-task:**
 ```json
 {
   "taskDetails": "Upload this document to the submission form",
   "startingPoint": "https://example.com/upload",
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "files": ["abc123...", "def456..."]
 }
 ```
@@ -389,6 +390,7 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 **Example with /start/start-session:**
 ```json
 {
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
   "initialTask": {
     "taskDetails": "Upload the attached file to the portal",
@@ -398,7 +400,7 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 }
 ```
 
-See [File Uploads guide](/usage-guides/file-uploads) for the full upload workflow.
+See [File Uploads guide](/environments/file-uploads) for the full upload workflow including persistent and orphan files.
 
 ---
 
@@ -968,7 +970,7 @@ interface TaskConfig {
 
 ```typescript
 interface SessionConfig {
-  profileId?: string;
+  environmentId?: string;
   mode?: string;
   initialTask?: TaskConfig;
 }

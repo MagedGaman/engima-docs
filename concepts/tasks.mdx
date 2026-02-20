@@ -119,8 +119,8 @@ Each task gets a unique `taskId` when created. Use this ID to:
 | `avoidDomains` | string[] | `[]` | Domains to avoid |
 | `terminateOnCompletion` | boolean | false | Auto-terminate session after this task |
 | `secrets` | array | `[]` | Credentials for website authentication ([details](/usage-guides/secrets)) |
-| `files` | string[] | `[]` | File IDs to attach for upload tasks ([details](/usage-guides/file-uploads)) |
-| `profileId` | string | null | Browser profile ID to attach to the session ([details](/profiles/overview)). This is a top-level parameter, not nested inside the task. |
+| `files` | string[] | `[]` | File IDs to attach for upload tasks ([details](/environments/file-uploads)) |
+| `environmentId` | string | null | Environment ID to attach — loads its browser profile and files ([details](/environments/overview)). Top-level parameter, not nested inside the task. |
 
 ---
 
@@ -367,10 +367,10 @@ If `avoidDomains` is set, the agent will:
   <Card title="Structured Output" icon="table" href="/usage-guides/structured-output">
     Get structured data from tasks
   </Card>
-  <Card title="Browser Profiles" icon="user-gear" href="/profiles/overview">
-    Reuse cookies and browser state across tasks
+  <Card title="Environments" icon="box" href="/environments/overview">
+    Reuse browser profile and files across tasks
   </Card>
-  <Card title="File Uploads" icon="file-arrow-up" href="/usage-guides/file-uploads">
+  <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
     Attach files to tasks for the agent to upload
   </Card>
 </CardGroup>

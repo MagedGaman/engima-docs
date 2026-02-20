@@ -351,14 +351,14 @@ console.log(results);
 
 ---
 
-### Example 3: Using a Browser Profile
+### Example 3: Using an Environment
 
-Attach a [browser profile](/profiles/overview) to reuse saved cookies and login sessions across tasks:
+Attach an [environment](/environments/overview) to reuse saved cookies, login sessions, and stored files across tasks:
 
 ```javascript
 const API_KEY = "enig_xxxxxxxxxxxx";
 
-async function runWithProfile(profileId, taskDetails) {
+async function runWithEnvironment(environmentId, taskDetails) {
   const response = await fetch("https://connect.webrun.ai/start/run-task", {
     method: "POST",
     headers: {
@@ -366,7 +366,7 @@ async function runWithProfile(profileId, taskDetails) {
       "Authorization": `Bearer ${API_KEY}`
     },
     body: JSON.stringify({
-      profileId,
+      environmentId,
       taskDetails
     })
   });
@@ -374,11 +374,11 @@ async function runWithProfile(profileId, taskDetails) {
   return response.json();
 }
 
-// First run: log in and save cookies to profile
-await runWithProfile("683a1f2e4b0c1d2e3f4a5b6c", "Go to amazon.com and log in");
+// First run: log in and save cookies to environment
+await runWithEnvironment("683a1f2e4b0c1d2e3f4a5b6c", "Go to amazon.com and log in");
 
-// Subsequent runs: profile has saved cookies, no login needed
-const result = await runWithProfile(
+// Subsequent runs: environment has saved cookies, no login needed
+const result = await runWithEnvironment(
   "683a1f2e4b0c1d2e3f4a5b6c",
   "Go to amazon.com and check my recent orders"
 );
@@ -654,10 +654,10 @@ async function executeTaskWithRetry(taskDetails, apiKey, maxRetries = 3) {
     <Card title="API Reference" icon="book" href="/api-reference/endpoints">
       Complete endpoint documentation
     </Card>
-    <Card title="Browser Profiles" icon="user-gear" href="/profiles/overview">
-      Persist cookies and browser data across sessions
+    <Card title="Environments" icon="box" href="/environments/overview">
+      Persist browser profile and files across sessions
     </Card>
-    <Card title="File Uploads" icon="file-arrow-up" href="/usage-guides/file-uploads">
+    <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
       Upload and attach files to tasks
     </Card>
   </CardGroup>

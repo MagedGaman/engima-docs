@@ -14,7 +14,7 @@ Multi-task workflows allow you to reuse a single browser session for multiple se
 - Scenarios where maintaining browser state (cookies, local storage) is important
 
 <Tip>
-For workflows that span multiple sessions (e.g., daily recurring tasks that need to stay logged in), use [browser profiles](/profiles/overview) to persist cookies and browser data between sessions.
+For workflows that span multiple sessions (e.g., daily recurring tasks that need to stay logged in), use [environments](/environments/overview) to persist browser profile and files between sessions.
 </Tip>
 
 **When not to use:**
@@ -298,7 +298,7 @@ Configure your session behavior with these parameters:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `mode` | string | "default" | Session mode (currently only "default" supported) |
-| `profileId` | string | null | [Browser profile](/profiles/overview) ID to attach |
+| `environmentId` | string | null | [Environment](/environments/overview) ID to attach (browser profile + persistent files) |
 | `initialTask` | object | null | Initial task configuration (see below) |
 
 **initialTask parameters:**
@@ -313,7 +313,7 @@ Configure your session behavior with these parameters:
 | `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
 | `outputType` | string | "text" | Output format: `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | null | JSON Schema for structured output |
-| `files` | string[] | [] | File IDs to attach to the task ([details](/usage-guides/file-uploads)) |
+| `files` | string[] | [] | File IDs to attach to the task ([details](/environments/file-uploads)) |
 
 **Example with parameters:**
 ```json
@@ -423,10 +423,10 @@ socket.on("message", (data) => {
     <Card title="Handling Guardrails" icon="shield" href="/usage-guides/handling-guardrails">
       Respond to agent requests for input
     </Card>
-    <Card title="Browser Profiles" icon="user-gear" href="/profiles/overview">
-      Persist browser data across sessions
+    <Card title="Environments" icon="box" href="/environments/overview">
+      Persist browser profile and files across sessions
     </Card>
-    <Card title="File Uploads" icon="file-arrow-up" href="/usage-guides/file-uploads">
+    <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
       Upload and attach files to tasks
     </Card>
   </CardGroup>
