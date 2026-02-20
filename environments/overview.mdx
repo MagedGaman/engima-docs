@@ -25,7 +25,7 @@ An environment is a named container that holds two things: a **browser profile**
 
 Stores Chrome data — cookies, local storage, IndexedDB, extensions, cached credentials — and carries it from one session to the next. Log in once and every subsequent session on the same environment skips authentication.
 
-See [Profiles](/environments/profiles) for details on how browser profiles work, and [Sync Profiles](/environments/sync-profiles) to upload your local Chrome data with one command.
+See [Browser Profiles](/environments/profiles) for details on how profiles work, including how to [sync from your local Chrome](/environments/profiles#sync-from-local-chrome).
 
 ### File Storage
 
@@ -42,7 +42,7 @@ Create → Upload profile data (optional) → Upload files (optional) → Use in
 ```
 
 1. **Create** an environment with a name and optional description.
-2. **Upload** browser profile data (`.tar.gz`) if you have existing state to restore, or [sync](/environments/sync-profiles) from your local Chrome.
+2. **Upload** browser profile data (`.tar.gz`) if you have existing state to restore, or [sync](/environments/profiles#sync-from-local-chrome) from your local Chrome.
 3. **Upload** any files sessions need to access.
 4. **Use** the environment by passing `environmentId` when starting a session or task. The session loads the profile and has access to all stored files.
 5. **Delete** when no longer needed. This removes the profile and all attached files.
@@ -79,7 +79,6 @@ curl -X POST https://connect.webrun.ai/start/run-task \
 | Environments per user | 20 |
 | Browser profile upload size | 500 MB |
 | Accepted profile format | `.tar.gz`, `.tgz` |
-| Profile download URL expiry | 1 hour |
 
 ---
 
@@ -89,13 +88,10 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   <Card title="Environments API" icon="code" href="/environments/environments-api">
     Create, list, and delete environments; upload profiles and manage files
   </Card>
-  <Card title="Profiles" icon="user-gear" href="/environments/profiles">
-    How browser profiles work within environments
+  <Card title="Browser Profiles" icon="user-gear" href="/environments/profiles">
+    How browser profiles work, sync from local Chrome
   </Card>
   <Card title="File Uploads" icon="file-arrow-up" href="/environments/file-uploads">
     Persistent and temporary file upload modes
-  </Card>
-  <Card title="Sync Profiles" icon="arrows-rotate" href="/environments/sync-profiles">
-    Upload your local Chrome profile with one command
   </Card>
 </CardGroup>

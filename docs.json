@@ -66,8 +66,6 @@
               "environments/overview",
               "environments/environments-api",
               "environments/profiles",
-              "environments/sync-profiles",
-              "environments/profile-management-api",
               "environments/file-uploads"
             ]
           },
@@ -186,6 +184,14 @@
     {
       "source": "/usage-guides/file-uploads",
       "destination": "/environments/file-uploads"
+    },
+    {
+      "source": "/environments/sync-profiles",
+      "destination": "/environments/profiles"
+    },
+    {
+      "source": "/environments/profile-management-api",
+      "destination": "/environments/profiles"
     }
   ]
 }
