@@ -1,0 +1,613 @@
+---
+title: "Cron Jobs"
+description: "Schedule recurring browser automation tasks that run on a defined cadence under an environment"
+icon: "clock"
+---
+
+Cron jobs let you schedule browser automation tasks that execute automatically on a recurring basis. Each cron job is tied to an [environment](/environments/overview), so it inherits the browser profile, stored cookies, and persistent files — no re-authentication required between runs.
+
+---
+
+## Why Cron Jobs
+
+| Without cron jobs | With cron jobs |
+|-------------------|----------------|
+| You trigger every task manually via API call | Tasks run automatically on your chosen schedule |
+| You build and maintain your own scheduler | Scheduling, retries, and failure handling are built in |
+| Missed runs require manual intervention | The system tracks run history and pauses after repeated failures |
+| Webhook delivery requires custom wiring per task | Delivery mode (webhook, bot, or both) is configured once per job |
+
+---
+
+## How It Works
+
+1. **Create** a cron job linked to an environment, with a schedule and task details.
+2. **The system executes** your task at each scheduled time using the environment's browser profile and files.
+3. **Results are delivered** via webhook, bot notification, or both — depending on your `deliveryMode` setting.
+4. **Run history** is recorded for every execution so you can audit outcomes and debug failures.
+
+```
+Create job → System runs on schedule → Results delivered → Run history logged
+```
+
+---
+
+## Schedule Types
+
+Every cron job requires a `scheduleType` that determines when and how often it runs.
+
+| Type | Field | Description | Example |
+|------|-------|-------------|---------|
+| `at` | `scheduleAt` | Run once at a specific date/time (ISO 8601) | `"2026-03-01T09:00:00Z"` |
+| `every` | `scheduleInterval` | Run at a fixed interval | `"30m"`, `"2h"`, `"1d"` |
+| `cron` | `scheduleCron` | Standard cron expression for full scheduling control | `"0 9 * * 1-5"` (weekdays at 9 AM) |
+
+All schedules respect the `timezone` field (defaults to `UTC`).
+
+<Tip>
+Use `scheduleType: "cron"` with a standard cron expression for maximum flexibility — for example, `"0 */6 * * *"` runs every 6 hours, and `"30 8 1 * *"` runs at 8:30 AM on the first of each month.
+</Tip>
+
+---
+
+## Delivery Modes
+
+Control how run results are delivered using the `deliveryMode` field.
+
+| Mode | Description |
+|------|-------------|
+| `webhook` | Results are sent to your configured webhook endpoint |
+| `bot` | Results are delivered via bot notification |
+| `both` | Results are sent to both webhook and bot |
+
+When `deliveryMode` is `webhook` or `both`, you must provide a `webhook` configuration object. See [Webhooks](/usage-guides/webhooks) for details on webhook parameters.
+
+---
+
+## Job Statuses
+
+| Status | Meaning |
+|--------|---------|
+| `active` | Job is running on schedule |
+| `paused` | Job is paused and will not execute until resumed |
+
+A job is automatically paused after reaching `maxConsecutiveFailures` (default: 5). Resume it with the [resume endpoint](#resume-a-cron-job) after resolving the issue.
+
+---
+
+## Authentication
+
+All endpoints require an API key in the `Authorization` header:
+
+```bash
+Authorization: Bearer <api_key>
+```
+
+## Base URL
+
+```
+https://connect.webrun.ai
+```
+
+---
+
+## List Cron Jobs
+
+Returns all cron jobs for the authenticated user, sorted by creation date (newest first).
+
+```
+GET /cron-jobs
+```
+
+```bash
+curl https://connect.webrun.ai/cron-jobs \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "cronJobs": [
+    {
+      "_id": "664a1b2c3d4e5f6a7b8c9d0e",
+      "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
+      "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+      "name": "Daily price check",
+      "description": "Check competitor prices every morning",
+      "scheduleType": "cron",
+      "scheduleCron": "0 9 * * *",
+      "timezone": "America/New_York",
+      "taskDetails": "Go to competitor.com/pricing and extract all plan prices",
+      "outputType": "structured",
+      "deliveryMode": "webhook",
+      "status": "active",
+      "nextRunAt": "2026-02-25T14:00:00.000Z",
+      "consecutiveFailures": 0,
+      "createdAt": "2026-02-20T10:00:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+## Create a Cron Job
+
+```
+POST /cron-jobs
+Content-Type: application/json
+```
+
+### Request Body
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | Yes | Job name |
+| `description` | string | No | Optional description |
+| `environmentId` | string | Yes | ID of the [environment](/environments/overview) to use |
+| `scheduleType` | string | Yes | `"at"`, `"every"`, or `"cron"` |
+| `scheduleAt` | string | Conditional | ISO 8601 datetime (required when `scheduleType` is `"at"`) |
+| `scheduleInterval` | string | Conditional | Interval string like `"30m"`, `"2h"` (required when `scheduleType` is `"every"`) |
+| `scheduleCron` | string | Conditional | Cron expression (required when `scheduleType` is `"cron"`) |
+| `timezone` | string | No | IANA timezone (default: `"UTC"`) |
+| `taskDetails` | string | Yes | Instructions for the browser automation task |
+| `startingUrl` | string | No | URL where the task should begin |
+| `outputType` | string | No | `"text"` (default) or `"structured"` |
+| `outputSchema` | object | No | JSON Schema for structured output (when `outputType` is `"structured"`) |
+| `deliveryMode` | string | No | `"webhook"`, `"bot"`, or `"both"` (default: `"webhook"`) |
+| `webhook` | object | Conditional | Webhook config (required when `deliveryMode` includes `"webhook"`) |
+| `retryPolicy` | object | No | Custom retry configuration |
+| `maxConsecutiveFailures` | number | No | Failures before auto-pause (default: `5`) |
+
+### Example: Recurring Cron Schedule
+
+```bash
+curl -X POST https://connect.webrun.ai/cron-jobs \
+  -H "Authorization: Bearer enig_xxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Daily price check",
+    "description": "Check competitor prices every morning",
+    "environmentId": "<ENV_ID>",
+    "scheduleType": "cron",
+    "scheduleCron": "0 9 * * 1-5",
+    "timezone": "America/New_York",
+    "taskDetails": "Go to competitor.com/pricing and extract all plan prices",
+    "startingUrl": "https://competitor.com/pricing",
+    "outputType": "structured",
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "plans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "price": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "deliveryMode": "webhook",
+    "webhook": {
+      "name": "Price Updates",
+      "url": "https://api.yoursite.com/webhooks/prices",
+      "auth": "Bearer your-secret-token",
+      "submittedData": "ai_response"
+    }
+  }'
+```
+
+### Example: Fixed Interval
+
+```bash
+curl -X POST https://connect.webrun.ai/cron-jobs \
+  -H "Authorization: Bearer enig_xxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Inventory monitor",
+    "environmentId": "<ENV_ID>",
+    "scheduleType": "every",
+    "scheduleInterval": "2h",
+    "taskDetails": "Check the inventory page and report any out-of-stock items",
+    "startingUrl": "https://store.example.com/inventory",
+    "deliveryMode": "webhook",
+    "webhook": {
+      "name": "Inventory Alert",
+      "url": "https://api.yoursite.com/webhooks/inventory",
+      "submittedData": "ai_response"
+    }
+  }'
+```
+
+### Example: One-Time Scheduled Run
+
+```bash
+curl -X POST https://connect.webrun.ai/cron-jobs \
+  -H "Authorization: Bearer enig_xxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Q1 report export",
+    "environmentId": "<ENV_ID>",
+    "scheduleType": "at",
+    "scheduleAt": "2026-04-01T06:00:00Z",
+    "taskDetails": "Log into the dashboard and export the Q1 revenue report as PDF",
+    "deliveryMode": "bot"
+  }'
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "success": true,
+  "cronJob": {
+    "_id": "664a1b2c3d4e5f6a7b8c9d0e",
+    "name": "Daily price check",
+    "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "scheduleType": "cron",
+    "scheduleCron": "0 9 * * 1-5",
+    "timezone": "America/New_York",
+    "taskDetails": "Go to competitor.com/pricing and extract all plan prices",
+    "status": "active",
+    "nextRunAt": "2026-02-25T14:00:00.000Z",
+    "createdAt": "2026-02-24T10:00:00.000Z"
+  }
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | name is required | Missing or empty `name` |
+| 400 | taskDetails is required | Missing or empty `taskDetails` |
+| 400 | Valid environmentId is required | Missing or invalid environment ID |
+| 400 | Maximum of N cron jobs per user | User limit reached |
+| 400 | webhook config is required when deliveryMode includes webhook | Missing webhook config |
+| 404 | Environment not found | Environment does not exist or belongs to another user |
+
+---
+
+## Get a Cron Job
+
+Returns a single cron job with its 10 most recent runs.
+
+```
+GET /cron-jobs/:id
+```
+
+```bash
+curl https://connect.webrun.ai/cron-jobs/<JOB_ID> \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "cronJob": {
+    "_id": "664a1b2c3d4e5f6a7b8c9d0e",
+    "name": "Daily price check",
+    "status": "active",
+    "nextRunAt": "2026-02-25T14:00:00.000Z",
+    "consecutiveFailures": 0
+  },
+  "recentRuns": [
+    {
+      "_id": "run_abc123",
+      "cronJobId": "664a1b2c3d4e5f6a7b8c9d0e",
+      "status": "completed",
+      "createdAt": "2026-02-24T14:00:00.000Z"
+    }
+  ]
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Cron job not found | Invalid ID or job belongs to another user |
+
+---
+
+## Update a Cron Job
+
+Update any field on an existing cron job. Only include the fields you want to change.
+
+```
+PUT /cron-jobs/:id
+Content-Type: application/json
+```
+
+```bash
+curl -X PUT https://connect.webrun.ai/cron-jobs/<JOB_ID> \
+  -H "Authorization: Bearer enig_xxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "scheduleCron": "0 8 * * 1-5",
+    "timezone": "Europe/London"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "cronJob": {
+    "_id": "664a1b2c3d4e5f6a7b8c9d0e",
+    "name": "Daily price check",
+    "scheduleCron": "0 8 * * 1-5",
+    "timezone": "Europe/London",
+    "nextRunAt": "2026-02-25T08:00:00.000Z"
+  }
+}
+```
+
+<Note>
+Changing schedule-related fields (`scheduleType`, `scheduleAt`, `scheduleInterval`, `scheduleCron`, `timezone`) automatically recomputes `nextRunAt`.
+</Note>
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Cron job not found | Invalid ID or job belongs to another user |
+
+---
+
+## Delete a Cron Job
+
+Permanently deletes a cron job and all its run history.
+
+```
+DELETE /cron-jobs/:id
+```
+
+```bash
+curl -X DELETE https://connect.webrun.ai/cron-jobs/<JOB_ID> \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Cron job deleted"
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Cron job not found | Invalid ID or job belongs to another user |
+
+---
+
+## Pause a Cron Job
+
+Pause an active job. The job will stop executing until resumed.
+
+```
+POST /cron-jobs/:id/pause
+```
+
+```bash
+curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/pause \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "cronJob": {
+    "_id": "664a1b2c3d4e5f6a7b8c9d0e",
+    "status": "paused"
+  }
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | Cannot pause a job with status "paused" | Job is not currently active |
+| 404 | Cron job not found | Invalid ID or job belongs to another user |
+
+---
+
+## Resume a Cron Job
+
+Resume a paused job. Resets the consecutive failure counter and recomputes the next run time.
+
+```
+POST /cron-jobs/:id/resume
+```
+
+```bash
+curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/resume \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "cronJob": {
+    "_id": "664a1b2c3d4e5f6a7b8c9d0e",
+    "status": "active",
+    "consecutiveFailures": 0,
+    "nextRunAt": "2026-02-25T14:00:00.000Z"
+  }
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 400 | Cannot resume a job with status "active" | Job is not currently paused |
+| 404 | Cron job not found | Invalid ID or job belongs to another user |
+
+---
+
+## Trigger a Cron Job Manually
+
+Immediately trigger a job run outside of its normal schedule. The run executes in the background.
+
+```
+POST /cron-jobs/:id/trigger
+```
+
+```bash
+curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/trigger \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "message": "Job triggered. Check runs endpoint for results."
+}
+```
+
+<Note>
+Manual triggers run independently of the job's schedule. The job's `nextRunAt` is not affected.
+</Note>
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Cron job not found | Invalid ID or job belongs to another user |
+
+---
+
+## List Cron Job Runs
+
+Returns paginated execution history for a cron job.
+
+```
+GET /cron-jobs/:id/runs
+```
+
+| Parameter | Location | Default | Description |
+|-----------|----------|---------|-------------|
+| `page` | Query | `1` | Page number |
+| `limit` | Query | `20` | Results per page (max 50) |
+
+```bash
+curl "https://connect.webrun.ai/cron-jobs/<JOB_ID>/runs?page=1&limit=10" \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "runs": [
+    {
+      "_id": "run_abc123",
+      "cronJobId": "664a1b2c3d4e5f6a7b8c9d0e",
+      "status": "completed",
+      "createdAt": "2026-02-24T14:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 45,
+    "totalPages": 5
+  }
+}
+```
+
+---
+
+## Get a Specific Run
+
+Returns details for a single run.
+
+```
+GET /cron-jobs/:id/runs/:runId
+```
+
+```bash
+curl https://connect.webrun.ai/cron-jobs/<JOB_ID>/runs/<RUN_ID> \
+  -H "Authorization: Bearer enig_xxx"
+```
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "run": {
+    "_id": "run_abc123",
+    "cronJobId": "664a1b2c3d4e5f6a7b8c9d0e",
+    "status": "completed",
+    "createdAt": "2026-02-24T14:00:00.000Z"
+  }
+}
+```
+
+### Errors
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 404 | Cron job not found | Invalid job ID or job belongs to another user |
+| 404 | Run not found | Invalid run ID or run does not belong to this job |
+
+---
+
+## Common Errors
+
+All error responses follow this format:
+
+```json
+{
+  "success": false,
+  "message": "Description of the error"
+}
+```
+
+| Status | Message | Cause |
+|--------|---------|-------|
+| 401 | API key required | Missing `Authorization` header |
+| 401 | Invalid or revoked API key | API key is incorrect or has been revoked |
+| 403 | Account is deactivated | User account is disabled |
+| 500 | Server error | Unexpected server-side failure |
+
+---
+
+<Accordion title="Related">
+  <CardGroup cols={2}>
+    <Card title="Environments Overview" icon="box" href="/environments/overview">
+      What environments are and when to use them
+    </Card>
+    <Card title="Webhooks" icon="webhook" href="/usage-guides/webhooks">
+      Configure webhook endpoints for result delivery
+    </Card>
+    <Card title="Structured Output" icon="code" href="/usage-guides/structured-output">
+      Get validated JSON or CSV data from task results
+    </Card>
+    <Card title="Environments API" icon="code" href="/environments/environments-api">
+      Create and manage environments programmatically
+    </Card>
+  </CardGroup>
+</Accordion>

@@ -65,6 +65,7 @@
             "pages": [
               "environments/overview",
               "environments/environments-api",
+              "environments/cron-jobs",
               "environments/profiles",
               "environments/file-uploads"
             ]
