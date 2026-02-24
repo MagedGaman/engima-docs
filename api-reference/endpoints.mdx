@@ -634,6 +634,16 @@ System health check.
 | `/profiles/:id` | DELETE | Required | 100/15min per IP | Delete a profile |
 | `/profiles/:id/download` | GET | Required | 100/15min per IP | Download profile data |
 | `/profiles/:id/upload` | POST | Required | 100/15min per IP | Upload profile data |
+| `/cron-jobs` | GET | Required | — | List all cron jobs |
+| `/cron-jobs` | POST | Required | — | Create a cron job |
+| `/cron-jobs/:id` | GET | Required | — | Get a cron job with recent runs |
+| `/cron-jobs/:id` | PUT | Required | — | Update a cron job |
+| `/cron-jobs/:id` | DELETE | Required | — | Delete a cron job |
+| `/cron-jobs/:id/pause` | POST | Required | — | Pause a cron job |
+| `/cron-jobs/:id/resume` | POST | Required | — | Resume a paused cron job |
+| `/cron-jobs/:id/trigger` | POST | Required | — | Manually trigger a cron job |
+| `/cron-jobs/:id/runs` | GET | Required | — | List cron job run history |
+| `/cron-jobs/:id/runs/:runId` | GET | Required | — | Get a specific run |
 
 ---
 
@@ -644,6 +654,9 @@ System health check.
     </Card>
     <Card title="Response Formats" icon="code" href="/api-reference/response-formats">
       Complete response format reference
+    </Card>
+    <Card title="Cron Jobs" icon="clock" href="/environments/cron-jobs">
+      Schedule recurring tasks with full API reference
     </Card>
   </CardGroup>
 </Accordion>
