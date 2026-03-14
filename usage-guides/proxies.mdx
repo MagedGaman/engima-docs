@@ -1,0 +1,187 @@
+---
+title: "Proxies"
+description: "Route browser sessions through proxy servers for geographic targeting and IP management"
+icon: "globe"
+---
+
+Route your browser sessions through proxy servers to control the geographic location and IP address of your automation. Proxies are applied at the device level, ensuring zero IP leakage from the browser.
+
+<Info>
+Enabling a proxy adds 2-3 seconds of cold-start latency as the proxy is applied to the entire device before the browser launches.
+</Info>
+
+---
+
+## Proxy Modes
+
+### WebRun-Managed Proxies
+
+Specify a country and WebRun assigns a proxy from its residential pool. Charged at **$4 per GB** of data transfer.
+
+Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code, or `"random"` to let WebRun pick a location.
+
+<CodeGroup>
+
+```json run-task (flat format)
+{
+  "taskDetails": "Check product prices on amazon.co.uk",
+  "startingPoint": "https://amazon.co.uk",
+  "proxy": {
+    "source": "WebRun",
+    "country": "GB"
+  }
+}
+```
+
+```json start-session (nested format)
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "GB"
+  },
+  "initialTask": {
+    "taskDetails": "Check product prices on amazon.co.uk",
+    "startingPoint": "https://amazon.co.uk"
+  }
+}
+```
+
+</CodeGroup>
+
+Setting `country` to `"random"`:
+
+```json
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "random"
+  }
+}
+```
+
+### Custom Proxies
+
+Bring your own proxy server. No additional charge from WebRun — you pay your proxy provider directly. The `username` and `password` fields are optional for proxies that don't require authentication.
+
+**HTTP proxy:**
+
+```json
+{
+  "proxy": {
+    "source": "custom",
+    "type": "http",
+    "host": "proxy.example.com",
+    "port": "8080",
+    "username": "user",
+    "password": "pass"
+  }
+}
+```
+
+**SOCKS proxy:**
+
+```json
+{
+  "proxy": {
+    "source": "custom",
+    "type": "socks",
+    "host": "proxy.example.com",
+    "port": "1080"
+  }
+}
+```
+
+### Disabling Proxy
+
+To explicitly run without a proxy (the default), set `proxy` to `null` or omit it:
+
+```json
+{
+  "proxy": null
+}
+```
+
+---
+
+## Full Examples
+
+### Single-task session with WebRun proxy
+
+```bash
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "taskDetails": "Go to google.de and search for Berlin restaurants",
+    "startingPoint": "https://google.de",
+    "proxy": {
+      "source": "WebRun",
+      "country": "DE"
+    }
+  }'
+```
+
+### Persistent session with custom proxy
+
+```bash
+curl -X POST https://connect.webrun.ai/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "proxy": {
+      "source": "custom",
+      "type": "http",
+      "host": "proxy.example.com",
+      "port": "8080",
+      "username": "user",
+      "password": "pass"
+    },
+    "initialTask": {
+      "taskDetails": "Navigate to the dashboard",
+      "startingPoint": "https://app.example.com"
+    }
+  }'
+```
+
+<Note>
+The `proxy` field is a top-level session parameter, alongside `environmentId` and `initialTask`. It is not nested inside `initialTask`.
+</Note>
+
+---
+
+## Pricing
+
+| Proxy Mode | Cost |
+|-----------|------|
+| WebRun-managed | $4 per GB of data transfer |
+| Custom (bring your own) | No additional WebRun charge |
+
+Data transfer is measured across the entire session. Usage is visible in your [dashboard](https://app.webrun.ai/usage).
+
+---
+
+## Best Practices
+
+- **Choose the closest country** to your target website's servers to minimize latency.
+- **Use `"random"` sparingly** — a specific country gives more predictable results for locale-sensitive sites.
+- **Use custom proxies for high-bandwidth tasks** (large file downloads, video scraping) to avoid per-GB charges.
+- **Combine with environments** — pair a proxy with an [environment](/environments/overview) to maintain consistent cookies and browser state across proxied sessions.
+- **Account for cold-start** — the 2-3 second proxy setup time is a one-time cost per session, not per task.
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Sessions" icon="window-restore" href="/concepts/sessions">
+    Session configuration and lifecycle
+  </Card>
+  <Card title="API Parameters" icon="sliders" href="/api-reference/parameters">
+    Full proxy parameter reference
+  </Card>
+  <Card title="Pricing" icon="credit-card" href="/concepts/pricing">
+    Proxy and compute pricing details
+  </Card>
+  <Card title="Secrets" icon="key" href="/usage-guides/secrets">
+    Provide credentials for authenticated sites
+  </Card>
+</CardGroup>

@@ -32,6 +32,87 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 
 ---
 
+### proxy
+
+- **Type:** `object | null`
+- **Required:** No
+- **Default:** `null`
+- **Description:** Proxy configuration for the session. Routes all browser traffic through the specified proxy server. The proxy is applied at the device level, ensuring no IP leakage. Adds 2-3 seconds of cold-start latency per session.
+
+**Two proxy sources are available:**
+
+| Source | Description | Cost |
+|--------|-------------|------|
+| `WebRun` | WebRun assigns a residential proxy from its pool | $4 per GB |
+| `custom` | Bring your own HTTP or SOCKS proxy | No additional charge |
+
+**WebRun Proxy Fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `source` | `string` | Yes | `"WebRun"` |
+| `country` | `string` | Yes | ISO 3166-1 alpha-2 country code (e.g. `"US"`, `"GB"`, `"DE"`) or `"random"` |
+
+**Custom Proxy Fields:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `source` | `string` | Yes | `"custom"` |
+| `type` | `string` | Yes | `"http"` or `"socks"` |
+| `host` | `string` | Yes | Proxy server hostname or IP |
+| `port` | `string` | Yes | Proxy server port |
+| `username` | `string` | No | Authentication username |
+| `password` | `string` | No | Authentication password |
+
+**Examples:**
+
+```json
+// WebRun-managed proxy
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "US"
+  }
+}
+
+// Custom HTTP proxy
+{
+  "proxy": {
+    "source": "custom",
+    "type": "http",
+    "host": "proxy.example.com",
+    "port": "8080",
+    "username": "user",
+    "password": "pass"
+  }
+}
+
+// Custom SOCKS proxy
+{
+  "proxy": {
+    "source": "custom",
+    "type": "socks",
+    "host": "proxy.example.com",
+    "port": "1080",
+    "username": "user",
+    "password": "pass"
+  }
+}
+
+// No proxy (default)
+{
+  "proxy": null
+}
+```
+
+<Note>
+The `proxy` field is a top-level session parameter, alongside `environmentId`. It is not nested inside `initialTask`. The proxy applies to the entire session — all tasks within the session use the same proxy.
+</Note>
+
+See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
+
+---
+
 ### mode
 
 - **Type:** `string`
@@ -964,11 +1045,36 @@ interface TaskConfig {
 
 ---
 
+### ProxyConfig
+
+```typescript
+// WebRun-managed proxy
+interface WebRunProxy {
+  source: "WebRun";
+  country: string;  // ISO 3166-1 alpha-2 code or "random"
+}
+
+// Custom proxy (HTTP or SOCKS)
+interface CustomProxy {
+  source: "custom";
+  type: "http" | "socks";
+  host: string;
+  port: string;
+  username?: string;
+  password?: string;
+}
+
+type ProxyConfig = WebRunProxy | CustomProxy;
+```
+
+---
+
 ### SessionConfig
 
 ```typescript
 interface SessionConfig {
   environmentId?: string;
+  proxy?: ProxyConfig | null;
   mode?: string;
   initialTask?: TaskConfig;
 }
