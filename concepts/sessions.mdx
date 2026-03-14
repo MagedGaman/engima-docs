@@ -32,6 +32,7 @@ Configure sessions when creating them:
 ```javascript
 {
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",     // Optional: reuse browser profile & files
+  "proxy": { "source": "WebRun", "country": "US" }, // Optional: route through proxy
   "mode": "default",                              // Session mode
   "initialTask": {
     "taskDetails": "What to do",                  // Initial task (can be empty)
@@ -61,6 +62,7 @@ Configure sessions when creating them:
 - **avoidDomains**: Prevents accidental navigation to unwanted domains.
 - **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
 - **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `initialTask`.
+- **proxy**: Route the session through a proxy server for geographic targeting or IP management. Use WebRun-managed proxies or bring your own. Adds 2-3 seconds of cold-start latency. See [Proxies guide](/usage-guides/proxies).
 
 ---
 
@@ -174,5 +176,8 @@ POST /start/send-message
   </Card>
   <Card title="Environments" icon="box" href="/environments/overview">
     Persist browser data and files across sessions
+  </Card>
+  <Card title="Proxies" icon="globe" href="/usage-guides/proxies">
+    Route sessions through proxy servers
   </Card>
 </CardGroup>

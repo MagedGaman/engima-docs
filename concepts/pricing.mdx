@@ -37,6 +37,17 @@ Actual costs vary based on page complexity and task specificity.
 
 Compute time runs from session creation until termination or inactivity timeout. Sessions can run indefinitely while active, but expire after 5 minutes of inactivity by default. WebRun provisions real desktop environments with dedicated resources for each session, ensuring consistent browser behavior across all tasks.
 
+### Proxy
+
+| Proxy Mode | Cost |
+|-----------|------|
+| **WebRun-managed** | $4.00 per GB of data transfer |
+| **Custom (bring your own)** | No additional charge |
+
+WebRun-managed proxies route traffic through residential proxy pools with geographic targeting. Data transfer is measured across the entire session. Custom proxies incur no extra cost from WebRun — you pay your proxy provider directly.
+
+See the [Proxies guide](/usage-guides/proxies) for configuration details.
+
 <Warning>
 Sessions remain billable until terminated. Set `terminateOnCompletion: true` on your final task or explicitly call terminate to avoid charges for the full timeout window.
 </Warning>
