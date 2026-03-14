@@ -18,7 +18,11 @@ Enabling a proxy adds 2-3 seconds of cold-start latency as the proxy is applied 
 
 Specify a country and WebRun assigns a proxy from its residential pool. Charged at **$4 per GB** of data transfer.
 
-```json
+Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code, or `"random"` to let WebRun pick a location.
+
+<CodeGroup>
+
+```json run-task (flat format)
 {
   "taskDetails": "Check product prices on amazon.co.uk",
   "startingPoint": "https://amazon.co.uk",
@@ -29,7 +33,22 @@ Specify a country and WebRun assigns a proxy from its residential pool. Charged 
 }
 ```
 
-Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2) country code, or `"random"` to let WebRun pick a location:
+```json start-session (nested format)
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "GB"
+  },
+  "initialTask": {
+    "taskDetails": "Check product prices on amazon.co.uk",
+    "startingPoint": "https://amazon.co.uk"
+  }
+}
+```
+
+</CodeGroup>
+
+Setting `country` to `"random"`:
 
 ```json
 {
@@ -42,7 +61,7 @@ Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166
 
 ### Custom Proxies
 
-Bring your own proxy server. No additional charge from WebRun — you pay your proxy provider directly.
+Bring your own proxy server. No additional charge from WebRun — you pay your proxy provider directly. The `username` and `password` fields are optional for proxies that don't require authentication.
 
 **HTTP proxy:**
 
@@ -67,9 +86,7 @@ Bring your own proxy server. No additional charge from WebRun — you pay your p
     "source": "custom",
     "type": "socks",
     "host": "proxy.example.com",
-    "port": "1080",
-    "username": "user",
-    "password": "pass"
+    "port": "1080"
   }
 }
 ```

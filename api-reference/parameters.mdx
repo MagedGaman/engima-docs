@@ -61,8 +61,8 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 | `type` | `string` | Yes | `"http"` or `"socks"` |
 | `host` | `string` | Yes | Proxy server hostname or IP |
 | `port` | `string` | Yes | Proxy server port |
-| `username` | `string` | Yes | Authentication username |
-| `password` | `string` | Yes | Authentication password |
+| `username` | `string` | No | Authentication username |
+| `password` | `string` | No | Authentication password |
 
 **Examples:**
 
@@ -1060,8 +1060,8 @@ interface CustomProxy {
   type: "http" | "socks";
   host: string;
   port: string;
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
 }
 
 type ProxyConfig = WebRunProxy | CustomProxy;
