@@ -65,7 +65,8 @@ Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166
   "startingPoint": "https://amazon.co.uk",
   "proxy": {
     "source": "WebRun",
-    "country": "GB"
+    "country": "GB",
+    "level": "system"
   }
 }
 ```
@@ -74,7 +75,8 @@ Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166
 {
   "proxy": {
     "source": "WebRun",
-    "country": "GB"
+    "country": "GB",
+    "level": "system"
   },
   "initialTask": {
     "taskDetails": "Check product prices on amazon.co.uk",
@@ -91,7 +93,8 @@ Setting `country` to `"random"`:
 {
   "proxy": {
     "source": "WebRun",
-    "country": "random"
+    "country": "random",
+    "level": "chrome"
   }
 }
 ```
@@ -110,7 +113,8 @@ Bring your own proxy server. No additional charge from WebRun — you pay your p
     "host": "proxy.example.com",
     "port": "8080",
     "username": "user",
-    "password": "pass"
+    "password": "pass",
+    "level": "system"
   }
 }
 ```
@@ -123,7 +127,8 @@ Bring your own proxy server. No additional charge from WebRun — you pay your p
     "source": "custom",
     "type": "socks",
     "host": "proxy.example.com",
-    "port": "1080"
+    "port": "1080",
+    "level": "chrome"
   }
 }
 ```
@@ -153,7 +158,8 @@ curl -X POST https://connect.webrun.ai/start/run-task \
     "startingPoint": "https://google.de",
     "proxy": {
       "source": "WebRun",
-      "country": "DE"
+      "country": "DE",
+      "level": "system"
     }
   }'
 ```
@@ -172,7 +178,8 @@ curl -X POST https://connect.webrun.ai/start/start-session \
       "host": "proxy.example.com",
       "port": "8080",
       "username": "user",
-      "password": "pass"
+      "password": "pass",
+      "level": "system"
     },
     "initialTask": {
       "taskDetails": "Navigate to the dashboard",
