@@ -14,12 +14,24 @@ Control where the proxy is applied using the `level` parameter.
 
 | Level | Description | Pros | Cons |
 |-------|-------------|------|------|
+| _Default_ (omitted) | Routed to the best available connection that matches the country | Optimal availability and routing | No manual control over proxy placement |
 | `system` | Applied at the system level — the instance reboots with the new IP | No IP leakage | Slower cold start |
 | `chrome` | Applied directly to Chrome | Faster cold start | Can leak IP on some edge cases (e.g., WebRTC) |
 
-When `level` is omitted, the proxy is routed to the best available connection that matches the country.
+<Tip>
+**Recommended:** Leave `level` unset and let WebRun route your session to the most available instance within the defined country. Only set `level` explicitly when you have a specific requirement around IP leakage or cold-start performance.
+</Tip>
 
 <CodeGroup>
+
+```json Default (recommended)
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "US"
+  }
+}
+```
 
 ```json System-level proxy
 {
