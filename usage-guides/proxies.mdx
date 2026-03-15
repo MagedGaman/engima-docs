@@ -4,10 +4,47 @@ description: "Route browser sessions through proxy servers for geographic target
 icon: "globe"
 ---
 
-Route your browser sessions through proxy servers to control the geographic location and IP address of your automation. Proxies are applied at the device level, ensuring zero IP leakage from the browser.
+Route your browser sessions through proxy servers to control the geographic location and IP address of your automation.
+
+---
+
+## Proxy Levels
+
+Control where the proxy is applied using the `level` parameter.
+
+| Level | Description | Pros | Cons |
+|-------|-------------|------|------|
+| `system` | Applied at the system level — the instance reboots with the new IP | No IP leakage | Slower cold start |
+| `chrome` | Applied directly to Chrome | Faster cold start | Can leak IP on some edge cases (e.g., WebRTC) |
+
+When `level` is omitted, the proxy is routed to the best available connection that matches the country.
+
+<CodeGroup>
+
+```json System-level proxy
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "US",
+    "level": "system"
+  }
+}
+```
+
+```json Chrome-level proxy
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "US",
+    "level": "chrome"
+  }
+}
+```
+
+</CodeGroup>
 
 <Info>
-Enabling a proxy adds 2-3 seconds of cold-start latency as the proxy is applied to the entire device before the browser launches.
+When using the `system` level, expect additional cold-start latency as the instance reboots with the new IP. The `chrome` level avoids this reboot but may expose the original IP in edge cases such as WebRTC connections.
 </Info>
 
 ---
