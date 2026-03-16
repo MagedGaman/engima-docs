@@ -52,6 +52,7 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 |-------|------|----------|-------------|
 | `source` | `string` | Yes | `"WebRun"` |
 | `country` | `string` | Yes | ISO 3166-1 alpha-2 country code (e.g. `"US"`, `"GB"`, `"DE"`) or `"random"` |
+| `level` | `string` | No | Proxy level: `"system"` or `"chrome"`. When omitted, routed to the best available connection that matches the country. `system` applies the proxy at the system level (no IP leakage, slower cold start). `chrome` applies the proxy to Chrome directly (faster cold start, may leak IP in edge cases like WebRTC). |
 
 **Custom Proxy Fields:**
 
@@ -63,15 +64,25 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 | `port` | `string` | Yes | Proxy server port |
 | `username` | `string` | No | Authentication username |
 | `password` | `string` | No | Authentication password |
+| `level` | `string` | No | Proxy level: `"system"` or `"chrome"`. When omitted, routed to the best available connection. See WebRun proxy fields for details. |
 
 **Examples:**
 
 ```json
-// WebRun-managed proxy
+// WebRun-managed proxy (default level)
 {
   "proxy": {
     "source": "WebRun",
     "country": "US"
+  }
+}
+
+// WebRun-managed proxy with system level
+{
+  "proxy": {
+    "source": "WebRun",
+    "country": "US",
+    "level": "system"
   }
 }
 
@@ -1052,6 +1063,7 @@ interface TaskConfig {
 interface WebRunProxy {
   source: "WebRun";
   country: string;  // ISO 3166-1 alpha-2 code or "random"
+  level?: "system" | "chrome";  // Default: best available connection
 }
 
 // Custom proxy (HTTP or SOCKS)
@@ -1062,6 +1074,7 @@ interface CustomProxy {
   port: string;
   username?: string;
   password?: string;
+  level?: "system" | "chrome";  // Default: best available connection
 }
 
 type ProxyConfig = WebRunProxy | CustomProxy;
