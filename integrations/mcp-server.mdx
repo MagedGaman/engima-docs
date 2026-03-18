@@ -38,7 +38,8 @@ This is the **full reference** for the MCP server. For a quickstart guide, see [
 }
 ```
 
-To connect to a specific environment, append the environment ID to your API key:
+To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine — it maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
+
 ```json
 {
   "mcpServers": {
@@ -48,6 +49,10 @@ To connect to a specific environment, append the environment ID to your API key:
   }
 }
 ```
+
+<Tip>
+Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state — such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
+</Tip>
 
 After editing, **restart Claude Desktop** completely (quit and reopen).
 
@@ -69,7 +74,8 @@ After editing, **restart Claude Desktop** completely (quit and reopen).
 }
 ```
 
-To connect to a specific environment, append the environment ID to your API key:
+To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine — it maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
+
 ```json
 {
   "webrun": {
@@ -77,6 +83,10 @@ To connect to a specific environment, append the environment ID to your API key:
   }
 }
 ```
+
+<Tip>
+Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state — such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
+</Tip>
 
 **Reload:** Restart VS Code or reload the Cline extension.
 
