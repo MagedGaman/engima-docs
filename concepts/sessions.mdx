@@ -41,7 +41,6 @@ Configure sessions when creating them:
     "maxDuration": 300000,                        // Task timeout in ms (max 5 min)
     "maxInputTokens": 100000,                     // AI model input limit
     "maxOutputTokens": 100000,                    // AI model output limit
-    "avoidDomains": ["ads.example.com"],          // Domains to block
     "terminateOnCompletion": false,               // Auto-terminate after first task
     "secrets": [                                   // Credentials for website auth
       { "match": "*.example.com", "fields": { "email": "user@co.com", "password": "pass" } }
@@ -60,8 +59,7 @@ Configure sessions when creating them:
 - **startingPoint**: Saves tokens and time by skipping navigation.
 - **maxDuration**: Maximum time a task can run before automatic termination (default: 5 minutes). Note: Session inactivity timeout is fixed at 5 minutes.
 - **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
-- **policyId**: Attach an [automation policy](/concepts/policies) to enforce runtime rules on agent actions. Policies cover domain restrictions, keyword filters, action types, URL patterns, and sensitive data — a superset of `avoidDomains`. This is a top-level parameter, not nested inside `initialTask`.
-- **avoidDomains**: Prevents accidental navigation to unwanted domains. For more advanced control, use [policies](/concepts/policies).
+- **policyId**: Attach an [automation policy](/concepts/policies) to enforce runtime rules on agent actions. Policies cover domain restrictions, action rules, URL patterns, and sensitive data. This is a top-level parameter, not nested inside `initialTask`.
 - **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
 - **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `initialTask`.
 - **proxy**: Route the session through a proxy server for geographic targeting or IP management. Use WebRun-managed proxies or bring your own. Adds 2-3 seconds of cold-start latency. See [Proxies guide](/usage-guides/proxies).

@@ -30,7 +30,6 @@ Start a new task in the current session. This is the only control action that re
 | `maxDuration` | number | No | Max time in ms (default: 300000) |
 | `maxInputTokens` | number | No | Max input tokens (default: 100000) |
 | `maxOutputTokens` | number | No | Max output tokens (default: 100000) |
-| `avoidDomains` | string[] | No | Domains to avoid |
 | `terminateOnCompletion` | boolean | No | Auto-terminate after task (default: false) |
 | `outputType` | string | No | Output format: `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | No | JSON Schema for structured output |
@@ -65,7 +64,6 @@ socket.emit("message", {
   maxDuration: 60000,
   maxInputTokens: 100000,
   maxOutputTokens: 100000,
-  avoidDomains: ["facebook.com", "twitter.com"]
 });
 ```
 

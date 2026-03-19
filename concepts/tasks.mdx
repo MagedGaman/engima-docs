@@ -116,7 +116,6 @@ Each task gets a unique `taskId` when created. Use this ID to:
 | `maxInputTokens` | number | 100000 | Max input tokens |
 | `maxOutputTokens` | number | 100000 | Max output tokens |
 | `startingUrl` | string | null | Starting URL (optional) |
-| `avoidDomains` | string[] | `[]` | Domains to avoid |
 | `terminateOnCompletion` | boolean | false | Auto-terminate session after this task |
 | `secrets` | array | `[]` | Credentials for website authentication ([details](/usage-guides/secrets)) |
 | `files` | string[] | `[]` | File IDs to attach for upload tasks ([details](/environments/file-uploads)) |
@@ -323,9 +322,9 @@ Tasks are constrained by `maxInputTokens` and `maxOutputTokens`. If limits are e
 - Output limit: Agent's response is truncated
 
 ### Domain Restrictions
-If `avoidDomains` is set, the agent will:
+Use [automation policies](/concepts/policies) with domain rules to control which websites the agent can visit. When a domain is blocked by policy, the agent will:
 - Refuse to navigate to those domains
-- Trigger a guardrail if instructed to visit them
+- Trigger a guardrail if configured to do so
 - Skip links to those domains in search results
 
 ---
