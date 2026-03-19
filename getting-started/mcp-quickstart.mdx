@@ -23,7 +23,19 @@ The Model Context Protocol (MCP) allows AI assistants like Claude, ChatGPT and C
 {
   "mcpServers": {
     "WebRun": {
-      "url": "https://connect.webrun.ai/mcp/sse?apiKey=YOUR_API_KEY"
+      "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY"
+    }
+  }
+}
+```
+
+To connect to a specific environment, append the environment ID to your API key. An environment is a persistent remote machine with its own browser, file system, and desktop — everything stays consistent across sessions, so you can pick up where you left off.
+
+```json
+{
+  "mcpServers": {
+    "WebRun": {
+      "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
     }
   }
 }
@@ -45,7 +57,17 @@ In the MCP Servers section, add:
 ```json
 {
   "WebRun": {
-    "url": "https://connect.webrun.ai/mcp/sse?apiKey=YOUR_API_KEY"
+    "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY"
+  }
+}
+```
+
+To connect to a specific environment, append the environment ID to your API key. An environment is a persistent remote machine with its own browser, file system, and desktop — everything stays consistent across sessions, so you can pick up where you left off.
+
+```json
+{
+  "WebRun": {
+    "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
   }
 }
 ```
