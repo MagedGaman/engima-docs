@@ -1,40 +1,40 @@
 ---
-title: "Cron Jobs"
+title: "Triggers"
 description: "Schedule recurring browser automation tasks that run on a defined cadence under an environment"
-icon: "clock"
+icon: "bolt"
 ---
 
-Cron jobs let you schedule browser automation tasks that execute automatically on a recurring basis. Each cron job is tied to an [environment](/environments/overview), so it inherits the browser profile, stored cookies, and persistent files — no re-authentication required between runs.
+Triggers let you schedule browser automation tasks that execute automatically on a recurring basis. Each trigger is tied to an [environment](/environments/overview), so it inherits the browser profile, stored cookies, and persistent files — no re-authentication required between runs.
 
 ---
 
-## Why Cron Jobs
+## Why Triggers
 
-| Without cron jobs | With cron jobs |
+| Without triggers | With triggers |
 |-------------------|----------------|
 | You trigger every task manually via API call | Tasks run automatically on your chosen schedule |
 | You build and maintain your own scheduler | Scheduling, retries, and failure handling are built in |
 | Missed runs require manual intervention | The system tracks run history and pauses after repeated failures |
-| Webhook delivery requires custom wiring per task | Delivery mode (webhook, bot, or both) is configured once per job |
+| Webhook delivery requires custom wiring per task | Delivery mode (webhook, bot, or both) is configured once per trigger |
 
 ---
 
 ## How It Works
 
-1. **Create** a cron job linked to an environment, with a schedule and task details.
+1. **Create** a trigger linked to an environment, with a schedule and task details.
 2. **The system executes** your task at each scheduled time using the environment's browser profile and files.
 3. **Results are delivered** via webhook, bot notification, or both — depending on your `deliveryMode` setting.
 4. **Run history** is recorded for every execution so you can audit outcomes and debug failures.
 
 ```
-Create job → System runs on schedule → Results delivered → Run history logged
+Create trigger → System runs on schedule → Results delivered → Run history logged
 ```
 
 ---
 
 ## Schedule Types
 
-Every cron job requires a `scheduleType` that determines when and how often it runs.
+Every trigger requires a `scheduleType` that determines when and how often it runs.
 
 | Type | Field | Description | Example |
 |------|-------|-------------|---------|
@@ -64,14 +64,14 @@ When `deliveryMode` is `webhook` or `both`, you must provide a `webhook` configu
 
 ---
 
-## Job Statuses
+## Trigger Statuses
 
 | Status | Meaning |
 |--------|---------|
-| `active` | Job is running on schedule |
-| `paused` | Job is paused and will not execute until resumed |
+| `active` | Trigger is running on schedule |
+| `paused` | Trigger is paused and will not execute until resumed |
 
-A job is automatically paused after reaching `maxConsecutiveFailures` (default: 5). Resume it with the [resume endpoint](#resume-a-cron-job) after resolving the issue.
+A trigger is automatically paused after reaching `maxConsecutiveFailures` (default: 5). Resume it with the [resume endpoint](#resume-a-trigger) after resolving the issue.
 
 ---
 
@@ -91,9 +91,9 @@ https://connect.webrun.ai
 
 ---
 
-## List Cron Jobs
+## List Triggers
 
-Returns all cron jobs for the authenticated user, sorted by creation date (newest first).
+Returns all triggers for the authenticated user, sorted by creation date (newest first).
 
 ```
 GET /cron-jobs
@@ -133,7 +133,7 @@ curl https://connect.webrun.ai/cron-jobs \
 
 ---
 
-## Create a Cron Job
+## Create a Trigger
 
 ```
 POST /cron-jobs
@@ -144,7 +144,7 @@ Content-Type: application/json
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `name` | string | Yes | Job name |
+| `name` | string | Yes | Trigger name |
 | `description` | string | No | Optional description |
 | `environmentId` | string | Yes | ID of the [environment](/environments/overview) to use |
 | `scheduleType` | string | Yes | `"at"`, `"every"`, or `"cron"` |
@@ -273,9 +273,9 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
 
 ---
 
-## Get a Cron Job
+## Get a Trigger
 
-Returns a single cron job with its 10 most recent runs.
+Returns a single trigger with its 10 most recent runs.
 
 ```
 GET /cron-jobs/:id
@@ -317,9 +317,9 @@ curl https://connect.webrun.ai/cron-jobs/<JOB_ID> \
 
 ---
 
-## Update a Cron Job
+## Update a Trigger
 
-Update any field on an existing cron job. Only include the fields you want to change.
+Update any field on an existing trigger. Only include the fields you want to change.
 
 ```
 PUT /cron-jobs/:id
@@ -363,9 +363,9 @@ Changing schedule-related fields (`scheduleType`, `scheduleAt`, `scheduleInterva
 
 ---
 
-## Delete a Cron Job
+## Delete a Trigger
 
-Permanently deletes a cron job and all its run history.
+Permanently deletes a trigger and all its run history.
 
 ```
 DELETE /cron-jobs/:id
@@ -393,9 +393,9 @@ curl -X DELETE https://connect.webrun.ai/cron-jobs/<JOB_ID> \
 
 ---
 
-## Pause a Cron Job
+## Pause a Trigger
 
-Pause an active job. The job will stop executing until resumed.
+Pause an active trigger. The trigger will stop executing until resumed.
 
 ```
 POST /cron-jobs/:id/pause
@@ -427,9 +427,9 @@ curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/pause \
 
 ---
 
-## Resume a Cron Job
+## Resume a Trigger
 
-Resume a paused job. Resets the consecutive failure counter and recomputes the next run time.
+Resume a paused trigger. Resets the consecutive failure counter and recomputes the next run time.
 
 ```
 POST /cron-jobs/:id/resume
@@ -463,9 +463,9 @@ curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/resume \
 
 ---
 
-## Trigger a Cron Job Manually
+## Run a Trigger Manually
 
-Immediately trigger a job run outside of its normal schedule. The run executes in the background.
+Immediately run a trigger outside of its normal schedule. The run executes in the background.
 
 ```
 POST /cron-jobs/:id/trigger
@@ -486,7 +486,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/trigger \
 ```
 
 <Note>
-Manual triggers run independently of the job's schedule. The job's `nextRunAt` is not affected.
+Manual triggers run independently of the trigger's schedule. The trigger's `nextRunAt` is not affected.
 </Note>
 
 ### Errors
@@ -497,9 +497,9 @@ Manual triggers run independently of the job's schedule. The job's `nextRunAt` i
 
 ---
 
-## List Cron Job Runs
+## List Trigger Runs
 
-Returns paginated execution history for a cron job.
+Returns paginated execution history for a trigger.
 
 ```
 GET /cron-jobs/:id/runs

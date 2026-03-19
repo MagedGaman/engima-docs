@@ -66,7 +66,7 @@
             "pages": [
               "environments/overview",
               "environments/environments-api",
-              "environments/cron-jobs",
+              "environments/triggers",
               "environments/profiles",
               "environments/file-uploads"
             ]
@@ -194,6 +194,10 @@
     {
       "source": "/environments/profile-management-api",
       "destination": "/environments/profiles"
+    },
+    {
+      "source": "/environments/cron-jobs",
+      "destination": "/environments/triggers"
     }
   ]
 }
