@@ -4,7 +4,7 @@ description: "Bundle a browser profile and persistent file storage into a reusab
 icon: "box"
 ---
 
-An environment is a named container that bundles a **browser profile** (cookies, local storage, extensions, cached credentials), **persistent file storage**, and optional **cron jobs** for scheduled automation. Pass `environmentId` when starting a session and it loads that browser state and makes those files available — no re-authentication, no re-uploading.
+An environment is a named container that bundles a **browser profile** (cookies, local storage, extensions, cached credentials), **persistent file storage**, and optional **triggers** for scheduled automation. Pass `environmentId` when starting a session and it loads that browser state and makes those files available — no re-authentication, no re-uploading.
 
 ---
 
@@ -16,7 +16,7 @@ An environment is a named container that bundles a **browser profile** (cookies,
 | You log in every time | Log in once, reuse across all future sessions |
 | Files must be uploaded on every run | Files persist and are available to any session |
 | No shared state between tasks | Browser data and files carry over until you delete them |
-| Recurring tasks require your own scheduler | Cron jobs run automatically on a schedule you define |
+| Recurring tasks require your own scheduler | Triggers run automatically on a schedule you define |
 
 ---
 
@@ -34,11 +34,11 @@ Files attached to an environment stay until you explicitly delete them. Any sess
 
 See [File Uploads](/environments/file-uploads) for persistent and temporary upload modes.
 
-### Cron Jobs
+### Triggers
 
-Schedule browser automation tasks that run automatically on a recurring basis under this environment. Each cron job inherits the environment's browser profile and files, so scheduled tasks can access logged-in sessions and stored data without extra setup. Results are delivered via webhook, bot notification, or both.
+Schedule browser automation tasks that run automatically on a recurring basis under this environment. Each trigger inherits the environment's browser profile and files, so scheduled tasks can access logged-in sessions and stored data without extra setup. Results are delivered via webhook, bot notification, or both.
 
-See [Cron Jobs](/environments/cron-jobs) for schedule types, delivery modes, and the full API reference.
+See [Triggers](/environments/triggers) for schedule types, delivery modes, and the full API reference.
 
 ---
 
@@ -95,7 +95,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   <Card title="Environments API" icon="code" href="/environments/environments-api">
     Create, list, and delete environments; upload profiles and manage files
   </Card>
-  <Card title="Cron Jobs" icon="clock" href="/environments/cron-jobs">
+  <Card title="Triggers" icon="bolt" href="/environments/triggers">
     Schedule recurring browser automation tasks under an environment
   </Card>
   <Card title="Browser Profiles" icon="user-gear" href="/environments/profiles">
