@@ -537,7 +537,7 @@ async function terminateSession(sessionId, apiKey) {
 **Solutions:**
 1. Set lower `maxInputTokens` and `maxOutputTokens`
 2. Use `startingUrl` to skip navigation
-3. Add relevant domains to `avoidDomains`
+3. Use [automation policies](/concepts/policies) to block unnecessary domains
 4. Simplify task instructions
 
 ### "Guardrails triggered unexpectedly"
@@ -552,7 +552,7 @@ async function terminateSession(sessionId, apiKey) {
 **Solutions:**
 1. Make task instructions more specific
 2. Provide credentials upfront if known
-3. Use `avoidDomains` for sites requiring auth
+3. Use [automation policies](/concepts/policies) to block sites requiring auth
 4. Consider manual takeover for complex scenarios
 
 ---

@@ -137,16 +137,9 @@ For simple tasks, reduce token limits:
 
 ---
 
-### Use `avoidDomains` to Prevent Detours
+### Use Policies to Prevent Detours
 
-Block unnecessary domains to prevent wasted navigation:
-
-```javascript
-{
-  "taskDetails": "Research this topic",
-  "avoidDomains": ["facebook.com", "twitter.com", "ads.example.com"]
-}
-```
+Attach an [automation policy](/concepts/policies) with domain rules to block unnecessary sites and prevent wasted navigation. Policies can also restrict action types, flag keywords, and detect sensitive data.
 
 ---
 
@@ -210,7 +203,7 @@ See the [Proxies guide](/usage-guides/proxies) for configuration details.
 - [ ] Set appropriate `maxDuration` based on task complexity
 - [ ] Batch related tasks into single sessions
 - [ ] Limit `maxInputTokens` and `maxOutputTokens` for simple tasks
-- [ ] Use `avoidDomains` to prevent accidental navigation
+- [ ] Use [automation policies](/concepts/policies) to prevent accidental navigation
 - [ ] Use custom proxies instead of WebRun-managed for high-bandwidth tasks
 - [ ] Monitor `usage.cost` in responses to track spending
 

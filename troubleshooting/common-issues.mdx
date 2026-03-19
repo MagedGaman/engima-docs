@@ -318,24 +318,9 @@ This guide covers the most common issues users encounter when working with WebRu
    });
    ```
 
-3. **Block Unnecessary Domains**
-   ```javascript
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-       "Authorization": `Bearer ${apiKey}`
-     },
-     body: JSON.stringify({
-       taskDetails: "Read article content",
-       avoidDomains: [
-         "ads.example.com",
-         "analytics.example.com",
-         "cdn.advertising.com"
-       ]
-     })
-   });
-   ```
+3. **Block Unnecessary Domains with Policies**
+
+   Attach an [automation policy](/concepts/policies) with domain rules to block ad networks and analytics domains that waste tokens.
 
 4. **Simplify Task Instructions**
    ```javascript
@@ -454,23 +439,8 @@ This guide covers the most common issues users encounter when working with WebRu
    ```
 
 4. **Avoid Sites Requiring Auth**
-   ```javascript
-   // Block login-required domains
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-       "Authorization": `Bearer ${apiKey}`
-     },
-     body: JSON.stringify({
-       taskDetails: "Research product information",
-       avoidDomains: [
-         "login.example.com",
-         "secure.example.com"
-       ]
-     })
-   });
-   ```
+
+   Use an [automation policy](/concepts/policies) with domain rules to block login-required domains, or provide credentials upfront with [secrets](/usage-guides/secrets).
 
 **Prevention:**
 - Write clear, unambiguous task instructions
@@ -828,23 +798,8 @@ This guide covers the most common issues users encounter when working with WebRu
    ```
 
 3. **Avoid CAPTCHA-Heavy Sites**
-   ```javascript
-   // Add known CAPTCHA-heavy domains to avoid list
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-       "Authorization": `Bearer ${apiKey}`
-     },
-     body: JSON.stringify({
-       taskDetails: "Research products",
-       avoidDomains: [
-         "heavily-protected.com",
-         "captcha-site.com"
-       ]
-     })
-   });
-   ```
+
+   Use an [automation policy](/concepts/policies) with domain rules to block known CAPTCHA-heavy domains.
 
 4. **Rate Limit Your Requests**
    ```javascript

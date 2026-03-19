@@ -47,7 +47,6 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
       maxDuration: 5,
       maxInputTokens: 400000,
       maxOutputTokens: 200000,
-      avoidDomains: [],
       outputType: "text"
     }
   })
@@ -102,7 +101,6 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
       maxDuration: 60,
       maxInputTokens: 4000,
       maxOutputTokens: 2000,
-      avoidDomains: [],
       outputType: "structured_json",
       outputSchema: {
         type: "object",
@@ -169,7 +167,6 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
       maxDuration: 5,
       maxInputTokens: 400000,
       maxOutputTokens: 200000,
-      avoidDomains: [],
       outputType: "structured_csv",
       outputSchema: ["name", "price"]
     }
