@@ -26,6 +26,7 @@ Create a new persistent session that can run multiple tasks.
 ```json
 {
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "policyId": "pol_xyz789",
   "proxy": { "source": "WebRun", "country": "US" },
   "mode": "default",
   "initialTask": {
@@ -54,7 +55,7 @@ Create a new persistent session that can run multiple tasks.
 ```
 
 <Note>
-The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin. Use `environmentId` (top-level) to attach an [environment](/environments/overview) with saved cookies, browser state, and persistent files. Use `proxy` (top-level) to route the session through a [proxy server](/usage-guides/proxies).
+The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin. Use `environmentId` (top-level) to attach an [environment](/environments/overview) with saved cookies, browser state, and persistent files. Use `policyId` (top-level) to enforce [automation policy](/concepts/policies) rules on agent actions. Use `proxy` (top-level) to route the session through a [proxy server](/usage-guides/proxies).
 </Note>
 
 **Response (200 OK):**
@@ -285,6 +286,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 ```json
 {
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "policyId": "pol_xyz789",
   "proxy": { "source": "WebRun", "country": "US" },
   "taskDetails": "Search Google for Anthropic",
   "files": ["abc123..."],

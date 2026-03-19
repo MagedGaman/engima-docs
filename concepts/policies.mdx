@@ -1,0 +1,284 @@
+---
+title: "Automation Policies"
+description: "Runtime rules that control what an AI agent can and cannot do during a session"
+icon: "shield-check"
+---
+
+## Overview
+
+An Automation Policy is a reusable set of rules that sits between the agent's intent and actual execution. When an agent attempts an action — navigate to a URL, type text into a form, download a file — the policy enforcement layer checks it against your rules in real-time and either allows it, blocks it, or pauses the session for human approval.
+
+Policies are created and managed in the [dashboard](https://app.webrun.ai). You attach them to sessions by passing `policyId` when starting a session or task.
+
+<Note>
+**Policies vs avoidDomains:** The `avoidDomains` parameter blocks navigation to specific domains. Policies are a superset — they cover domains, URL paths, keywords, action types, and sensitive data patterns, with both block and guardrail enforcement. If you're already using `avoidDomains`, policies replace and extend that capability.
+</Note>
+
+---
+
+## How It Works
+
+Every action the agent attempts passes through the policy enforcement layer:
+
+1. **Agent produces an action** (click, type, navigate, download, etc.)
+2. **All matching rules are evaluated**
+3. **The most restrictive outcome wins:**
+   - **Block** — action is silently prevented, agent is told to find an alternative, session continues
+   - **Guardrail** — session pauses, you review and approve/reject (uses the same [guardrail mechanism](/concepts/guardrails) you already handle)
+   - **Allow** — action executes normally
+
+<Warning>
+**Precedence: Block > Guardrail > Allow.** If any rule says block, the action is blocked — even if other rules allow it.
+</Warning>
+
+---
+
+## Creating a Policy
+
+Policies are created in the dashboard at **Policies → New Policy**.
+
+1. Give the policy a **name** and optional **description**
+2. Add rules across any combination of the five rule types (see [Rule Types](#rule-types) below)
+3. Save as **Active** (ready to use) or **Draft** (work in progress)
+
+Policies are reusable. Create once, attach to any number of sessions.
+
+---
+
+## Attaching a Policy to a Session
+
+Pass `policyId` as a top-level parameter when starting a session — the same level as `environmentId`.
+
+### REST API
+
+<CodeGroup>
+
+```bash start-session
+curl -X POST https://connect.webrun.ai/start/start-session \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "policyId": "pol_xyz789",
+    "initialTask": {
+      "taskDetails": "Extract the latest invoice from the vendor portal",
+      "startingPoint": "https://vendor.example.com"
+    }
+  }'
+```
+
+```bash run-task
+curl -X POST https://connect.webrun.ai/start/run-task \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "policyId": "pol_xyz789",
+    "initialTask": {
+      "taskDetails": "Check current pricing on example.com",
+      "startingPoint": "https://example.com"
+    }
+  }'
+```
+
+</CodeGroup>
+
+### MCP
+
+The `policyId` field is available on `create_session` and `browser_task`.
+
+### Playground
+
+Select a policy from the dropdown in the session configuration panel, alongside the environment selector. A policy summary shows which rules are active before you start.
+
+<Tip>
+A session can have a policy, an environment, both, or neither.
+</Tip>
+
+---
+
+## Rule Types
+
+A policy contains one or more rule groups. You can combine any rule types in a single policy.
+
+### Domain Rules
+
+Control which websites the agent can visit. Three modes:
+
+| Mode | Behavior |
+|------|----------|
+| **Allow All** (default) | Agent can visit any domain unless explicitly blocked |
+| **Allowlist** | Agent can only visit domains you list — everything else is blocked |
+| **Blocklist** | Agent can visit everything except domains you list |
+
+Each domain entry specifies a pattern and an action (block or guardrail).
+
+**Pattern matching:**
+
+| Pattern | Matches | Doesn't Match |
+|---------|---------|---------------|
+| `example.com` | `example.com` | `sub.example.com` |
+| `*.example.com` | `sub.example.com`, `deep.sub.example.com` | `example.com` itself |
+| `*example.com` | `example.com`, `sub.example.com`, `badexample.com` | `other.com` |
+
+---
+
+### Keyword Rules
+
+Flag specific words or phrases in agent actions. When a keyword is detected, the rule fires.
+
+Each keyword entry specifies the **phrase**, **match type**, **scope**, and **action**.
+
+**Match types:** `contains`, `exact`, `regex`
+
+**Scopes:**
+
+| Scope | What it checks |
+|-------|----------------|
+| **Typed Text** | Text the agent types via TYPE/KEY_PRESS actions |
+| **Navigation** | URLs the agent navigates to |
+| **Intent** | The agent's task description and reasoning |
+| **Page Content** | Visible content on the current page |
+| **All** | All of the above |
+
+**Example:** a keyword rule for `"transfer funds"` with scope `all` and action `block` prevents the agent from typing, navigating to, or reasoning about fund transfers.
+
+---
+
+### Action Type Rules
+
+Permit, block, or guardrail entire categories of agent behavior.
+
+| Category | WebRun Actions |
+|----------|----------------|
+| **Navigation** | navigateUrl, goBack, goForward, pageRefresh |
+| **Click** | CLICK, DOUBLE_CLICK, MOUSE_DOWN, MOUSE_UP |
+| **Type / Keyboard** | TYPE, KEY_PRESS, COPY |
+| **File Download** | File transfer events (download) |
+| **File Upload** | File transfer events (upload) |
+| **Form Submit** | KEY_PRESS with Enter on form elements |
+| **Screenshot** | captureScreenshot |
+| **Shell Command** | Shell/terminal execution |
+| **Clipboard** | selectAll + copy, paste operations |
+| **Tab Management** | newTab, setActiveTab, closeTab |
+| **Scroll** | SCROLL |
+| **Mouse Move** | MOVE_MOUSE |
+
+Each category can be set to **allow**, **block**, or **guardrail**. You also set a **default action** for any category not explicitly listed.
+
+**Example:** a read-only research agent might allow navigation and clicks, block all typing and file uploads, and guardrail on form submits.
+
+---
+
+### URL Pattern Rules
+
+More granular than domain rules — match specific paths or query parameters within an otherwise-allowed domain.
+
+| Pattern | Example Match |
+|---------|---------------|
+| `*/admin/*` | `salesforce.com/admin/settings` |
+| `*/checkout*` | `shop.example.com/checkout/step2` |
+| `*/settings/delete*` | `app.example.com/settings/delete-account` |
+| `*?action=delete*` | `app.example.com/item?action=delete&id=123` |
+
+**Use case:** allow `salesforce.com` at the domain level but block `salesforce.com/admin/*` with a URL pattern rule.
+
+---
+
+### Data Sensitivity Rules
+
+Detect structured sensitive data using regex pattern matching. Fires when the agent types, copies, or extracts matching content.
+
+**Predefined patterns:**
+
+| Pattern | Examples |
+|---------|----------|
+| **Credit Card Numbers** | Visa, Mastercard, Amex formats |
+| **Social Security Numbers** | XXX-XX-XXXX |
+| **Phone Numbers** | Various formats |
+| **API Keys** | `sk-*`, `AKIA*`, etc. |
+
+You can also define **custom patterns** with arbitrary regex for industry-specific identifiers (medical record numbers, internal token formats, etc.).
+
+---
+
+## Enforcement Outcomes
+
+### Block
+
+The action is silently prevented. The agent receives a message that the action was blocked by policy and is told to find an alternative. The session continues — only the specific action is stopped. Blocked actions are logged to the audit trail.
+
+**When to use:** Hard security boundaries — never access competitor sites, never type SSNs, never execute shell commands.
+
+### Guardrail
+
+The session pauses and you're prompted to approve, reject, or take over. This uses the same [guardrail mechanism](/concepts/guardrails) as credential prompts and CAPTCHAs — handle it the same way in your integration.
+
+**When to use:** Sensitive but legitimate operations — logging into financial sites, actions that need human judgment, workflows where occasional manual review is expected.
+
+See [Handling Guardrails](/usage-guides/handling-guardrails) for integration details on detecting and responding to guardrails via REST, WebSocket, and MCP.
+
+---
+
+## Policy Templates
+
+Pre-built policy templates are available in the dashboard as starting points. Select a template when creating a new policy, then customize.
+
+<AccordionGroup>
+
+<Accordion title="Research Only">
+Read-only browsing. Blocks typing, file uploads, shell commands. Guardrails on form submits. Blocks sensitive data patterns (credit cards, SSNs, API keys). Blocks `*/admin/*` and `*/settings/*` paths.
+</Accordion>
+
+<Accordion title="Financial Compliance">
+Guardrails on banking and payment domains. Blocks financial transaction keywords (`transfer funds`, `wire transfer`). Guardrails on checkout pages. Blocks sensitive data extraction.
+</Accordion>
+
+<Accordion title="Healthcare / HIPAA">
+Allowlist mode (only approved medical portals). Blocks SSNs. Guardrails on medical terms and patient pages. Blocks file uploads, guardrails on screenshots. Guardrails on medical record number patterns.
+</Accordion>
+
+<Accordion title="Strict Lockdown">
+Allowlist mode with explicit domains only. Guardrails on all typed text. Blocks shell commands and file uploads. Blocks all admin, delete, and settings paths. Blocks all sensitive data patterns.
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Audit Trail
+
+Every enforcement decision is logged with:
+
+- **Timestamp**
+- **Action** the agent attempted
+- **Rule** that matched
+- **Decision** (allow, block, or guardrail)
+- **Your response** (if guardrail)
+- **Session ID** and **Policy ID**
+
+The audit trail is immutable and exportable for compliance reporting.
+
+---
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Guardrails" icon="shield-halved" href="/concepts/guardrails">
+    Human-in-the-loop mechanism used by guardrail enforcement
+  </Card>
+  <Card title="Handling Guardrails" icon="triangle-exclamation" href="/usage-guides/handling-guardrails">
+    Integration guide for detecting and responding to guardrails
+  </Card>
+  <Card title="Environments" icon="box" href="/environments/overview">
+    Persistent browser profiles, files, and credentials
+  </Card>
+  <Card title="Sessions" icon="window-restore" href="/concepts/sessions">
+    Session lifecycle and configuration
+  </Card>
+  <Card title="Secrets" icon="key" href="/usage-guides/secrets">
+    Provide credentials upfront to avoid guardrail interruptions
+  </Card>
+  <Card title="Parameters Reference" icon="sliders" href="/api-reference/parameters">
+    Complete API parameter reference including policyId
+  </Card>
+</CardGroup>

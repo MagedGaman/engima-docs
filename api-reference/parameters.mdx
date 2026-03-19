@@ -32,6 +32,32 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 
 ---
 
+### policyId
+
+- **Type:** `string`
+- **Required:** No
+- **Default:** `null`
+- **Description:** ID of an [automation policy](/concepts/policies) to enforce during the session. When set, every agent action is evaluated against the policy's rules before execution. Actions can be allowed, blocked, or paused for human approval depending on the matching rule. Policies cover domain restrictions, keyword filters, action types, URL patterns, and sensitive data detection.
+
+**Example:**
+```json
+{
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "policyId": "pol_xyz789",
+  "mode": "default",
+  "initialTask": {
+    "taskDetails": "Extract the latest invoice from the vendor portal",
+    "startingPoint": "https://vendor.example.com"
+  }
+}
+```
+
+<Note>
+`policyId` is a top-level session parameter, alongside `environmentId` and `proxy`. A session can have a policy, an environment, both, or neither. Policies are a superset of `avoidDomains` — see [Automation Policies](/concepts/policies) for details.
+</Note>
+
+---
+
 ### proxy
 
 - **Type:** `object | null`
@@ -289,7 +315,7 @@ Tasks automatically terminate after `maxDuration`. Set this value based on your 
 - **Type:** `string[]` (array of strings)
 - **Required:** No
 - **Default:** `[]`
-- **Description:** List of domains the agent should avoid navigating to. Useful for preventing unwanted redirects or blocking third-party sites.
+- **Description:** List of domains the agent should avoid navigating to. Useful for preventing unwanted redirects or blocking third-party sites. For more advanced control over domains, URLs, keywords, action types, and sensitive data, use [automation policies](/concepts/policies).
 
 **Example:**
 ```json
@@ -1087,6 +1113,7 @@ type ProxyConfig = WebRunProxy | CustomProxy;
 ```typescript
 interface SessionConfig {
   environmentId?: string;
+  policyId?: string;
   proxy?: ProxyConfig | null;
   mode?: string;
   initialTask?: TaskConfig;

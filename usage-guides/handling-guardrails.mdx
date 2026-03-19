@@ -11,7 +11,7 @@ Guardrails are safety mechanisms that pause agent execution when:
 - The agent needs sensitive information (credentials, payment details)
 - The agent is uncertain and requires human guidance
 - The agent encounters content that requires human verification
-- The agent detects potential policy violations
+- The agent detects potential [policy](/concepts/policies) violations
 
 When a guardrail triggers, the task pauses and waits for your response before continuing.
 
@@ -755,6 +755,9 @@ setInterval(() => {
     </Card>
     <Card title="Controlling Sessions" icon="gamepad" href="/usage-guides/controlling-sessions">
       Pause, resume, stop, and terminate tasks
+    </Card>
+    <Card title="Automation Policies" icon="shield-check" href="/concepts/policies">
+      Runtime rules that can trigger guardrails automatically
     </Card>
   </CardGroup>
 </Accordion>

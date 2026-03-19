@@ -33,6 +33,7 @@
               "concepts/sessions",
               "concepts/tasks",
               "concepts/guardrails",
+              "concepts/policies",
               "concepts/response-model",
               "concepts/pricing"
             ]

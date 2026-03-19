@@ -157,6 +157,12 @@ taskDetails: "I've solved the CAPTCHA, please continue"
 
 ---
 
+## Policy-Triggered Guardrails
+
+When a session has an [automation policy](/concepts/policies) attached, the policy can trigger guardrails automatically. If a policy rule is set to **guardrail** enforcement (rather than block), the session pauses and waits for your approval — exactly like a credential or CAPTCHA guardrail. Handle policy guardrails the same way you handle any other guardrail in your integration.
+
+---
+
 ## Design Philosophy
 
 WebRun's guardrails are designed around these principles:
@@ -304,5 +310,8 @@ Secrets are never stored — they exist only in the session's memory and are dis
   </Card>
   <Card title="Tasks" icon="check" href="/concepts/tasks">
     Understanding task lifecycle
+  </Card>
+  <Card title="Automation Policies" icon="shield-check" href="/concepts/policies">
+    Runtime rules that can trigger guardrails automatically
   </Card>
 </CardGroup>
