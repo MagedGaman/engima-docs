@@ -35,7 +35,6 @@ Create a new persistent session that can run multiple tasks.
     "maxDuration": 300000,
     "maxInputTokens": 100000,
     "maxOutputTokens": 100000,
-    "avoidDomains": ["facebook.com"],
     "terminateOnCompletion": false,
     "outputType": "structured_json",
     "outputSchema": {
@@ -122,7 +121,6 @@ Start a new task. Returns taskId for polling.
     "maxDuration": 60000,
     "maxInputTokens": 50000,
     "maxOutputTokens": 50000,
-    "avoidDomains": ["facebook.com"],
     "terminateOnCompletion": true,
     "outputType": "structured_json",
     "outputSchema": {
@@ -294,7 +292,6 @@ Execute a single task with auto-terminating session. Simplified version of start
   "maxInputTokens": 100000,
   "maxOutputTokens": 100000,
   "startingUrl": "https://google.com",
-  "avoidDomains": [],
   "mode": "default"
 }
 ```

@@ -10,10 +10,6 @@ An Automation Policy is a reusable set of rules that sits between the agent's in
 
 Policies are created and managed in the [dashboard](https://app.webrun.ai). You attach them to sessions by passing `policyId` when starting a session or task.
 
-<Note>
-**Policies vs avoidDomains:** The `avoidDomains` parameter blocks navigation to specific domains. Policies are a superset — they cover domains, URL paths, keywords, action types, and sensitive data patterns, with both block and guardrail enforcement. If you're already using `avoidDomains`, policies replace and extend that capability.
-</Note>
-
 ---
 
 ## How It Works
@@ -38,7 +34,7 @@ Every action the agent attempts passes through the policy enforcement layer:
 Policies are created in the dashboard at **Policies → New Policy**.
 
 1. Give the policy a **name** and optional **description**
-2. Add rules across any combination of the five rule types (see [Rule Types](#rule-types) below)
+2. Add rules across any combination of the four rule types (see [Rule Types](#rule-types) below)
 3. Save as **Active** (ready to use) or **Draft** (work in progress)
 
 Policies are reusable. Create once, attach to any number of sessions.
@@ -122,31 +118,28 @@ Each domain entry specifies a pattern and an action (block or guardrail).
 
 ---
 
-### Keyword Rules
+### Action Rules
 
-Flag specific words or phrases in agent actions. When a keyword is detected, the rule fires.
+Permit, block, or guardrail entire categories of agent behavior. Each rule specifies a **scope** — apply to **All** actions in the category, or narrow to a **Keyword** match so the rule only fires when a specific word or phrase is detected.
 
-Each keyword entry specifies the **phrase**, **match type**, **scope**, and **action**.
+| Category | Scope | Match | Permission |
+|----------|-------|-------|------------|
+| **Navigation** | All | — | ✅ Allow |
+| **Type / Keyboard** | Keyword | "password" | 🚫 Block |
+| **Shell Command** | All | — | 🚫 Block |
+| **Click** | Keyword | "delete" | ⚠️ Guardrail |
 
-**Match types:** `contains`, `exact`, `regex`
+When scope is **Keyword**, you also specify a **match type** (`contains`, `exact`, or `regex`) and a **match scope** that controls where the keyword is checked:
 
-**Scopes:**
-
-| Scope | What it checks |
-|-------|----------------|
+| Match Scope | What it checks |
+|-------------|----------------|
 | **Typed Text** | Text the agent types via TYPE/KEY_PRESS actions |
 | **Navigation** | URLs the agent navigates to |
 | **Intent** | The agent's task description and reasoning |
 | **Page Content** | Visible content on the current page |
 | **All** | All of the above |
 
-**Example:** a keyword rule for `"transfer funds"` with scope `all` and action `block` prevents the agent from typing, navigating to, or reasoning about fund transfers.
-
----
-
-### Action Type Rules
-
-Permit, block, or guardrail entire categories of agent behavior.
+**Action categories and their WebRun actions:**
 
 | Category | WebRun Actions |
 |----------|----------------|
@@ -165,7 +158,7 @@ Permit, block, or guardrail entire categories of agent behavior.
 
 Each category can be set to **allow**, **block**, or **guardrail**. You also set a **default action** for any category not explicitly listed.
 
-**Example:** a read-only research agent might allow navigation and clicks, block all typing and file uploads, and guardrail on form submits.
+**Example:** a read-only research agent might allow navigation and clicks, block typing the keyword "password", block all file uploads, and guardrail clicks matching "delete".
 
 ---
 
@@ -230,11 +223,11 @@ Read-only browsing. Blocks typing, file uploads, shell commands. Guardrails on f
 </Accordion>
 
 <Accordion title="Financial Compliance">
-Guardrails on banking and payment domains. Blocks financial transaction keywords (`transfer funds`, `wire transfer`). Guardrails on checkout pages. Blocks sensitive data extraction.
+Guardrails on banking and payment domains. Action rules block typing keywords `transfer funds` and `wire transfer`. Guardrails on checkout pages. Blocks sensitive data extraction.
 </Accordion>
 
 <Accordion title="Healthcare / HIPAA">
-Allowlist mode (only approved medical portals). Blocks SSNs. Guardrails on medical terms and patient pages. Blocks file uploads, guardrails on screenshots. Guardrails on medical record number patterns.
+Allowlist mode (only approved medical portals). Blocks SSNs. Action rules guardrail on medical term keywords and patient pages. Blocks file uploads, guardrails on screenshots. Guardrails on medical record number patterns.
 </Accordion>
 
 <Accordion title="Strict Lockdown">

@@ -309,7 +309,6 @@ Configure your session behavior with these parameters:
 | `maxDuration` | number | 300000 | Max task duration in ms (default and max: 5 minutes) |
 | `maxInputTokens` | number | 100000 | Max input tokens for AI model |
 | `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
-| `avoidDomains` | string[] | [] | Domains agent should not visit (e.g., `["facebook.com"]`) |
 | `terminateOnCompletion` | boolean | false | Auto-terminate after first task completes |
 | `outputType` | string | "text" | Output format: `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | null | JSON Schema for structured output |
@@ -325,7 +324,6 @@ Configure your session behavior with these parameters:
     "maxDuration": 180000,
     "maxInputTokens": 50000,
     "maxOutputTokens": 50000,
-    "avoidDomains": ["facebook.com", "twitter.com"],
     "terminateOnCompletion": false
   }
 }
