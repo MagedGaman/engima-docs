@@ -724,7 +724,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 ### Complete Error Handling Example
 
 ```javascript
-async function robustTaskExecution(taskDetails, apiKey) {
+async function executeTaskWithRetry(taskDetails, apiKey) {
   let sessionId = null;
 
   try {
