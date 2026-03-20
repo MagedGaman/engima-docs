@@ -34,8 +34,9 @@ Every action the agent attempts passes through the policy enforcement layer:
 Policies are created in the dashboard at **Policies → New Policy**.
 
 1. Give the policy a **name** and optional **description**
-2. Add rules across any combination of the four rule types (see [Rule Types](#rule-types) below)
-3. Save as **Active** (ready to use) or **Draft** (work in progress)
+2. Optionally set an **LLM Role** to guide agent behavior (see [LLM Role](#llm-role) below)
+3. Add rules across **Domain Rules** and **Action Rules** (see [Rule Types](#rule-types) below)
+4. Save as **Active** (ready to use) or **Draft** (work in progress)
 
 Policies are reusable. Create once, attach to any number of sessions.
 
@@ -92,7 +93,17 @@ A session can have a policy, an environment, both, or neither.
 
 ## Rule Types
 
-A policy contains one or more rule groups. You can combine any rule types in a single policy.
+A policy contains an optional LLM Role plus one or more rule groups. You can combine Domain Rules and Action Rules in a single policy.
+
+### LLM Role
+
+Free-text instructions injected into the agent's system prompt when the policy is active. Use this to shape the agent's overall behavior — for example:
+
+> *"You are a research assistant. Only browse educational sites. Never fill out forms."*
+
+LLM Role accepts up to **2,000 characters** and is applied before any rule evaluation. It complements rules by giving the agent behavioral context rather than hard enforcement.
+
+---
 
 ### Domain Rules
 
@@ -118,24 +129,27 @@ Each domain entry specifies a pattern and an action (block or guardrail).
 
 ### Action Rules
 
-Permit, block, or guardrail entire categories of agent behavior. Each rule specifies a **scope** — apply to **All** actions in the category, or narrow to a **Keyword** match so the rule only fires when a specific word or phrase is detected.
+Permit, block, or guardrail entire categories of agent behavior. Action Rules now also cover URL pattern matching (for Navigation) and regex-based data sensitivity detection.
 
-| Category | Scope | Match | Permission |
-|----------|-------|-------|------------|
-| **Navigation** | All | — | ✅ Allow |
-| **Type / Keyboard** | Keyword | "password" | 🚫 Block |
-| **Shell Command** | All | — | 🚫 Block |
-| **Click** | Keyword | "delete" | ⚠️ Guardrail |
+How a rule is configured depends on its **category**:
 
-When scope is **Keyword**, you also specify a **match type** (`contains`, `exact`, or `regex`) and a **match scope** that controls where the keyword is checked:
+- **Navigation** category: shows a **URL Pattern** field instead of scope/match options. Use glob-style patterns to target specific paths (e.g., `*/admin/*`, `*/checkout*`). This replaces the need for standalone URL pattern rules.
+- **All other categories**: show **Scope** (`All`, `Target`, or `Page`), **Match Type** (`Keyword` or `Regex`), and **Match** fields. Use Regex match type to detect sensitive data patterns like credit card numbers, SSNs, or API keys.
 
-| Match Scope | What it checks |
-|-------------|----------------|
-| **Typed Text** | Text the agent types via TYPE/KEY_PRESS actions |
-| **Navigation** | URLs the agent navigates to |
-| **Intent** | The agent's task description and reasoning |
-| **Page Content** | Visible content on the current page |
-| **All** | All of the above |
+| Category | Details | Permission |
+|----------|---------|------------|
+| **Navigation** | `*/admin/*` | 🚫 Block |
+| **Type / Keyboard** | Regex: `\b\d{3}-\d{2}-\d{4}\b` (All) | 🚫 Block |
+| **Shell Command** | All | 🚫 Block |
+| **Click** | Keyword: "delete" (Target) | ⚠️ Guardrail |
+
+**Scope** controls where the match is checked:
+
+| Scope | What it checks |
+|-------|----------------|
+| **All** | All available context for the action |
+| **Target** | The element or value the agent is directly interacting with |
+| **Page** | Visible content on the current page |
 
 **Action categories and their WebRun actions:**
 
@@ -156,39 +170,11 @@ When scope is **Keyword**, you also specify a **match type** (`contains`, `exact
 
 Each category can be set to **allow**, **block**, or **guardrail**. You also set a **default action** for any category not explicitly listed.
 
-**Example:** a read-only research agent might allow navigation and clicks, block typing the keyword "password", block all file uploads, and guardrail clicks matching "delete".
+**Example:** a read-only research agent might block navigation to `*/admin/*`, block typing with a regex for credit card numbers, block all file uploads, and guardrail clicks matching "delete".
 
----
-
-### URL Pattern Rules
-
-More granular than domain rules — match specific paths or query parameters within an otherwise-allowed domain.
-
-| Pattern | Example Match |
-|---------|---------------|
-| `*/admin/*` | `salesforce.com/admin/settings` |
-| `*/checkout*` | `shop.example.com/checkout/step2` |
-| `*/settings/delete*` | `app.example.com/settings/delete-account` |
-| `*?action=delete*` | `app.example.com/item?action=delete&id=123` |
-
-**Use case:** allow `salesforce.com` at the domain level but block `salesforce.com/admin/*` with a URL pattern rule.
-
----
-
-### Data Sensitivity Rules
-
-Detect structured sensitive data using regex pattern matching. Fires when the agent types, copies, or extracts matching content.
-
-**Predefined patterns:**
-
-| Pattern | Examples |
-|---------|----------|
-| **Credit Card Numbers** | Visa, Mastercard, Amex formats |
-| **Social Security Numbers** | XXX-XX-XXXX |
-| **Phone Numbers** | Various formats |
-| **API Keys** | `sk-*`, `AKIA*`, etc. |
-
-You can also define **custom patterns** with arbitrary regex for industry-specific identifiers (medical record numbers, internal token formats, etc.).
+<Tip>
+**URL patterns in Navigation rules** replace the need for standalone URL pattern rules. To allow a domain but block specific paths (e.g., allow `salesforce.com` but block `salesforce.com/admin/*`), add a Navigation action rule with the pattern `*/admin/*` set to Block.
+</Tip>
 
 ---
 
@@ -217,19 +203,19 @@ Pre-built policy templates are available in the dashboard as starting points. Se
 <AccordionGroup>
 
 <Accordion title="Research Only">
-Read-only browsing. Blocks typing, file uploads, shell commands. Guardrails on form submits. Blocks sensitive data patterns (credit cards, SSNs, API keys). Blocks `*/admin/*` and `*/settings/*` paths.
+Read-only browsing. Blocks typing, file uploads, shell commands. Guardrails on form submits. Action rules with regex matching for sensitive data patterns (credit cards, SSNs, API keys). Navigation action rules blocking `*/admin/*` and `*/settings/*`.
 </Accordion>
 
 <Accordion title="Financial Compliance">
-Guardrails on banking and payment domains. Action rules block typing keywords `transfer funds` and `wire transfer`. Guardrails on checkout pages. Blocks sensitive data extraction.
+Guardrails on banking and payment domains. Action rules block typing keywords `transfer funds` and `wire transfer`. Navigation action rules with guardrails on checkout pages. Action rules with regex matching to block sensitive data extraction.
 </Accordion>
 
 <Accordion title="Healthcare / HIPAA">
-Allowlist mode (only approved medical portals). Blocks SSNs. Action rules guardrail on medical term keywords and patient pages. Blocks file uploads, guardrails on screenshots. Guardrails on medical record number patterns.
+Allowlist mode (only approved medical portals). Action rules with regex matching to block SSN patterns. Action rules guardrail on medical term keywords and patient pages. Blocks file uploads, guardrails on screenshots. Action rules with regex matching for medical record number patterns.
 </Accordion>
 
 <Accordion title="Strict Lockdown">
-Allowlist mode with explicit domains only. Guardrails on all typed text. Blocks shell commands and file uploads. Blocks all admin, delete, and settings paths. Blocks all sensitive data patterns.
+Allowlist mode with explicit domains only. Guardrails on all typed text. Blocks shell commands and file uploads. Navigation action rules blocking all admin, delete, and settings paths. Action rules with regex matching for all sensitive data patterns.
 </Accordion>
 
 </AccordionGroup>
