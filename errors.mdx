@@ -1,6 +1,6 @@
 ---
 title: "Errors & Troubleshooting"
-description: "Comprehensive guide to error handling, common issues, and solutions"
+description: "Error handling, common issues, and solutions"
 ---
 
 ## Error Response Format
@@ -432,7 +432,7 @@ async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
 ### Complete Error Handling
 
 ```javascript
-async function robustTaskExecution(taskDetails, apiKey) {
+async function executeTaskWithRetry(taskDetails, apiKey) {
   let sessionId = null;
 
   try {
