@@ -16,7 +16,7 @@ Guardrails are safety mechanisms that pause agent execution when:
 When a guardrail triggers, the task pauses and waits for your response before continuing.
 
 <Tip>
-**Prefer secrets for login credentials.** If you know which sites the agent will authenticate with, use the [`secrets` parameter](/usage-guides/secrets) to provide credentials upfront. This avoids guardrail interruptions entirely and enables fully automated workflows. Secrets are never stored — they are discarded when the session ends.
+**Prefer secrets for login credentials.** If you know which sites the agent will authenticate with, use the [`secrets` parameter](/usage-guides/secrets) to provide credentials upfront. This avoids guardrail interruptions entirely, so the task runs without pausing. Secrets are never stored — they are discarded when the session ends.
 </Tip>
 
 ---
