@@ -64,6 +64,16 @@ When `deliveryMode` is `webhook` or `both`, you must provide a `webhook` configu
 
 ---
 
+## Automation Policy
+
+Triggers can optionally be associated with an [automation policy](/concepts/policies). Policies define rules that govern agent behavior during execution — such as domain restrictions, blocked keywords, action type controls, and capability limits.
+
+When a policy is assigned, the browser agent will enforce those rules for every run of the trigger. This is useful for compliance, safety guardrails, or scoping what the agent is allowed to do.
+
+To assign a policy, pass the `policyId` field when creating or updating a trigger, or select one from the "Automation Policy" dropdown in the dashboard.
+
+---
+
 ## Trigger Statuses
 
 | Status | Meaning |
@@ -114,6 +124,7 @@ curl https://connect.webrun.ai/cron-jobs \
       "_id": "664a1b2c3d4e5f6a7b8c9d0e",
       "userId": "67f1a2b3c4d5e6f7a8b9c0d1",
       "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+      "policyId": null,
       "name": "Daily price check",
       "description": "Check competitor prices every morning",
       "scheduleType": "cron",
@@ -159,6 +170,7 @@ Content-Type: application/json
 | `deliveryMode` | string | No | `"webhook"`, `"bot"`, or `"both"` (default: `"webhook"`) |
 | `webhook` | object | Conditional | Webhook config (required when `deliveryMode` includes `"webhook"`) |
 | `retryPolicy` | object | No | Custom retry configuration |
+| `policyId` | string | No | ID of an [automation policy](/concepts/policies) to apply to this trigger's executions. When set, the browser agent will follow the policy's rules (domain restrictions, keyword blocking, capability controls, etc.) |
 | `maxConsecutiveFailures` | number | No | Failures before auto-pause (default: `5`) |
 
 ### Example: Recurring Cron Schedule
@@ -171,6 +183,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
     "name": "Daily price check",
     "description": "Check competitor prices every morning",
     "environmentId": "<ENV_ID>",
+    "policyId": "665a1f...abc",
     "scheduleType": "cron",
     "scheduleCron": "0 9 * * 1-5",
     "timezone": "America/New_York",
@@ -211,6 +224,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
   -d '{
     "name": "Inventory monitor",
     "environmentId": "<ENV_ID>",
+    "policyId": null,
     "scheduleType": "every",
     "scheduleInterval": "2h",
     "taskDetails": "Check the inventory page and report any out-of-stock items",
@@ -249,6 +263,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
     "_id": "664a1b2c3d4e5f6a7b8c9d0e",
     "name": "Daily price check",
     "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+    "policyId": "665a1f...abc",
     "scheduleType": "cron",
     "scheduleCron": "0 9 * * 1-5",
     "timezone": "America/New_York",

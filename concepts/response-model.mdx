@@ -17,16 +17,9 @@ This design eliminates unnecessary polling for the 90% of tasks that complete qu
 
 ## Why This Design?
 
-### The Problem with Pure Sync
-Typical HTTP timeouts (30-60 seconds) are too short for complex browser tasks. Forcing all requests to be synchronous would cause frequent timeouts.
+Pure sync doesn't work because HTTP timeouts (30-60s) are too short for complex browser tasks. Pure async doesn't work because polling adds unnecessary complexity for simple tasks that finish in seconds.
 
-### The Problem with Pure Async
-Always requiring polling adds complexity and latency for simple tasks that complete in seconds.
-
-### The WebRun Solution
-Wait up to 50 seconds for task completion. If it finishes in time, return the result immediately. Otherwise, return a poll URL.
-
-**Result:** 90% of tasks get instant responses, 10% use polling only when needed.
+The hybrid approach waits up to 50 seconds. If the task finishes in time, the result comes back inline. If not, you get a poll URL. In practice, ~90% of tasks return inline.
 
 ---
 
