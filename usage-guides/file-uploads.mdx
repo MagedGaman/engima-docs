@@ -102,22 +102,24 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Authorization: Bearer enig_xxx" \
   -H "Content-Type: application/json" \
   -d '{
-    "taskDetails": "Upload this document to the website",
-    "startingPoint": "https://example.com/upload",
-    "files": ["abc123..."]
+    "task": {
+      "prompt": "Upload this document to the website",
+      "startingUrl": "https://example.com/upload",
+      "files": ["abc123..."]
+    }
   }'
 ```
 
 ### Using /start/start-session
 
-Include `files` inside the `initialTask` object:
+Include `files` inside the `task` object:
 
 ```json
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Upload these documents to the portal",
-    "startingPoint": "https://example.com/portal",
+  "task": {
+    "prompt": "Upload these documents to the portal",
+    "startingUrl": "https://example.com/portal",
     "files": ["abc123...", "def456..."]
   }
 }
@@ -133,8 +135,8 @@ Include `files` in the `message` object when sending a `newTask` action:
   "message": {
     "actionType": "newTask",
     "newState": "start",
-    "taskDetails": "Upload the attached spreadsheet to the data import page",
-    "startingPoint": "https://example.com/import",
+    "prompt": "Upload the attached spreadsheet to the data import page",
+    "startingUrl": "https://example.com/import",
     "files": ["ghi789..."]
   }
 }
@@ -171,9 +173,11 @@ const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Go to the upload page and submit the attached PDF report",
-    startingUrl: "https://example.com/submit",
-    files: [fileId]
+    task: {
+      prompt: "Go to the upload page and submit the attached PDF report",
+      startingUrl: "https://example.com/submit",
+      files: [fileId]
+    }
   })
 }).then(r => r.json());
 
@@ -190,7 +194,7 @@ console.log(taskResponse);
 |----------|-------|----------|
 | `POST /files/upload` | `files` (multipart) | Form data |
 | `POST /start/run-task` | `files` | Request body (task-level) |
-| `POST /start/start-session` | `files` | Inside `initialTask` object |
+| `POST /start/start-session` | `files` | Inside `task` object |
 | `POST /start/send-message` | `files` | Inside `message` object |
 
 ---
@@ -207,9 +211,11 @@ Tell the agent what to do with the files and where to upload them:
 
 ```json
 {
-  "taskDetails": "Go to the document submission form and upload the attached PDF, then click Submit",
-  "startingUrl": "https://example.com/forms/submit",
-  "files": ["abc123..."]
+  "task": {
+    "prompt": "Go to the document submission form and upload the attached PDF, then click Submit",
+    "startingUrl": "https://example.com/forms/submit",
+    "files": ["abc123..."]
+  }
 }
 ```
 
@@ -219,20 +225,22 @@ File uploads work alongside all other task parameters — secrets, structured ou
 
 ```json
 {
-  "taskDetails": "Log into the portal and upload the quarterly report",
-  "startingPoint": "https://portal.example.com",
-  "files": ["abc123..."],
-  "secrets": [
-    {
-      "match": "*.example.com",
-      "fields": { "email": "user@co.com", "password": "pass" }
+  "task": {
+    "prompt": "Log into the portal and upload the quarterly report",
+    "startingUrl": "https://portal.example.com",
+    "files": ["abc123..."],
+    "secrets": [
+      {
+        "match": "*.example.com",
+        "fields": { "email": "user@co.com", "password": "pass" }
+      }
+    ],
+    "terminateOnCompletion": true,
+    "webhook": {
+      "name": "Upload Complete",
+      "url": "https://api.mysite.com/webhooks/upload",
+      "submittedData": "ai_response"
     }
-  ],
-  "terminateOnCompletion": true,
-  "webhook": {
-    "name": "Upload Complete",
-    "url": "https://api.mysite.com/webhooks/upload",
-    "submittedData": "ai_response"
   }
 }
 ```

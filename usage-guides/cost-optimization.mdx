@@ -21,7 +21,9 @@ const result = await fetch("https://connect.webrun.ai/start/run-task", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Extract data from this page"
+    task: {
+      prompt: "Extract data from this page"
+    }
   })
 });
 
@@ -36,7 +38,7 @@ const finalTask = await fetch("https://connect.webrun.ai/start/send-message", {
     sessionId,
     message: {
       actionType: "newTask",
-      taskDetails: "Final task here",
+      prompt: "Final task here",
       terminateOnCompletion: true
     }
   }
@@ -63,16 +65,16 @@ Shorter descriptions = fewer input tokens. Be specific, not verbose.
 
 ---
 
-### 3. Set `startingPoint` When Known
+### 3. Set `startingUrl` When Known
 
 Skip navigation by providing the starting URL directly.
 
 ```javascript
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Search for products",
-    "startingPoint": "https://amazon.com"  // Skips "go to amazon.com" step
+  "task": {
+    "prompt": "Search for products",
+    "startingUrl": "https://amazon.com"  // Skips "go to amazon.com" step
   }
 }
 ```
@@ -89,8 +91,10 @@ Limit task duration to prevent runaway costs:
 
 ```javascript
 {
-  "taskDetails": "Quick search task",
-  "maxDuration": 30000  // 30 seconds max task duration
+  "task": {
+    "prompt": "Quick search task",
+    "maxDuration": 30000  // 30 seconds max task duration
+  }
 }
 ```
 
@@ -129,9 +133,11 @@ For simple tasks, reduce token limits:
 
 ```javascript
 {
-  "taskDetails": "Get product price",
-  "maxInputTokens": 10000,   // Lower for simple tasks (default: 100000)
-  "maxOutputTokens": 1000    // Lower for short responses (default: 100000)
+  "task": {
+    "prompt": "Get product price",
+    "maxInputTokens": 10000,   // Lower for simple tasks (default: 100000)
+    "maxOutputTokens": 1000    // Lower for short responses (default: 100000)
+  }
 }
 ```
 
@@ -155,8 +161,8 @@ WebRun-managed proxies cost **$2 per GB** of data transfer. For tasks that downl
     "host": "your-proxy.com",
     "port": "8080"
   },
-  "initialTask": {
-    "taskDetails": "Download all product images from the catalog"
+  "task": {
+    "prompt": "Download all product images from the catalog"
   }
 }
 ```
@@ -199,7 +205,7 @@ See the [Proxies guide](/usage-guides/proxies) for configuration details.
 - [ ] Use `/start/run-task` for single tasks (auto-terminates)
 - [ ] Set `terminateOnCompletion: true` on final tasks in multi-task workflows
 - [ ] Write concise, specific task descriptions
-- [ ] Provide `startingPoint` when the starting point is known
+- [ ] Provide `startingUrl` when the starting point is known
 - [ ] Set appropriate `maxDuration` based on task complexity
 - [ ] Batch related tasks into single sessions
 - [ ] Limit `maxInputTokens` and `maxOutputTokens` for simple tasks
@@ -226,9 +232,9 @@ const result3 = await runTask("Get me information about the first result");
 // Single session, concise tasks, explicit termination
 const session = await startSession({
   mode: "default",
-  initialTask: {
-    taskDetails: "Go to amazon.com",
-    startingPoint: "https://amazon.com",
+  task: {
+    prompt: "Go to amazon.com",
+    startingUrl: "https://amazon.com",
     maxDuration: 60000  // 1 minute max
   }
 });

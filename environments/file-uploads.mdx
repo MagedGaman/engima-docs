@@ -97,7 +97,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
   -H "Content-Type: application/json" \
   -d '{
-    "taskDetails": "Open the uploaded spreadsheet and extract the data",
+    "prompt": "Open the uploaded spreadsheet and extract the data",
     "environmentId": "<ENV_ID>",
     "files": ["<FILE_ID>"]
   }'
@@ -105,15 +105,15 @@ curl -X POST https://connect.webrun.ai/start/run-task \
 
 ### With /start/start-session
 
-Include `files` inside the `initialTask` object:
+Include `files` inside the `task` object:
 
 ```json
 {
   "mode": "default",
   "environmentId": "<ENV_ID>",
-  "initialTask": {
-    "taskDetails": "Process the attached report",
-    "startingPoint": "https://example.com/dashboard",
+  "task": {
+    "prompt": "Process the attached report",
+    "startingUrl": "https://example.com/dashboard",
     "files": ["abc123..."]
   }
 }
@@ -129,8 +129,8 @@ Include `files` in the `message` object when sending a `newTask` action:
   "message": {
     "actionType": "newTask",
     "newState": "start",
-    "taskDetails": "Upload the attached spreadsheet to the data import page",
-    "startingPoint": "https://example.com/import",
+    "prompt": "Upload the attached spreadsheet to the data import page",
+    "startingUrl": "https://example.com/import",
     "files": ["ghi789..."]
   }
 }
@@ -167,8 +167,8 @@ const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Go to the upload page and submit the attached PDF report",
-    startingPoint: "https://example.com/submit",
+    prompt: "Go to the upload page and submit the attached PDF report",
+    startingUrl: "https://example.com/submit",
     environmentId: ENV_ID,
     files: [fileId]
   })
@@ -203,7 +203,7 @@ curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
 | `POST /files/upload` | `environmentId` | Form data (optional — omit for orphan upload) |
 | `POST /start/run-task` | `files` | Request body |
 | `POST /start/run-task` | `environmentId` | Request body |
-| `POST /start/start-session` | `files` | Inside `initialTask` object |
+| `POST /start/start-session` | `files` | Inside `task` object |
 | `POST /start/send-message` | `files` | Inside `message` object |
 | `GET /environments/<ENV_ID>/files` | — | List files in an environment |
 | `DELETE /environments/<ENV_ID>/files/<FILE_ID>` | — | Delete a file from an environment |

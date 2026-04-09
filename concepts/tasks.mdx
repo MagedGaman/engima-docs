@@ -55,7 +55,7 @@ For one-off tasks where you don't need to maintain browser state. The session au
 POST /start/run-task
 
 {
-  "taskDetails": "Go to google.com and search for Anthropic"
+  "prompt": "Go to google.com and search for Anthropic"
 }
 ```
 
@@ -68,9 +68,9 @@ For workflows requiring sequential tasks within the same browser context (e.g., 
 POST /start/start-session
 
 {
-  "initialTask": {
-    "taskDetails": "Log into the dashboard",
-    "startingPoint": "https://example.com/login"
+  "task": {
+    "prompt": "Log into the dashboard",
+    "startingUrl": "https://example.com/login"
   }
 }
 
@@ -82,7 +82,7 @@ POST /start/send-message
   "message": {
     "actionType": "newTask",
     "newState": "start",
-    "taskDetails": "Navigate to billing settings"
+    "prompt": "Navigate to billing settings"
   }
 }
 ```
@@ -111,7 +111,7 @@ Each task gets a unique `taskId` when created. Use this ID to:
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `taskDetails` | string | required | Natural language task description |
+| `prompt` | string | required | Natural language task description |
 | `maxDuration` | number | 300000 | Max time for this task in ms |
 | `maxInputTokens` | number | 100000 | Max input tokens |
 | `maxOutputTokens` | number | 100000 | Max output tokens |
@@ -133,7 +133,7 @@ POST /start/run-task
 Content-Type: application/json
 
 {
-  "taskDetails": "Go to news.ycombinator.com and return the titles of the top 3 posts",
+  "prompt": "Go to news.ycombinator.com and return the titles of the top 3 posts",
   "maxDuration": 60000
 }
 ```
@@ -274,7 +274,7 @@ Content-Type: application/json
   "message": {
     "actionType": "newTask",
     "newState": "start",
-    "taskDetails": "Go to my account settings and extract my email address",
+    "prompt": "Go to my account settings and extract my email address",
     "terminateOnCompletion": true
   }
 }

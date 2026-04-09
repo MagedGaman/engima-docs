@@ -57,9 +57,9 @@ curl -X POST https://connect.webrun.ai/start/start-session \
   -d '{
     "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
     "policyId": "pol_xyz789",
-    "initialTask": {
-      "taskDetails": "Extract the latest invoice from the vendor portal",
-      "startingPoint": "https://vendor.example.com"
+    "task": {
+      "prompt": "Extract the latest invoice from the vendor portal",
+      "startingUrl": "https://vendor.example.com"
     }
   }'
 ```
@@ -70,8 +70,8 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
     "policyId": "pol_xyz789",
-    "taskDetails": "Check current pricing on example.com",
-    "startingPoint": "https://example.com"
+    "prompt": "Check current pricing on example.com",
+    "startingUrl": "https://example.com"
   }'
 ```
 

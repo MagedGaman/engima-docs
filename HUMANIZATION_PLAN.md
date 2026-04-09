@@ -221,7 +221,7 @@ Your friend is right—the documentation has several characteristics that make i
 3. **Cut Parameter Table**: Too much. Show one example with inline comments:
    ```javascript
    {
-     taskDetails: "What to do",
+     prompt: "What to do",
      maxDuration: 60000, // 1 minute - keeps costs low
      terminateOnCompletion: true // Don't forget this!
    }

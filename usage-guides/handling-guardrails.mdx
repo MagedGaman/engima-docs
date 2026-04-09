@@ -89,7 +89,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
     "sessionId": "SESSION_ID",
     "message": {
       "actionType": "guardrail",
-      "taskDetails": "Username: demo@example.com, Password: demo123",
+      "prompt": "Username: demo@example.com, Password: demo123",
       "newState": "resume"
     }
   }'
@@ -102,7 +102,7 @@ socket.on("message", (data) => {
 
     socket.emit("message", {
       actionType: "guardrail",
-      taskDetails: "Username: demo@example.com, Password: demo123",
+      prompt: "Username: demo@example.com, Password: demo123",
       newState: "resume"
     });
   }
@@ -114,7 +114,7 @@ socket.on("message", (data) => {
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `actionType` | string | Yes | Must be `"guardrail"` |
-| `taskDetails` | string | Yes | Your response to the agent |
+| `prompt` | string | Yes | Your response to the agent |
 | `newState` | string | Yes | `"resume"` to continue, `"stop"` to cancel |
 
 **Response:**
@@ -146,7 +146,7 @@ socket.on("message", (data) => {
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Use username: user@example.com and password: mypassword123",
+  prompt: "Use username: user@example.com and password: mypassword123",
   newState: "resume"
 });
 ```
@@ -179,7 +179,7 @@ socket.emit("message", {
 // Resume task
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Credentials entered, please continue",
+  prompt: "Credentials entered, please continue",
   newState: "resume"
 });
 ```
@@ -203,7 +203,7 @@ socket.emit("message", {
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Card number: 4111111111111111, Expiry: 12/25, CVV: 123",
+  prompt: "Card number: 4111111111111111, Expiry: 12/25, CVV: 123",
   newState: "resume"
 });
 ```
@@ -212,7 +212,7 @@ socket.emit("message", {
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Do not proceed with payment",
+  prompt: "Do not proceed with payment",
   newState: "stop"
 });
 ```
@@ -236,7 +236,7 @@ socket.emit("message", {
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Select the first one with the highest rating",
+  prompt: "Select the first one with the highest rating",
   newState: "resume"
 });
 ```
@@ -263,7 +263,7 @@ const twoFactorCode = await getTwoFactorCode();
 
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: `2FA code: ${twoFactorCode}`,
+  prompt: `2FA code: ${twoFactorCode}`,
   newState: "resume"
 });
 ```
@@ -301,7 +301,7 @@ socket.emit("message", {
 
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "CAPTCHA solved, continue",
+  prompt: "CAPTCHA solved, continue",
   newState: "resume"
 });
 ```
@@ -325,7 +325,7 @@ socket.emit("message", {
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Content verified, safe to proceed",
+  prompt: "Content verified, safe to proceed",
   newState: "resume"
 });
 ```
@@ -334,7 +334,7 @@ socket.emit("message", {
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Do not proceed with this content",
+  prompt: "Do not proceed with this content",
   newState: "stop"
 });
 ```
@@ -360,7 +360,7 @@ class GuardrailHandler {
     if (message.includes("login") || message.includes("credentials")) {
       return {
         actionType: "guardrail",
-        taskDetails: `Username: ${this.credentials.username}, Password: ${this.credentials.password}`,
+        prompt: `Username: ${this.credentials.username}, Password: ${this.credentials.password}`,
         newState: "resume"
       };
     }
@@ -370,7 +370,7 @@ class GuardrailHandler {
       const code = this.getTwoFactorCode();
       return {
         actionType: "guardrail",
-        taskDetails: `2FA code: ${code}`,
+        prompt: `2FA code: ${code}`,
         newState: "resume"
       };
     }
@@ -379,7 +379,7 @@ class GuardrailHandler {
     if (message.includes("payment") || message.includes("credit card")) {
       return {
         actionType: "guardrail",
-        taskDetails: "Do not proceed with payment",
+        prompt: "Do not proceed with payment",
         newState: "stop"
       };
     }
@@ -426,7 +426,7 @@ const guardrailRules = [
     pattern: /login|credentials|username|password/i,
     response: (data) => ({
       actionType: "guardrail",
-      taskDetails: process.env.LOGIN_CREDENTIALS,
+      prompt: process.env.LOGIN_CREDENTIALS,
       newState: "resume"
     })
   },
@@ -441,7 +441,7 @@ const guardrailRules = [
     pattern: /payment|credit card|billing/i,
     response: (data) => ({
       actionType: "guardrail",
-      taskDetails: "Skip payment step",
+      prompt: "Skip payment step",
       newState: "stop"
     })
   },
@@ -449,7 +449,7 @@ const guardrailRules = [
     pattern: /which.*select|choose.*option/i,
     response: (data) => ({
       actionType: "guardrail",
-      taskDetails: "Select the first option",
+      prompt: "Select the first option",
       newState: "resume"
     })
   }
@@ -519,7 +519,7 @@ class AsyncGuardrailHandler {
     if (message.includes("login")) {
       return {
         actionType: "guardrail",
-        taskDetails: `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`,
+        prompt: `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`,
         newState: "resume"
       };
     }
@@ -549,13 +549,13 @@ class AsyncGuardrailHandler {
     });
   }
 
-  respondToGuardrail(sessionId, taskDetails, shouldResume = true) {
+  respondToGuardrail(sessionId, prompt, shouldResume = true) {
     const pending = this.pendingGuardrails.get(sessionId);
 
     if (pending) {
       pending.resolve({
         actionType: "guardrail",
-        taskDetails,
+        prompt,
         newState: shouldResume ? "resume" : "stop"
       });
     }
@@ -606,14 +606,14 @@ Don't put credentials directly in code:
 // Bad
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Username: admin, Password: admin123",
+  prompt: "Username: admin, Password: admin123",
   newState: "resume"
 });
 
 // Good
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`,
+  prompt: `Username: ${process.env.USERNAME}, Password: ${process.env.PASSWORD}`,
   newState: "resume"
 });
 ```
@@ -652,7 +652,7 @@ function logGuardrail(sessionId, guardrailData, response) {
     guardrailType: guardrailData.type,
     guardrailMessage: guardrailData.value,
     responseType: response ? "automated" : "manual",
-    response: response?.taskDetails
+    response: response?.prompt
   });
 
   // Send to logging service
@@ -672,14 +672,14 @@ Be specific in your guardrail responses:
 // Bad - vague
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Yes, do it",
+  prompt: "Yes, do it",
   newState: "resume"
 });
 
 // Good - specific
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Select the product titled 'Logitech K380' from the search results",
+  prompt: "Select the product titled 'Logitech K380' from the search results",
   newState: "resume"
 });
 ```

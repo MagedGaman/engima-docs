@@ -35,8 +35,8 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     mode: "default",
-    initialTask: {
-      taskDetails: "Give me the latest prices of the top performing cryptos",
+    task: {
+      prompt: "Give me the latest prices of the top performing cryptos",
       taskId: "3e0f4258511fc909775b9f1a74656004",
       maxDuration: 5,
       maxInputTokens: 400000,
@@ -89,8 +89,8 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     mode: "default",
-    initialTask: {
-      taskDetails: "Give me the latest prices of the top performing cryptos",
+    task: {
+      prompt: "Give me the latest prices of the top performing cryptos",
       taskId: "2444180416485ba80be9f12ef51134dc",
       maxDuration: 60,
       maxInputTokens: 4000,
@@ -155,8 +155,8 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     mode: "default",
-    initialTask: {
-      taskDetails: "Give me the latest prices of the top performing cryptos",
+    task: {
+      prompt: "Give me the latest prices of the top performing cryptos",
       taskId: "3e0f4258511fc909775b9f1a74656004",
       maxDuration: 5,
       maxInputTokens: 400000,
@@ -228,9 +228,9 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     mode: "default",
-    initialTask: {
-      taskDetails: "Extract product information from the page",
-      startingPoint: "https://example.com/product",
+    task: {
+      prompt: "Extract product information from the page",
+      startingUrl: "https://example.com/product",
       outputType: "structured_json",
       outputSchema: {
         type: "object",
@@ -262,7 +262,7 @@ Use `submittedData: "ai_response"` to receive only the AI's output (text, struct
 ## Legacy Approach (Deprecated)
 
 <Warning>
-The approach of embedding schema descriptions in `taskDetails` is deprecated. Use the native `outputType` and `outputSchema` parameters instead for guaranteed validation and consistent output.
+The approach of embedding schema descriptions in `prompt` is deprecated. Use the native `outputType` and `outputSchema` parameters instead for guaranteed validation and consistent output.
 </Warning>
 
 The examples below show the legacy pattern for reference. New implementations should use the [Native JSON Schema Support](#native-json-schema-support) documented above.
@@ -283,12 +283,14 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: `Go to amazon.com and search for "wireless keyboard".
-    Return the results as a JSON array with this format:
-    [
-      { "title": "product name", "price": "19.99", "rating": "4.5" }
-    ]`,
-    startingUrl: "https://amazon.com"
+    task: {
+      prompt: `Go to amazon.com and search for "wireless keyboard".
+      Return the results as a JSON array with this format:
+      [
+        { "title": "product name", "price": "19.99", "rating": "4.5" }
+      ]`,
+      startingUrl: "https://amazon.com"
+    }
   })
 }).then(r => r.json());
 ```
@@ -347,7 +349,7 @@ Request arrays for lists of items.
 ### Example: Product Search
 
 ```javascript
-const taskDetails = `
+const prompt = `
 Search Google for "best mechanical keyboards 2024".
 Extract the top 5 results and return as a JSON array:
 [
@@ -370,7 +372,7 @@ const task = await fetch("https://connect.webrun.ai/start/send-message", {
     message: {
       actionType: "newTask",
       newState: "start",
-      taskDetails
+      prompt
     }
   })
 }).then(r => r.json());
@@ -385,7 +387,7 @@ Request nested JSON for complex data.
 ### Example: E-commerce Product Details
 
 ```javascript
-const taskDetails = `
+const prompt = `
 Go to the Amazon product page at [URL].
 Extract the following information and return as JSON:
 {
@@ -409,7 +411,7 @@ Extract the following information and return as JSON:
 }
 `;
 
-const result = await sendTaskAndWait(session.sessionId, taskDetails);
+const result = await sendTaskAndWait(session.sessionId, prompt);
 const productData = JSON.parse(result.data.message);
 
 console.log(productData.product.title);
@@ -546,7 +548,7 @@ async function getStructuredDataWithRetry(sessionId, originalTaskId) {
         message: {
           actionType: "newTask",
           newState: "start",
-          taskDetails: `Take the previous response and format it as valid JSON: ${result.data.message}`
+          prompt: `Take the previous response and format it as valid JSON: ${result.data.message}`
         }
       })
     }).then(r => r.json());
@@ -565,10 +567,10 @@ async function getStructuredDataWithRetry(sessionId, originalTaskId) {
 
 ```javascript
 // Bad - vague
-taskDetails: "Return product info as JSON"
+prompt: "Return product info as JSON"
 
 // Good - explicit schema
-taskDetails: `
+prompt: `
 Return product information as JSON with this exact structure:
 {
   "title": "string",
@@ -584,7 +586,7 @@ Return product information as JSON with this exact structure:
 Prevent unexpectedly large responses:
 
 ```javascript
-taskDetails: `
+prompt: `
 Search for wireless keyboards and return the top 10 results (no more than 10) as JSON array:
 [
   { "title": "...", "price": "...", "url": "..." }
@@ -595,7 +597,7 @@ Search for wireless keyboards and return the top 10 results (no more than 10) as
 ### 3. Specify Data Types Clearly
 
 ```javascript
-taskDetails: `
+prompt: `
 Return product data as JSON:
 {
   "title": "string",
@@ -612,7 +614,7 @@ Return product data as JSON:
 Specify how to handle missing fields:
 
 ```javascript
-taskDetails: `
+prompt: `
 Return product data as JSON:
 {
   "title": "string (required)",
@@ -657,23 +659,25 @@ async function compareProducts(searchQuery) {
       "Authorization": `Bearer ${API_KEY}`
     },
     body: JSON.stringify({
-      taskDetails: `
-        Go to Amazon and search for "${searchQuery}".
-        Return the top 5 results as a JSON array with this structure:
-        [
-          {
-            "title": "product title",
-            "price": "price as string without currency symbol (e.g., '29.99')",
-            "rating": "average rating as number (e.g., 4.5)",
-            "reviewCount": "number of reviews as integer",
-            "url": "product URL",
-            "isPrime": "boolean indicating Prime eligibility"
-          }
-        ]
-        Return ONLY the JSON array, no additional text.
-      `,
-      startingUrl: "https://amazon.com",
-      terminateOnCompletion: true
+      task: {
+        prompt: `
+          Go to Amazon and search for "${searchQuery}".
+          Return the top 5 results as a JSON array with this structure:
+          [
+            {
+              "title": "product title",
+              "price": "price as string without currency symbol (e.g., '29.99')",
+              "rating": "average rating as number (e.g., 4.5)",
+              "reviewCount": "number of reviews as integer",
+              "url": "product URL",
+              "isPrime": "boolean indicating Prime eligibility"
+            }
+          ]
+          Return ONLY the JSON array, no additional text.
+        `,
+        startingUrl: "https://amazon.com",
+        terminateOnCompletion: true
+      }
     })
   }).then(r => r.json());
 
@@ -754,7 +758,7 @@ compareProducts("wireless mechanical keyboard");
 For tabular data, CSV can be simpler than JSON:
 
 ```javascript
-const taskDetails = `
+const prompt = `
 Search Amazon for "standing desk" and return the top 10 results as CSV with these columns:
 title,price,rating,reviewCount,url
 

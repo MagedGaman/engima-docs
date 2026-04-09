@@ -55,8 +55,8 @@ Four approaches:
 Provide credentials upfront using the `secrets` parameter. The agent authenticates automatically without pausing. Secrets are matched by domain pattern and are never stored — they are discarded when the session ends.
 ```json
 {
-  "initialTask": {
-    "taskDetails": "Log in and export the report",
+  "task": {
+    "prompt": "Log in and export the report",
     "secrets": [
       { "match": "*.example.com", "fields": { "email": "user@example.com", "password": "pass123" } }
     ]
@@ -67,7 +67,7 @@ Provide credentials upfront using the `secrets` parameter. The agent authenticat
 **2. Provide credentials in task description:**
 ```json
 {
-  "taskDetails": "Navigate to example.com/login, enter username 'user@example.com' and password 'pass123', then go to dashboard"
+  "prompt": "Navigate to example.com/login, enter username 'user@example.com' and password 'pass123', then go to dashboard"
 }
 ```
 

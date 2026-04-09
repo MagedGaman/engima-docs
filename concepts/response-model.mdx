@@ -50,7 +50,7 @@ When your task completes within 50 seconds, you get the full result in the initi
 ```bash
 POST /start/run-task
 {
-  "taskDetails": "Search Google for Anthropic"
+  "prompt": "Search Google for Anthropic"
 }
 ```
 
@@ -99,7 +99,7 @@ For tasks that take longer than 50 seconds, you receive a `pollUrl` immediately:
 ```bash
 POST /start/run-task
 {
-  "taskDetails": "Complete a complex multi-step workflow"
+  "prompt": "Complete a complex multi-step workflow"
 }
 ```
 
@@ -285,7 +285,7 @@ async function pollForResult(sessionId, taskId, apiKey) {
 Handle both inline and pending responses with a single function:
 
 ```javascript
-async function runTask(taskDetails, apiKey) {
+async function runTask(prompt, apiKey) {
   // Initial request
   const response = await fetch("https://connect.webrun.ai/start/run-task", {
     method: "POST",
@@ -293,7 +293,7 @@ async function runTask(taskDetails, apiKey) {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`
     },
-    body: JSON.stringify({ taskDetails })
+    body: JSON.stringify({ prompt })
   });
 
   const data = await response.json();

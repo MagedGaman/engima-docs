@@ -196,7 +196,7 @@ const result = await makeRequestWithRetry(
       'Content-Type': 'application/json',
       'Authorization': 'Bearer YOUR_API_KEY'
     },
-    body: JSON.stringify({ taskDetails: 'Search Google for Anthropic' })
+    body: JSON.stringify({ task: { prompt: 'Search Google for Anthropic' } })
   }
 );
 ```
@@ -248,7 +248,7 @@ const client = new RateLimitedClient('YOUR_API_KEY');
 const result = await client.request('/start/run-task', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ taskDetails: 'Search Google' })
+  body: JSON.stringify({ task: { prompt: 'Search Google' } })
 });
 ```
 
@@ -267,7 +267,7 @@ for (let i = 0; i < 10; i++) {
   await fetch('https://connect.webrun.ai/start/run-task', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ taskDetails: `Task ${i}` })
+    body: JSON.stringify({ task: { prompt: `Task ${i}` } })
   });
 }
 // ❌ Rate limited after 10 requests
@@ -279,7 +279,7 @@ for (let i = 0; i < 10; i++) {
 const session = await fetch('https://connect.webrun.ai/start/start-session', {
   method: 'POST',
   headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
-  body: JSON.stringify({ taskDetails: 'Initial task' })
+  body: JSON.stringify({ task: { prompt: 'Initial task' } })
 }).then(r => r.json());
 
 // Run multiple tasks in same session (10 requests)
@@ -289,7 +289,7 @@ for (let i = 0; i < 10; i++) {
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
     body: JSON.stringify({
       sessionId: session.sessionId,
-      message: { actionType: 'newTask', newState: 'start', taskDetails: `Task ${i}` }
+      message: { actionType: 'newTask', newState: 'start', prompt: `Task ${i}` }
     })
   });
 }
@@ -309,7 +309,7 @@ while (true) {
   const result = await fetch('https://connect.webrun.ai/start/run-task', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ taskDetails: 'Search Google' })
+    body: JSON.stringify({ task: { prompt: 'Search Google' } })
   }).then(r => r.json());
 
   if (result.status === 'complete') break;
@@ -323,7 +323,7 @@ while (true) {
 const task = await fetch('https://connect.webrun.ai/start/run-task', {
   method: 'POST',
   headers: { 'Authorization': 'Bearer YOUR_API_KEY', 'Content-Type': 'application/json' },
-  body: JSON.stringify({ taskDetails: 'Search Google' })
+  body: JSON.stringify({ task: { prompt: 'Search Google' } })
 }).then(r => r.json());
 
 // Poll until complete (no rate limit)
@@ -411,7 +411,7 @@ for (let i = 0; i < 20; i++) {
     queue.enqueue('/start/run-task', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ taskDetails: `Task ${i}` })
+      body: JSON.stringify({ task: { prompt: `Task ${i}` } })
     })
   );
 }
@@ -521,7 +521,7 @@ for (let i = 0; i < 100; i++) {
       message: {
         actionType: 'newTask',
         newState: 'start',
-        taskDetails: `Task ${i}`
+        prompt: `Task ${i}`
       }
     })
   });
@@ -572,7 +572,7 @@ async function handleBurst(tasks) {
     queue.enqueue('/start/run-task', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ taskDetails: task })
+      body: JSON.stringify({ task: { prompt: task } })
     })
   );
 

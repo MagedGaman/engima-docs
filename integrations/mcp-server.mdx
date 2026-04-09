@@ -102,7 +102,7 @@ Execute a single browser automation task. Creates a session, runs the task, and 
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
-| `taskDetails` | string | Yes | - | Natural language description of the task |
+| `prompt` | string | Yes | - | Natural language description of the task |
 | `startingUrl` | string | No | null | URL to start from (e.g., "https://google.com") |
 | `maxDuration` | number | No | 300000 | Max task duration in milliseconds |
 
@@ -113,7 +113,7 @@ User: "Use WebRun to search Google for 'Anthropic Claude' and summarize the firs
 
 Claude uses browser_task:
 {
-  "taskDetails": "Go to google.com, search for 'Anthropic Claude', and summarize the first result",
+  "prompt": "Go to google.com, search for 'Anthropic Claude', and summarize the first result",
   "startingUrl": "https://google.com",
   "maxDuration": 120000
 }
@@ -150,7 +150,7 @@ Create a persistent browser session for multi-step workflows.
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
-| `taskDetails` | string | No | "" | Initial task (can be empty to just create session) |
+| `prompt` | string | No | "" | Initial task (can be empty to just create session) |
 | `startingUrl` | string | No | null | Starting URL |
 | `maxDuration` | number | No | 300000 | Max task duration in ms |
 
@@ -161,7 +161,7 @@ User: "Create a browser session and go to amazon.com"
 
 Claude uses create_session:
 {
-  "taskDetails": "Go to amazon.com",
+  "prompt": "Go to amazon.com",
   "startingUrl": "https://amazon.com",
   "maxDuration": 300000
 }
@@ -198,7 +198,7 @@ Send a new task to an existing session.
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
 | `sessionId` | string | Yes | - | ID from `create_session` |
-| `taskDetails` | string | Yes | - | Task description |
+| `prompt` | string | Yes | - | Task description |
 | `terminateOnCompletion` | boolean | No | false | Auto-close session after this task |
 
 **Example Usage:**
@@ -209,7 +209,7 @@ User: "Now search for wireless keyboards"
 Claude uses send_task_to_session:
 {
   "sessionId": "a1b2c3d4e5f6",
-  "taskDetails": "Search for wireless keyboards and list the top 3 results with prices",
+  "prompt": "Search for wireless keyboards and list the top 3 results with prices",
   "terminateOnCompletion": false
 }
 ```
@@ -398,7 +398,7 @@ User: "Research wireless keyboards on Amazon. First go to Amazon, search for wir
 Claude's execution:
 1. Uses create_session:
    {
-     "taskDetails": "Go to amazon.com",
+     "prompt": "Go to amazon.com",
      "startingUrl": "https://amazon.com"
    }
    → Gets sessionId: "abc123"
@@ -406,14 +406,14 @@ Claude's execution:
 2. Uses send_task_to_session:
    {
      "sessionId": "abc123",
-     "taskDetails": "Search for wireless keyboards"
+     "prompt": "Search for wireless keyboards"
    }
    → Gets search results
 
 3. Uses send_task_to_session:
    {
      "sessionId": "abc123",
-     "taskDetails": "Extract the names, prices, and ratings of the top 3 results",
+     "prompt": "Extract the names, prices, and ratings of the top 3 results",
      "terminateOnCompletion": true
    }
    → Gets structured data and auto-terminates
@@ -429,7 +429,7 @@ User: "Log in to example.com and extract my dashboard data"
 Claude's execution:
 1. Uses create_session:
    {
-     "taskDetails": "Go to example.com and attempt to log in",
+     "prompt": "Go to example.com and attempt to log in",
      "startingUrl": "https://example.com"
    }
    → Encounters login form
@@ -459,7 +459,7 @@ Claude's execution:
 8. Uses send_task_to_session:
    {
      "sessionId": "abc123",
-     "taskDetails": "Extract all dashboard data",
+     "prompt": "Extract all dashboard data",
      "terminateOnCompletion": true
    }
    → Completes task
@@ -497,14 +497,14 @@ User: "Go to example.com and extract all links"
 Claude's execution:
 1. Uses browser_task:
    {
-     "taskDetails": "Go to example.com and extract all links"
+     "prompt": "Go to example.com and extract all links"
    }
    → Fails with timeout error
 
 2. Claude analyzes error and retries with adjusted parameters:
    Uses browser_task:
    {
-     "taskDetails": "Go to example.com, wait for page to fully load, then extract all links",
+     "prompt": "Go to example.com, wait for page to fully load, then extract all links",
      "maxDuration": 120000
    }
    → Succeeds
@@ -526,7 +526,7 @@ Claude's execution:
    Uses send_task_to_session:
    {
      "sessionId": "abc123",
-     "taskDetails": "Search for [Company Name] and extract: founded date, CEO, main products, revenue"
+     "prompt": "Search for [Company Name] and extract: founded date, CEO, main products, revenue"
    }
    → Streams results back as each completes
 
@@ -602,7 +602,7 @@ Claude's execution:
    curl -X POST https://connect.webrun.ai/start/run-task \
      -H "Authorization: Bearer enig_xxxxxxxxxxxx" \
      -H "Content-Type: application/json" \
-     -d '{"taskDetails": "Go to google.com"}'
+     -d '{"task": {"prompt": "Go to google.com"}}'
 
    # Should return success, not 401
    ```
@@ -635,7 +635,7 @@ Claude's execution:
 3. **Adjust maxDuration:**
    ```json
    {
-     "taskDetails": "Complex task",
+     "prompt": "Complex task",
      "maxDuration": 180000  // 3 minutes instead of 5
    }
    ```
@@ -672,7 +672,7 @@ Claude's execution:
 3. **Use startingUrl for known websites:**
    ```json
    {
-     "taskDetails": "Search for wireless keyboards",
+     "prompt": "Search for wireless keyboards",
      "startingUrl": "https://amazon.com"  // Faster than "Go to amazon.com"
    }
    ```
@@ -714,16 +714,16 @@ Claude's execution:
 
 | Tool | Required Parameters | Optional Parameters |
 |------|---------------------|---------------------|
-| `browser_task` | `taskDetails` | `startingUrl`, `maxDuration` |
-| `create_session` | - | `taskDetails`, `startingUrl`, `maxDuration` |
-| `send_task_to_session` | `sessionId`, `taskDetails` | `terminateOnCompletion` |
+| `browser_task` | `prompt` | `startingUrl`, `maxDuration` |
+| `create_session` | - | `prompt`, `startingUrl`, `maxDuration` |
+| `send_task_to_session` | `sessionId`, `prompt` | `terminateOnCompletion` |
 | `get_task_status` | `sessionId`, `taskId` | - |
 | `control_session` | `sessionId`, `action` | - |
 | `take_over_session` | `sessionId`, `action` | - |
 
 ### Parameter Details
 
-**taskDetails** (string)
+**prompt** (string)
 - Natural language description of the task
 - Be specific for better results
 - Examples:
@@ -779,7 +779,7 @@ Claude's execution:
 ```
 I'll search Google for Claude AI features using the browser automation tool.
 
-[Uses browser_task with taskDetails: "Go to google.com, search for 'Claude AI features', and summarize the top 3 results"]
+[Uses browser_task with prompt: "Go to google.com, search for 'Claude AI features', and summarize the top 3 results"]
 
 Based on the search results, here are the key features of Claude AI:
 
@@ -803,7 +803,7 @@ I'll create a browser session and research wireless keyboards on Amazon for you.
 [Uses create_session with startingUrl: "https://amazon.com"]
 Session created.
 
-[Uses send_task_to_session with taskDetails: "Search for wireless keyboards under $50 and extract the top 3 results with names, prices, and ratings"]
+[Uses send_task_to_session with prompt: "Search for wireless keyboards under $50 and extract the top 3 results with names, prices, and ratings"]
 
 Here are the top 3 wireless keyboards under $50:
 
@@ -850,7 +850,7 @@ Please log in, then let me know when you're done.
 User: "Done, I'm logged in"
 
 [Uses take_over_session with action: "release"]
-[Uses send_task_to_session with taskDetails: "Extract the account balance from the dashboard"]
+[Uses send_task_to_session with prompt: "Extract the account balance from the dashboard"]
 
 Your account balance is $1,234.56
 ```

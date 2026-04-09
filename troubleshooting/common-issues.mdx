@@ -76,7 +76,7 @@ icon: "bug"
        "Content-Type": "application/json",
        "Authorization": `Bearer ${apiKey}`
      },
-     body: JSON.stringify({ taskDetails })
+     body: JSON.stringify({ prompt })
    });
    ```
 
@@ -123,7 +123,7 @@ icon: "bug"
      },
      body: JSON.stringify({
        sessionId,
-       taskDetails: "Complex multi-step task",
+       prompt: "Complex multi-step task",
        maxDuration: 180000 // 3 minutes instead of default 60s
      })
    });
@@ -158,7 +158,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Fill out the contact form",
+       prompt: "Fill out the contact form",
        startingUrl: "https://example.com/contact" // Skip homepage
      })
    });
@@ -167,10 +167,10 @@ icon: "bug"
 4. **Optimize Task Instructions**
    ```javascript
    // Vague - may cause exploration and timeouts
-   taskDetails: "Find information about pricing"
+   prompt: "Find information about pricing"
 
    // Specific - faster execution
-   taskDetails: "Click the 'Pricing' link in the navigation menu"
+   prompt: "Click the 'Pricing' link in the navigation menu"
    ```
 
 **Prevention:**
@@ -254,7 +254,7 @@ icon: "bug"
 
    // Wait a moment then retry
    await new Promise(r => setTimeout(r, 2000));
-   const retryResult = await runTask(sessionId, taskDetails, apiKey);
+   const retryResult = await runTask(sessionId, prompt, apiKey);
    ```
 
 **Prevention:**
@@ -291,7 +291,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Search for products",
+       prompt: "Search for products",
        maxInputTokens: 10000,  // Limit context size
        maxOutputTokens: 2000   // Limit response length
      })
@@ -308,7 +308,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Fill search form",
+       prompt: "Fill search form",
        startingUrl: "https://example.com/search" // Go directly to target
      })
    });
@@ -323,7 +323,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Read article content"
+       prompt: "Read article content"
      })
    });
    ```
@@ -331,10 +331,10 @@ icon: "bug"
 4. **Simplify Task Instructions**
    ```javascript
    // Verbose - may cause exploration
-   taskDetails: "Navigate around the site and find pricing information, compare different plans, and tell me about the features"
+   prompt: "Navigate around the site and find pricing information, compare different plans, and tell me about the features"
 
    // Concise - direct execution
-   taskDetails: "Click 'Pricing' in navigation and extract plan names and prices"
+   prompt: "Click 'Pricing' in navigation and extract plan names and prices"
    ```
 
 5. **Monitor Usage**
@@ -381,10 +381,10 @@ icon: "bug"
 1. **Make Instructions More Specific**
    ```javascript
    // Ambiguous - may trigger guardrail
-   taskDetails: "Buy something"
+   prompt: "Buy something"
 
    // Specific - clear action
-   taskDetails: "Add the first search result to cart, do not proceed to checkout"
+   prompt: "Add the first search result to cart, do not proceed to checkout"
    ```
 
 2. **Provide Credentials Upfront**
@@ -396,7 +396,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Login using username 'user@example.com' and password 'myPassword123', then navigate to dashboard"
+       prompt: "Login using username 'user@example.com' and password 'myPassword123', then navigate to dashboard"
      })
    });
    ```
@@ -434,7 +434,7 @@ icon: "bug"
              sessionId,
              message: {
                actionType: "guardrail",
-               taskDetails: response,
+               prompt: response,
                newState: "resume"
              }
            })
@@ -454,7 +454,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Research product information"
+       prompt: "Research product information"
      })
    });
    ```
@@ -659,7 +659,7 @@ icon: "bug"
      },
      body: JSON.stringify({
        sessionId,
-       taskDetails: "Navigate to example.com"
+       prompt: "Navigate to example.com"
      })
    });
 
@@ -773,7 +773,7 @@ icon: "bug"
              sessionId,
              message: {
                actionType: "guardrail",
-               taskDetails: "CAPTCHA solved, continue",
+               prompt: "CAPTCHA solved, continue",
                newState: "resume"
              }
            })
@@ -824,7 +824,7 @@ icon: "bug"
        "Authorization": `Bearer ${apiKey}`
      },
      body: JSON.stringify({
-       taskDetails: "Research products"
+       prompt: "Research products"
      })
    });
    ```

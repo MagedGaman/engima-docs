@@ -20,8 +20,8 @@ Parameters used when creating a new session via `POST /start/start-session`.
 {
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Go to amazon.com and check my orders"
+  "task": {
+    "prompt": "Go to amazon.com and check my orders"
   }
 }
 ```
@@ -45,9 +45,9 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "policyId": "pol_xyz789",
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Extract the latest invoice from the vendor portal",
-    "startingPoint": "https://vendor.example.com"
+  "task": {
+    "prompt": "Extract the latest invoice from the vendor portal",
+    "startingUrl": "https://vendor.example.com"
   }
 }
 ```
@@ -143,7 +143,7 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 ```
 
 <Note>
-The `proxy` field is a top-level session parameter, alongside `environmentId`. It is not nested inside `initialTask`. The proxy applies to the entire session — all tasks within the session use the same proxy.
+The `proxy` field is a top-level session parameter, alongside `environmentId`. It is not nested inside `task`. The proxy applies to the entire session — all tasks within the session use the same proxy.
 </Note>
 
 See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
@@ -166,19 +166,19 @@ See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
 
 ---
 
-### initialTask
+### task
 
 - **Type:** `object`
 - **Required:** No
-- **Description:** Configuration for the initial task to run when the session starts. Contains all task-specific parameters.
+- **Description:** Configuration for the task to run when the session starts. Contains all task-specific parameters.
 
 **Example with structured_json:**
 ```json
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Find the price of iPhone 15 Pro on Apple.com",
-    "startingPoint": "https://apple.com",
+  "task": {
+    "prompt": "Find the price of iPhone 15 Pro on Apple.com",
+    "startingUrl": "https://apple.com",
     "maxDuration": 300000,
     "outputType": "structured_json",
     "outputSchema": {
@@ -197,8 +197,8 @@ See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
 ```json
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Get the top 10 cryptocurrency prices",
+  "task": {
+    "prompt": "Get the top 10 cryptocurrency prices",
     "maxDuration": 300000,
     "outputType": "structured_csv",
     "outputSchema": ["name", "price", "market_cap"]
@@ -207,16 +207,16 @@ See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
 ```
 
 <Note>
-All task-specific parameters like `taskDetails`, `startingPoint`, `outputType`, and `outputSchema` are now nested inside the `initialTask` object.
+All task-specific parameters like `prompt`, `startingUrl`, `outputType`, and `outputSchema` are now nested inside the `task` object.
 </Note>
 
 ---
 
-## Initial Task Parameters
+## Task Parameters
 
-Parameters used inside the `initialTask` object when creating a session, or in the message body when sending a new task via `POST /start/send-message`.
+Parameters used inside the `task` object when creating a session, or in the message body when sending a new task via `POST /start/send-message`.
 
-### taskDetails
+### prompt
 
 - **Type:** `string`
 - **Required:** No
@@ -226,15 +226,15 @@ Parameters used inside the `initialTask` object when creating a session, or in t
 **Example:**
 ```json
 {
-  "initialTask": {
-    "taskDetails": "Go to amazon.com and search for wireless keyboards"
+  "task": {
+    "prompt": "Go to amazon.com and search for wireless keyboards"
   }
 }
 ```
 
 ---
 
-### startingPoint
+### startingUrl
 
 - **Type:** `string`
 - **Required:** No
@@ -244,15 +244,15 @@ Parameters used inside the `initialTask` object when creating a session, or in t
 **Example:**
 ```json
 {
-  "initialTask": {
-    "taskDetails": "Search for laptops",
-    "startingPoint": "https://amazon.com"
+  "task": {
+    "prompt": "Search for laptops",
+    "startingUrl": "https://amazon.com"
   }
 }
 ```
 
 <Tip>
-Setting a `startingPoint` eliminates the need to navigate from a blank page, reducing task execution time and cost.
+Setting a `startingUrl` eliminates the need to navigate from a blank page, reducing task execution time and cost.
 </Tip>
 
 ---
@@ -477,13 +477,13 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 - **Type:** `string[]` (array of file ID strings)
 - **Required:** No
 - **Default:** `[]`
-- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form. This is a task-level parameter — place it alongside `taskDetails`.
+- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form. This is a task-level parameter — place it alongside `prompt`.
 
 **Example with /start/run-task:**
 ```json
 {
-  "taskDetails": "Upload this document to the submission form",
-  "startingPoint": "https://example.com/upload",
+  "prompt": "Upload this document to the submission form",
+  "startingUrl": "https://example.com/upload",
   "files": ["abc123...", "def456..."]
 }
 ```
@@ -492,9 +492,9 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 ```json
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Upload the attached file to the portal",
-    "startingPoint": "https://example.com/portal",
+  "task": {
+    "prompt": "Upload the attached file to the portal",
+    "startingUrl": "https://example.com/portal",
     "files": ["abc123..."]
   }
 }
@@ -540,9 +540,9 @@ See [File Uploads guide](/environments/file-uploads) for the full upload workflo
 ```json
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Extract product information from the page",
-    "startingPoint": "https://example.com/product",
+  "task": {
+    "prompt": "Extract product information from the page",
+    "startingUrl": "https://example.com/product",
     "maxDuration": 300000,
     "outputType": "structured_json",
     "outputSchema": {
@@ -571,7 +571,7 @@ See [File Uploads guide](/environments/file-uploads) for the full upload workflo
 
 Parameters used when starting a new task via `POST /start/send-message` with `actionType: "newTask"`.
 
-All [Initial Task Parameters](#initial-task-parameters) are available, plus:
+All [Task Parameters](#task-parameters) are available, plus:
 
 ### actionType
 
@@ -721,7 +721,7 @@ Parameters used in the `message` field of `POST /start/send-message`.
 
 **Required Parameters:**
 - `actionType`: `"guardrail"`
-- `taskDetails`: Human-provided information
+- `prompt`: Human-provided information
 - `newState`: `"resume"`
 
 **Example:**
@@ -730,7 +730,7 @@ Parameters used in the `message` field of `POST /start/send-message`.
   "sessionId": "a1b2c3d4e5f6",
   "message": {
     "actionType": "guardrail",
-    "taskDetails": "Username: user@example.com, Password: pass123",
+    "prompt": "Username: user@example.com, Password: pass123",
     "newState": "resume"
   }
 }
@@ -1049,8 +1049,8 @@ interface SecretEntry {
 
 ```typescript
 interface TaskConfig {
-  taskDetails?: string;
-  startingPoint?: string | null;
+  prompt?: string;
+  startingUrl?: string | null;
   maxDuration?: number;
   maxInputTokens?: number;
   maxOutputTokens?: number;
@@ -1099,7 +1099,7 @@ interface SessionConfig {
   policyId?: string;
   proxy?: ProxyConfig | null;
   mode?: string;
-  initialTask?: TaskConfig;
+  task?: TaskConfig;
 }
 ```
 
@@ -1111,8 +1111,8 @@ interface SessionConfig {
 interface TaskMessage {
   actionType: "newTask";
   newState: "start";
-  taskDetails: string;
-  startingPoint?: string | null;
+  prompt: string;
+  startingUrl?: string | null;
   maxDuration?: number;
   maxInputTokens?: number;
   maxOutputTokens?: number;
@@ -1159,7 +1159,7 @@ interface InteractionMessage {
 ```typescript
 interface GuardrailMessage {
   actionType: "guardrail";
-  taskDetails: string;
+  prompt: string;
   newState: "resume";
 }
 ```
