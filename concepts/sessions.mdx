@@ -35,9 +35,9 @@ Configure sessions when creating them:
   "policyId": "pol_xyz789",                          // Optional: enforce automation rules
   "proxy": { "source": "WebRun", "country": "US" }, // Optional: route through proxy
   "mode": "default",                              // Session mode
-  "initialTask": {
-    "taskDetails": "What to do",                  // Initial task (can be empty)
-    "startingPoint": "https://example.com",       // Skip navigation
+  "task": {
+    "prompt": "What to do",                  // Initial task (can be empty)
+    "startingUrl": "https://example.com",       // Skip navigation
     "maxDuration": 300000,                        // Task timeout in ms (max 5 min)
     "maxInputTokens": 100000,                     // AI model input limit
     "maxOutputTokens": 100000,                    // AI model output limit
@@ -54,14 +54,14 @@ Configure sessions when creating them:
 **Key parameters:**
 
 - **mode**: Session mode (currently only `"default"` is supported).
-- **initialTask**: Contains all task-specific parameters.
-- **taskDetails**: Can be empty if you plan to send tasks later via `/send-message`.
-- **startingPoint**: Saves tokens and time by skipping navigation.
+- **task**: Contains all task-specific parameters.
+- **prompt**: Can be empty if you plan to send tasks later via `/send-message`.
+- **startingUrl**: Saves tokens and time by skipping navigation.
 - **maxDuration**: Maximum time a task can run before automatic termination (default: 5 minutes). Note: Session inactivity timeout is fixed at 5 minutes.
 - **terminateOnCompletion**: Automatically `true` for `/start/run-task` endpoint.
-- **policyId**: Attach an [automation policy](/concepts/policies) to enforce runtime rules on agent actions. Policies cover domain restrictions, action rules, URL patterns, and sensitive data. This is a top-level parameter, not nested inside `initialTask`.
+- **policyId**: Attach an [automation policy](/concepts/policies) to enforce runtime rules on agent actions. Policies cover domain restrictions, action rules, URL patterns, and sensitive data. This is a top-level parameter, not nested inside `task`.
 - **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
-- **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `initialTask`.
+- **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `task`.
 - **proxy**: Route the session through a proxy server for geographic targeting or IP management. Use WebRun-managed proxies or bring your own. Adds 2-3 seconds of cold-start latency. See [Proxies guide](/usage-guides/proxies).
 
 ---
@@ -113,7 +113,7 @@ Sessions are billable from creation until termination or timeout. Idle time betw
 // Create and auto-terminate
 POST /start/run-task
 {
-  "taskDetails": "Extract data from this page"
+  "prompt": "Extract data from this page"
 }
 ```
 
@@ -121,7 +121,7 @@ POST /start/run-task
 ```javascript
 // Create session
 POST /start/start-session
-{ "taskDetails": "Navigate to site" }
+{ "prompt": "Navigate to site" }
 
 // Send follow-up task
 POST /start/send-message
@@ -129,7 +129,7 @@ POST /start/send-message
   "sessionId": "sess_abc",
   "message": {
     "actionType": "newTask",
-    "taskDetails": "Extract data"
+    "prompt": "Extract data"
   }
 }
 
@@ -145,7 +145,7 @@ POST /start/send-message
 ```javascript
 // Create session
 POST /start/start-session
-{ "taskDetails": "Navigate to site" }
+{ "prompt": "Navigate to site" }
 
 // Final task with auto-terminate
 POST /start/send-message
@@ -153,7 +153,7 @@ POST /start/send-message
   "sessionId": "sess_abc",
   "message": {
     "actionType": "newTask",
-    "taskDetails": "Extract data",
+    "prompt": "Extract data",
     "terminateOnCompletion": true  // Auto-terminates after this task
   }
 }

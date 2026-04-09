@@ -29,9 +29,9 @@ Create a new persistent session that can run multiple tasks.
   "policyId": "pol_xyz789",
   "proxy": { "source": "WebRun", "country": "US" },
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Go to amazon.com and search for laptops",
-    "startingPoint": "https://amazon.com",
+  "task": {
+    "prompt": "Go to amazon.com and search for laptops",
+    "startingUrl": "https://amazon.com",
     "maxDuration": 300000,
     "maxInputTokens": 100000,
     "maxOutputTokens": 100000,
@@ -54,7 +54,7 @@ Create a new persistent session that can run multiple tasks.
 ```
 
 <Note>
-The `initialTask` object contains all task-specific parameters. Use `startingPoint` to specify the URL where the task should begin. Use `environmentId` (top-level) to attach an [environment](/environments/overview) with saved cookies, browser state, and persistent files. Use `policyId` (top-level) to enforce [automation policy](/concepts/policies) rules on agent actions. Use `proxy` (top-level) to route the session through a [proxy server](/usage-guides/proxies).
+The `task` object contains all task-specific parameters. Use `startingUrl` to specify the URL where the task should begin. Use `environmentId` (top-level) to attach an [environment](/environments/overview) with saved cookies, browser state, and persistent files. Use `policyId` (top-level) to enforce [automation policy](/concepts/policies) rules on agent actions. Use `proxy` (top-level) to route the session through a [proxy server](/usage-guides/proxies).
 </Note>
 
 **Response (200 OK):**
@@ -115,8 +115,8 @@ Start a new task. Returns taskId for polling.
   "message": {
     "actionType": "newTask",
     "newState": "start",
-    "taskDetails": "Search for laptops",
-    "startingPoint": "https://amazon.com",
+    "prompt": "Search for laptops",
+    "startingUrl": "https://amazon.com",
     "files": ["abc123..."],
     "maxDuration": 60000,
     "maxInputTokens": 50000,
@@ -250,7 +250,7 @@ Respond to guardrail trigger. Returns immediate success.
   "sessionId": "a1b2c3d4e5f6",
   "message": {
     "actionType": "guardrail",
-    "taskDetails": "Username: user@example.com, Password: pass123",
+    "prompt": "Username: user@example.com, Password: pass123",
     "newState": "resume"
   }
 }
@@ -283,15 +283,17 @@ Execute a single task with auto-terminating session. Simplified version of start
 **Request Body:**
 ```json
 {
+  "task": {
+    "prompt": "Search Google for Anthropic",
+    "startingUrl": "https://google.com",
+    "files": ["abc123..."],
+    "maxDuration": 300000,
+    "maxInputTokens": 100000,
+    "maxOutputTokens": 100000
+  },
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "policyId": "pol_xyz789",
   "proxy": { "source": "WebRun", "country": "US" },
-  "taskDetails": "Search Google for Anthropic",
-  "files": ["abc123..."],
-  "maxDuration": 300000,
-  "maxInputTokens": 100000,
-  "maxOutputTokens": 100000,
-  "startingUrl": "https://google.com",
   "mode": "default"
 }
 ```
@@ -342,7 +344,7 @@ Execute a single task with auto-terminating session. Simplified version of start
 ```
 
 **Error Responses:**
-- `400` - Missing taskDetails
+- `400` - Missing task.prompt
 - `401` - Missing or invalid API key
 - `402` - Insufficient balance
 - `503` - No available instances
@@ -380,7 +382,7 @@ curl -X POST https://connect.webrun.ai/files/upload \
 }
 ```
 
-Use the returned `fileId` values in the `files` array at the task level — inside `initialTask` for `/start/start-session`, in the request body for `/start/run-task`, or inside `message` for `/start/send-message`.
+Use the returned `fileId` values in the `files` array at the task level — inside `task` for `/start/start-session`, in the request body for `/start/run-task`, or inside `message` for `/start/send-message`.
 
 See [File Uploads guide](/environments/file-uploads) for complete examples.
 

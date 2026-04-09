@@ -130,7 +130,7 @@ curl https://connect.webrun.ai/cron-jobs \
       "scheduleType": "cron",
       "scheduleCron": "0 9 * * *",
       "timezone": "America/New_York",
-      "taskDetails": "Go to competitor.com/pricing and extract all plan prices",
+      "prompt": "Go to competitor.com/pricing and extract all plan prices",
       "outputType": "structured",
       "deliveryMode": "webhook",
       "status": "active",
@@ -163,7 +163,7 @@ Content-Type: application/json
 | `scheduleInterval` | string | Conditional | Interval string like `"30m"`, `"2h"` (required when `scheduleType` is `"every"`) |
 | `scheduleCron` | string | Conditional | Cron expression (required when `scheduleType` is `"cron"`) |
 | `timezone` | string | No | IANA timezone (default: `"UTC"`) |
-| `taskDetails` | string | Yes | Instructions for the browser automation task |
+| `prompt` | string | Yes | Instructions for the browser automation task |
 | `startingUrl` | string | No | URL where the task should begin |
 | `outputType` | string | No | `"text"` (default) or `"structured"` |
 | `outputSchema` | object | No | JSON Schema for structured output (when `outputType` is `"structured"`) |
@@ -187,7 +187,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
     "scheduleType": "cron",
     "scheduleCron": "0 9 * * 1-5",
     "timezone": "America/New_York",
-    "taskDetails": "Go to competitor.com/pricing and extract all plan prices",
+    "prompt": "Go to competitor.com/pricing and extract all plan prices",
     "startingUrl": "https://competitor.com/pricing",
     "outputType": "structured",
     "outputSchema": {
@@ -227,7 +227,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
     "policyId": null,
     "scheduleType": "every",
     "scheduleInterval": "2h",
-    "taskDetails": "Check the inventory page and report any out-of-stock items",
+    "prompt": "Check the inventory page and report any out-of-stock items",
     "startingUrl": "https://store.example.com/inventory",
     "deliveryMode": "webhook",
     "webhook": {
@@ -249,7 +249,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
     "environmentId": "<ENV_ID>",
     "scheduleType": "at",
     "scheduleAt": "2026-04-01T06:00:00Z",
-    "taskDetails": "Log into the dashboard and export the Q1 revenue report as PDF",
+    "prompt": "Log into the dashboard and export the Q1 revenue report as PDF",
     "deliveryMode": "bot"
   }'
 ```
@@ -267,7 +267,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
     "scheduleType": "cron",
     "scheduleCron": "0 9 * * 1-5",
     "timezone": "America/New_York",
-    "taskDetails": "Go to competitor.com/pricing and extract all plan prices",
+    "prompt": "Go to competitor.com/pricing and extract all plan prices",
     "status": "active",
     "nextRunAt": "2026-02-25T14:00:00.000Z",
     "createdAt": "2026-02-24T10:00:00.000Z"
@@ -280,7 +280,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
 | Status | Message | Cause |
 |--------|---------|-------|
 | 400 | name is required | Missing or empty `name` |
-| 400 | taskDetails is required | Missing or empty `taskDetails` |
+| 400 | prompt is required | Missing or empty `prompt` |
 | 400 | Valid environmentId is required | Missing or invalid environment ID |
 | 400 | Maximum of N cron jobs per user | User limit reached |
 | 400 | webhook config is required when deliveryMode includes webhook | Missing webhook config |

@@ -33,9 +33,9 @@ curl -X POST https://connect.webrun.ai/start/start-session \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
     "mode": "default",
-    "initialTask": {
-      "taskDetails": "Go to amazon.com",
-      "startingPoint": "https://amazon.com",
+    "task": {
+      "prompt": "Go to amazon.com",
+      "startingUrl": "https://amazon.com",
       "maxDuration": 300000
     }
   }'
@@ -80,7 +80,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
     "message": {
       "actionType": "newTask",
       "newState": "start",
-      "taskDetails": "Now add the first item to cart"
+      "prompt": "Now add the first item to cart"
     }
   }'
 ```
@@ -89,7 +89,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 socket.emit("message", {
   actionType: "newTask",
   newState: "start",
-  taskDetails: "Now add the first item to cart",
+  prompt: "Now add the first item to cart",
   maxDuration: 60000
 });
 
@@ -146,9 +146,9 @@ async function runMultiTaskWorkflow() {
     },
     body: JSON.stringify({
       mode: "default",
-      initialTask: {
-        taskDetails: "Go to amazon.com",
-        startingPoint: "https://amazon.com"
+      task: {
+        prompt: "Go to amazon.com",
+        startingUrl: "https://amazon.com"
       }
     })
   }).then(r => r.json());
@@ -167,7 +167,7 @@ async function runMultiTaskWorkflow() {
       message: {
         actionType: "newTask",
         newState: "start",
-        taskDetails: "Search for 'wireless keyboard'"
+        prompt: "Search for 'wireless keyboard'"
       }
     })
   }).then(r => r.json());
@@ -190,7 +190,7 @@ async function runMultiTaskWorkflow() {
       message: {
         actionType: "newTask",
         newState: "start",
-        taskDetails: "Add the first result to cart"
+        prompt: "Add the first result to cart"
       }
     })
   }).then(r => r.json());
@@ -257,7 +257,9 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "taskDetails": "Search Google for Anthropic and return the first result"
+    "task": {
+      "prompt": "Search Google for Anthropic and return the first result"
+    }
   }'
 ```
 
@@ -299,13 +301,13 @@ Configure your session behavior with these parameters:
 |-----------|------|---------|-------------|
 | `mode` | string | "default" | Session mode (currently only "default" supported) |
 | `environmentId` | string | null | [Environment](/environments/overview) ID to attach |
-| `initialTask` | object | null | Initial task configuration (see below) |
+| `task` | object | null | Initial task configuration (see below) |
 
-**initialTask parameters:**
+**task parameters:**
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `taskDetails` | string | "" | Initial task description (can be empty for sessions without initial task) |
-| `startingPoint` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
+| `prompt` | string | "" | Initial task description (can be empty for sessions without initial task) |
+| `startingUrl` | string | null | Starting URL (e.g., `"https://amazon.com"`) |
 | `maxDuration` | number | 300000 | Max task duration in ms (default and max: 5 minutes) |
 | `maxInputTokens` | number | 100000 | Max input tokens for AI model |
 | `maxOutputTokens` | number | 100000 | Max output tokens for AI model |
@@ -318,9 +320,9 @@ Configure your session behavior with these parameters:
 ```json
 {
   "mode": "default",
-  "initialTask": {
-    "taskDetails": "Search for wireless keyboards",
-    "startingPoint": "https://amazon.com",
+  "task": {
+    "prompt": "Search for wireless keyboards",
+    "startingUrl": "https://amazon.com",
     "maxDuration": 180000,
     "maxInputTokens": 50000,
     "maxOutputTokens": 50000,
@@ -331,7 +333,7 @@ Configure your session behavior with these parameters:
 
 <Note>
 - `maxDuration` is the max task duration (default and max: 5 minutes). Session inactivity timeout is fixed at 5 minutes
-- `taskDetails` can be empty if you plan to send tasks later via `/start/send-message`
+- `prompt` can be empty if you plan to send tasks later via `/start/send-message`
 - Always terminate sessions when done to avoid unnecessary charges
 </Note>
 
@@ -364,7 +366,7 @@ Or use `terminateOnCompletion` on your final task:
 message: {
   actionType: "newTask",
   newState: "start",
-  taskDetails: "Final task",
+  prompt: "Final task",
   terminateOnCompletion: true
 }
 ```

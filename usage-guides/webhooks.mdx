@@ -50,9 +50,9 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     mode: "default",
-    initialTask: {
-      taskDetails: "Extract the main headline from the page",
-      startingPoint: "https://news.ycombinator.com",
+    task: {
+      prompt: "Extract the main headline from the page",
+      startingUrl: "https://news.ycombinator.com",
       webhook: {
         name: "HN Headlines",
         url: "https://api.yoursite.com/webhooks/headlines",
@@ -79,9 +79,9 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
   },
   body: JSON.stringify({
     mode: "default",
-    initialTask: {
-      taskDetails: "Extract product information from the page",
-      startingPoint: "https://example.com/product",
+    task: {
+      prompt: "Extract product information from the page",
+      startingUrl: "https://example.com/product",
       maxDuration: 300000,
       outputType: "structured_json",
       outputSchema: {
@@ -328,29 +328,31 @@ Automatically ingest extracted data into your database or data warehouse.
 
 ```javascript
 {
-  taskDetails: "Extract all product listings from the category page",
-  outputType: "structured",
-  outputSchema: {
-    type: "object",
-    properties: {
-      products: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            sku: { type: "string" },
-            name: { type: "string" },
-            price: { type: "number" }
+  task: {
+    prompt: "Extract all product listings from the category page",
+    outputType: "structured",
+    outputSchema: {
+      type: "object",
+      properties: {
+        products: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              sku: { type: "string" },
+              name: { type: "string" },
+              price: { type: "number" }
+            }
           }
         }
       }
+    },
+    webhook: {
+      name: "Product Ingestion",
+      url: "https://api.yoursite.com/ingest/products",
+      auth: "Bearer ingestion-token",
+      submittedData: "ai_response"
     }
-  },
-  webhook: {
-    name: "Product Ingestion",
-    url: "https://api.yoursite.com/ingest/products",
-    auth: "Bearer ingestion-token",
-    submittedData: "ai_response"
   }
 }
 ```
@@ -361,12 +363,14 @@ Trigger alerts or notifications when tasks complete.
 
 ```javascript
 {
-  taskDetails: "Monitor the page for price changes",
-  webhook: {
-    name: "Price Alert",
-    url: "https://api.yoursite.com/alerts/price-change",
-    auth: "Bearer alert-token",
-    submittedData: "just_ping"
+  task: {
+    prompt: "Monitor the page for price changes",
+    webhook: {
+      name: "Price Alert",
+      url: "https://api.yoursite.com/alerts/price-change",
+      auth: "Bearer alert-token",
+      submittedData: "just_ping"
+    }
   }
 }
 ```
@@ -377,20 +381,22 @@ Send data directly to external services like Zapier, Make, or n8n.
 
 ```javascript
 {
-  taskDetails: "Extract contact information from the page",
-  outputType: "structured",
-  outputSchema: {
-    type: "object",
-    properties: {
-      name: { type: "string" },
-      email: { type: "string" },
-      phone: { type: "string" }
+  task: {
+    prompt: "Extract contact information from the page",
+    outputType: "structured",
+    outputSchema: {
+      type: "object",
+      properties: {
+        name: { type: "string" },
+        email: { type: "string" },
+        phone: { type: "string" }
+      }
+    },
+    webhook: {
+      name: "Zapier Integration",
+      url: "https://hooks.zapier.com/hooks/catch/123456/abcdef",
+      submittedData: "ai_response"
     }
-  },
-  webhook: {
-    name: "Zapier Integration",
-    url: "https://hooks.zapier.com/hooks/catch/123456/abcdef",
-    submittedData: "ai_response"
   }
 }
 ```

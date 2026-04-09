@@ -50,7 +50,7 @@ Use when you're confident the task takes < 50 seconds.
 - Body:
 ```json
 {
-  "taskDetails": "Go to google.com and search for 'Anthropic AI'"
+  "prompt": "Go to google.com and search for 'Anthropic AI'"
 }
 ```
 
@@ -78,7 +78,7 @@ Use when task might exceed 50 seconds.
    - Body:
    ```json
    {
-     "taskDetails": "Your complex task here"
+     "prompt": "Your complex task here"
    }
    ```
 
@@ -121,7 +121,7 @@ Make.com's default timeout is 30 seconds — too short for WebRun. **You must in
 - Request content:
 ```json
 {
-  "taskDetails": "Search Google for Anthropic and return first result"
+  "prompt": "Search Google for Anthropic and return first result"
 }
 ```
 
@@ -154,7 +154,7 @@ Make.com's default timeout is 30 seconds — too short for WebRun. **You must in
    - Body:
    ```json
    {
-     "taskDetails": "Your task here"
+     "prompt": "Your task here"
    }
    ```
 
@@ -196,7 +196,7 @@ Choose your trigger (e.g., "New Row in Google Sheets", "New Form Response", etc.
 - Data:
 ```json
 {
-  "taskDetails": "Your task description here"
+  "prompt": "Your task description here"
 }
 ```
 - Headers:

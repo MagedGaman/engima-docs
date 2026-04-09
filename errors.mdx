@@ -163,7 +163,7 @@ All errors follow a consistent structure:
 ```json
 {
   "success": false,
-  "error": "taskDetails cannot be empty",
+  "error": "prompt cannot be empty",
   "code": "INVALID_TASK_DETAILS"
 }
 ```
@@ -292,10 +292,10 @@ All errors follow a consistent structure:
 ```json
 {
   "success": false,
-  "error": "Missing required field: taskDetails",
+  "error": "Missing required field: task.prompt",
   "code": "MISSING_REQUIRED_FIELD",
   "details": {
-    "field": "taskDetails"
+    "field": "task.prompt"
   }
 }
 ```
@@ -384,7 +384,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 ### Handling Guardrails
 
 ```javascript
-async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
+async function executeTaskWithGuardrails(sessionId, prompt, apiKey) {
   let attempts = 0;
   const maxGuardrailAttempts = 3;
 
@@ -412,7 +412,7 @@ async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
           sessionId,
           message: {
             actionType: "guardrail",
-            taskDetails: userInput,
+            prompt: userInput,
             newState: "resume"
           }
         })
@@ -432,7 +432,7 @@ async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
 ### Complete Error Handling
 
 ```javascript
-async function executeTaskWithRetry(taskDetails, apiKey) {
+async function executeTaskWithRetry(prompt, apiKey) {
   let sessionId = null;
 
   try {
@@ -445,7 +445,7 @@ async function executeTaskWithRetry(taskDetails, apiKey) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ taskDetails })
+        body: JSON.stringify({ prompt })
       }
     );
 
@@ -454,7 +454,7 @@ async function executeTaskWithRetry(taskDetails, apiKey) {
     // Execute task with guardrail handling
     const result = await executeTaskWithGuardrails(
       sessionId,
-      taskDetails,
+      prompt,
       apiKey
     );
 

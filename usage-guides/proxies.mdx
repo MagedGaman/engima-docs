@@ -59,13 +59,15 @@ Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166
 
 <CodeGroup>
 
-```json run-task (flat format)
+```json run-task
 {
-  "taskDetails": "Check product prices on amazon.co.uk",
-  "startingPoint": "https://amazon.co.uk",
   "proxy": {
     "source": "WebRun",
     "country": "GB"
+  },
+  "task": {
+    "prompt": "Check product prices on amazon.co.uk",
+    "startingUrl": "https://amazon.co.uk"
   }
 }
 ```
@@ -76,9 +78,9 @@ Set `country` to any [ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166
     "source": "WebRun",
     "country": "GB"
   },
-  "initialTask": {
-    "taskDetails": "Check product prices on amazon.co.uk",
-    "startingPoint": "https://amazon.co.uk"
+  "task": {
+    "prompt": "Check product prices on amazon.co.uk",
+    "startingUrl": "https://amazon.co.uk"
   }
 }
 ```
@@ -149,11 +151,13 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
-    "taskDetails": "Go to google.de and search for Berlin restaurants",
-    "startingPoint": "https://google.de",
     "proxy": {
       "source": "WebRun",
       "country": "DE"
+    },
+    "task": {
+      "prompt": "Go to google.de and search for Berlin restaurants",
+      "startingUrl": "https://google.de"
     }
   }'
 ```
@@ -174,15 +178,15 @@ curl -X POST https://connect.webrun.ai/start/start-session \
       "username": "user",
       "password": "pass"
     },
-    "initialTask": {
-      "taskDetails": "Navigate to the dashboard",
-      "startingPoint": "https://app.example.com"
+    "task": {
+      "prompt": "Navigate to the dashboard",
+      "startingUrl": "https://app.example.com"
     }
   }'
 ```
 
 <Note>
-The `proxy` field is a top-level session parameter, alongside `environmentId` and `initialTask`. It is not nested inside `initialTask`.
+The `proxy` field is a top-level session parameter, alongside `environmentId` and `task`. It is not nested inside `task`.
 </Note>
 
 ---

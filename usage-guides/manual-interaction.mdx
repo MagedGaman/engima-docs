@@ -257,7 +257,7 @@ socket.on("message", (data) => {
 
       socket.emit("message", {
         actionType: "guardrail",
-        taskDetails: "CAPTCHA solved, continue",
+        prompt: "CAPTCHA solved, continue",
         newState: "resume"
       });
     };
@@ -280,8 +280,10 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Go to login page",
-    startingUrl: "https://example.com/login"
+    task: {
+      prompt: "Go to login page",
+      startingUrl: "https://example.com/login"
+    }
   })
 }).then(r => r.json());
 
@@ -334,7 +336,7 @@ document.getElementById("done-button").addEventListener("click", () => {
   socket.emit("message", {
     actionType: "newTask",
     newState: "start",
-    taskDetails: "Complete the checkout process"
+    prompt: "Complete the checkout process"
   });
 });
 

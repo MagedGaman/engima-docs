@@ -260,7 +260,7 @@ Respond with guardrail message via `POST /start/send-message`:
   "sessionId": "a1b2c3d4e5f6",
   "message": {
     "actionType": "guardrail",
-    "taskDetails": "Username: user@example.com, Password: pass123",
+    "prompt": "Username: user@example.com, Password: pass123",
     "newState": "resume"
   }
 }
@@ -536,7 +536,7 @@ Agent needs human input to continue.
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Username: demo@example.com, Password: demo123",
+  prompt: "Username: demo@example.com, Password: demo123",
   newState: "resume"
 });
 ```

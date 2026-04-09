@@ -82,8 +82,10 @@ function App() {
           'Authorization': `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
-          taskDetails: 'Go to example.com',
-          startingUrl: 'https://example.com'
+          task: {
+            prompt: 'Go to example.com',
+            startingUrl: 'https://example.com'
+          }
         })
       });
       const data = await response.json();
@@ -195,8 +197,10 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${API_KEY}`
   },
   body: JSON.stringify({
-    taskDetails: "Go to example.com",
-    startingUrl: "https://example.com"
+    task: {
+      prompt: "Go to example.com",
+      startingUrl: "https://example.com"
+    }
   })
 }).then(r => r.json());
 

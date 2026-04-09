@@ -93,7 +93,7 @@ POST /start/send-message
   "sessionId": "SESSION_ID",
   "message": {
     "actionType": "guardrail",
-    "taskDetails": "Username: demo@example.com, Password: demo123",
+    "prompt": "Username: demo@example.com, Password: demo123",
     "newState": "resume"
   }
 }
@@ -103,7 +103,7 @@ POST /start/send-message
 ```javascript
 socket.emit("message", {
   actionType: "guardrail",
-  taskDetails: "Username: demo@example.com, Password: demo123",
+  prompt: "Username: demo@example.com, Password: demo123",
   newState": "resume"
 });
 ```
@@ -119,7 +119,7 @@ socket.emit("message", {
 **Response:** Provide username and password
 **Example:**
 ```javascript
-taskDetails: "Username: user@example.com, Password: secretpass123"
+prompt: "Username: user@example.com, Password: secretpass123"
 ```
 
 ### 2. Purchase Confirmation
@@ -129,9 +129,9 @@ taskDetails: "Username: user@example.com, Password: secretpass123"
 **Response:** Confirm or deny
 **Example:**
 ```javascript
-taskDetails: "Yes, complete the purchase"
+prompt: "Yes, complete the purchase"
 // or
-taskDetails: "No, stop and return to cart"
+prompt: "No, stop and return to cart"
 ```
 
 ### 3. Ambiguous Choice
@@ -141,7 +141,7 @@ taskDetails: "No, stop and return to cart"
 **Response:** Clarify the choice
 **Example:**
 ```javascript
-taskDetails: "Select the first one (Logitech K380)"
+prompt: "Select the first one (Logitech K380)"
 ```
 
 ### 4. CAPTCHA or Security Challenge
@@ -151,7 +151,7 @@ taskDetails: "Select the first one (Logitech K380)"
 **Response:** Either solve it manually or instruct to skip
 **Example:**
 ```javascript
-taskDetails: "I've solved the CAPTCHA, please continue"
+prompt: "I've solved the CAPTCHA, please continue"
 // or use manual takeover to solve it yourself
 ```
 
@@ -197,7 +197,7 @@ async function handleTask(sessionId, taskId, apiKey) {
         sessionId,
         message: {
           actionType: "guardrail",
-          taskDetails: userInput,
+          prompt: userInput,
           newState: "resume"
         }
       })
@@ -221,7 +221,7 @@ function setupGuardrailHandler(socket) {
 
       socket.emit("message", {
         actionType: "guardrail",
-        taskDetails: userInput,
+        prompt: userInput,
         newState: "resume"
       });
     }
@@ -268,8 +268,8 @@ If you know the credentials the agent will need ahead of time, you can provide t
 
 ```json
 {
-  "initialTask": {
-    "taskDetails": "Log in and export the report",
+  "task": {
+    "prompt": "Log in and export the report",
     "secrets": [
       {
         "match": "*.example.com",

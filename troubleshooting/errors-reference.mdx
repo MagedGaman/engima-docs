@@ -110,7 +110,7 @@ const response = await fetch("https://connect.webrun.ai/start/start-session", {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${YOUR_API_KEY}`
   },
-  body: JSON.stringify({ taskDetails: "Navigate to example.com" })
+  body: JSON.stringify({ prompt: "Navigate to example.com" })
 });
 ```
 
@@ -166,7 +166,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${apiKey}`
   },
   body: JSON.stringify({
-    taskDetails: "Your task",
+    prompt: "Your task",
     maxDuration: 300000 // max task duration in milliseconds
   })
 });
@@ -229,7 +229,7 @@ await fetch("https://connect.webrun.ai/start/send-message", {
 
 **Retry with backoff:**
 ```javascript
-async function createSessionWithRetry(taskDetails, apiKey, maxRetries = 3) {
+async function createSessionWithRetry(prompt, apiKey, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
     try {
       const response = await fetch("https://connect.webrun.ai/start/start-session", {
@@ -238,7 +238,7 @@ async function createSessionWithRetry(taskDetails, apiKey, maxRetries = 3) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ taskDetails })
+        body: JSON.stringify({ prompt })
       });
 
       const data = await response.json();
@@ -337,7 +337,7 @@ const response = await fetch("https://connect.webrun.ai/start/run-task", {
   },
   body: JSON.stringify({
     sessionId,
-    taskDetails: "Complex task",
+    prompt: "Complex task",
     maxDuration: 120000 // 2 minutes
   })
 });
@@ -354,7 +354,7 @@ const response = await fetch("https://connect.webrun.ai/start/run-task", {
 ```json
 {
   "success": false,
-  "error": "taskDetails cannot be empty",
+  "error": "prompt cannot be empty",
   "code": "INVALID_TASK_DETAILS"
 }
 ```
@@ -364,13 +364,13 @@ const response = await fetch("https://connect.webrun.ai/start/run-task", {
 **Good task examples:**
 ```javascript
 // Good - specific and actionable
-taskDetails: "Navigate to example.com and click the 'Sign Up' button"
+prompt: "Navigate to example.com and click the 'Sign Up' button"
 
 // Good - clear objective
-taskDetails: "Search for 'laptop' on amazon.com and get the price of the first result"
+prompt: "Search for 'laptop' on amazon.com and get the price of the first result"
 
 // Bad - too vague
-taskDetails: "do something"
+prompt: "do something"
 ```
 
 **Related:**
@@ -413,7 +413,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
     "Authorization": `Bearer ${apiKey}`
   },
   body: JSON.stringify({
-    taskDetails: "Click the login button",
+    prompt: "Click the login button",
     startingUrl: "https://example.com/login" // Start directly at destination
   })
 });
@@ -464,7 +464,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 // Try: "Click the blue 'Submit' button at the bottom of the form"
 
 // For dynamic content:
-taskDetails: "Wait for the results to load, then click the first product"
+prompt: "Wait for the results to load, then click the first product"
 ```
 
 **Related:**
@@ -613,10 +613,10 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 ```json
 {
   "success": false,
-  "error": "Missing required field: taskDetails",
+  "error": "Missing required field: task.prompt",
   "code": "MISSING_REQUIRED_FIELD",
   "details": {
-    "field": "taskDetails"
+    "field": "task.prompt"
   }
 }
 ```
@@ -626,7 +626,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 **Required fields by endpoint:**
 
 **POST /start/start-session:**
-- `taskDetails` (string)
+- `prompt` (string)
 
 **POST /start/send-message:**
 - `sessionId` (string)
@@ -634,7 +634,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 
 **POST /start/run-task:**
 - `sessionId` (string)
-- `taskDetails` (string)
+- `prompt` (string)
 
 **Related:**
 - [API Reference](/api-reference/introduction)
@@ -724,7 +724,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
 ### Complete Error Handling Example
 
 ```javascript
-async function executeTaskWithRetry(taskDetails, apiKey) {
+async function executeTaskWithRetry(prompt, apiKey) {
   let sessionId = null;
 
   try {
@@ -737,7 +737,7 @@ async function executeTaskWithRetry(taskDetails, apiKey) {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ taskDetails })
+        body: JSON.stringify({ prompt })
       }
     );
 
@@ -746,7 +746,7 @@ async function executeTaskWithRetry(taskDetails, apiKey) {
     // Execute task with guardrail handling
     const result = await executeTaskWithGuardrails(
       sessionId,
-      taskDetails,
+      prompt,
       apiKey
     );
 
@@ -786,7 +786,7 @@ async function terminateSession(sessionId, apiKey) {
 ### Handling Guardrails
 
 ```javascript
-async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
+async function executeTaskWithGuardrails(sessionId, prompt, apiKey) {
   let attempts = 0;
   const maxGuardrailAttempts = 3;
 
@@ -814,7 +814,7 @@ async function executeTaskWithGuardrails(sessionId, taskDetails, apiKey) {
           sessionId,
           message: {
             actionType: "guardrail",
-            taskDetails: userInput,
+            prompt: userInput,
             newState: "resume"
           }
         })

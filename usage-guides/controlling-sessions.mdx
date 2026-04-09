@@ -25,8 +25,8 @@ Start a new task in the current session. This is the only control action that re
 |-----------|------|----------|-------------|
 | `actionType` | string | Yes | Must be `"newTask"` |
 | `newState` | string | Yes | Must be `"start"` |
-| `taskDetails` | string | Yes | Task description |
-| `startingPoint` | string | No | URL to start from |
+| `prompt` | string | Yes | Task description |
+| `startingUrl` | string | No | URL to start from |
 | `maxDuration` | number | No | Max time in ms (default: 300000) |
 | `maxInputTokens` | number | No | Max input tokens (default: 100000) |
 | `maxOutputTokens` | number | No | Max output tokens (default: 100000) |
@@ -48,7 +48,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
     "message": {
       "actionType": "newTask",
       "newState": "start",
-      "taskDetails": "Search for wireless keyboards",
+      "prompt": "Search for wireless keyboards",
       "maxDuration": 60000,
       "terminateOnCompletion": true
     }
@@ -59,8 +59,8 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 socket.emit("message", {
   actionType: "newTask",
   newState: "start",
-  taskDetails: "Search for wireless keyboards",
-  startingPoint: "https://amazon.com",
+  prompt: "Search for wireless keyboards",
+  startingUrl: "https://amazon.com",
   maxDuration: 60000,
   maxInputTokens: 100000,
   maxOutputTokens: 100000,
@@ -319,7 +319,7 @@ await fetch(`${BASE}/start/send-message`, {
     message: {
       actionType: "newTask",
       newState: "start",
-      taskDetails: "Final task",
+      prompt: "Final task",
       terminateOnCompletion: true  // ← Session closes after this task
     }
   })
@@ -359,7 +359,7 @@ Limit task duration to prevent runaway costs:
 socket.emit("message", {
   actionType: "newTask",
   newState: "start",
-  taskDetails: "Search for products",
+  prompt: "Search for products",
   maxDuration: 30000  // 30 seconds max
 });
 ```
@@ -403,9 +403,9 @@ async function controlFlowDemo() {
     },
     body: JSON.stringify({
       mode: "default",
-      initialTask: {
-        taskDetails: "Go to amazon.com",
-        startingPoint: "https://amazon.com"
+      task: {
+        prompt: "Go to amazon.com",
+        startingUrl: "https://amazon.com"
       }
     })
   }).then(r => r.json());
@@ -416,7 +416,7 @@ async function controlFlowDemo() {
   const task = await sendMessage(sessionId, {
     actionType: "newTask",
     newState: "start",
-    taskDetails: "Search for 'mechanical keyboard'"
+    prompt: "Search for 'mechanical keyboard'"
   });
 
   // Wait a bit, then pause to inspect
@@ -446,7 +446,7 @@ async function controlFlowDemo() {
     await sendMessage(sessionId, {
       actionType: "newTask",
       newState: "start",
-      taskDetails: "Navigate to homepage instead"
+      prompt: "Navigate to homepage instead"
     });
   }
 
