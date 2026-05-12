@@ -105,6 +105,7 @@ Execute a single browser automation task. Creates a session, runs the task, and 
 | `prompt` | string | Yes | - | Natural language description of the task |
 | `startingUrl` | string | No | null | URL to start from (e.g., "https://google.com") |
 | `maxDuration` | number | No | 300000 | Max task duration in milliseconds |
+| `allow_concierge_reach_out` | boolean | No | true | When `false`, guardrails from this session are not relayed to chat users (Telegram/WhatsApp/Slack/Discord/Teams) connected to the same environment. Use `false` for sessions handling private data |
 
 **Example Usage:**
 
@@ -153,6 +154,7 @@ Create a persistent browser session for multi-step workflows.
 | `prompt` | string | No | "" | Initial task (can be empty to just create session) |
 | `startingUrl` | string | No | null | Starting URL |
 | `maxDuration` | number | No | 300000 | Max task duration in ms |
+| `allow_concierge_reach_out` | boolean | No | true | When `false`, guardrails from this session are not relayed to chat users (Telegram/WhatsApp/Slack/Discord/Teams) connected to the same environment. Locked at session creation |
 
 **Example Usage:**
 
@@ -714,8 +716,8 @@ Claude's execution:
 
 | Tool | Required Parameters | Optional Parameters |
 |------|---------------------|---------------------|
-| `browser_task` | `prompt` | `startingUrl`, `maxDuration` |
-| `create_session` | - | `prompt`, `startingUrl`, `maxDuration` |
+| `browser_task` | `prompt` | `startingUrl`, `maxDuration`, `allow_concierge_reach_out` |
+| `create_session` | - | `prompt`, `startingUrl`, `maxDuration`, `allow_concierge_reach_out` |
 | `send_task_to_session` | `sessionId`, `prompt` | `terminateOnCompletion` |
 | `get_task_status` | `sessionId`, `taskId` | - |
 | `control_session` | `sessionId`, `action` | - |
@@ -766,6 +768,13 @@ Claude's execution:
 - `true`: Auto-close session after task completes
 - `false`: Keep session alive for follow-up tasks
 - Default: `false`
+
+**allow_concierge_reach_out** (boolean)
+- `true`: Guardrails raised by the session can be forwarded to a chat user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the same environment when no one is watching the session live
+- `false`: Guardrails are never forwarded to chat users — useful for sessions handling private data
+- Default: `true`
+- Available on `browser_task` and `create_session` only; locked at session creation
+- See [Routing Guardrails to a Chat User](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user) for the full flow
 
 ---
 
