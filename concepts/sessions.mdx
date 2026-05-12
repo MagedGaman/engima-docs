@@ -34,6 +34,7 @@ Configure sessions when creating them:
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",     // Optional: reuse browser profile & files
   "policyId": "pol_xyz789",                          // Optional: enforce automation rules
   "proxy": { "source": "WebRun", "country": "US" }, // Optional: route through proxy
+  "allowConciergeReachOut": true,                    // Optional: relay guardrails to a chat user
   "mode": "default",                              // Session mode
   "task": {
     "prompt": "What to do",                  // Initial task (can be empty)
@@ -63,6 +64,7 @@ Configure sessions when creating them:
 - **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
 - **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `task`.
 - **proxy**: Route the session through a proxy server for geographic targeting or IP management. Use WebRun-managed proxies or bring your own. Adds 2-3 seconds of cold-start latency. See [Proxies guide](/usage-guides/proxies).
+- **allowConciergeReachOut**: When `true` (default), guardrails raised by the session can be forwarded to a chat user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the same [environment](/environments/overview) — but only when no client is actively watching the session. Set to `false` for sessions handling private data you don't want surfaced through chat. See [Handling Guardrails](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user).
 
 ---
 

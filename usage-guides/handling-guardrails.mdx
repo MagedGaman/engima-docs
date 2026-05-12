@@ -127,6 +127,61 @@ socket.on("message", (data) => {
 
 ---
 
+## Routing Guardrails to a Chat User
+
+Polling and WebSocket both assume something on your side is watching the session when a guardrail triggers. For unattended workloads — scheduled triggers, long-running CI jobs, MCP tasks kicked off from another tool — that isn't always the case. As a fallback, a guardrail can be delivered to a chat user connected to the session's [environment](/environments/overview), and their reply is forwarded back to the session.
+
+### How it works
+
+When a session raises a guardrail, the platform first checks whether you're actively handling it (polling responses or a live WebSocket subscription on the session). If you are, the prompt reaches you the usual way and nothing else happens.
+
+If no one is actively watching, the platform looks for a chat user (Telegram, WhatsApp, Slack, Discord, or Teams) connected to the same environment. If one is available, the guardrail prompt is sent to them in chat. Their reply is forwarded to the session exactly like a regular guardrail response — `resume` to continue or `stop` to cancel.
+
+Whoever answers first wins. If your API caller and a chat user both respond at the same time, only the first reply reaches the session.
+
+### Opting out
+
+Chat routing is enabled by default. To turn it off for a specific session, set `allowConciergeReachOut` to `false` at session creation:
+
+<CodeGroup>
+
+```json /start/start-session
+{
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "allowConciergeReachOut": false,
+  "mode": "default",
+  "task": {
+    "prompt": "Export the monthly financial report and download the PDF"
+  }
+}
+```
+
+```json /start/run-task
+{
+  "allowConciergeReachOut": false,
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "task": {
+    "prompt": "Export the monthly financial report and download the PDF"
+  }
+}
+```
+
+</CodeGroup>
+
+The flag is set at session creation and applies for the lifetime of the session. There is no way to change it later — start a new session if you need different behavior.
+
+### When to disable it
+
+- **Sensitive sessions.** Anything involving private credentials, financial data, or personal information you don't want surfaced through chat.
+- **Shared environments.** When multiple people use the same environment but only your code should handle guardrails for this session.
+- **Deterministic flows.** Automations that must respond programmatically — turning chat routing off ensures the prompt always waits for your API call instead of being answered by someone else first.
+
+<Tip>
+If you'd rather avoid guardrails entirely for known auth flows, provide credentials upfront with [secrets](/usage-guides/secrets) instead. Secrets are never stored and are scoped to the session.
+</Tip>
+
+---
+
 ## Common Guardrail Scenarios
 
 ### 1. Login Credentials
