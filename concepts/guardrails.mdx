@@ -169,6 +169,8 @@ The agent asks for clarification rather than guessing. Financial transactions, a
 
 WebRun doesn't store credentials. You provide them on-demand when a guardrail triggers, or upfront using [secrets](/usage-guides/secrets). You can also intervene manually at any point, even if no guardrail has triggered.
 
+For unattended automations, guardrails can also be answered through a connected chat user (Telegram, WhatsApp, Slack, Discord, Teams) on the session's environment — so a scheduled task can pause and wait for a human reply over chat instead of failing. This is on by default and controlled per-session via the `allowConciergeReachOut` flag. See [Handling Guardrails](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user).
+
 ---
 
 ## Handling Guardrails in Code

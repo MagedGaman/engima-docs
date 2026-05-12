@@ -166,6 +166,31 @@ See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
 
 ---
 
+### allowConciergeReachOut
+
+- **Type:** `boolean`
+- **Required:** No
+- **Default:** `true`
+- **Description:** Controls whether guardrails raised by this session can be relayed to a chat user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the session's [environment](/environments/overview). The relay only happens when no client is actively watching the session — i.e., when polling or WebSocket isn't already handling the prompt. Set to `false` to keep guardrails strictly on the API/WebSocket channel. This is a top-level session parameter and applies for the lifetime of the session.
+
+**Example:**
+```json
+{
+  "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
+  "allowConciergeReachOut": false,
+  "mode": "default",
+  "task": {
+    "prompt": "Export the monthly financial report"
+  }
+}
+```
+
+<Note>
+The flag is locked at session creation. To change the behavior, create a new session. See [Routing Guardrails to a Chat User](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user) for the full flow.
+</Note>
+
+---
+
 ### task
 
 - **Type:** `object`
@@ -1098,6 +1123,7 @@ interface SessionConfig {
   environmentId?: string;
   policyId?: string;
   proxy?: ProxyConfig | null;
+  allowConciergeReachOut?: boolean;  // Default: true
   mode?: string;
   task?: TaskConfig;
 }
