@@ -302,7 +302,7 @@ Authorization: Bearer YOUR_API_KEY
 | `messages` | array | Yes | Array of message objects with `role` and `content` |
 | `stream` | boolean | No | Enable streaming responses (default: false) |
 | `max_tokens` | number | No | Maximum tokens in response (default: 2000) |
-| `allow_concierge_reach_out` | boolean | No | When `false`, guardrails from the underlying session are not relayed to chat users (Telegram/WhatsApp/Slack/Discord/Teams) connected to the same environment. Default: `true`. See [Routing Guardrails to a Chat User](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user) |
+| `reach_out_mode` | string | No | Controls proactive chat messages to a user (Telegram/WhatsApp/Slack/Discord/Teams) connected to the underlying session's environment. One of `"off"` (no messages), `"guardrail_only"` (only on guardrails), or `"full"` (guardrails plus task results). Default: `"guardrail_only"`. See [Routing Guardrails to a Chat User](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user) |
 | `temperature` | number | No | Not used (included for compatibility) |
 
 ---

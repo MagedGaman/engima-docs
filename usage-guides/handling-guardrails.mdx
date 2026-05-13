@@ -139,16 +139,24 @@ If no one is actively watching, the platform looks for a chat user (Telegram, Wh
 
 Whoever answers first wins. If your API caller and a chat user both respond at the same time, only the first reply reaches the session.
 
-### Opting out
+### Choosing a reach-out mode
 
-Chat routing is enabled by default. To turn it off for a specific session, set `allowConciergeReachOut` to `false` at session creation:
+Chat reach-out is controlled per session by the `reachOutMode` parameter. It takes one of three values, and defaults to `"guardrail_only"`:
+
+| Value | Behavior |
+|---|---|
+| `"off"` | No proactive chat messages. Guardrails and results stay on the API/WebSocket channel only. |
+| `"guardrail_only"` | Default. The bot pings the chat user only when the session hits a guardrail (CAPTCHA, 2FA, verification, login, etc.). |
+| `"full"` | The bot pings on guardrails **and** also delivers the task result to chat when the task completes. |
+
+To turn chat routing off for a specific session, pass `"reachOutMode": "off"` at session creation:
 
 <CodeGroup>
 
 ```json /start/start-session
 {
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
-  "allowConciergeReachOut": false,
+  "reachOutMode": "off",
   "mode": "default",
   "task": {
     "prompt": "Export the monthly financial report and download the PDF"
@@ -158,7 +166,7 @@ Chat routing is enabled by default. To turn it off for a specific session, set `
 
 ```json /start/run-task
 {
-  "allowConciergeReachOut": false,
+  "reachOutMode": "off",
   "environmentId": "683a1f2e4b0c1d2e3f4a5b6c",
   "task": {
     "prompt": "Export the monthly financial report and download the PDF"
@@ -168,13 +176,17 @@ Chat routing is enabled by default. To turn it off for a specific session, set `
 
 </CodeGroup>
 
-The flag is set at session creation and applies for the lifetime of the session. There is no way to change it later — start a new session if you need different behavior.
+`reachOutMode` is set at session creation and applies for the lifetime of the session. There is no way to change it later — start a new session if you need different behavior.
 
-### When to disable it
+### When to set `reachOutMode` to `"off"`
 
 - **Sensitive sessions.** Anything involving private credentials, financial data, or personal information you don't want surfaced through chat.
 - **Shared environments.** When multiple people use the same environment but only your code should handle guardrails for this session.
 - **Deterministic flows.** Automations that must respond programmatically — turning chat routing off ensures the prompt always waits for your API call instead of being answered by someone else first.
+
+### When to use `"full"`
+
+Use `"full"` for unattended automations where a human on chat should also receive the task result — for example, a scheduled run kicked off via MCP or REST with no live client polling. When the session completes, the chat user is sent the task result in addition to (not instead of) the normal API/webhook delivery. The chat fan-out only fires when the caller is offline (no live WebSocket subscriber on the session).
 
 <Tip>
 If you'd rather avoid guardrails entirely for known auth flows, provide credentials upfront with [secrets](/usage-guides/secrets) instead. Secrets are never stored and are scoped to the session.
