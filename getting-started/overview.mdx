@@ -4,13 +4,13 @@ description: "Real-time browser automation infrastructure for AI agents"
 icon: "house"
 ---
 
-WebRun is real-time browser automation infrastructure for AI agents. Give it a task in plain English, and an AI agent executes it in a real browser—clicking, typing, navigating, and extracting data autonomously.
+WebRun is real-time browser automation infrastructure for AI agents. Give it a task in plain English, and an AI agent executes it in a real browser, clicking, typing, navigating, and extracting data autonomously.
 
 **Key capabilities:**
-- **Sub-100ms decisions** — Hybrid CNN-LLM architecture delivers production-ready speed
-- **Real-time video streaming** — Watch sessions live as they execute
-- **Human-in-the-loop controls** — Manual takeover for credentials, approvals, or edge cases
-- **Multiple integration paths** — REST, WebSocket, MCP, or OpenAI-compatible APIs
+- **Sub-100ms decisions**: Hybrid CNN-LLM architecture delivers production-ready speed
+- **Real-time video streaming**: Watch sessions live as they execute
+- **Human-in-the-loop controls**: Manual takeover for credentials, approvals, or edge cases
+- **Multiple integration paths**: REST, WebSocket, MCP, or OpenAI-compatible APIs
 
 ---
 
@@ -27,12 +27,12 @@ Navigate multi-step forms with conditional logic and dynamic fields.
 **Example task:** "Fill out this insurance quote form using the customer data in the attached JSON. Handle the multi-step workflow and return the final quote amount."
 
 ### E-commerce Workflows
-Search products, compare prices, add items to cart—all through natural language commands.
+Search products, compare prices, add items to cart, all through natural language commands.
 
 **Example task:** "Find wireless keyboards under $50 on Amazon, filter by 4+ star ratings, and return the top 3 with price and review count."
 
 ### Cross-Site File Transfers
-Download files from one platform and upload them to another—moving documents, reports, and data between systems autonomously.
+Download files from one platform and upload them to another, moving documents, reports, and data between systems autonomously.
 
 **Example task:** "Download the monthly sales report from our analytics dashboard and upload it to the shared Google Drive folder."
 
@@ -72,13 +72,13 @@ This gives you the simplicity of synchronous APIs for typical use cases, with as
 
 ## Guardrails
 
-When the agent needs human input—credentials, clarification, purchase approval—it triggers a guardrail and pauses. Your application detects this via the API response and provides the needed information to continue.
+When the agent needs human input (credentials, clarification, purchase approval), it triggers a guardrail and pauses. Your application detects this via the API response and provides the needed information to continue.
 
 **Common triggers:** Login forms, payment confirmations, CAPTCHAs, ambiguous instructions
 
-For login credentials, you can bypass guardrails entirely by providing [secrets](/usage-guides/secrets) upfront when creating the session. Secrets are matched to websites by domain pattern and are never stored — they exist only in the session's memory and are discarded when the session ends.
+For login credentials, you can bypass guardrails entirely by providing [secrets](/usage-guides/secrets) upfront when creating the session. Secrets are matched to websites by domain pattern and are never stored; they exist only in the session's memory and are discarded when the session ends.
 
-Alternatively, use [environments](/environments/overview) to persist login cookies and files across sessions — log in once and reuse the saved browser state for future tasks.
+Alternatively, use [environments](/environments/overview) to persist login cookies and files across sessions: log in once and reuse the saved browser state for future tasks.
 
 [Guardrails documentation](/concepts/guardrails) | [Secrets documentation](/usage-guides/secrets) | [Environments documentation](/environments/overview)
 
@@ -108,7 +108,7 @@ Choose the integration method that fits your stack:
 
 ## Why WebRun vs Traditional Automation
 
-Traditional browser automation (Selenium, Playwright, Puppeteer) requires writing code that targets specific page elements. When the website changes—new class names, restructured HTML, different IDs—your automation breaks.
+Traditional browser automation (Selenium, Playwright, Puppeteer) requires writing code that targets specific page elements. When the website changes (new class names, restructured HTML, different IDs), your automation breaks.
 
 WebRun's AI agents don't rely on selectors. They see the page visually, understand the content semantically, and adapt to changes automatically. No maintenance when websites update their UI.
 

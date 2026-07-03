@@ -6,7 +6,7 @@ icon: "file-arrow-up"
 
 ## Overview
 
-When your agent needs to upload files to a website — such as submitting a PDF to a form, attaching a document to an email, or uploading an image to a CMS — you can provide files using the file upload API. Files are uploaded first, then referenced by `fileId` when starting a task.
+When your agent needs to upload files to a website, such as submitting a PDF to a form, attaching a document to an email, or uploading an image to a CMS, you can provide files using the file upload API. Files are uploaded first, then referenced by `fileId` when starting a task.
 
 This is a two-step process:
 
@@ -203,7 +203,7 @@ console.log(taskResponse);
 
 ### Upload Before Starting the Task
 
-Always upload files first and wait for the `fileId` response before creating a task. File uploads are separate from task execution — the agent cannot access files that haven't been uploaded yet.
+Always upload files first and wait for the `fileId` response before creating a task. File uploads are separate from task execution: the agent cannot access files that haven't been uploaded yet.
 
 ### Use Descriptive Task Instructions
 
@@ -221,7 +221,7 @@ Tell the agent what to do with the files and where to upload them:
 
 ### Combine with Other Parameters
 
-File uploads work alongside all other task parameters — secrets, structured output, webhooks, and more:
+File uploads work alongside all other task parameters: secrets, structured output, webhooks, and more:
 
 ```json
 {

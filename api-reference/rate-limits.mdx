@@ -260,7 +260,7 @@ const result = await client.request('/start/run-task', {
 
 Instead of making many small requests, combine operations into fewer requests:
 
-**❌ Bad - Multiple requests:**
+**Bad - Multiple requests:**
 ```javascript
 // Each task is a separate request (10 requests)
 for (let i = 0; i < 10; i++) {
@@ -273,7 +273,7 @@ for (let i = 0; i < 10; i++) {
 // ❌ Rate limited after 10 requests
 ```
 
-**✅ Good - Use persistent sessions:**
+**Good - Use persistent sessions:**
 ```javascript
 // Create one session (1 request)
 const session = await fetch('https://connect.webrun.ai/start/start-session', {
@@ -302,7 +302,7 @@ for (let i = 0; i < 10; i++) {
 
 Polling endpoints have no rate limit, so use them instead of creating new requests:
 
-**❌ Bad:**
+**Bad:**
 ```javascript
 // Repeatedly calling run-task to check status (hits rate limit)
 while (true) {
@@ -317,7 +317,7 @@ while (true) {
 }
 ```
 
-**✅ Good:**
+**Good:**
 ```javascript
 // Create task once, then poll (unlimited)
 const task = await fetch('https://connect.webrun.ai/start/run-task', {
@@ -451,7 +451,7 @@ async function monitoredRequest(url, options) {
 
 WebSocket connections don't count toward rate limits:
 
-**❌ Bad - Polling via REST:**
+**Bad - Polling via REST:**
 ```javascript
 // Each poll is a rate-limited request
 setInterval(async () => {
@@ -468,7 +468,7 @@ setInterval(async () => {
 // ❌ Hits rate limit quickly
 ```
 
-**✅ Good - WebSocket events:**
+**Good - WebSocket events:**
 ```javascript
 import { io } from 'socket.io-client';
 

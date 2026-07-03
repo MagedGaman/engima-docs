@@ -14,7 +14,7 @@ Control where the proxy is applied using the `level` parameter.
 
 | Level | Description | Pros | Cons |
 |-------|-------------|------|------|
-| `system` | Applied at the system level — the instance reboots with the new IP | No IP leakage | Slower cold start |
+| `system` | Applied at the system level: the instance reboots with the new IP | No IP leakage | Slower cold start |
 | `chrome` | Applied directly to Chrome | Faster cold start | Can leak IP on some edge cases (e.g., WebRTC) |
 
 When `level` is omitted, the proxy is routed to the best available connection that matches the country.
@@ -100,7 +100,7 @@ Setting `country` to `"random"`:
 
 ### Custom Proxies
 
-Bring your own proxy server. No additional charge from WebRun — you pay your proxy provider directly. The `username` and `password` fields are optional for proxies that don't require authentication.
+Bring your own proxy server. No additional charge from WebRun: you pay your proxy provider directly. The `username` and `password` fields are optional for proxies that don't require authentication.
 
 **HTTP proxy:**
 
@@ -205,10 +205,10 @@ Data transfer is measured across the entire session. Usage is visible in your [d
 ## Best Practices
 
 - **Choose the closest country** to your target website's servers to minimize latency.
-- **Use `"random"` sparingly** — a specific country gives more predictable results for locale-sensitive sites.
+- **Use `"random"` sparingly**: a specific country gives more predictable results for locale-sensitive sites.
 - **Use custom proxies for high-bandwidth tasks** (large file downloads, video scraping) to avoid per-GB charges.
-- **Combine with environments** — pair a proxy with an [environment](/environments/overview) to maintain consistent cookies and browser state across proxied sessions.
-- **Account for cold-start** — the 2-3 second proxy setup time is a one-time cost per session, not per task.
+- **Combine with environments**: pair a proxy with an [environment](/environments/overview) to maintain consistent cookies and browser state across proxied sessions.
+- **Account for cold-start**: the 2-3 second proxy setup time is a one-time cost per session, not per task.
 
 ---
 
