@@ -69,6 +69,7 @@
               "environments/environments-api",
               "environments/triggers",
               "environments/profiles",
+              "environments/profile-management-api",
               "environments/file-uploads"
             ]
           },
@@ -190,10 +191,6 @@
     },
     {
       "source": "/environments/sync-profiles",
-      "destination": "/environments/profiles"
-    },
-    {
-      "source": "/environments/profile-management-api",
       "destination": "/environments/profiles"
     },
     {
