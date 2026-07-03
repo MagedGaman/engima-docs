@@ -33,7 +33,7 @@ Add a `webhook` object to your session or task request to enable webhook notific
 
 | Value | Description | Best For |
 |-------|-------------|----------|
-| `"ai_response"` | The response from the AI (text, structured_json, or structured_csv) — only the results/output from the LLM | Production data pipelines |
+| `"ai_response"` | The response from the AI (text, structured_json, or structured_csv): only the results/output from the LLM | Production data pipelines |
 | `"full_response"` | Full body response that includes the usage info | Debugging, audit logging |
 | `"just_ping"` | Just a ping notification, no data payload | Triggering external workflows |
 

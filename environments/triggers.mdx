@@ -4,7 +4,7 @@ description: "Schedule recurring browser automation tasks that run on a defined 
 icon: "bolt"
 ---
 
-Triggers let you schedule browser automation tasks that execute automatically on a recurring basis. Each trigger is tied to an [environment](/environments/overview), so it inherits the browser profile, stored cookies, and persistent files — no re-authentication required between runs.
+Triggers let you schedule browser automation tasks that execute automatically on a recurring basis. Each trigger is tied to an [environment](/environments/overview), so it inherits the browser profile, stored cookies, and persistent files: no re-authentication required between runs.
 
 ---
 
@@ -23,7 +23,7 @@ Triggers let you schedule browser automation tasks that execute automatically on
 
 1. **Create** a trigger linked to an environment, with a schedule and task details.
 2. **The system executes** your task at each scheduled time using the environment's browser profile and files.
-3. **Results are delivered** via webhook, bot notification, or both — depending on your `deliveryMode` setting.
+3. **Results are delivered** via webhook, bot notification, or both, depending on your `deliveryMode` setting.
 4. **Run history** is recorded for every execution so you can audit outcomes and debug failures.
 
 ```
@@ -45,7 +45,7 @@ Every trigger requires a `scheduleType` that determines when and how often it ru
 All schedules respect the `timezone` field (defaults to `UTC`).
 
 <Tip>
-Use `scheduleType: "cron"` with a standard cron expression for maximum flexibility — for example, `"0 */6 * * *"` runs every 6 hours, and `"30 8 1 * *"` runs at 8:30 AM on the first of each month.
+Use `scheduleType: "cron"` with a standard cron expression for maximum flexibility; for example, `"0 */6 * * *"` runs every 6 hours, and `"30 8 1 * *"` runs at 8:30 AM on the first of each month.
 </Tip>
 
 ---
@@ -66,7 +66,7 @@ When `deliveryMode` is `webhook` or `both`, you must provide a `webhook` configu
 
 ## Automation Policy
 
-Triggers can optionally be associated with an [automation policy](/concepts/policies). Policies define rules that govern agent behavior during execution — such as domain restrictions, blocked keywords, action type controls, and capability limits.
+Triggers can optionally be associated with an [automation policy](/concepts/policies). Policies define rules that govern agent behavior during execution, such as domain restrictions, blocked keywords, action type controls, and capability limits.
 
 When a policy is assigned, the browser agent will enforce those rules for every run of the trigger. This is useful for compliance, safety guardrails, or scoping what the agent is allowed to do.
 

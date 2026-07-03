@@ -4,7 +4,7 @@ description: "Bundle a browser profile and persistent file storage into a reusab
 icon: "box"
 ---
 
-An environment is a named container that bundles a **browser profile** (cookies, local storage, extensions, cached credentials), **persistent file storage**, and optional **triggers** for scheduled automation. Pass `environmentId` when starting a session and it loads that browser state and makes those files available — no re-authentication, no re-uploading.
+An environment is a named container that bundles a **browser profile** (cookies, local storage, extensions, cached credentials), **persistent file storage**, and optional **triggers** for scheduled automation. Pass `environmentId` when starting a session and it loads that browser state and makes those files available: no re-authentication, no re-uploading.
 
 ---
 
@@ -24,7 +24,7 @@ An environment is a named container that bundles a **browser profile** (cookies,
 
 ### Browser Profile
 
-Stores Chrome data — cookies, local storage, IndexedDB, extensions, cached credentials — and carries it from one session to the next. Log in once and every subsequent session on the same environment skips authentication.
+Stores Chrome data (cookies, local storage, IndexedDB, extensions, cached credentials) and carries it from one session to the next. Log in once and every subsequent session on the same environment skips authentication.
 
 See [Browser Profiles](/environments/profiles) for details on how profiles work, including how to [sync from your local Chrome](/environments/profiles#sync-from-local-chrome).
 

@@ -4,7 +4,7 @@ description: "Upload your local Chrome browser profile to an environment with a 
 icon: "arrows-rotate"
 ---
 
-The sync command packages your local Chrome browser data — cookies, local storage, extensions, saved state — and uploads it directly to an environment. This is the fastest way to populate an environment's browser profile.
+The sync command packages your local Chrome browser data (cookies, local storage, extensions, saved state) and uploads it directly to an environment. This is the fastest way to populate an environment's browser profile.
 
 ---
 
@@ -36,7 +36,7 @@ bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --key <apiKey>
 This creates a new environment on your account, uploads your Chrome profile, and returns the new environment ID.
 
 <Tip>
-Save the environment ID returned by the command — you'll need it to pass as `environmentId` when starting sessions.
+Save the environment ID returned by the command; you'll need it to pass as `environmentId` when starting sessions.
 </Tip>
 
 ---

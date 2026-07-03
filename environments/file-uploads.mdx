@@ -4,7 +4,7 @@ description: "Upload files to environments for persistent access, or upload stan
 icon: "file-arrow-up"
 ---
 
-When your agent needs to work with files — submitting a PDF to a form, importing a spreadsheet, or uploading an image — you upload them first and then reference them by `fileId` in your tasks.
+When your agent needs to work with files (submitting a PDF to a form, importing a spreadsheet, or uploading an image) you upload them first and then reference them by `fileId` in your tasks.
 
 Files can be uploaded in two modes:
 
@@ -65,7 +65,7 @@ An orphan file is automatically promoted to an environment when you pass its `fi
 |-------|------|-------------|
 | `success` | boolean | Whether the upload succeeded |
 | `files` | array | Array of uploaded file metadata |
-| `files[].fileId` | string | Unique identifier — use this to reference the file in tasks |
+| `files[].fileId` | string | Unique identifier: use this to reference the file in tasks |
 | `files[].originalName` | string | Original filename as uploaded |
 | `files[].size` | number | File size in bytes |
 
@@ -140,7 +140,7 @@ Include `files` in the `message` object when sending a `newTask` action:
 
 ## Complete Example
 
-Upload an orphan file, then run a task with an environment — the file gets persisted automatically:
+Upload an orphan file, then run a task with an environment; the file gets persisted automatically:
 
 ```javascript
 const API_KEY = process.env.WEBRUN_API_KEY;
@@ -200,7 +200,7 @@ curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
 | Endpoint | Field | Location |
 |----------|-------|----------|
 | `POST /files/upload` | `files` (multipart) | Form data |
-| `POST /files/upload` | `environmentId` | Form data (optional — omit for orphan upload) |
+| `POST /files/upload` | `environmentId` | Form data (optional: omit for orphan upload) |
 | `POST /start/run-task` | `files` | Request body |
 | `POST /start/run-task` | `environmentId` | Request body |
 | `POST /start/start-session` | `files` | Inside `task` object |

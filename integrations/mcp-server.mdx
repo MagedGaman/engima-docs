@@ -8,7 +8,7 @@ icon: "puzzle-piece"
 
 The WebRun MCP (Model Context Protocol) server allows AI assistants like Claude Desktop and Cline to access browser automation capabilities directly through their native tool interfaces.
 
-It exposes six tools — task execution, session management, status checks, session control, and manual takeover — with built-in session lifecycle handling and streaming for long-running tasks.
+It exposes six tools (task execution, session management, status checks, session control, and manual takeover) with built-in session lifecycle handling and streaming for long-running tasks.
 
 <Note>
 This is the **full reference** for the MCP server. For a quickstart guide, see [MCP Quickstart](/getting-started/mcp-quickstart).
@@ -33,7 +33,7 @@ This is the **full reference** for the MCP server. For a quickstart guide, see [
 }
 ```
 
-To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine — it maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
+To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine. It maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
 
 ```json
 {
@@ -46,7 +46,7 @@ To connect to a specific environment, append the environment ID to your API key.
 ```
 
 <Tip>
-Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state — such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
+Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state, such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
 </Tip>
 
 After editing, **restart Claude Desktop** completely (quit and reopen).
@@ -69,7 +69,7 @@ After editing, **restart Claude Desktop** completely (quit and reopen).
 }
 ```
 
-To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine — it maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
+To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine. It maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
 
 ```json
 {
@@ -80,7 +80,7 @@ To connect to a specific environment, append the environment ID to your API key.
 ```
 
 <Tip>
-Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state — such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
+Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state, such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
 </Tip>
 
 **Reload:** Restart VS Code or reload the Cline extension.
@@ -592,10 +592,10 @@ Claude's execution:
 
 2. **Check URL format:**
    ```json
-   // ❌ Wrong
+   // Wrong
    "url": "https://connect.webrun.ai/mcp/"
 
-   // ✅ Correct
+   // Correct
    "url": "https://connect.webrun.ai/mcp/wr_xxxxxxxxxxxx"
    ```
 
@@ -621,10 +621,10 @@ Claude's execution:
 
 1. **Break long tasks into smaller chunks:**
    ```
-   // ❌ Bad: One huge task
+   // Bad: One huge task
    "Extract data from all 100 pages"
 
-   // ✅ Good: Chunked tasks
+   // Good: Chunked tasks
    "Extract data from pages 1-10"
    "Extract data from pages 11-20"
    ...
@@ -659,10 +659,10 @@ Claude's execution:
 
 1. **Make instructions more specific:**
    ```
-   // ❌ Vague
+   // Vague
    "Get the price"
 
-   // ✅ Specific
+   // Specific
    "Find the product price displayed near the 'Add to Cart' button"
    ```
 
@@ -729,9 +729,9 @@ Claude's execution:
 - Natural language description of the task
 - Be specific for better results
 - Examples:
-  - ✅ "Search Google for 'Anthropic' and summarize the first result"
-  - ✅ "Extract all product names and prices from this page"
-  - ❌ "Search" (too vague)
+  - Good: "Search Google for 'Anthropic' and summarize the first result"
+  - Good: "Extract all product names and prices from this page"
+  - Avoid: "Search" (too vague)
 
 **startingUrl** (string)
 - Must be valid HTTP/HTTPS URL
@@ -772,7 +772,7 @@ Claude's execution:
 **reach_out_mode** (string)
 - Controls proactive chat messages to a user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the same environment when no one is watching the session live
 - One of:
-  - `"off"`: No proactive messages — guardrails and results stay on the MCP channel only. Useful for sessions handling private data.
+  - `"off"`: No proactive messages. Guardrails and results stay on the MCP channel only. Useful for sessions handling private data.
   - `"guardrail_only"`: Bot pings the chat user only on guardrails (CAPTCHA, 2FA, verification, login, etc.).
   - `"full"`: Bot pings on guardrails **and** delivers the task result to chat when the task completes.
 - Default: `"guardrail_only"`
@@ -873,13 +873,13 @@ Your account balance is $1,234.56
 
 ### 1. Session Management
 
-**✅ Do:**
+**Do:**
 - Use `browser_task` for one-off tasks
 - Use `create_session` + `send_task_to_session` for multi-step workflows
 - Always set `terminateOnCompletion: true` on your final task
 - Terminate sessions explicitly when done
 
-**❌ Don't:**
+**Don't:**
 - Create multiple sessions for related tasks
 - Leave sessions running after completion
 - Use `create_session` for simple one-off tasks
@@ -888,13 +888,13 @@ Your account balance is $1,234.56
 
 ### 2. Task Instructions
 
-**✅ Do:**
+**Do:**
 - Be specific and detailed
 - Include expected output format
 - Specify wait conditions if needed
 - Provide starting URLs when known
 
-**❌ Don't:**
+**Don't:**
 - Use vague instructions like "get data"
 - Assume the agent knows which element to click
 - Skip important context
@@ -903,13 +903,13 @@ Your account balance is $1,234.56
 
 ### 3. Error Handling
 
-**✅ Do:**
+**Do:**
 - Monitor long tasks with `get_task_status`
 - Retry failed tasks with adjusted parameters
 - Use `take_over_session` for CAPTCHAs
 - Check session expiration times
 
-**❌ Don't:**
+**Don't:**
 - Ignore timeout warnings
 - Retry indefinitely without changes
 - Assume tasks will always succeed
@@ -918,13 +918,13 @@ Your account balance is $1,234.56
 
 ### 4. Cost Optimization
 
-**✅ Do:**
+**Do:**
 - Terminate sessions when done
 - Use `terminateOnCompletion` on final tasks
 - Break very long tasks into chunks
 - Reuse sessions for related tasks
 
-**❌ Don't:**
+**Don't:**
 - Leave sessions idle
 - Create new sessions for each small task
 - Ignore session timeout warnings

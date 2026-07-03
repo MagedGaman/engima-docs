@@ -24,16 +24,16 @@ Before setting up your workflow, understand how WebRun returns results:
 
 | Platform | HTTP Timeout | WebRun Compatibility | Recommended Approach |
 |----------|--------------|---------------------|---------------------|
-| **n8n** | 100s (Cloud) | ✅ Excellent | Direct call works for most tasks |
-| **Make.com** | 30s default, up to 300s | ✅ Good | Set timeout to 60s+ |
-| **Zapier** | 30s (fixed, cannot change) | ⚠️ Requires polling | Always use polling pattern |
+| **n8n** | 100s (Cloud) | Excellent | Direct call works for most tasks |
+| **Make.com** | 30s default, up to 300s | Good | Set timeout to 60s+ |
+| **Zapier** | 30s (fixed, cannot change) | Requires polling | Always use polling pattern |
 
 ---
 
 ## n8n Integration
 
 ### Why n8n Works Well
-n8n Cloud has a 100-second timeout — comfortably above WebRun's 50-second inline window. Most tasks will return results directly without polling.
+n8n Cloud has a 100-second timeout, comfortably above WebRun's 50-second inline window. Most tasks will return results directly without polling.
 
 ### Method 1: Simple Task (Direct Response)
 Use when you're confident the task takes < 50 seconds.
@@ -71,7 +71,7 @@ Use when task might exceed 50 seconds.
 
 **Step-by-Step:**
 
-1. **HTTP Request Node** — Start Task
+1. **HTTP Request Node**: Start Task
    - URL: `https://connect.webrun.ai/start/run-task`
    - Method: POST
    - Authentication: Header Auth (`Authorization: Bearer YOUR_API_KEY`)
@@ -82,7 +82,7 @@ Use when task might exceed 50 seconds.
    }
    ```
 
-2. **IF Node** — Check Status
+2. **IF Node**: Check Status
    - Condition: `{{ $json.status }}` equals `pending`
    - Route 1 (True): Go to polling loop
    - Route 2 (False): Task complete, continue
@@ -90,7 +90,7 @@ Use when task might exceed 50 seconds.
 3. **Wait Node** (on True route)
    - Duration: 3 seconds
 
-4. **HTTP Request Node** — Poll
+4. **HTTP Request Node**: Poll
    - URL: `{{ $('HTTP Request').item.json.pollUrl }}`
    - Method: GET
    - Authentication: Header Auth (`Authorization: Bearer YOUR_API_KEY`)
@@ -103,8 +103,8 @@ Use when task might exceed 50 seconds.
 
 ## Make.com Integration
 
-### ⚠️ Important: Increase HTTP Timeout
-Make.com's default timeout is 30 seconds — too short for WebRun. **You must increase it to 60+ seconds.**
+### Important: Increase HTTP Timeout
+Make.com's default timeout is 30 seconds, too short for WebRun. **You must increase it to 60+ seconds.**
 
 ### Method 1: Simple Task (Extended Timeout)
 
@@ -127,7 +127,7 @@ Make.com's default timeout is 30 seconds — too short for WebRun. **You must in
 
 **Step 3: Set Timeout (CRITICAL)**
 - Click "Show advanced settings"
-- Set **Timeout**: `60` (seconds) — or higher for complex tasks
+- Set **Timeout**: `60` (seconds), or higher for complex tasks
 - Maximum allowed: 300 seconds
 
 **Step 4: Parse Response**
@@ -146,7 +146,7 @@ Make.com's default timeout is 30 seconds — too short for WebRun. **You must in
 
 **Step-by-Step:**
 
-1. **HTTP Module** — Start Task
+1. **HTTP Module**: Start Task
    - URL: `https://connect.webrun.ai/start/run-task`
    - Method: POST
    - Headers: `Authorization`, `Content-Type`
@@ -162,10 +162,10 @@ Make.com's default timeout is 30 seconds — too short for WebRun. **You must in
    - Route 1 Filter: `status` equals `complete`
    - Route 2 Filter: `status` equals `pending`
 
-3. **On Route 2** — Add Sleep Module
+3. **On Route 2**: Add Sleep Module
    - Duration: 3000ms
 
-4. **HTTP Module** — Poll for Result
+4. **HTTP Module**: Poll for Result
    - URL: `{{pollUrl}}`
    - Method: GET
    - Headers: `Authorization: Bearer YOUR_API_KEY`
@@ -177,7 +177,7 @@ Make.com's default timeout is 30 seconds — too short for WebRun. **You must in
 
 ## Zapier Integration
 
-### ⚠️ Important Limitation
+### Important Limitation
 Zapier has a **fixed 30-second HTTP timeout** that cannot be changed. Since WebRun's inline response window is 50 seconds, **you must always use the polling pattern** with Zapier.
 
 ### Why Polling is Required
@@ -238,11 +238,11 @@ If you have access to Zapier's Looping feature:
 
 | Feature | n8n | Make.com | Zapier |
 |---------|-----|----------|--------|
-| Direct response possible | ✅ Yes | ✅ Yes (with timeout config) | ❌ No |
+| Direct response possible | Yes | Yes (with timeout config) | No |
 | Polling complexity | Low | Medium | High |
 | Max HTTP timeout | 100s | 300s | 30s (fixed) |
 | Recommended for | All use cases | All use cases | Simple tasks only |
-| Loop/retry support | ✅ Native | ✅ Native | ⚠️ Limited |
+| Loop/retry support | Native | Native | Limited |
 
 ---
 
@@ -253,21 +253,21 @@ If you have access to Zapier's Looping feature:
 **Action:** Run WebRun task with form data
 **Output:** Store result in database/sheet
 
-**Example Use Case:** Lead enrichment — form captures company name, WebRun researches company details, result stored in CRM.
+**Example Use Case:** Lead enrichment: form captures company name, WebRun researches company details, result stored in CRM.
 
 ### Pattern 2: Scheduled Research
 **Trigger:** Schedule (daily/weekly)
 **Action:** Run research task
 **Output:** Send email summary
 
-**Example Use Case:** Daily competitor monitoring — scrape competitor websites, compile changes, email report.
+**Example Use Case:** Daily competitor monitoring: scrape competitor websites, compile changes, email report.
 
 ### Pattern 3: Lead Enrichment
 **Trigger:** New lead in CRM
 **Action:** Research company/person via browser
 **Output:** Update CRM record
 
-**Example Use Case:** Sales automation — new lead added to Salesforce, WebRun finds LinkedIn profile and company info, updates Salesforce.
+**Example Use Case:** Sales automation: new lead added to Salesforce, WebRun finds LinkedIn profile and company info, updates Salesforce.
 
 ---
 

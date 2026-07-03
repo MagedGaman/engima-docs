@@ -6,7 +6,7 @@ icon: "window-restore"
 
 A session is an isolated browser instance running your automation tasks. You get a dedicated environment with a unique `sessionId` that persists until you terminate it or it times out due to inactivity (sessions expire after 5 minutes of inactivity).
 
-Sessions run completely isolated—no shared cookies, no shared state. This lets you run multiple concurrent sessions without interference. Run tasks sequentially within the same session: navigate to a site, authenticate, then execute your workflow. Terminate when done, or you'll pay for the full timeout window.
+Sessions run completely isolated: no shared cookies, no shared state. This lets you run multiple concurrent sessions without interference. Run tasks sequentially within the same session: navigate to a site, authenticate, then execute your workflow. Terminate when done, or you'll pay for the full timeout window.
 
 ---
 
@@ -64,7 +64,7 @@ Configure sessions when creating them:
 - **secrets**: Provide credentials upfront so the agent can authenticate without guardrail interruptions. Secrets are never stored and are discarded when the session ends. See [Secrets guide](/usage-guides/secrets).
 - **environmentId**: Attach an [environment](/environments/overview) to reuse saved cookies, local storage, files, and other browser data. This is a top-level parameter, not nested inside `task`.
 - **proxy**: Route the session through a proxy server for geographic targeting or IP management. Use WebRun-managed proxies or bring your own. Adds 2-3 seconds of cold-start latency. See [Proxies guide](/usage-guides/proxies).
-- **reachOutMode**: Controls proactive chat messages to a user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the same [environment](/environments/overview), only when no client is actively watching the session. One of `"off"` (no messages), `"guardrail_only"` (default — bot pings on guardrails like CAPTCHA/2FA/login), or `"full"` (also delivers task results to chat on completion). Use `"off"` for sessions handling private data you don't want surfaced through chat. See [Handling Guardrails](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user).
+- **reachOutMode**: Controls proactive chat messages to a user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the same [environment](/environments/overview), only when no client is actively watching the session. One of `"off"` (no messages), `"guardrail_only"` (default: bot pings on guardrails like CAPTCHA/2FA/login), or `"full"` (also delivers task results to chat on completion). Use `"off"` for sessions handling private data you don't want surfaced through chat. See [Handling Guardrails](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user).
 
 ---
 
@@ -101,7 +101,7 @@ Sessions execute tasks sequentially, not in parallel. If you send a new task whi
 Sessions automatically terminate after 5 minutes of inactivity. Active sessions can run indefinitely. You're billed only for actual compute time used.
 
 **Complete isolation:**
-No shared cookies, cache, or session state between sessions. Each session starts with a clean browser — unless an [environment](/environments/overview) is attached. Environments let you persist cookies, local storage, files, and other browser data across sessions.
+No shared cookies, cache, or session state between sessions. Each session starts with a clean browser, unless an [environment](/environments/overview) is attached. Environments let you persist cookies, local storage, files, and other browser data across sessions.
 
 **Billing:**
 Sessions are billable from creation until termination or timeout. Idle time between tasks counts as compute time. Always terminate sessions when finished.

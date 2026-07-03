@@ -838,15 +838,15 @@ interface Usage {
 
 | Event Type | REST | WebSocket | Description |
 |------------|------|-----------|-------------|
-| `agent` | ✗ | ✓ | Live agent reasoning |
-| `action` | ✗ | ✓ | Browser action performed |
-| `response_update` | ✗ | ✓ | Status updates |
-| `task_completed` | ✓ (poll) | ✓ | Task finished successfully |
-| `guardrail_trigger` | ✓ (poll) | ✓ | Human input needed |
-| `error` | ✓ (poll) | ✓ | Task failed |
-| `end_session` | ✗ | ✓ | Session terminated |
-| `instance:disconnected` | ✗ | ✓ | Instance connection lost |
-| `instance:reconnected` | ✗ | ✓ | Instance recovered |
+| `agent` | No | Yes | Live agent reasoning |
+| `action` | No | Yes | Browser action performed |
+| `response_update` | No | Yes | Status updates |
+| `task_completed` | Yes (poll) | Yes | Task finished successfully |
+| `guardrail_trigger` | Yes (poll) | Yes | Human input needed |
+| `error` | Yes (poll) | Yes | Task failed |
+| `end_session` | No | Yes | Session terminated |
+| `instance:disconnected` | No | Yes | Instance connection lost |
+| `instance:reconnected` | No | Yes | Instance recovered |
 
 ---
 
