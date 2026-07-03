@@ -176,7 +176,7 @@ Claude uses create_session:
   "sessionId": "a1b2c3d4e5f6",
   "message": "Session created successfully. You can now send tasks to this session.",
   "expiresIn": 300000,
-  "streamingUrl": "https://74.235.190.31:8889/a1b2c3d4e5f6"
+  "streamingUrl": "https://a1b2c3d4e5f6.webrun.ai"
 }
 ```
 
@@ -380,7 +380,7 @@ Claude uses take_over_session:
 {
   "success": true,
   "message": "Manual control enabled. Agent paused.",
-  "streamingUrl": "https://74.235.190.31:8889/a1b2c3d4e5f6"
+  "streamingUrl": "https://a1b2c3d4e5f6.webrun.ai"
 }
 ```
 
@@ -564,9 +564,9 @@ Claude's execution:
    ```
 
 3. **Ensure API key format:**
-   - API key should start with `enig_`
+   - API key should start with `wr_`
    - No extra spaces or quotes
-   - Example: `"url": "https://connect.webrun.ai/mcp/enig_xxxxxxxxxxxx"`
+   - Example: `"url": "https://connect.webrun.ai/mcp/wr_xxxxxxxxxxxx"`
 
 4. **Restart Claude Desktop completely:**
    - Quit Claude Desktop (don't just close window)
@@ -596,13 +596,13 @@ Claude's execution:
    "url": "https://connect.webrun.ai/mcp/"
 
    // ✅ Correct
-   "url": "https://connect.webrun.ai/mcp/enig_xxxxxxxxxxxx"
+   "url": "https://connect.webrun.ai/mcp/wr_xxxxxxxxxxxx"
    ```
 
 3. **Test API key via curl:**
    ```bash
    curl -X POST https://connect.webrun.ai/start/run-task \
-     -H "Authorization: Bearer enig_xxxxxxxxxxxx" \
+     -H "Authorization: Bearer wr_xxxxxxxxxxxx" \
      -H "Content-Type: application/json" \
      -d '{"task": {"prompt": "Go to google.com"}}'
 
@@ -855,7 +855,7 @@ User: "I'll enter them manually"
 [Uses take_over_session with action: "takeover"]
 
 I've enabled manual control. You can now view and control the browser at this URL:
-https://74.235.190.31:8889/abc123
+https://abc123.webrun.ai
 
 Please log in, then let me know when you're done.
 

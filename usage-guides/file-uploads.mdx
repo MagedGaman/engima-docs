@@ -25,7 +25,7 @@ Upload one or more files using the `/files/upload` endpoint. Files are sent as m
 
 ```bash
 curl -X POST https://connect.webrun.ai/files/upload \
-  -H "Authorization: Bearer enig_xxx" \
+  -H "Authorization: Bearer wr_xxx" \
   -F "files=@document.pdf"
 ```
 
@@ -49,7 +49,7 @@ You can upload multiple files in a single request by repeating the `files` field
 
 ```bash
 curl -X POST https://connect.webrun.ai/files/upload \
-  -H "Authorization: Bearer enig_xxx" \
+  -H "Authorization: Bearer wr_xxx" \
   -F "files=@document.pdf" \
   -F "files=@photo.png" \
   -F "files=@spreadsheet.xlsx"
@@ -99,7 +99,7 @@ Once you have `fileId` values, include them in the `files` array at the task lev
 
 ```bash
 curl -X POST https://connect.webrun.ai/start/run-task \
-  -H "Authorization: Bearer enig_xxx" \
+  -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
     "task": {

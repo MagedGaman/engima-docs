@@ -45,7 +45,7 @@ const client = new OpenAI({
 });
 
 const completion = await client.chat.completions.create({
-  model: 'enigma-browser-1',
+  model: 'webrun-browser-1',
   messages: [
     { role: 'user', content: 'Go to google.com and search for Anthropic' }
   ]
@@ -60,7 +60,7 @@ console.log(completion.choices[0].message.content);
   "id": "chatcmpl-a1b2c3d4",
   "object": "chat.completion",
   "created": 1704067200,
-  "model": "enigma-browser-1",
+  "model": "webrun-browser-1",
   "choices": [
     {
       "index": 0,
@@ -90,7 +90,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage } from "@langchain/core/messages";
 
 const model = new ChatOpenAI({
-  modelName: "enigma-browser-1",
+  modelName: "webrun-browser-1",
   openAIApiKey: "YOUR_API_KEY",
   configuration: {
     baseURL: "https://connect.webrun.ai/v1"
@@ -122,7 +122,7 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 const model = new ChatOpenAI({
-  modelName: "enigma-browser-1",
+  modelName: "webrun-browser-1",
   openAIApiKey: "YOUR_API_KEY",
   configuration: {
     baseURL: "https://connect.webrun.ai/v1"
@@ -151,7 +151,7 @@ console.log(result);
 import { OpenAI } from "llamaindex";
 
 const llm = new OpenAI({
-  model: "enigma-browser-1",
+  model: "webrun-browser-1",
   apiKey: "YOUR_API_KEY",
   additionalChatOptions: {
     baseURL: "https://connect.webrun.ai/v1"
@@ -175,7 +175,7 @@ console.log(response.message.content);
 import { OpenAI, OpenAIAgent } from "llamaindex";
 
 const llm = new OpenAI({
-  model: "enigma-browser-1",
+  model: "webrun-browser-1",
   apiKey: "YOUR_API_KEY",
   additionalChatOptions: {
     baseURL: "https://connect.webrun.ai/v1"
@@ -202,7 +202,7 @@ console.log(response.response);
 import { openai } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 
-const model = openai('enigma-browser-1', {
+const model = openai('webrun-browser-1', {
   baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
@@ -220,7 +220,7 @@ console.log(text);
 import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 
-const model = openai('enigma-browser-1', {
+const model = openai('webrun-browser-1', {
   baseURL: 'https://connect.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
@@ -244,9 +244,9 @@ import { streamText } from 'ai';
 export async function POST(req: Request) {
   const { task } = await req.json();
 
-  const model = openai('enigma-browser-1', {
+  const model = openai('webrun-browser-1', {
     baseURL: 'https://connect.webrun.ai/v1',
-    apiKey: process.env.ENIGMA_API_KEY
+    apiKey: process.env.WEBRUN_API_KEY
   });
 
   const result = await streamText({
@@ -278,7 +278,7 @@ Authorization: Bearer YOUR_API_KEY
 
 ```json
 {
-  "model": "enigma-browser-1",
+  "model": "webrun-browser-1",
   "messages": [
     {
       "role": "system",
@@ -298,7 +298,7 @@ Authorization: Bearer YOUR_API_KEY
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `model` | string | Yes | Must be `"enigma-browser-1"` |
+| `model` | string | Yes | Must be `"webrun-browser-1"` |
 | `messages` | array | Yes | Array of message objects with `role` and `content` |
 | `stream` | boolean | No | Enable streaming responses (default: false) |
 | `max_tokens` | number | No | Maximum tokens in response (default: 2000) |
@@ -314,7 +314,7 @@ Authorization: Bearer YOUR_API_KEY
   "id": "chatcmpl-a1b2c3d4e5f6",
   "object": "chat.completion",
   "created": 1704067200,
-  "model": "enigma-browser-1",
+  "model": "webrun-browser-1",
   "choices": [
     {
       "index": 0,
@@ -330,7 +330,7 @@ Authorization: Bearer YOUR_API_KEY
     "completion_tokens": 2100,
     "total_tokens": 10550
   },
-  "enigma": {
+  "webrun": {
     "sessionId": "a1b2c3d4e5f6",
     "taskId": "x9y8z7w6v5u4",
     "cost": 0.0089
@@ -345,15 +345,15 @@ Authorization: Bearer YOUR_API_KEY
 When `stream: true`, responses use Server-Sent Events (SSE):
 
 ```
-data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"role":"assistant","content":"I"},"finish_reason":null}]}
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"webrun-browser-1","choices":[{"index":0,"delta":{"role":"assistant","content":"I"},"finish_reason":null}]}
 
-data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" found"},"finish_reason":null}]}
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"webrun-browser-1","choices":[{"index":0,"delta":{"content":" found"},"finish_reason":null}]}
 
-data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{"content":" 5"},"finish_reason":null}]}
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"webrun-browser-1","choices":[{"index":0,"delta":{"content":" 5"},"finish_reason":null}]}
 
 ...
 
-data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"enigma-browser-1","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+data: {"id":"chatcmpl-a1b2c3","object":"chat.completion.chunk","created":1704067200,"model":"webrun-browser-1","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
 
 data: [DONE]
 ```
@@ -368,7 +368,7 @@ const client = new OpenAI({
 });
 
 const stream = await client.chat.completions.create({
-  model: 'enigma-browser-1',
+  model: 'webrun-browser-1',
   messages: [
     { role: 'user', content: 'Go to news.ycombinator.com and summarize top stories' }
   ],
@@ -387,10 +387,10 @@ for await (const chunk of stream) {
 
 | Model Name | Description |
 |------------|-------------|
-| `enigma-browser-1` | Default browser automation model (Claude Sonnet 3.5) |
+| `webrun-browser-1` | Default browser automation model (Claude Sonnet 3.5) |
 
 <Note>
-Currently, only `enigma-browser-1` is available. Additional models may be added in the future.
+Currently, only `webrun-browser-1` is available. Additional models may be added in the future.
 </Note>
 
 ---
@@ -445,12 +445,12 @@ The OpenAI-compatible endpoint creates a new session per request. For multi-step
 ```javascript
 // ❌ OpenAI-compatible - Each request is a new session
 const completion1 = await client.chat.completions.create({
-  model: 'enigma-browser-1',
+  model: 'webrun-browser-1',
   messages: [{ role: 'user', content: 'Go to amazon.com' }]
 });
 
 const completion2 = await client.chat.completions.create({
-  model: 'enigma-browser-1',
+  model: 'webrun-browser-1',
   messages: [{ role: 'user', content: 'Search for keyboards' }] // New session, not on Amazon
 });
 
@@ -514,14 +514,14 @@ import OpenAI from 'openai';
 
 const client = new OpenAI({
   baseURL: 'https://connect.webrun.ai/v1',
-  apiKey: process.env.ENIGMA_API_KEY
+  apiKey: process.env.WEBRUN_API_KEY
 });
 
 async function researchTopic(topic) {
   console.log(`Researching: ${topic}`);
 
   const completion = await client.chat.completions.create({
-    model: 'enigma-browser-1',
+    model: 'webrun-browser-1',
     messages: [
       {
         role: 'system',
@@ -537,7 +537,7 @@ async function researchTopic(topic) {
 
   const result = completion.choices[0].message.content;
   const usage = completion.usage;
-  const cost = completion.enigma?.cost || 0;
+  const cost = completion.webrun?.cost || 0;
 
   console.log('\n--- Results ---');
   console.log(result);
@@ -568,7 +568,7 @@ const client = new OpenAI({
 async function safeCompletion(prompt) {
   try {
     const completion = await client.chat.completions.create({
-      model: 'enigma-browser-1',
+      model: 'webrun-browser-1',
       messages: [{ role: 'user', content: prompt }]
     });
 

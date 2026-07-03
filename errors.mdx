@@ -257,7 +257,7 @@ All errors follow a consistent structure:
   }
 }
 ```
-**Solution:** Add credits to your account at enigma.click/billing.
+**Solution:** Add credits to your account at app.webrun.ai/billing.
 
 #### PAYMENT_FAILED
 ```json
@@ -402,7 +402,7 @@ async function executeTaskWithGuardrails(sessionId, prompt, apiKey) {
       const userInput = await promptUser(result.data.value);
 
       // Resume with input
-      await fetch("https://connect.enigma.click/start/send-message", {
+      await fetch("https://connect.webrun.ai/start/send-message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -438,7 +438,7 @@ async function executeTaskWithRetry(prompt, apiKey) {
   try {
     // Create session with retry
     const session = await makeRequestWithRetry(
-      "https://connect.enigma.click/start/start-session",
+      "https://connect.webrun.ai/start/start-session",
       {
         method: "POST",
         headers: {
@@ -475,7 +475,7 @@ async function executeTaskWithRetry(prompt, apiKey) {
 
 async function terminateSession(sessionId, apiKey) {
   try {
-    await fetch("https://connect.enigma.click/start/send-message", {
+    await fetch("https://connect.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -508,7 +508,7 @@ async function terminateSession(sessionId, apiKey) {
 **Solutions:**
 1. Wait 30 seconds and check status again
 2. Terminate and create new session
-3. Check system status at status.enigma.click
+3. Check system status at status.webrun.ai
 4. Contact support if persistent
 
 ### "Tasks completing but no result returned"
@@ -579,8 +579,8 @@ When encountering issues:
 If you're still experiencing issues:
 
 1. **Documentation:** Review relevant API docs
-2. **Status Page:** Check status.enigma.click
-3. **Support:** Email support@enigma.click with:
+2. **Status Page:** Check status.webrun.ai
+3. **Support:** Email support@webrun.ai with:
    - Error code and full error response
    - Session ID and task ID
    - Task description
@@ -595,7 +595,7 @@ If you're still experiencing issues:
   <Card title="Quickstart" icon="rocket" href="/quickstart">
     Basic integration guide
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+  <Card title="API Reference" icon="code" href="/api-reference/endpoints">
     Complete endpoint documentation
   </Card>
   <Card title="Sessions & Tasks" icon="browser" href="/sessions">

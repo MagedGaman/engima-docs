@@ -412,7 +412,7 @@ async function runTaskWithWebSocket(prompt, apiKey) {
 try {
   const result = await runTaskWithWebSocket(
     "Go to google.com and search for Anthropic",
-    "enig_xxx"
+    "wr_xxx"
   );
   console.log("Result:", result.data.message);
 } catch (error) {
@@ -807,7 +807,7 @@ class WebRunWebSocketClient {
 }
 
 // Usage
-const client = new WebRunWebSocketClient("enig_xxx");
+const client = new WebRunWebSocketClient("wr_xxx");
 
 await client.createSession("Go to amazon.com");
 await client.sendTask("Search for wireless keyboards");

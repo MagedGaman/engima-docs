@@ -11,7 +11,7 @@ icon: "bolt"
 3. Click **Create API Key** and save it
 
 ```
-enig_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+wr_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 <Warning>
@@ -185,7 +185,7 @@ async function pollForResult(sessionId, taskId, apiKey) {
 }
 
 // Usage
-const result = await runTask("Search Google for Anthropic", "enig_xxx");
+const result = await runTask("Search Google for Anthropic", "wr_xxx");
 console.log(result.data.message);
 console.log(`Cost: $${result.usage.cost}`);
 ```
