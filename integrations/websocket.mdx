@@ -62,7 +62,7 @@ const socket = io("https://connect.webrun.ai", {
 
 // Step 3: Listen for events
 socket.on("connect", () => {
-  console.log("✓ Connected to session");
+  console.log("Connected to session");
 });
 
 socket.on("message", (data) => {
@@ -70,7 +70,7 @@ socket.on("message", (data) => {
 });
 
 socket.on("disconnect", () => {
-  console.log("✗ Disconnected");
+  console.log("Disconnected");
 });
 ```
 
@@ -94,7 +94,7 @@ Live agent thoughts and reasoning as the task executes.
 ```javascript
 socket.on("message", (data) => {
   if (data.type === "agent") {
-    console.log("💭 Agent:", data.content);
+    console.log("Agent:", data.content);
   }
 });
 ```
@@ -120,7 +120,7 @@ Browser action performed by the agent.
 ```javascript
 socket.on("message", (data) => {
   if (data.type === "action") {
-    console.log("🎯 Action:", data.data.name);
+    console.log("Action:", data.data.name);
   }
 });
 ```
@@ -174,13 +174,13 @@ Task finished successfully.
 ```javascript
 socket.on("message", (data) => {
   if (data.type === "task_completed") {
-    console.log("✅ Done:", data.data.message);
-    console.log("💰 Cost:", data.usage.cost);
+    console.log("Done:", data.data.message);
+    console.log("Cost:", data.usage.cost);
     if (data.data.files?.length) {
-      console.log("📁 Files:", data.data.files.map(f => f.downloadUrl));
+      console.log("Files:", data.data.files.map(f => f.downloadUrl));
     }
     if (data.data.network?.length) {
-      console.log("🌐 Network requests:", data.data.network.length);
+      console.log("Network requests:", data.data.network.length);
     }
     socket.disconnect();
   }
@@ -208,7 +208,7 @@ Agent needs human input to continue.
 ```javascript
 socket.on("message", (data) => {
   if (data.type === "guardrail_trigger") {
-    console.log("⚠️ Guardrail:", data.data.value);
+    console.log("Guardrail:", data.data.value);
 
     // Respond with required information
     socket.emit("message", {
@@ -239,7 +239,7 @@ Task failed with an error.
 ```javascript
 socket.on("message", (data) => {
   if (data.type === "error") {
-    console.error("❌ Error:", data.error);
+    console.error("Error:", data.error);
     socket.disconnect();
   }
 });
@@ -270,7 +270,7 @@ Session terminated by server.
 **Handler:**
 ```javascript
 socket.on("end_session", (data) => {
-  console.log("🔚 Session ended:", data.reason);
+  console.log("Session ended:", data.reason);
   socket.disconnect();
 });
 ```
@@ -293,7 +293,7 @@ Instance connection lost, entering grace period.
 **Handler:**
 ```javascript
 socket.on("instance:disconnected", (data) => {
-  console.warn("⚠️ Instance disconnected");
+  console.warn("Instance disconnected");
   console.log("Grace period:", data.gracePeriod, "ms");
   // Show "Reconnecting..." UI to user
 });
@@ -316,7 +316,7 @@ Instance connection restored.
 **Handler:**
 ```javascript
 socket.on("instance:reconnected", (data) => {
-  console.log("✅ Instance reconnected");
+  console.log("Instance reconnected");
   // Hide "Reconnecting..." UI
 });
 ```
@@ -350,34 +350,34 @@ async function runTaskWithWebSocket(prompt, apiKey) {
 
     // Step 3: Handle events
     socket.on("connect", () => {
-      console.log("✓ Connected");
+      console.log("Connected");
     });
 
     socket.on("message", (data) => {
       switch (data.type) {
         case "agent":
-          console.log("💭", data.content);
+          console.log(data.content);
           break;
 
         case "action":
-          console.log("🎯", data.data.name);
+          console.log(data.data.name);
           break;
 
         case "task_completed":
-          console.log("✅ Done:", data.data.message);
-          console.log("💰 Cost: $" + data.usage.cost);
+          console.log("Done:", data.data.message);
+          console.log("Cost: $" + data.usage.cost);
           socket.disconnect();
           resolve(data);
           break;
 
         case "guardrail_trigger":
-          console.error("⚠️ Guardrail:", data.data.value);
+          console.error("Guardrail:", data.data.value);
           socket.disconnect();
           reject(new Error(`Guardrail: ${data.data.value}`));
           break;
 
         case "error":
-          console.error("❌ Error:", data.error);
+          console.error("Error:", data.error);
           socket.disconnect();
           reject(new Error(data.error));
           break;
@@ -385,16 +385,16 @@ async function runTaskWithWebSocket(prompt, apiKey) {
     });
 
     socket.on("end_session", (data) => {
-      console.log("🔚 Session ended:", data.reason);
+      console.log("Session ended:", data.reason);
       socket.disconnect();
     });
 
     socket.on("instance:disconnected", (data) => {
-      console.warn("⚠️ Instance disconnected, reconnecting...");
+      console.warn("Instance disconnected, reconnecting...");
     });
 
     socket.on("instance:reconnected", () => {
-      console.log("✅ Instance reconnected");
+      console.log("Instance reconnected");
     });
 
     socket.on("error", (err) => {
@@ -403,7 +403,7 @@ async function runTaskWithWebSocket(prompt, apiKey) {
     });
 
     socket.on("disconnect", () => {
-      console.log("✗ Disconnected");
+      console.log("Disconnected");
     });
   });
 }
@@ -479,7 +479,7 @@ let instanceDisconnected = false;
 
 socket.on("instance:disconnected", (data) => {
   instanceDisconnected = true;
-  console.warn("⚠️ Browser instance disconnected");
+  console.warn("Browser instance disconnected");
   console.log(`Grace period: ${data.gracePeriod / 1000}s`);
 
   // Show UI warning
@@ -488,7 +488,7 @@ socket.on("instance:disconnected", (data) => {
 
 socket.on("instance:reconnected", () => {
   instanceDisconnected = false;
-  console.log("✅ Browser instance restored");
+  console.log("Browser instance restored");
 
   // Hide UI warning
   hideReconnectingUI();
@@ -496,7 +496,7 @@ socket.on("instance:reconnected", () => {
 
 socket.on("end_session", (data) => {
   if (data.reason === "instance_lost") {
-    console.error("❌ Instance could not be recovered");
+    console.error("Instance could not be recovered");
     // Notify user, restart task if needed
   }
 });
@@ -691,7 +691,7 @@ class WebRunWebSocketClient {
 
   setupEventHandlers() {
     this.socket.on("connect", () => {
-      console.log("✓ Connected");
+      console.log("Connected");
     });
 
     this.socket.on("message", (data) => {
@@ -733,25 +733,25 @@ class WebRunWebSocketClient {
   }
 
   onAgent(content) {
-    console.log("💭", content);
+    console.log(content);
   }
 
   onAction(action) {
-    console.log("🎯", action.name);
+    console.log(action.name);
   }
 
   onTaskCompleted(data) {
-    console.log("✅", data.data.message);
-    console.log("💰 Cost:", data.usage.cost);
+    console.log(data.data.message);
+    console.log("Cost:", data.usage.cost);
   }
 
   onGuardrail(data) {
-    console.warn("⚠️ Guardrail:", data.value);
+    console.warn("Guardrail:", data.value);
     // Override this method to handle guardrails
   }
 
   onError(data) {
-    console.error("❌", data.error);
+    console.error(data.error);
     this.disconnect();
   }
 

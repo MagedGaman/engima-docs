@@ -443,7 +443,7 @@ Currently, only `webrun-browser-1` is available. Additional models may be added 
 The OpenAI-compatible endpoint creates a new session per request. For multi-step workflows, use the native REST API:
 
 ```javascript
-// ❌ OpenAI-compatible - Each request is a new session
+// OpenAI-compatible - Each request is a new session
 const completion1 = await client.chat.completions.create({
   model: 'webrun-browser-1',
   messages: [{ role: 'user', content: 'Go to amazon.com' }]
@@ -454,7 +454,7 @@ const completion2 = await client.chat.completions.create({
   messages: [{ role: 'user', content: 'Search for keyboards' }] // New session, not on Amazon
 });
 
-// ✅ Native REST API - Persistent session
+// Native REST API - Persistent session
 const session = await fetch('https://connect.webrun.ai/start/start-session', {
   method: 'POST',
   headers: {

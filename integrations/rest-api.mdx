@@ -459,7 +459,7 @@ async function loginAndExtractWithSecrets(url) {
     })
   }).then(r => r.json());
 
-  // Poll for result — no guardrail handling needed
+  // Poll for result, no guardrail handling needed
   const taskId = session.taskId || session.sessionId;
   return await pollForResult(session.sessionId, taskId, API_KEY);
 }
