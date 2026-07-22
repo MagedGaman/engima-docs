@@ -4,7 +4,7 @@ description: "How WebRun identifies its automated browser traffic so networks li
 icon: "robot"
 ---
 
-WebRun runs AI agents inside real browsers on behalf of users. So that site operators, CDNs, and bot-management providers such as [Cloudflare](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/) can recognize this traffic — and tell it apart from spoofed or malicious automation — WebRun publishes a stable, verifiable bot identity.
+WebRun runs AI agents inside real browsers on behalf of users. So that site operators, CDNs, and bot-management providers such as [Cloudflare](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/) can recognize this traffic - and tell it apart from spoofed or malicious automation - WebRun publishes a stable, verifiable bot identity.
 
 This page is the canonical, public reference for that identity. It documents the User-Agent, the cryptographic and network-level ways to verify a request genuinely originates from WebRun, and the behavior operators can expect. It also serves as the public documentation required by Cloudflare's [Verified Bots](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/) program.
 
@@ -27,20 +27,20 @@ Mozilla/5.0 (compatible; WebRunAgent/1.0; +https://docs.webrun.ai/bot)
 | Product token | `WebRunAgent` |
 | Version | `1.0` (major version increments only on breaking changes to this identity) |
 | Info URL | `https://docs.webrun.ai/bot` (redirects here) |
-| Operator | WebRun — `webrun.ai` |
-| Category | AI Agent — acts on a user's behalf, user-initiated |
+| Operator | WebRun - `webrun.ai` |
+| Category | AI Agent - acts on a user's behalf, user-initiated |
 
 The token meets Cloudflare's [Verified Bots policy](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/policy/) requirements for a User-Agent: it is longer than five characters, contains no special characters, and is unique to WebRun.
 
 <Note>
-The underlying browser can still present a standard Chrome User-Agent for individual page rendering (see [What User-Agent does WebRun use?](/troubleshooting/faqs#what-user-agent-does-webrun-use)). The `WebRunAgent` token and the verification methods below are how WebRun's traffic is **identified and authenticated at the network layer** — they do not depend on the browser's rendering User-Agent, so match on the [signature](#http-message-signatures-web-bot-auth) or [egress IP](#ip-ranges-and-reverse-dns) when you need a spoof-proof signal.
+The underlying browser can still present a standard Chrome User-Agent for individual page rendering (see [What User-Agent does WebRun use?](/troubleshooting/faqs#what-user-agent-does-webrun-use)). The `WebRunAgent` token and the verification methods below are how WebRun's traffic is **identified and authenticated at the network layer** - they do not depend on the browser's rendering User-Agent, so match on the [signature](#http-message-signatures-web-bot-auth) or [egress IP](#ip-ranges-and-reverse-dns) when you need a spoof-proof signal.
 </Note>
 
 ---
 
 ## Verifying WebRun traffic
 
-Use either method below to confirm a request is genuinely from WebRun. Message signatures are preferred — they verify each request independently and are Cloudflare's recommended method — with IP-range and reverse-DNS validation available as a fallback for operators who filter by network.
+Use either method below to confirm a request is genuinely from WebRun. Message signatures are preferred - they verify each request independently and are Cloudflare's recommended method - with IP-range and reverse-DNS validation available as a fallback for operators who filter by network.
 
 ### HTTP Message Signatures (Web Bot Auth)
 
@@ -77,7 +77,7 @@ https://webrun.ai/bot/ip-ranges.json
 ```
 
 <Warning>
-Always fetch the live list — do not hardcode individual addresses. Ranges change as capacity scales, and the JSON endpoint is the single source of truth. Requests routed through [WebRun-managed or custom proxies](/usage-guides/proxies) intentionally exit from proxy IPs and will **not** appear in this list.
+Always fetch the live list - do not hardcode individual addresses. Ranges change as capacity scales, and the JSON endpoint is the single source of truth. Requests routed through [WebRun-managed or custom proxies](/usage-guides/proxies) intentionally exit from proxy IPs and will **not** appear in this list.
 </Warning>
 
 Each egress IP is also validated with **forward-confirmed reverse DNS**. To verify an IP without the range list:
@@ -87,7 +87,7 @@ Each egress IP is also validated with **forward-confirmed reverse DNS**. To veri
 Run a reverse DNS (PTR) lookup on the source IP. WebRun addresses resolve to a hostname under `bot.webrun.ai`, for example `edge-203-0-113-7.bot.webrun.ai`.
 </Step>
 <Step title="Forward-confirm">
-Run a forward DNS (A/AAAA) lookup on that hostname and confirm it resolves back to the original source IP. This forward-confirmation step is what makes the check spoof-resistant — never trust the PTR record alone.
+Run a forward DNS (A/AAAA) lookup on that hostname and confirm it resolves back to the original source IP. This forward-confirmation step is what makes the check spoof-resistant - never trust the PTR record alone.
 </Step>
 </Steps>
 
@@ -98,7 +98,7 @@ Run a forward DNS (A/AAAA) lookup on that hostname and confirm it resolves back 
 WebRun operates as a transparent, well-behaved agent. Operators can expect the following from `WebRunAgent` traffic:
 
 - **User-initiated, not mass crawling.** Traffic is generated by explicit user automation tasks running in isolated [browser sessions](/concepts/sessions), not by autonomous, large-scale site indexing.
-- **No automated CAPTCHA solving or bot-defense evasion.** When a CAPTCHA or challenge is encountered, the session pauses for human takeover — WebRun does not attempt to defeat it programmatically (see [handling CAPTCHAs](/troubleshooting/faqs#how-do-i-handle-captchas)).
+- **No automated CAPTCHA solving or bot-defense evasion.** When a CAPTCHA or challenge is encountered, the session pauses for human takeover - WebRun does not attempt to defeat it programmatically (see [handling CAPTCHAs](/troubleshooting/faqs#how-do-i-handle-captchas)).
 - **Respects rate-limiting signals.** WebRun honors `429 Too Many Requests` responses and the `Retry-After` header, and backs off accordingly.
 - **Honors `robots.txt`.** WebRun observes `robots.txt` directives that target the `WebRunAgent` token (see [Controlling WebRun](#controlling-webrun-traffic)).
 - **Isolated, ephemeral sessions.** Each session is a clean browser instance with no shared cookies, cache, or state, destroyed on termination.
