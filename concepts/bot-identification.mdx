@@ -1,0 +1,177 @@
+---
+title: "Bot Identification"
+description: "How WebRun identifies its automated browser traffic so networks like Cloudflare can recognize and verify it as a good bot"
+icon: "robot"
+---
+
+WebRun runs AI agents inside real browsers on behalf of users. So that site operators, CDNs, and bot-management providers such as [Cloudflare](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/) can recognize this traffic - and tell it apart from spoofed or malicious automation - WebRun publishes a stable, verifiable bot identity.
+
+This page is the canonical, public reference for that identity. It documents the User-Agent, the cryptographic and network-level ways to verify a request genuinely originates from WebRun, and the behavior operators can expect. It also serves as the public documentation required by Cloudflare's [Verified Bots](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/) program.
+
+<Info>
+Verifying identity matters. A malicious client can copy WebRun's User-Agent string, but it cannot forge a valid [message signature](#http-message-signatures-web-bot-auth) or originate from WebRun's [published egress IPs](#ip-ranges-and-reverse-dns). Always verify before allow-listing.
+</Info>
+
+---
+
+## User-Agent
+
+WebRun's automated traffic identifies itself with the **`WebRunAgent`** product token in the User-Agent header:
+
+```
+Mozilla/5.0 (compatible; WebRunAgent/1.0; +https://docs.webrun.ai/bot)
+```
+
+| Field | Value |
+|-------|-------|
+| Product token | `WebRunAgent` |
+| Version | `1.0` (major version increments only on breaking changes to this identity) |
+| Info URL | `https://docs.webrun.ai/bot` (redirects here) |
+| Operator | WebRun - `webrun.ai` |
+| Category | AI Agent - acts on a user's behalf, user-initiated |
+
+The token meets Cloudflare's [Verified Bots policy](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/policy/) requirements for a User-Agent: it is longer than five characters, contains no special characters, and is unique to WebRun.
+
+<Note>
+The underlying browser can still present a standard Chrome User-Agent for individual page rendering (see [What User-Agent does WebRun use?](/troubleshooting/faqs#what-user-agent-does-webrun-use)). The `WebRunAgent` token and the verification methods below are how WebRun's traffic is **identified and authenticated at the network layer** - they do not depend on the browser's rendering User-Agent, so match on the [signature](#http-message-signatures-web-bot-auth) or [egress IP](#ip-ranges-and-reverse-dns) when you need a spoof-proof signal.
+</Note>
+
+---
+
+## Verifying WebRun traffic
+
+Use either method below to confirm a request is genuinely from WebRun. Message signatures are preferred - they verify each request independently and are Cloudflare's recommended method - with IP-range and reverse-DNS validation available as a fallback for operators who filter by network.
+
+### HTTP Message Signatures (Web Bot Auth)
+
+WebRun signs its requests using [HTTP Message Signatures](https://www.rfc-editor.org/rfc/rfc9421.html), the mechanism behind Cloudflare's [Web Bot Auth](https://developers.cloudflare.com/bots/reference/bot-verification/web-bot-auth/). Each request carries `Signature` and `Signature-Input` headers signed with a key published in WebRun's public key directory:
+
+```
+https://webrun.ai/.well-known/http-message-signatures-directory
+```
+
+To verify:
+
+<Steps>
+<Step title="Fetch the key directory">
+Retrieve the JSON Web Key Set from `https://webrun.ai/.well-known/http-message-signatures-directory`. Cache it and refresh periodically; keys rotate.
+</Step>
+<Step title="Match the keyid">
+Read the `keyid` from the request's `Signature-Input` header and select the matching public key from the directory.
+</Step>
+<Step title="Verify the signature">
+Verify the `Signature` header over the covered components per [RFC 9421](https://www.rfc-editor.org/rfc/rfc9421.html). A valid signature proves the request came from WebRun and was not tampered with in transit.
+</Step>
+</Steps>
+
+<Tip>
+Cloudflare customers do not need to implement this manually. Once WebRun is approved in the Verified Bots directory, signed WebRun requests are matched automatically and exposed through the `cf.bot_management.verified_bot` field.
+</Tip>
+
+### IP ranges and reverse DNS
+
+WebRun's identifiable agent traffic originates from a stable, published set of egress IP ranges. The authoritative, machine-readable list is served at:
+
+```
+https://webrun.ai/bot/ip-ranges.json
+```
+
+<Warning>
+Always fetch the live list - do not hardcode individual addresses. Ranges change as capacity scales, and the JSON endpoint is the single source of truth. Requests routed through [WebRun-managed or custom proxies](/usage-guides/proxies) intentionally exit from proxy IPs and will **not** appear in this list.
+</Warning>
+
+Each egress IP is also validated with **forward-confirmed reverse DNS**. To verify an IP without the range list:
+
+<Steps>
+<Step title="Reverse lookup">
+Run a reverse DNS (PTR) lookup on the source IP. WebRun addresses resolve to a hostname under `bot.webrun.ai`, for example `edge-203-0-113-7.bot.webrun.ai`.
+</Step>
+<Step title="Forward-confirm">
+Run a forward DNS (A/AAAA) lookup on that hostname and confirm it resolves back to the original source IP. This forward-confirmation step is what makes the check spoof-resistant - never trust the PTR record alone.
+</Step>
+</Steps>
+
+---
+
+## Expected behavior
+
+WebRun operates as a transparent, well-behaved agent. Operators can expect the following from `WebRunAgent` traffic:
+
+- **User-initiated, not mass crawling.** Traffic is generated by explicit user automation tasks running in isolated [browser sessions](/concepts/sessions), not by autonomous, large-scale site indexing.
+- **No automated CAPTCHA solving or bot-defense evasion.** When a CAPTCHA or challenge is encountered, the session pauses for human takeover - WebRun does not attempt to defeat it programmatically (see [handling CAPTCHAs](/troubleshooting/faqs#how-do-i-handle-captchas)).
+- **Respects rate-limiting signals.** WebRun honors `429 Too Many Requests` responses and the `Retry-After` header, and backs off accordingly.
+- **Honors `robots.txt`.** WebRun observes `robots.txt` directives that target the `WebRunAgent` token (see [Controlling WebRun](#controlling-webrun-traffic)).
+- **Isolated, ephemeral sessions.** Each session is a clean browser instance with no shared cookies, cache, or state, destroyed on termination.
+- **Encrypted transport.** All WebRun traffic uses HTTPS/TLS.
+
+---
+
+## Cloudflare Verified Bots
+
+WebRun participates in Cloudflare's [Verified Bots](https://developers.cloudflare.com/bots/concepts/bot/verified-bots/) program so that Cloudflare-protected sites can distinguish legitimate WebRun traffic from spoofed automation and apply their own allow, challenge, or rate-limit policies to it.
+
+**If you run a Cloudflare-protected site**, you can identify verified WebRun requests using the [`cf.bot_management.verified_bot`](https://developers.cloudflare.com/ruleset-engine/rules-language/fields/reference/cf.bot_management.verified_bot/) field in a WAF custom rule, and allow-list them following Cloudflare's [guide for allowing verified bots](https://developers.cloudflare.com/waf/custom-rules/use-cases/allow-traffic-from-verified-bots/).
+
+**For the WebRun team**, the Verified Bots application is submitted from the Cloudflare dashboard under **Manage Account → Configurations → Bot Submission Form**, using this page as the required public documentation, the `WebRunAgent` User-Agent, and the message-signature key directory above.
+
+---
+
+## Controlling WebRun traffic
+
+Site operators can allow, throttle, or disallow WebRun using standard mechanisms.
+
+### robots.txt
+
+Target the `WebRunAgent` token directly:
+
+<CodeGroup>
+
+```txt Allow everything
+User-agent: WebRunAgent
+Allow: /
+```
+
+```txt Disallow a section
+User-agent: WebRunAgent
+Disallow: /private/
+```
+
+```txt Disallow entirely
+User-agent: WebRunAgent
+Disallow: /
+```
+
+</CodeGroup>
+
+### Firewall / WAF rules
+
+Match on the [verified-bot signal](#cloudflare-verified-bots) or the `WebRunAgent` User-Agent to allow, rate-limit, or block WebRun at the edge. Prefer matching the verified-bot field or a [validated signature](#verifying-webrun-traffic) over the raw User-Agent string, since the User-Agent alone can be spoofed.
+
+<Note>
+Blocking WebRun blocks the automation your own users have asked WebRun to run on your site. If WebRun traffic is causing load problems, consider rate-limiting or [contacting us](#reporting-abuse) before an outright block.
+</Note>
+
+---
+
+## Reporting abuse
+
+If you believe WebRun traffic is misbehaving on your site, email **abuse@webrun.ai** with the affected domain, timestamps (with timezone), and a sample of request logs (source IP and User-Agent). Verified reports are investigated promptly.
+
+For general questions, contact [support@webrun.ai](mailto:support@webrun.ai).
+
+---
+
+<CardGroup cols={2}>
+  <Card title="Proxies" icon="globe" href="/usage-guides/proxies">
+    Route sessions through proxy IPs instead of WebRun's egress ranges
+  </Card>
+  <Card title="Sessions" icon="window-restore" href="/concepts/sessions">
+    How WebRun's isolated browser sessions work
+  </Card>
+  <Card title="Automation Policies" icon="shield-check" href="/concepts/policies">
+    Runtime rules that constrain agent behavior
+  </Card>
+  <Card title="FAQs" icon="circle-question" href="/troubleshooting/faqs">
+    Technical details, including the browser User-Agent
+  </Card>
+</CardGroup>

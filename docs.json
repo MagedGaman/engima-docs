@@ -35,6 +35,7 @@
               "concepts/guardrails",
               "concepts/policies",
               "concepts/response-model",
+              "concepts/bot-identification",
               "concepts/pricing"
             ]
           },
@@ -199,6 +200,10 @@
     {
       "source": "/environments/cron-jobs",
       "destination": "/environments/triggers"
+    },
+    {
+      "source": "/bot",
+      "destination": "/concepts/bot-identification"
     }
   ]
 }
