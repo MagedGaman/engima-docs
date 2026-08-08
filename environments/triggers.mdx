@@ -96,7 +96,7 @@ Authorization: Bearer <api_key>
 ## Base URL
 
 ```
-https://connect.webrun.ai
+https://api.webrun.ai
 ```
 
 ---
@@ -110,7 +110,7 @@ GET /cron-jobs
 ```
 
 ```bash
-curl https://connect.webrun.ai/cron-jobs \
+curl https://api.webrun.ai/cron-jobs \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -176,7 +176,7 @@ Content-Type: application/json
 ### Example: Recurring Cron Schedule
 
 ```bash
-curl -X POST https://connect.webrun.ai/cron-jobs \
+curl -X POST https://api.webrun.ai/cron-jobs \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -218,7 +218,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
 ### Example: Fixed Interval
 
 ```bash
-curl -X POST https://connect.webrun.ai/cron-jobs \
+curl -X POST https://api.webrun.ai/cron-jobs \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -241,7 +241,7 @@ curl -X POST https://connect.webrun.ai/cron-jobs \
 ### Example: One-Time Scheduled Run
 
 ```bash
-curl -X POST https://connect.webrun.ai/cron-jobs \
+curl -X POST https://api.webrun.ai/cron-jobs \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -297,7 +297,7 @@ GET /cron-jobs/:id
 ```
 
 ```bash
-curl https://connect.webrun.ai/cron-jobs/<JOB_ID> \
+curl https://api.webrun.ai/cron-jobs/<JOB_ID> \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -342,7 +342,7 @@ Content-Type: application/json
 ```
 
 ```bash
-curl -X PUT https://connect.webrun.ai/cron-jobs/<JOB_ID> \
+curl -X PUT https://api.webrun.ai/cron-jobs/<JOB_ID> \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -387,7 +387,7 @@ DELETE /cron-jobs/:id
 ```
 
 ```bash
-curl -X DELETE https://connect.webrun.ai/cron-jobs/<JOB_ID> \
+curl -X DELETE https://api.webrun.ai/cron-jobs/<JOB_ID> \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -417,7 +417,7 @@ POST /cron-jobs/:id/pause
 ```
 
 ```bash
-curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/pause \
+curl -X POST https://api.webrun.ai/cron-jobs/<JOB_ID>/pause \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -451,7 +451,7 @@ POST /cron-jobs/:id/resume
 ```
 
 ```bash
-curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/resume \
+curl -X POST https://api.webrun.ai/cron-jobs/<JOB_ID>/resume \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -487,7 +487,7 @@ POST /cron-jobs/:id/trigger
 ```
 
 ```bash
-curl -X POST https://connect.webrun.ai/cron-jobs/<JOB_ID>/trigger \
+curl -X POST https://api.webrun.ai/cron-jobs/<JOB_ID>/trigger \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -526,7 +526,7 @@ GET /cron-jobs/:id/runs
 | `limit` | Query | `20` | Results per page (max 50) |
 
 ```bash
-curl "https://connect.webrun.ai/cron-jobs/<JOB_ID>/runs?page=1&limit=10" \
+curl "https://api.webrun.ai/cron-jobs/<JOB_ID>/runs?page=1&limit=10" \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -563,7 +563,7 @@ GET /cron-jobs/:id/runs/:runId
 ```
 
 ```bash
-curl https://connect.webrun.ai/cron-jobs/<JOB_ID>/runs/<RUN_ID> \
+curl https://api.webrun.ai/cron-jobs/<JOB_ID>/runs/<RUN_ID> \
   -H "Authorization: Bearer wr_xxx"
 ```
 

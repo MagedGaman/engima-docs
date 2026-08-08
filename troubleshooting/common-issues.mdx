@@ -31,7 +31,7 @@ icon: "bug"
 
      while (Date.now() - startTime < maxWait) {
        const response = await fetch(
-         `https://connect.webrun.ai/start/session-status/${sessionId}`,
+         `https://api.webrun.ai/start/session-status/${sessionId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -57,7 +57,7 @@ icon: "bug"
 2. **Terminate and Recreate**
    ```javascript
    // If session is stuck, terminate and create new one
-   await fetch("https://connect.webrun.ai/start/send-message", {
+   await fetch("https://api.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -70,7 +70,7 @@ icon: "bug"
    });
 
    // Create new session
-   const newSession = await fetch("https://connect.webrun.ai/start/start-session", {
+   const newSession = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -115,7 +115,7 @@ icon: "bug"
 
 1. **Increase Maximum Duration**
    ```javascript
-   const response = await fetch("https://connect.webrun.ai/start/run-task", {
+   const response = await fetch("https://api.webrun.ai/start/run-task", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -151,7 +151,7 @@ icon: "bug"
 3. **Use Starting URL**
    ```javascript
    // Skip navigation time by starting at target page
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
+   const session = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -203,7 +203,7 @@ icon: "bug"
 
      while (Date.now() - startTime < maxTime) {
        const response = await fetch(
-         `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
+         `https://api.webrun.ai/task/${sessionId}/${taskId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -226,7 +226,7 @@ icon: "bug"
 2. **Check WebSocket Events**
    ```javascript
    // If using WebSocket, monitor for task_completed event
-   const ws = new WebSocket(`wss://connect.webrun.ai/ws?sessionId=${sessionId}`);
+   const ws = new WebSocket(`wss://api.webrun.ai/ws?sessionId=${sessionId}`);
 
    ws.onmessage = (event) => {
      const data = JSON.parse(event.data);
@@ -240,7 +240,7 @@ icon: "bug"
 3. **Terminate and Retry**
    ```javascript
    // If stuck for too long, terminate and retry
-   await fetch("https://connect.webrun.ai/start/send-message", {
+   await fetch("https://api.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -284,7 +284,7 @@ icon: "bug"
 
 1. **Set Token Limits**
    ```javascript
-   const response = await fetch("https://connect.webrun.ai/start/start-session", {
+   const response = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -301,7 +301,7 @@ icon: "bug"
 2. **Use Starting URL**
    ```javascript
    // Skip homepage navigation - saves tokens
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
+   const session = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -316,7 +316,7 @@ icon: "bug"
 
 3. **Block Unnecessary Domains**
    ```javascript
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
+   const session = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -389,7 +389,7 @@ icon: "bug"
 
 2. **Provide Credentials Upfront**
    ```javascript
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
+   const session = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -404,7 +404,7 @@ icon: "bug"
 3. **Handle Guardrails Programmatically**
    ```javascript
    async function handleGuardrails(sessionId, apiKey) {
-     const ws = new WebSocket(`wss://connect.webrun.ai/ws?sessionId=${sessionId}`);
+     const ws = new WebSocket(`wss://api.webrun.ai/ws?sessionId=${sessionId}`);
 
      ws.onmessage = async (event) => {
        const data = JSON.parse(event.data);
@@ -424,7 +424,7 @@ icon: "bug"
          }
 
          // Resume with response
-         await fetch("https://connect.webrun.ai/start/send-message", {
+         await fetch("https://api.webrun.ai/start/send-message", {
            method: "POST",
            headers: {
              "Content-Type": "application/json",
@@ -447,7 +447,7 @@ icon: "bug"
 4. **Avoid Sites Requiring Auth**
    ```javascript
    // Block login-required domains
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
+   const session = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -489,7 +489,7 @@ icon: "bug"
    async function getStreamUrl(sessionId, apiKey) {
      // Check session status first
      const statusResponse = await fetch(
-       `https://connect.webrun.ai/start/session-status/${sessionId}`,
+       `https://api.webrun.ai/start/session-status/${sessionId}`,
        {
          headers: { "Authorization": `Bearer ${apiKey}` }
        }
@@ -502,7 +502,7 @@ icon: "bug"
      }
 
      // Get stream URL
-     return `https://connect.webrun.ai/stream/${sessionId}`;
+     return `https://api.webrun.ai/stream/${sessionId}`;
    }
    ```
 
@@ -512,7 +512,7 @@ icon: "bug"
    // Required ports: TCP 443, UDP 49152-65535
 
    // Test connection
-   const streamUrl = `https://connect.webrun.ai/stream/${sessionId}`;
+   const streamUrl = `https://api.webrun.ai/stream/${sessionId}`;
    const testResponse = await fetch(streamUrl);
 
    if (!testResponse.ok) {
@@ -524,7 +524,7 @@ icon: "bug"
    ```javascript
    // If WebRTC fails, try SSE for updates
    const eventSource = new EventSource(
-     `https://connect.webrun.ai/stream/sse/${sessionId}?apiKey=${apiKey}`
+     `https://api.webrun.ai/stream/sse/${sessionId}?apiKey=${apiKey}`
    );
 
    eventSource.onmessage = (event) => {
@@ -561,7 +561,7 @@ icon: "bug"
 
      function connect() {
        const ws = new WebSocket(
-         `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${apiKey}`
+         `wss://api.webrun.ai/ws?sessionId=${sessionId}&apiKey=${apiKey}`
        );
 
        ws.onopen = () => {
@@ -610,7 +610,7 @@ icon: "bug"
      // Poll every 2 seconds
      pollingInterval = setInterval(async () => {
        const result = await fetch(
-         `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
+         `https://api.webrun.ai/task/${sessionId}/${taskId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -651,7 +651,7 @@ icon: "bug"
 1. **Verify IDs are Correct**
    ```javascript
    // Store task ID immediately after creation
-   const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
+   const taskResponse = await fetch("https://api.webrun.ai/start/run-task", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -670,7 +670,7 @@ icon: "bug"
 
    // Use exact IDs for polling
    const result = await fetch(
-     `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
+     `https://api.webrun.ai/task/${sessionId}/${taskId}`,
      {
        headers: { "Authorization": `Bearer ${apiKey}` }
      }
@@ -682,7 +682,7 @@ icon: "bug"
    async function pollTask(sessionId, taskId, apiKey) {
      try {
        const response = await fetch(
-         `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
+         `https://api.webrun.ai/task/${sessionId}/${taskId}`,
          {
            headers: { "Authorization": `Bearer ${apiKey}` }
          }
@@ -710,7 +710,7 @@ icon: "bug"
    ```javascript
    // Before polling, verify session exists
    const sessionStatus = await fetch(
-     `https://connect.webrun.ai/start/session-status/${sessionId}`,
+     `https://api.webrun.ai/start/session-status/${sessionId}`,
      {
        headers: { "Authorization": `Bearer ${apiKey}` }
      }
@@ -763,7 +763,7 @@ icon: "bug"
          const userConfirmation = await askUser("Have you solved the CAPTCHA?");
 
          // Resume task
-         await fetch("https://connect.webrun.ai/start/send-message", {
+         await fetch("https://api.webrun.ai/start/send-message", {
            method: "POST",
            headers: {
              "Content-Type": "application/json",
@@ -786,7 +786,7 @@ icon: "bug"
 2. **Use Manual Takeover**
    ```javascript
    // Switch to manual control for CAPTCHA
-   await fetch("https://connect.webrun.ai/start/send-message", {
+   await fetch("https://api.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -801,7 +801,7 @@ icon: "bug"
    // User solves CAPTCHA via stream
 
    // Return to agent control
-   await fetch("https://connect.webrun.ai/start/send-message", {
+   await fetch("https://api.webrun.ai/start/send-message", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -817,7 +817,7 @@ icon: "bug"
 3. **Avoid CAPTCHA-Heavy Sites**
    ```javascript
    // Add known CAPTCHA-heavy domains to avoid list
-   const session = await fetch("https://connect.webrun.ai/start/start-session", {
+   const session = await fetch("https://api.webrun.ai/start/start-session", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -901,7 +901,7 @@ const client = new WebRunClient(apiKey, true); // Enable debug mode
 ```javascript
 function monitorAllEvents(sessionId, apiKey) {
   const ws = new WebSocket(
-    `wss://connect.webrun.ai/ws?sessionId=${sessionId}&apiKey=${apiKey}`
+    `wss://api.webrun.ai/ws?sessionId=${sessionId}&apiKey=${apiKey}`
   );
 
   ws.onmessage = (event) => {

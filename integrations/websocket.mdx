@@ -41,7 +41,7 @@ npm install socket.io-client
 import { io } from "socket.io-client";
 
 // Step 1: Create a session via REST API
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -55,7 +55,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 }).then(r => r.json());
 
 // Step 2: Connect to WebSocket with sessionId
-const socket = io("https://connect.webrun.ai", {
+const socket = io("https://api.webrun.ai", {
   auth: { sessionId: session.sessionId },
   transports: ["websocket"]
 });
@@ -331,7 +331,7 @@ import { io } from "socket.io-client";
 async function runTaskWithWebSocket(prompt, apiKey) {
   return new Promise(async (resolve, reject) => {
     // Step 1: Create session
-    const session = await fetch("https://connect.webrun.ai/start/start-session", {
+    const session = await fetch("https://api.webrun.ai/start/start-session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -343,7 +343,7 @@ async function runTaskWithWebSocket(prompt, apiKey) {
     console.log("Session created:", session.sessionId);
 
     // Step 2: Connect to WebSocket
-    const socket = io("https://connect.webrun.ai", {
+    const socket = io("https://api.webrun.ai", {
       auth: { sessionId: session.sessionId },
       transports: ["websocket"]
     });
@@ -429,7 +429,7 @@ try {
 Socket.IO automatically reconnects on connection loss. The WebRun server maintains session state during brief disconnections.
 
 ```javascript
-const socket = io("https://connect.webrun.ai", {
+const socket = io("https://api.webrun.ai", {
   auth: { sessionId: session.sessionId },
   transports: ["websocket"],
   reconnection: true,
@@ -667,7 +667,7 @@ class WebRunWebSocketClient {
   }
 
   async createSession(prompt) {
-    const response = await fetch("https://connect.webrun.ai/start/start-session", {
+    const response = await fetch("https://api.webrun.ai/start/start-session", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -679,7 +679,7 @@ class WebRunWebSocketClient {
     const session = await response.json();
     this.sessionId = session.sessionId;
 
-    this.socket = io("https://connect.webrun.ai", {
+    this.socket = io("https://api.webrun.ai", {
       auth: { sessionId: this.sessionId },
       transports: ["websocket"]
     });

@@ -40,7 +40,7 @@ npm install openai
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.webrun.ai/v1',
+  baseURL: 'https://api.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY' // Your WebRun API key
 });
 
@@ -93,7 +93,7 @@ const model = new ChatOpenAI({
   modelName: "webrun-browser-1",
   openAIApiKey: "YOUR_API_KEY",
   configuration: {
-    baseURL: "https://connect.webrun.ai/v1"
+    baseURL: "https://api.webrun.ai/v1"
   }
 });
 
@@ -125,7 +125,7 @@ const model = new ChatOpenAI({
   modelName: "webrun-browser-1",
   openAIApiKey: "YOUR_API_KEY",
   configuration: {
-    baseURL: "https://connect.webrun.ai/v1"
+    baseURL: "https://api.webrun.ai/v1"
   }
 });
 
@@ -154,7 +154,7 @@ const llm = new OpenAI({
   model: "webrun-browser-1",
   apiKey: "YOUR_API_KEY",
   additionalChatOptions: {
-    baseURL: "https://connect.webrun.ai/v1"
+    baseURL: "https://api.webrun.ai/v1"
   }
 });
 
@@ -178,7 +178,7 @@ const llm = new OpenAI({
   model: "webrun-browser-1",
   apiKey: "YOUR_API_KEY",
   additionalChatOptions: {
-    baseURL: "https://connect.webrun.ai/v1"
+    baseURL: "https://api.webrun.ai/v1"
   }
 });
 
@@ -203,7 +203,7 @@ import { openai } from '@ai-sdk/openai';
 import { generateText } from 'ai';
 
 const model = openai('webrun-browser-1', {
-  baseURL: 'https://connect.webrun.ai/v1',
+  baseURL: 'https://api.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
@@ -221,7 +221,7 @@ import { openai } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 
 const model = openai('webrun-browser-1', {
-  baseURL: 'https://connect.webrun.ai/v1',
+  baseURL: 'https://api.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
@@ -245,7 +245,7 @@ export async function POST(req: Request) {
   const { task } = await req.json();
 
   const model = openai('webrun-browser-1', {
-    baseURL: 'https://connect.webrun.ai/v1',
+    baseURL: 'https://api.webrun.ai/v1',
     apiKey: process.env.WEBRUN_API_KEY
   });
 
@@ -271,7 +271,7 @@ export async function POST(req: Request) {
 ### Request Format
 
 ```bash
-POST https://connect.webrun.ai/v1/chat/completions
+POST https://api.webrun.ai/v1/chat/completions
 Content-Type: application/json
 Authorization: Bearer YOUR_API_KEY
 ```
@@ -363,7 +363,7 @@ data: [DONE]
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.webrun.ai/v1',
+  baseURL: 'https://api.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 
@@ -455,7 +455,7 @@ const completion2 = await client.chat.completions.create({
 });
 
 // Native REST API - Persistent session
-const session = await fetch('https://connect.webrun.ai/start/start-session', {
+const session = await fetch('https://api.webrun.ai/start/start-session', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -464,7 +464,7 @@ const session = await fetch('https://connect.webrun.ai/start/start-session', {
   body: JSON.stringify({ task: { prompt: 'Go to amazon.com' } })
 }).then(r => r.json());
 
-await fetch('https://connect.webrun.ai/start/send-message', {
+await fetch('https://api.webrun.ai/start/send-message', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -513,7 +513,7 @@ Live video streaming is not available via OpenAI-compatible endpoint. Use native
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.webrun.ai/v1',
+  baseURL: 'https://api.webrun.ai/v1',
   apiKey: process.env.WEBRUN_API_KEY
 });
 
@@ -561,7 +561,7 @@ await researchTopic('Browser automation with AI agents');
 import OpenAI from 'openai';
 
 const client = new OpenAI({
-  baseURL: 'https://connect.webrun.ai/v1',
+  baseURL: 'https://api.webrun.ai/v1',
   apiKey: 'YOUR_API_KEY'
 });
 

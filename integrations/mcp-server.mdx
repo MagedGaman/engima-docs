@@ -27,7 +27,7 @@ This is the **full reference** for the MCP server. For a quickstart guide, see [
 {
   "mcpServers": {
     "webrun": {
-      "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY"
+      "url": "https://api.webrun.ai/mcp/YOUR_API_KEY"
     }
   }
 }
@@ -39,7 +39,7 @@ To connect to a specific environment, append the environment ID to your API key.
 {
   "mcpServers": {
     "webrun": {
-      "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
+      "url": "https://api.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
     }
   }
 }
@@ -64,7 +64,7 @@ After editing, **restart Claude Desktop** completely (quit and reopen).
 ```json
 {
   "webrun": {
-    "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY"
+    "url": "https://api.webrun.ai/mcp/YOUR_API_KEY"
   }
 }
 ```
@@ -74,7 +74,7 @@ To connect to a specific environment, append the environment ID to your API key.
 ```json
 {
   "webrun": {
-    "url": "https://connect.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
+    "url": "https://api.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
   }
 }
 ```
@@ -566,7 +566,7 @@ Claude's execution:
 3. **Ensure API key format:**
    - API key should start with `wr_`
    - No extra spaces or quotes
-   - Example: `"url": "https://connect.webrun.ai/mcp/wr_xxxxxxxxxxxx"`
+   - Example: `"url": "https://api.webrun.ai/mcp/wr_xxxxxxxxxxxx"`
 
 4. **Restart Claude Desktop completely:**
    - Quit Claude Desktop (don't just close window)
@@ -593,15 +593,15 @@ Claude's execution:
 2. **Check URL format:**
    ```json
    // Wrong
-   "url": "https://connect.webrun.ai/mcp/"
+   "url": "https://api.webrun.ai/mcp/"
 
    // Correct
-   "url": "https://connect.webrun.ai/mcp/wr_xxxxxxxxxxxx"
+   "url": "https://api.webrun.ai/mcp/wr_xxxxxxxxxxxx"
    ```
 
 3. **Test API key via curl:**
    ```bash
-   curl -X POST https://connect.webrun.ai/start/run-task \
+   curl -X POST https://api.webrun.ai/start/run-task \
      -H "Authorization: Bearer wr_xxxxxxxxxxxx" \
      -H "Content-Type: application/json" \
      -d '{"task": {"prompt": "Go to google.com"}}'

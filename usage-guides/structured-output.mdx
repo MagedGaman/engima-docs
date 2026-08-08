@@ -27,7 +27,7 @@ The default output type returns natural language responses formatted as markdown
 ### Request Example
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -81,7 +81,7 @@ Use `structured_json` to get validated JSON output. The `outputSchema` parameter
 ### Request Example
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -147,7 +147,7 @@ Use `structured_csv` to get CSV formatted output. The `outputSchema` parameter a
 ### Request Example
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -220,7 +220,7 @@ When using `outputType: "structured_csv"`, the `outputSchema` must be an array o
 Combine structured output with [webhooks](/usage-guides/webhooks) to automatically deliver validated data to your systems when tasks complete.
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -276,7 +276,7 @@ The most common pattern for structured output is requesting JSON in your task de
 ### Basic Example
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -361,7 +361,7 @@ Extract the top 5 results and return as a JSON array:
 ]
 `;
 
-const task = await fetch("https://connect.webrun.ai/start/send-message", {
+const task = await fetch("https://api.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -537,7 +537,7 @@ async function getStructuredDataWithRetry(sessionId, originalTaskId) {
     console.log("Initial parse failed, requesting reformatting...");
 
     // Send follow-up task to reformat
-    const reformatTask = await fetch("https://connect.webrun.ai/start/send-message", {
+    const reformatTask = await fetch("https://api.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -648,7 +648,7 @@ async function getProducts(sessionId: string, taskId: string): Promise<Product[]
 
 ```javascript
 const API_KEY = "YOUR_API_KEY";
-const BASE = "https://connect.webrun.ai";
+const BASE = "https://api.webrun.ai";
 
 async function compareProducts(searchQuery) {
   // 1. Create session

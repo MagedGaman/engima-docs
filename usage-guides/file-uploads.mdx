@@ -24,7 +24,7 @@ Upload one or more files using the `/files/upload` endpoint. Files are sent as m
 **Authentication:** Required
 
 ```bash
-curl -X POST https://connect.webrun.ai/files/upload \
+curl -X POST https://api.webrun.ai/files/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "files=@document.pdf"
 ```
@@ -48,7 +48,7 @@ curl -X POST https://connect.webrun.ai/files/upload \
 You can upload multiple files in a single request by repeating the `files` field:
 
 ```bash
-curl -X POST https://connect.webrun.ai/files/upload \
+curl -X POST https://api.webrun.ai/files/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "files=@document.pdf" \
   -F "files=@photo.png" \
@@ -98,7 +98,7 @@ Once you have `fileId` values, include them in the `files` array at the task lev
 ### Using /start/run-task
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -155,7 +155,7 @@ const API_KEY = process.env.WEBRUN_API_KEY;
 const formData = new FormData();
 formData.append("files", fs.createReadStream("report.pdf"));
 
-const uploadResponse = await fetch("https://connect.webrun.ai/files/upload", {
+const uploadResponse = await fetch("https://api.webrun.ai/files/upload", {
   method: "POST",
   headers: {
     "Authorization": `Bearer ${API_KEY}`
@@ -166,7 +166,7 @@ const uploadResponse = await fetch("https://connect.webrun.ai/files/upload", {
 const fileId = uploadResponse.files[0].fileId;
 
 // Step 2: Run a task with the uploaded file
-const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
+const taskResponse = await fetch("https://api.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

@@ -189,7 +189,7 @@ async function handleTask(sessionId, taskId, apiKey) {
     const userInput = await promptUser(result.data.value);
 
     // Respond to guardrail
-    await fetch("https://connect.webrun.ai/start/send-message", {
+    await fetch("https://api.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

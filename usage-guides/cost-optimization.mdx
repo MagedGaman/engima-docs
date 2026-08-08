@@ -14,7 +14,7 @@ Set `terminateOnCompletion: true` on your final task, or call terminate explicit
 
 ```javascript
 // Single task - auto-terminates
-const result = await fetch("https://connect.webrun.ai/start/run-task", {
+const result = await fetch("https://api.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -28,7 +28,7 @@ const result = await fetch("https://connect.webrun.ai/start/run-task", {
 });
 
 // Multi-task - terminate on last task
-const finalTask = await fetch("https://connect.webrun.ai/start/send-message", {
+const finalTask = await fetch("https://api.webrun.ai/start/send-message", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",

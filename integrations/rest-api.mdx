@@ -33,7 +33,7 @@ Get your API key at [webrun.ai/settings](https://webrun.ai/settings)
 
 **Base URL:**
 ```
-https://connect.webrun.ai
+https://api.webrun.ai
 ```
 
 ---
@@ -45,7 +45,7 @@ https://connect.webrun.ai
 The simplest pattern for one-off tasks. Session auto-terminates after completion.
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -95,7 +95,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
-  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://api.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -112,7 +112,7 @@ For workflows that require multiple sequential tasks in the same browser session
 
 **Step 1: Create persistent session**
 ```bash
-curl -X POST https://connect.webrun.ai/start/start-session \
+curl -X POST https://api.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -129,7 +129,7 @@ curl -X POST https://connect.webrun.ai/start/start-session \
 {
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
-  "socketURL": "https://connect.webrun.ai",
+  "socketURL": "https://api.webrun.ai",
   "streaming": {
     "webRTCURL": "https://a1b2c3d4e5f6.webrun.ai/whep",
     "webViewURL": "https://a1b2c3d4e5f6.webrun.ai",
@@ -142,7 +142,7 @@ curl -X POST https://connect.webrun.ai/start/start-session \
 
 **Step 2: Send follow-up task**
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -168,7 +168,7 @@ When a task returns `status: "pending"`, poll until completion:
 
 ```javascript
 async function runTask(prompt, apiKey) {
-  const response = await fetch("https://connect.webrun.ai/start/run-task", {
+  const response = await fetch("https://api.webrun.ai/start/run-task", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -198,7 +198,7 @@ async function pollForResult(sessionId, taskId, apiKey) {
 
   for (let i = 0; i < maxAttempts; i++) {
     const res = await fetch(
-      `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
+      `https://api.webrun.ai/task/${sessionId}/${taskId}`,
       { headers: { "Authorization": `Bearer ${apiKey}` } }
     );
 
@@ -231,7 +231,7 @@ console.log(`Cost: $${result.usage.cost}`);
 const API_KEY = "wr_xxxxxxxxxxxx";
 
 async function searchGoogle(query) {
-  const response = await fetch("https://connect.webrun.ai/start/run-task", {
+  const response = await fetch("https://api.webrun.ai/start/run-task", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -268,7 +268,7 @@ console.log(summary);
 
 ```javascript
 const API_KEY = "wr_xxxxxxxxxxxx";
-const BASE = "https://connect.webrun.ai";
+const BASE = "https://api.webrun.ai";
 
 async function amazonProductResearch(productName) {
   // 1. Create session
@@ -363,7 +363,7 @@ Route traffic through a proxy for geographic targeting or IP management. The `pr
 const API_KEY = "wr_xxxxxxxxxxxx";
 
 // WebRun-managed proxy (specify country)
-const response = await fetch("https://connect.webrun.ai/start/run-task", {
+const response = await fetch("https://api.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -397,7 +397,7 @@ Attach an [environment](/environments/overview) to reuse saved cookies and login
 const API_KEY = "wr_xxxxxxxxxxxx";
 
 async function runWithEnvironment(environmentId, prompt) {
-  const response = await fetch("https://connect.webrun.ai/start/run-task", {
+  const response = await fetch("https://api.webrun.ai/start/run-task", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -431,7 +431,7 @@ Use [secrets](/usage-guides/secrets) to provide credentials upfront so the agent
 
 ```javascript
 async function loginAndExtractWithSecrets(url) {
-  const BASE = "https://connect.webrun.ai";
+  const BASE = "https://api.webrun.ai";
   const API_KEY = "wr_xxxxxxxxxxxx";
 
   const session = await fetch(`${BASE}/start/start-session`, {
@@ -471,7 +471,7 @@ async function loginAndExtractWithSecrets(url) {
 
 ```javascript
 async function loginAndExtractData(url, credentials) {
-  const BASE = "https://connect.webrun.ai";
+  const BASE = "https://api.webrun.ai";
   const API_KEY = "wr_xxxxxxxxxxxx";
 
   // Create session with login task
@@ -572,7 +572,7 @@ Control task execution with state commands:
 
 ### Pause Task
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -583,7 +583,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 
 ### Resume Task
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -594,7 +594,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 
 ### Stop Task
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -605,7 +605,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 
 ### Terminate Session
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -645,7 +645,7 @@ All errors follow this format:
 async function executeTaskWithRetry(prompt, apiKey, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await fetch("https://connect.webrun.ai/start/run-task", {
+      const response = await fetch("https://api.webrun.ai/start/run-task", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

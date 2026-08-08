@@ -17,7 +17,7 @@ Authorization: Bearer <api_key>
 ## Base URL
 
 ```
-https://connect.webrun.ai
+https://api.webrun.ai
 ```
 
 ---
@@ -35,7 +35,7 @@ Content-Type: application/json
 | `description` | string | No | Optional description |
 
 ```bash
-curl -X POST https://connect.webrun.ai/environments \
+curl -X POST https://api.webrun.ai/environments \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{"name": "my-environment", "description": "optional description"}'
@@ -77,7 +77,7 @@ GET /environments
 ```
 
 ```bash
-curl https://connect.webrun.ai/environments \
+curl https://api.webrun.ai/environments \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -123,7 +123,7 @@ DELETE /environments/<ENV_ID>
 ```
 
 ```bash
-curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID> \
+curl -X DELETE https://api.webrun.ai/environments/<ENV_ID> \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -159,7 +159,7 @@ Content-Type: multipart/form-data
 | `file` | Form field | `.tar.gz` profile archive (max 500 MB) |
 
 ```bash
-curl -X POST https://connect.webrun.ai/environments/<ENV_ID>/upload \
+curl -X POST https://api.webrun.ai/environments/<ENV_ID>/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "file=@/path/to/profile.tar.gz"
 ```
@@ -203,7 +203,7 @@ GET /environments/<ENV_ID>/files
 ```
 
 ```bash
-curl https://connect.webrun.ai/environments/<ENV_ID>/files \
+curl https://api.webrun.ai/environments/<ENV_ID>/files \
   -H "Authorization: Bearer wr_xxx"
 ```
 
@@ -243,7 +243,7 @@ DELETE /environments/<ENV_ID>/files/<FILE_ID>
 ```
 
 ```bash
-curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
+curl -X DELETE https://api.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
   -H "Authorization: Bearer wr_xxx"
 ```
 

@@ -42,7 +42,7 @@ Add a `webhook` object to your session or task request to enable webhook notific
 ## Basic Example
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -71,7 +71,7 @@ const session = await fetch("https://connect.webrun.ai/start/start-session", {
 Combine webhooks with [structured output](/usage-guides/structured-output) for validated JSON delivered directly to your endpoint.
 
 ```javascript
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
