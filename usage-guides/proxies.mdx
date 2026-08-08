@@ -147,7 +147,7 @@ To explicitly run without a proxy (the default), set `proxy` to `null` or omit i
 ### Single-task session with WebRun proxy
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -165,7 +165,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
 ### Persistent session with custom proxy
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/start-session \
+curl -X POST https://api.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{

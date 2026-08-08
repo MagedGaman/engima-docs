@@ -7,7 +7,7 @@ icon: "route"
 ## Base URL
 
 ```
-https://connect.webrun.ai
+https://api.webrun.ai
 ```
 
 All endpoints use this base URL unless otherwise specified.
@@ -63,7 +63,7 @@ The `task` object contains all task-specific parameters. Use `startingUrl` to sp
 {
   "success": true,
   "sessionId": "a1b2c3d4e5f6",
-  "socketURL": "https://connect.webrun.ai",
+  "socketURL": "https://api.webrun.ai",
   "streaming": {
     "webRTCURL": "https://a1b2c3d4e5f6.webrun.ai/whep",
     "webViewURL": "https://a1b2c3d4e5f6.webrun.ai",
@@ -183,7 +183,7 @@ Start a new task. Returns taskId for polling.
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
-  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
+  "pollUrl": "https://api.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4"
 }
 ```
 
@@ -340,7 +340,7 @@ Execute a single task with auto-terminating session. Simplified version of start
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
-  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://api.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -365,7 +365,7 @@ Upload one or more files to use in tasks. Returns `fileId` references that can b
 
 **Request:**
 ```bash
-curl -X POST https://connect.webrun.ai/files/upload \
+curl -X POST https://api.webrun.ai/files/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "files=@document.pdf"
 ```

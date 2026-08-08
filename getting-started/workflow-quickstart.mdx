@@ -40,7 +40,7 @@ Use when you're confident the task takes < 50 seconds.
 
 **Step 1: Add HTTP Request Node**
 - Method: POST
-- URL: `https://connect.webrun.ai/start/run-task`
+- URL: `https://api.webrun.ai/start/run-task`
 - Authentication: Header Auth
   - Name: `Authorization`
   - Value: `Bearer YOUR_API_KEY`
@@ -72,7 +72,7 @@ Use when task might exceed 50 seconds.
 **Step-by-Step:**
 
 1. **HTTP Request Node**: Start Task
-   - URL: `https://connect.webrun.ai/start/run-task`
+   - URL: `https://api.webrun.ai/start/run-task`
    - Method: POST
    - Authentication: Header Auth (`Authorization: Bearer YOUR_API_KEY`)
    - Body:
@@ -111,7 +111,7 @@ Make.com's default timeout is 30 seconds, too short for WebRun. **You must incre
 **Step 1: Add HTTP → Make a Request Module**
 
 **Step 2: Configure Request**
-- URL: `https://connect.webrun.ai/start/run-task`
+- URL: `https://api.webrun.ai/start/run-task`
 - Method: POST
 - Headers:
   - `Authorization`: `Bearer YOUR_API_KEY`
@@ -147,7 +147,7 @@ Make.com's default timeout is 30 seconds, too short for WebRun. **You must incre
 **Step-by-Step:**
 
 1. **HTTP Module**: Start Task
-   - URL: `https://connect.webrun.ai/start/run-task`
+   - URL: `https://api.webrun.ai/start/run-task`
    - Method: POST
    - Headers: `Authorization`, `Content-Type`
    - Timeout: 60+ seconds
@@ -191,7 +191,7 @@ Choose your trigger (e.g., "New Row in Google Sheets", "New Form Response", etc.
 **Step 2: Start the WebRun Task**
 - App: Webhooks by Zapier
 - Event: POST
-- URL: `https://connect.webrun.ai/start/run-task`
+- URL: `https://api.webrun.ai/start/run-task`
 - Payload Type: JSON
 - Data:
 ```json
@@ -212,7 +212,7 @@ Choose your trigger (e.g., "New Row in Google Sheets", "New Form Response", etc.
 - App: Webhooks by Zapier
 - Event: GET
 - URL: Construct from Step 2:
-  - `https://connect.webrun.ai/task/{{steps.2.sessionId}}/{{steps.2.taskId}}`
+  - `https://api.webrun.ai/task/{{steps.2.sessionId}}/{{steps.2.taskId}}`
   - Or use `{{steps.2.pollUrl}}` if available
 - Headers:
   - `Authorization`: `Bearer YOUR_API_KEY`

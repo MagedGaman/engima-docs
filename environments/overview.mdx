@@ -62,13 +62,13 @@ Create an environment, then run a task with it:
 
 ```bash
 # Create the environment
-curl -X POST https://connect.webrun.ai/environments \
+curl -X POST https://api.webrun.ai/environments \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "my-environment"}'
 
 # Use it in a task
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{

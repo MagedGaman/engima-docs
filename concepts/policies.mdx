@@ -51,7 +51,7 @@ Pass `policyId` as a top-level parameter when starting a session, the same level
 <CodeGroup>
 
 ```bash start-session
-curl -X POST https://connect.webrun.ai/start/start-session \
+curl -X POST https://api.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -65,7 +65,7 @@ curl -X POST https://connect.webrun.ai/start/start-session \
 ```
 
 ```bash run-task
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{

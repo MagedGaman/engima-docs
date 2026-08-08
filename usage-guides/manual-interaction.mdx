@@ -38,7 +38,7 @@ Pause the AI agent and enable manual mode:
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -70,7 +70,7 @@ Return control to the AI agent:
 <CodeGroup>
 
 ```bash REST
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -273,7 +273,7 @@ socket.on("message", (data) => {
 import { io } from "socket.io-client";
 
 // Create session
-const session = await fetch("https://connect.webrun.ai/start/start-session", {
+const session = await fetch("https://api.webrun.ai/start/start-session", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -295,7 +295,7 @@ iframe.height = 600;
 document.body.appendChild(iframe);
 
 // Connect WebSocket
-const socket = io("https://connect.webrun.ai", {
+const socket = io("https://api.webrun.ai", {
   auth: { sessionId: session.sessionId },
   transports: ["websocket"]
 });

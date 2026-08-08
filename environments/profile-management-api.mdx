@@ -21,7 +21,7 @@ Authorization: Bearer <api_key>
 ## Base URL
 
 ```
-https://connect.webrun.ai
+https://api.webrun.ai
 ```
 
 ---
@@ -35,7 +35,7 @@ GET /profiles
 ```
 
 ```bash
-curl https://connect.webrun.ai/profiles \
+curl https://api.webrun.ai/profiles \
   -H "Authorization: Bearer wr_abc123..."
 ```
 
@@ -94,7 +94,7 @@ Content-Type: application/json
 | `description` | string | No | Description (max 500 characters) |
 
 ```bash
-curl -X POST https://connect.webrun.ai/profiles \
+curl -X POST https://api.webrun.ai/profiles \
   -H "Authorization: Bearer wr_abc123..." \
   -H "Content-Type: application/json" \
   -d '{"name": "My Profile", "description": "For social media automation"}'
@@ -142,7 +142,7 @@ DELETE /profiles/:id
 | `id` | URL path | The environment ID |
 
 ```bash
-curl -X DELETE https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c \
+curl -X DELETE https://api.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c \
   -H "Authorization: Bearer wr_abc123..."
 ```
 
@@ -176,7 +176,7 @@ GET /profiles/:id/download
 | `id` | URL path | The environment ID |
 
 ```bash
-curl https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
+curl https://api.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/download \
   -H "Authorization: Bearer wr_abc123..."
 ```
 
@@ -219,7 +219,7 @@ Content-Type: multipart/form-data
 | `file` | Form field | `.tar.gz` file (max 500 MB) |
 
 ```bash
-curl -X POST https://connect.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload \
+curl -X POST https://api.webrun.ai/profiles/683a1f2e4b0c1d2e3f4a5b6c/upload \
   -H "Authorization: Bearer wr_abc123..." \
   -F "file=@my-profile.tar.gz"
 ```

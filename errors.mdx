@@ -402,7 +402,7 @@ async function executeTaskWithGuardrails(sessionId, prompt, apiKey) {
       const userInput = await promptUser(result.data.value);
 
       // Resume with input
-      await fetch("https://connect.webrun.ai/start/send-message", {
+      await fetch("https://api.webrun.ai/start/send-message", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -438,7 +438,7 @@ async function executeTaskWithRetry(prompt, apiKey) {
   try {
     // Create session with retry
     const session = await makeRequestWithRetry(
-      "https://connect.webrun.ai/start/start-session",
+      "https://api.webrun.ai/start/start-session",
       {
         method: "POST",
         headers: {
@@ -475,7 +475,7 @@ async function executeTaskWithRetry(prompt, apiKey) {
 
 async function terminateSession(sessionId, apiKey) {
   try {
-    await fetch("https://connect.webrun.ai/start/send-message", {
+    await fetch("https://api.webrun.ai/start/send-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -25,7 +25,7 @@ Sessions cost money until terminated. Set `terminateOnCompletion: true` on your 
 The simplest approach: one API call that creates a session, runs your task, and auto-terminates.
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -64,7 +64,7 @@ curl -X POST https://connect.webrun.ai/start/run-task \
   "sessionId": "a1b2c3",
   "taskId": "x9y8z7",
   "status": "pending",
-  "pollUrl": "https://connect.webrun.ai/task/a1b2c3/x9y8z7"
+  "pollUrl": "https://api.webrun.ai/task/a1b2c3/x9y8z7"
 }
 ```
 
@@ -79,7 +79,7 @@ For multiple tasks in sequence, create a persistent session:
 **1. Create the session**
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/start-session \
+curl -X POST https://api.webrun.ai/start/start-session \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -94,7 +94,7 @@ curl -X POST https://connect.webrun.ai/start/start-session \
 **2. Send follow-up tasks**
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -111,7 +111,7 @@ curl -X POST https://connect.webrun.ai/start/send-message \
 **3. Terminate when finished**
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/send-message \
+curl -X POST https://api.webrun.ai/start/send-message \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -d '{
@@ -136,7 +136,7 @@ When a task returns `status: "pending"`, poll the URL until completion.
 ```javascript
 async function runTask(prompt, apiKey) {
   // Start the task
-  const response = await fetch("https://connect.webrun.ai/start/run-task", {
+  const response = await fetch("https://api.webrun.ai/start/run-task", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -166,7 +166,7 @@ async function pollForResult(sessionId, taskId, apiKey) {
 
   for (let i = 0; i < maxAttempts; i++) {
     const res = await fetch(
-      `https://connect.webrun.ai/task/${sessionId}/${taskId}`,
+      `https://api.webrun.ai/task/${sessionId}/${taskId}`,
       { headers: { "Authorization": `Bearer ${apiKey}` } }
     );
 

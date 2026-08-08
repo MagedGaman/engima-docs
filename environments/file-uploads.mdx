@@ -20,7 +20,7 @@ Files can be uploaded in two modes:
 Include `environmentId` in the form data to attach the file permanently to an environment. Any session using that environment can access the file at any time.
 
 ```bash
-curl -X POST https://connect.webrun.ai/files/upload \
+curl -X POST https://api.webrun.ai/files/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "files=@/path/to/sample.zip" \
   -F "environmentId=<ENV_ID>"
@@ -48,7 +48,7 @@ curl -X POST https://connect.webrun.ai/files/upload \
 Omit `environmentId` to upload a standalone file. It is automatically deleted after 1 hour unless promoted to an environment.
 
 ```bash
-curl -X POST https://connect.webrun.ai/files/upload \
+curl -X POST https://api.webrun.ai/files/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "files=@/path/to/sample.zip"
 ```
@@ -76,7 +76,7 @@ An orphan file is automatically promoted to an environment when you pass its `fi
 Repeat the `files` field to upload several files in one request:
 
 ```bash
-curl -X POST https://connect.webrun.ai/files/upload \
+curl -X POST https://api.webrun.ai/files/upload \
   -H "Authorization: Bearer wr_xxx" \
   -F "files=@document.pdf" \
   -F "files=@photo.png" \
@@ -93,7 +93,7 @@ Reference uploaded files by `fileId` when starting a task. Pass them in the `fil
 ### With /start/run-task
 
 ```bash
-curl -X POST https://connect.webrun.ai/start/run-task \
+curl -X POST https://api.webrun.ai/start/run-task \
   -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -150,7 +150,7 @@ const ENV_ID = "<ENV_ID>";
 const formData = new FormData();
 formData.append("files", fs.createReadStream("report.pdf"));
 
-const uploadResponse = await fetch("https://connect.webrun.ai/files/upload", {
+const uploadResponse = await fetch("https://api.webrun.ai/files/upload", {
   method: "POST",
   headers: { "Authorization": `Bearer ${API_KEY}` },
   body: formData
@@ -160,7 +160,7 @@ const fileId = uploadResponse.files[0].fileId;
 
 // Step 2: Run a task with the environment and file
 // The orphan file is promoted to the environment automatically
-const taskResponse = await fetch("https://connect.webrun.ai/start/run-task", {
+const taskResponse = await fetch("https://api.webrun.ai/start/run-task", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -185,11 +185,11 @@ List or delete files attached to an environment using the [Environments API](/en
 
 ```bash
 # List all files in an environment
-curl https://connect.webrun.ai/environments/<ENV_ID>/files \
+curl https://api.webrun.ai/environments/<ENV_ID>/files \
   -H "Authorization: Bearer wr_xxx"
 
 # Delete a specific file
-curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
+curl -X DELETE https://api.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
   -H "Authorization: Bearer wr_xxx"
 ```
 
