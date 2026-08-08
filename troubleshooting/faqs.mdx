@@ -52,7 +52,7 @@ Custom viewport sizes and mobile device emulation aren't supported yet.
 Four approaches:
 
 **1. Secrets (recommended):**
-Provide credentials upfront using the `secrets` parameter. The agent authenticates automatically without pausing. Secrets are matched by domain pattern and are never stored — they are discarded when the session ends.
+Provide credentials upfront using the `secrets` parameter. The agent authenticates automatically without pausing. Secrets are matched by domain pattern and are never stored. They are discarded when the session ends.
 ```json
 {
   "task": {
@@ -89,7 +89,7 @@ Use manual control to enter credentials yourself while watching the video stream
 
 **Data retention:** Session logs are deleted after 30 days. Screenshots and recordings are deleted with the session.
 
-**Credentials:** WebRun doesn't store credentials you provide to websites. When using [secrets](/usage-guides/secrets), credentials are only attached to the active session and immediately discarded when the session is destroyed — they are never persisted to a database or disk. Don't hardcode credentials—use environment variables.
+**Credentials:** WebRun doesn't store credentials you provide to websites. When using [secrets](/usage-guides/secrets), credentials are only attached to the active session and immediately discarded when the session is destroyed. They are never persisted to a database or disk. Don't hardcode credentials. Use environment variables.
 
 ---
 
@@ -196,7 +196,7 @@ Options: Hard limits (API requests fail when reached) or soft limits (alerts onl
 
 Yes. WebRun can download files from websites and upload them to other platforms. This works for documents, reports, images, CSVs, and other common file types.
 
-You can combine downloads and uploads in a single multi-task session to move files between systems—for example, exporting a report from one platform and uploading it to another.
+You can combine downloads and uploads in a single multi-task session to move files between systems, for example, exporting a report from one platform and uploading it to another.
 
 **Example workflow:**
 1. **Task 1:** "Download the monthly invoice from the billing dashboard"
@@ -228,8 +228,8 @@ This is the User-Agent the *rendering browser* sends to sites for compatibility.
 
 Yes. Proxy support is available on all plans. Two options:
 
-- **WebRun-managed proxies** — specify a country and WebRun assigns a residential proxy ($4/GB data transfer).
-- **Custom proxies** — bring your own HTTP or SOCKS proxy server (no additional charge).
+- **WebRun-managed proxies**: specify a country and WebRun assigns a residential proxy ($4/GB data transfer).
+- **Custom proxies**: bring your own HTTP or SOCKS proxy server (no additional charge).
 
 Proxies are applied at the device level with 2-3 seconds of cold-start latency, ensuring no IP leakage.
 
@@ -264,10 +264,10 @@ Recommended approach: use [secrets](/usage-guides/secrets) to provide credential
 
 ### Where can I find code examples?
 
-- [Quickstart guide](/getting-started/quickstart) — Basic integration
-- [API Reference](/api-reference/introduction) — All endpoints with examples
-- [Usage guides](/usage-guides/multi-task-workflows) — Common patterns
-- [GitHub examples](https://github.com/webrun-ai/examples) — Sample projects
+- [Quickstart guide](/getting-started/quickstart): Basic integration
+- [API Reference](/api-reference/endpoints): All endpoints with examples
+- [Usage guides](/usage-guides/multi-task-workflows): Common patterns
+- [GitHub examples](https://github.com/webrun-ai/examples): Sample projects
 
 ---
 
@@ -303,7 +303,7 @@ Include when reporting issues: Session ID, task ID, full error message, code sni
   <Card title="Quickstart Guide" icon="rocket" href="/getting-started/quickstart">
     Get started in 5 minutes
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+  <Card title="API Reference" icon="code" href="/api-reference/endpoints">
     Complete API documentation
   </Card>
 </CardGroup>

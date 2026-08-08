@@ -6,7 +6,7 @@ icon: "shield-check"
 
 ## Overview
 
-An Automation Policy is a reusable set of rules that sits between the agent's intent and actual execution. When an agent attempts an action — navigate to a URL, type text into a form, download a file — the policy enforcement layer checks it against your rules in real-time and either allows it, blocks it, or pauses the session for human approval.
+An Automation Policy is a reusable set of rules that sits between the agent's intent and actual execution. When an agent attempts an action (navigate to a URL, type text into a form, download a file) the policy enforcement layer checks it against your rules in real-time and either allows it, blocks it, or pauses the session for human approval.
 
 Policies are created and managed in the [dashboard](https://app.webrun.ai). You attach them to sessions by passing `policyId` when starting a session or task.
 
@@ -19,12 +19,12 @@ Every action the agent attempts passes through the policy enforcement layer:
 1. **Agent produces an action** (click, type, navigate, download, etc.)
 2. **All matching rules are evaluated**
 3. **The most restrictive outcome wins:**
-   - **Block** — action is silently prevented, agent is told to find an alternative, session continues
-   - **Guardrail** — session pauses, you review and approve/reject (uses the same [guardrail mechanism](/concepts/guardrails) you already handle)
-   - **Allow** — action executes normally
+   - **Block**: action is silently prevented, agent is told to find an alternative, session continues
+   - **Guardrail**: session pauses, you review and approve/reject (uses the same [guardrail mechanism](/concepts/guardrails) you already handle)
+   - **Allow**: action executes normally
 
 <Warning>
-**Precedence: Block > Guardrail > Allow.** If any rule says block, the action is blocked — even if other rules allow it.
+**Precedence: Block > Guardrail > Allow.** If any rule says block, the action is blocked, even if other rules allow it.
 </Warning>
 
 ---
@@ -44,7 +44,7 @@ Policies are reusable. Create once, attach to any number of sessions.
 
 ## Attaching a Policy to a Session
 
-Pass `policyId` as a top-level parameter when starting a session — the same level as `environmentId`.
+Pass `policyId` as a top-level parameter when starting a session, the same level as `environmentId`.
 
 ### REST API
 
@@ -97,7 +97,7 @@ A policy contains an optional LLM Role plus one or more rule groups. You can com
 
 ### LLM Role
 
-Free-text instructions injected into the agent's system prompt when the policy is active. Use this to shape the agent's overall behavior — for example:
+Free-text instructions injected into the agent's system prompt when the policy is active. Use this to shape the agent's overall behavior, for example:
 
 > *"You are a research assistant. Only browse educational sites. Never fill out forms."*
 
@@ -112,7 +112,7 @@ Control which websites the agent can visit. Three modes:
 | Mode | Behavior |
 |------|----------|
 | **Allow All** (default) | Agent can visit any domain unless explicitly blocked |
-| **Allowlist** | Agent can only visit domains you list — everything else is blocked |
+| **Allowlist** | Agent can only visit domains you list. Everything else is blocked |
 | **Blocklist** | Agent can visit everything except domains you list |
 
 Each domain entry specifies a pattern and an action (block or guardrail).
@@ -138,10 +138,10 @@ How a rule is configured depends on its **category**:
 
 | Category | Details | Permission |
 |----------|---------|------------|
-| **Navigation** | `*/admin/*` | 🚫 Block |
-| **Type / Keyboard** | Regex: `\b\d{3}-\d{2}-\d{4}\b` (All) | 🚫 Block |
-| **Shell Command** | All | 🚫 Block |
-| **Click** | Keyword: "delete" (Target) | ⚠️ Guardrail |
+| **Navigation** | `*/admin/*` | Block |
+| **Type / Keyboard** | Regex: `\b\d{3}-\d{2}-\d{4}\b` (All) | Block |
+| **Shell Command** | All | Block |
+| **Click** | Keyword: "delete" (Target) | Guardrail |
 
 **Scope** controls where the match is checked:
 
@@ -182,15 +182,15 @@ Each category can be set to **allow**, **block**, or **guardrail**. You also set
 
 ### Block
 
-The action is silently prevented. The agent receives a message that the action was blocked by policy and is told to find an alternative. The session continues — only the specific action is stopped. Blocked actions are logged to the audit trail.
+The action is silently prevented. The agent receives a message that the action was blocked by policy and is told to find an alternative. The session continues. Only the specific action is stopped. Blocked actions are logged to the audit trail.
 
-**When to use:** Hard security boundaries — never access competitor sites, never type SSNs, never execute shell commands.
+**When to use:** Hard security boundaries: never access competitor sites, never type SSNs, never execute shell commands.
 
 ### Guardrail
 
-The session pauses and you're prompted to approve, reject, or take over. This uses the same [guardrail mechanism](/concepts/guardrails) as credential prompts and CAPTCHAs — handle it the same way in your integration.
+The session pauses and you're prompted to approve, reject, or take over. This uses the same [guardrail mechanism](/concepts/guardrails) as credential prompts and CAPTCHAs. Handle it the same way in your integration.
 
-**When to use:** Sensitive but legitimate operations — logging into financial sites, actions that need human judgment, workflows where occasional manual review is expected.
+**When to use:** Sensitive but legitimate operations: logging into financial sites, actions that need human judgment, workflows where occasional manual review is expected.
 
 See [Handling Guardrails](/usage-guides/handling-guardrails) for integration details on detecting and responding to guardrails via REST, WebSocket, and MCP.
 

@@ -72,7 +72,7 @@ Rate limits use a sliding window of 60 seconds:
 ```
 Time    Action                          Requests in last 60s
 00:00   Make 10 requests               10/10 (at limit)
-00:30   Try another request            ❌ Rate limited
+00:30   Try another request            Rate limited
 01:00   First request expired          9/10 (space available)
 01:00   Make new request               10/10 (at limit)
 01:05   5 more requests expired        5/10 (space available)
@@ -260,7 +260,7 @@ const result = await client.request('/start/run-task', {
 
 Instead of making many small requests, combine operations into fewer requests:
 
-**❌ Bad - Multiple requests:**
+**Bad - Multiple requests:**
 ```javascript
 // Each task is a separate request (10 requests)
 for (let i = 0; i < 10; i++) {
@@ -270,10 +270,10 @@ for (let i = 0; i < 10; i++) {
     body: JSON.stringify({ task: { prompt: `Task ${i}` } })
   });
 }
-// ❌ Rate limited after 10 requests
+// Rate limited after 10 requests
 ```
 
-**✅ Good - Use persistent sessions:**
+**Good - Use persistent sessions:**
 ```javascript
 // Create one session (1 request)
 const session = await fetch('https://connect.webrun.ai/start/start-session', {
@@ -293,7 +293,7 @@ for (let i = 0; i < 10; i++) {
     })
   });
 }
-// ✅ Total: 11 requests (still under limit if done quickly)
+// Total: 11 requests (still under limit if done quickly)
 ```
 
 ---
@@ -302,7 +302,7 @@ for (let i = 0; i < 10; i++) {
 
 Polling endpoints have no rate limit, so use them instead of creating new requests:
 
-**❌ Bad:**
+**Bad:**
 ```javascript
 // Repeatedly calling run-task to check status (hits rate limit)
 while (true) {
@@ -317,7 +317,7 @@ while (true) {
 }
 ```
 
-**✅ Good:**
+**Good:**
 ```javascript
 // Create task once, then poll (unlimited)
 const task = await fetch('https://connect.webrun.ai/start/run-task', {
@@ -438,7 +438,7 @@ async function monitoredRequest(url, options) {
   console.log(`Resets at: ${new Date(reset * 1000).toISOString()}`);
 
   if (parseInt(remaining) <= 2) {
-    console.warn('⚠️  Approaching rate limit!');
+    console.warn(' Approaching rate limit!');
   }
 
   return await response.json();
@@ -451,7 +451,7 @@ async function monitoredRequest(url, options) {
 
 WebSocket connections don't count toward rate limits:
 
-**❌ Bad - Polling via REST:**
+**Bad - Polling via REST:**
 ```javascript
 // Each poll is a rate-limited request
 setInterval(async () => {
@@ -465,10 +465,10 @@ setInterval(async () => {
   }).then(r => r.json());
   console.log(status);
 }, 5000);
-// ❌ Hits rate limit quickly
+// Hits rate limit quickly
 ```
 
-**✅ Good - WebSocket events:**
+**Good - WebSocket events:**
 ```javascript
 import { io } from 'socket.io-client';
 
@@ -480,7 +480,7 @@ socket.on('message', (data) => {
   console.log('Real-time update:', data);
 });
 
-// ✅ No rate limit, real-time updates
+// No rate limit, real-time updates
 ```
 
 ---
@@ -551,7 +551,7 @@ sessions.forEach(sessionId => {
   });
 });
 
-// ✅ No rate limits, real-time updates for all sessions
+// No rate limits, real-time updates for all sessions
 ```
 
 ---

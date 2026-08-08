@@ -70,6 +70,7 @@
               "environments/environments-api",
               "environments/triggers",
               "environments/profiles",
+              "environments/profile-management-api",
               "environments/file-uploads"
             ]
           },
@@ -136,8 +137,8 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/enigmaclick",
-      "github": "https://github.com/enigma"
+      "x": "https://x.com/webrun",
+      "github": "https://github.com/webrun-ai"
     }
   },
   "redirects": [
@@ -191,10 +192,6 @@
     },
     {
       "source": "/environments/sync-profiles",
-      "destination": "/environments/profiles"
-    },
-    {
-      "source": "/environments/profile-management-api",
       "destination": "/environments/profiles"
     },
     {

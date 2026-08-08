@@ -1,6 +1,6 @@
 ---
 title: "Events & Responses"
-description: "How to receive updates from Enigma sessions"
+description: "How to receive updates from WebRun sessions"
 ---
 
 ## Response Methods
@@ -60,7 +60,7 @@ For longer tasks, the response returns immediately with a poll URL:
   "sessionId": "a1b2c3d4e5f6",
   "taskId": "x9y8z7w6v5u4",
   "status": "pending",
-  "pollUrl": "https://connect.enigma.click/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
+  "pollUrl": "https://connect.webrun.ai/task/a1b2c3d4e5f6/x9y8z7w6v5u4",
   "message": "Task still running. Poll GET /task/:sessionId/:taskId for result."
 }
 ```
@@ -313,15 +313,15 @@ socket.on("instance:reconnected", (data) => {
 
 | Event Type | REST | WebSocket | Description |
 |------------|------|-----------|-------------|
-| `agent` | ✗ | ✓ | Live agent reasoning |
-| `action` | ✗ | ✓ | Browser action performed |
-| `response_update` | ✗ | ✓ | Status updates |
-| `task_completed` | ✓ (poll) | ✓ | Task finished successfully |
-| `guardrail_trigger` | ✓ (poll) | ✓ | Human input needed |
-| `error` | ✓ (poll) | ✓ | Task failed |
-| `end_session` | ✗ | ✓ | Session terminated |
-| `instance:disconnected` | ✗ | ✓ | Instance connection lost |
-| `instance:reconnected` | ✗ | ✓ | Instance recovered |
+| `agent` | No | Yes | Live agent reasoning |
+| `action` | No | Yes | Browser action performed |
+| `response_update` | No | Yes | Status updates |
+| `task_completed` | Yes (poll) | Yes | Task finished successfully |
+| `guardrail_trigger` | Yes (poll) | Yes | Human input needed |
+| `error` | Yes (poll) | Yes | Task failed |
+| `end_session` | No | Yes | Session terminated |
+| `instance:disconnected` | No | Yes | Instance connection lost |
+| `instance:reconnected` | No | Yes | Instance recovered |
 
 ---
 
@@ -333,7 +333,7 @@ async function pollForResult(sessionId, taskId, apiKey) {
   const interval = 2000; // Poll every 2 seconds
 
   for (let i = 0; i < maxAttempts; i++) {
-    const res = await fetch(`https://connect.enigma.click/task/${sessionId}/${taskId}`, {
+    const res = await fetch(`https://connect.webrun.ai/task/${sessionId}/${taskId}`, {
       headers: { "Authorization": `Bearer ${apiKey}` }
     });
 

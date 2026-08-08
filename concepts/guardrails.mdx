@@ -159,17 +159,17 @@ prompt: "I've solved the CAPTCHA, please continue"
 
 ## Policy-Triggered Guardrails
 
-When a session has an [automation policy](/concepts/policies) attached, the policy can trigger guardrails automatically. If a policy rule is set to **guardrail** enforcement (rather than block), the session pauses and waits for your approval — exactly like a credential or CAPTCHA guardrail. Handle policy guardrails the same way you handle any other guardrail in your integration.
+When a session has an [automation policy](/concepts/policies) attached, the policy can trigger guardrails automatically. If a policy rule is set to **guardrail** enforcement (rather than block), the session pauses and waits for your approval, exactly like a credential or CAPTCHA guardrail. Handle policy guardrails the same way you handle any other guardrail in your integration.
 
 ---
 
 ## How Guardrails Behave
 
-The agent asks for clarification rather than guessing. Financial transactions, account changes, and data submissions always trigger a guardrail — the agent won't act on these autonomously.
+The agent asks for clarification rather than guessing. Financial transactions, account changes, and data submissions always trigger a guardrail; the agent won't act on these autonomously.
 
 WebRun doesn't store credentials. You provide them on-demand when a guardrail triggers, or upfront using [secrets](/usage-guides/secrets). You can also intervene manually at any point, even if no guardrail has triggered.
 
-For unattended automations, guardrails can also be answered through a connected chat user (Telegram, WhatsApp, Slack, Discord, Teams) on the session's environment — so a scheduled task can pause and wait for a human reply over chat instead of failing. This is controlled per-session via the `reachOutMode` parameter (`"off"`, `"guardrail_only"`, or `"full"`), which defaults to `"guardrail_only"`. See [Handling Guardrails](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user).
+For unattended automations, guardrails can also be answered through a connected chat user (Telegram, WhatsApp, Slack, Discord, Teams) on the session's environment, so a scheduled task can pause and wait for a human reply over chat instead of failing. This is controlled per-session via the `reachOutMode` parameter (`"off"`, `"guardrail_only"`, or `"full"`), which defaults to `"guardrail_only"`. See [Handling Guardrails](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user).
 
 ---
 
@@ -282,7 +282,7 @@ If you know the credentials the agent will need ahead of time, you can provide t
 }
 ```
 
-Secrets are never stored — they exist only in the session's memory and are discarded when the session ends.
+Secrets are never stored; they exist only in the session's memory and are discarded when the session ends.
 
 [Secrets guide](/usage-guides/secrets)
 

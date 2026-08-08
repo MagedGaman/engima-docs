@@ -4,7 +4,7 @@ description: "Persist cookies, local storage, and browser state across sessions 
 icon: "user-gear"
 ---
 
-Every environment includes a browser profile that stores persistent Chrome data — cookies, local storage, extensions, IndexedDB, cached credentials. When you attach an environment to a session, the browser starts with that saved state already loaded.
+Every environment includes a browser profile that stores persistent Chrome data: cookies, local storage, extensions, IndexedDB, cached credentials. When you attach an environment to a session, the browser starts with that saved state already loaded.
 
 **Without a profile:** every session opens a blank browser. You log in each time, re-accept cookie banners, and lose any site-specific data.
 
@@ -39,9 +39,9 @@ Each environment tracks the state of its browser profile:
 
 | Status | Meaning |
 |--------|---------|
-| `empty` | No browser data yet — sessions start with a clean browser and populate the profile on exit |
+| `empty` | No browser data yet. Sessions start with a clean browser and populate the profile on exit |
 | `uploading` | A profile upload is in progress |
-| `ready` | Has browser data — sessions load the saved state before executing tasks |
+| `ready` | Has browser data. Sessions load the saved state before executing tasks |
 
 <Tip>
 You can attach an environment with status `empty` to a session. The session starts with a clean browser, and the profile is populated automatically when the session ends.
@@ -55,7 +55,7 @@ There are three ways to get browser data into an environment's profile:
 
 | Method | When to use |
 |--------|-------------|
-| **Run a session** | Easiest — just run a session with the environment attached, log in, and the profile saves automatically |
+| **Run a session** | Easiest: just run a session with the environment attached, log in, and the profile saves automatically |
 | **[Sync from local Chrome](#sync-from-local-chrome)** | You're already logged into sites locally and want to transfer that state |
 | **[Upload a `.tar.gz` archive](/environments/environments-api#upload-browser-profile-data)** | You have an exported Chrome profile archive to restore |
 
@@ -109,7 +109,7 @@ bash <(curl -fsSL https://webrun.ai/sync/sync.sh) --key <apiKey>
 This creates a new environment, uploads your Chrome profile, and returns the new environment ID.
 
 <Tip>
-Save the environment ID returned by the command — you'll need it to pass as `environmentId` when starting sessions.
+Save the environment ID returned by the command. You'll need it to pass as `environmentId` when starting sessions.
 </Tip>
 
 ---

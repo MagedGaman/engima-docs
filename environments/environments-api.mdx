@@ -36,7 +36,7 @@ Content-Type: application/json
 
 ```bash
 curl -X POST https://connect.webrun.ai/environments \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -H "Authorization: Bearer wr_xxx" \
   -H "Content-Type: application/json" \
   -d '{"name": "my-environment", "description": "optional description"}'
 ```
@@ -78,7 +78,7 @@ GET /environments
 
 ```bash
 curl https://connect.webrun.ai/environments \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+  -H "Authorization: Bearer wr_xxx"
 ```
 
 **Response:**
@@ -124,7 +124,7 @@ DELETE /environments/<ENV_ID>
 
 ```bash
 curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID> \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+  -H "Authorization: Bearer wr_xxx"
 ```
 
 **Response:**
@@ -160,7 +160,7 @@ Content-Type: multipart/form-data
 
 ```bash
 curl -X POST https://connect.webrun.ai/environments/<ENV_ID>/upload \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6" \
+  -H "Authorization: Bearer wr_xxx" \
   -F "file=@/path/to/profile.tar.gz"
 ```
 
@@ -189,7 +189,7 @@ curl -X POST https://connect.webrun.ai/environments/<ENV_ID>/upload \
 | 404 | Environment not found | Invalid ID or environment belongs to another user |
 
 <Tip>
-To upload your local Chrome profile instead of a manual archive, use the [sync tool](/environments/profiles#sync-from-local-chrome) — it packages and uploads your browser data in one command.
+To upload your local Chrome profile instead of a manual archive, use the [sync tool](/environments/profiles#sync-from-local-chrome); it packages and uploads your browser data in one command.
 </Tip>
 
 ---
@@ -204,7 +204,7 @@ GET /environments/<ENV_ID>/files
 
 ```bash
 curl https://connect.webrun.ai/environments/<ENV_ID>/files \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+  -H "Authorization: Bearer wr_xxx"
 ```
 
 **Response:**
@@ -244,7 +244,7 @@ DELETE /environments/<ENV_ID>/files/<FILE_ID>
 
 ```bash
 curl -X DELETE https://connect.webrun.ai/environments/<ENV_ID>/files/<FILE_ID> \
-  -H "Authorization: Bearer enig_iMM4HaeRczq0sGnyXB8JxhvnYli2pRu6"
+  -H "Authorization: Bearer wr_xxx"
 ```
 
 **Response:**

@@ -27,7 +27,7 @@ Parameters used when creating a new session via `POST /start/start-session`.
 ```
 
 <Tip>
-Use profiles to skip login steps. Log in once with a profile attached, then reuse that profile for future sessions — the saved cookies keep you authenticated.
+Use profiles to skip login steps. Log in once with a profile attached, then reuse that profile for future sessions. The saved cookies keep you authenticated.
 </Tip>
 
 ---
@@ -143,7 +143,7 @@ Use profiles to skip login steps. Log in once with a profile attached, then reus
 ```
 
 <Note>
-The `proxy` field is a top-level session parameter, alongside `environmentId`. It is not nested inside `task`. The proxy applies to the entire session — all tasks within the session use the same proxy.
+The `proxy` field is a top-level session parameter, alongside `environmentId`. It is not nested inside `task`. The proxy applies to the entire session. All tasks within the session use the same proxy.
 </Note>
 
 See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
@@ -168,7 +168,7 @@ See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
 
 ### reachOutMode
 
-- **Type:** `string` — one of `"off"`, `"guardrail_only"`, `"full"`
+- **Type:** `string`, one of `"off"`, `"guardrail_only"`, `"full"`
 - **Required:** No
 - **Default:** `"guardrail_only"`
 - **Description:** Controls whether the chat-connected user (Telegram, WhatsApp, Slack, Discord, Teams) on the session's [environment](/environments/overview) receives proactive messages from this session. The chat user is only contacted when no client is actively watching the session (no polling or WebSocket subscriber). This is a top-level session parameter and applies for the lifetime of the session.
@@ -177,7 +177,7 @@ See [Proxies guide](/usage-guides/proxies) for use cases and best practices.
 
 | Value | Behavior |
 |---|---|
-| `"off"` | No proactive messages — guardrails and results stay on the API/WebSocket channel only. |
+| `"off"` | No proactive messages. Guardrails and results stay on the API/WebSocket channel only. |
 | `"guardrail_only"` | Bot pings the chat user only when the session hits a guardrail (CAPTCHA, 2FA, verification, login, etc.). This is the default. |
 | `"full"` | Bot pings on guardrails **and** on `task_completed` with the task result delivered to chat. |
 
@@ -360,7 +360,7 @@ Tasks automatically terminate after `maxDuration`. Set this value based on your 
 ```
 
 <Tip>
-**💰 Cost Optimization:** Set `terminateOnCompletion: true` on your last task to automatically close the session and prevent idle charges.
+**Cost Optimization:** Set `terminateOnCompletion: true` on your last task to automatically close the session and prevent idle charges.
 </Tip>
 
 ---
@@ -512,7 +512,7 @@ See [Secrets guide](/usage-guides/secrets) for matching rules, custom fields, an
 - **Type:** `string[]` (array of file ID strings)
 - **Required:** No
 - **Default:** `[]`
-- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation — for example, uploading a document to a website form. This is a task-level parameter — place it alongside `prompt`.
+- **Description:** Array of file IDs (returned from `POST /files/upload`) to attach to a task. The agent can use these files during browser automation, for example, uploading a document to a website form. This is a task-level parameter. Place it alongside `prompt`.
 
 **Example with /start/run-task:**
 ```json
@@ -555,7 +555,7 @@ See [File Uploads guide](/environments/file-uploads) for the full upload workflo
 | `submittedData` | `string` | Yes | Data to include in the payload |
 
 **submittedData Options:**
-- `"ai_response"` - The response from the AI (text, structured_json, or structured_csv) — only the results/output from the LLM
+- `"ai_response"` - The response from the AI (text, structured_json, or structured_csv), only the results/output from the LLM
 - `"full_response"` - Full body response that includes the usage info
 - `"just_ping"` - Just a ping notification, no data payload
 
@@ -925,8 +925,8 @@ Parameters for `POST /v1/chat/completions`.
 
 - **Type:** `string`
 - **Required:** Yes
-- **Value:** `"enigma-browser-1"`
-- **Description:** Model to use. Currently only `enigma-browser-1` is available.
+- **Value:** `"webrun-browser-1"`
+- **Description:** Model to use. Currently only `webrun-browser-1` is available.
 
 ---
 
