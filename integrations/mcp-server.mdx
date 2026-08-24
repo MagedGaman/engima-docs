@@ -6,9 +6,7 @@ icon: "puzzle-piece"
 
 ## Overview
 
-The WebRun MCP (Model Context Protocol) server allows AI assistants like Claude Desktop and Cline to access browser automation capabilities directly through their native tool interfaces.
-
-It exposes six tools (task execution, session management, status checks, session control, and manual takeover) with built-in session lifecycle handling and streaming for long-running tasks.
+The WebRun MCP (Model Context Protocol) server gives AI assistants browser automation through their native tool interfaces. It exposes 21 tools covering one-off tasks, persistent sessions, live task control, saved workflows, and scheduled agents, with session lifecycle handling and streaming for long-running tasks.
 
 <Note>
 This is the **full reference** for the MCP server. For a quickstart guide, see [MCP Quickstart](/getting-started/mcp-quickstart).
@@ -18,72 +16,198 @@ This is the **full reference** for the MCP server. For a quickstart guide, see [
 
 ## Configuration
 
-### Claude Desktop
+Every client uses the same server URL:
 
-**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "webrun": {
-      "url": "https://api.webrun.ai/mcp/YOUR_API_KEY"
-    }
-  }
-}
+```
+https://api.webrun.ai/mcp
 ```
 
-To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine. It maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
+Authentication travels in headers, never in the URL.
 
-```json
-{
-  "mcpServers": {
-    "webrun": {
-      "url": "https://api.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
-    }
-  }
-}
-```
+| Header | Required | Value |
+|--------|----------|-------|
+| `API-Key` | Yes, unless connecting by OAuth | Your WebRun API key |
+| `Environment-Id` | No | The 24-character hex ID of a persistent environment. Omit it and every task gets a fresh disposable machine |
 
 <Tip>
-Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state, such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
+A key in a header stays out of browser history, shell history and proxy logs, and can be rotated without editing a URL that may already have been copied elsewhere.
 </Tip>
 
-After editing, **restart Claude Desktop** completely (quit and reopen).
+### Connect with OAuth (Claude and ChatGPT)
+
+No API key needed. In Claude or ChatGPT, open **Settings → Connectors → Add custom connector**, paste `https://api.webrun.ai/mcp`, and authorize from WebRun when prompted.
+
+If you have more than one environment, the one you pick during authorization becomes the connection's default.
 
 ---
 
-### Cline (VS Code Extension)
+### Claude Code
 
-**Open Settings:**
-1. Press `Cmd/Ctrl + Shift + P`
-2. Search for "Cline: Settings"
-3. Navigate to MCP Servers section
+```bash
+claude mcp add --transport http webrun https://api.webrun.ai/mcp --header "API-Key: YOUR_API_KEY" --header "Environment-Id: 65f0a1b2c3d4e5f60718293a"
+```
 
-**Add Configuration:**
+`--header` is repeatable — that is how both values are passed in one command.
+
+Or, to share the connection with a project, add this to `.mcp.json` at the repo root:
+
 ```json
 {
-  "webrun": {
-    "url": "https://api.webrun.ai/mcp/YOUR_API_KEY"
+  "mcpServers": {
+    "webrun": {
+      "type": "http",
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "${WEBRUN_API_KEY}",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
   }
 }
 ```
 
-To connect to a specific environment, append the environment ID to your API key. An environment is a complete persistent remote machine. It maintains its own Chrome browser, file manager, and desktop state across sessions. This means browser profiles, downloaded files, cookies, and any other local state are preserved between tasks, allowing you to pick up exactly where you left off.
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+<Warning>
+`"type": "http"` is required. Claude Code reads a `url` entry with no `type` as a local command, and the server will not start.
+</Warning>
+
+`${WEBRUN_API_KEY}` is expanded from your environment when the file loads, so the file is safe to commit. The environment ID is not a secret and can stay inline.
+
+---
+
+### Cursor
+
+`~/.cursor/mcp.json`, or `.cursor/mcp.json` inside a project:
 
 ```json
 {
-  "webrun": {
-    "url": "https://api.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
+  "mcpServers": {
+    "webrun": {
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "${env:WEBRUN_API_KEY}",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
   }
 }
 ```
+
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+Cursor does not use a `type` field for remote servers, and its variable syntax is `${env:NAME}`.
+
+---
+
+### Claude Desktop
+
+Claude Desktop's configuration file only supports local (stdio) servers, so connect through **Settings → Connectors** using the OAuth flow above — no key, no file editing, and you choose the environment during authorization.
+
+If you must use the config file, bridge it with `mcp-remote`:
+
+```json
+{
+  "mcpServers": {
+    "webrun": {
+      "command": "npx",
+      "args": [
+        "-y", "mcp-remote", "https://api.webrun.ai/mcp",
+        "--header", "API-Key:${WEBRUN_KEY}",
+        "--header", "Environment-Id:65f0a1b2c3d4e5f60718293a"
+      ],
+      "env": { "WEBRUN_KEY": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
+Delete the second `--header` pair to get a fresh disposable machine for every task.
+
+<Note>
+The headers are written without a space after the colon on purpose — `mcp-remote` splits `--header` arguments on spaces.
+</Note>
+
+After editing, quit Claude Desktop completely and reopen it.
+
+---
+
+### VS Code
+
+`.vscode/mcp.json` — note the top-level key is `servers`, not `mcpServers`:
+
+```json
+{
+  "servers": {
+    "webrun": {
+      "type": "http",
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "${input:webrun-api-key}",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
+  },
+  "inputs": [
+    { "type": "promptString", "id": "webrun-api-key", "description": "WebRun API key", "password": true }
+  ]
+}
+```
+
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+VS Code prompts for the key on first use and stores it securely rather than in the file.
+
+---
+
+### Cline
+
+Open the Cline panel, use the menu in its top-right corner, choose **MCP Servers**, and edit `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "webrun": {
+      "type": "streamableHttp",
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "YOUR_API_KEY",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
+  }
+}
+```
+
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+<Warning>
+`"type": "streamableHttp"` is camelCase with no hyphen. Writing `streamable-http`, or leaving `type` out, makes Cline fall back to SSE and the connection fails with a 405.
+</Warning>
+
+Cline does not expand environment variables in this file, so the key goes in literally — keep the file out of version control.
+
+---
+
+## Environments
+
+An environment is a complete persistent remote machine. It maintains its own Chrome browser, file manager, and desktop state across sessions, so browser profiles, downloaded files, cookies, and any other local state are preserved between tasks and you can pick up exactly where you left off.
+
+**Where to find the ID:** ask the assistant to list your environments, or copy it from the Environment page in the dashboard. It is a 24-character hex string, and it is not a secret — it is safe to commit.
+
+**Three ways to choose one:**
+
+| How | When |
+|-----|------|
+| The `Environment-Id` header | A config file — sets the default for the whole connection |
+| Chosen during OAuth authorization | Claude and ChatGPT connectors, which have no config file |
+| The `environmentId` argument on any task tool | Per task, overriding whatever the connection uses |
 
 <Tip>
-Without an environment ID, each MCP session starts with a fresh machine. Use environments when you need persistent state, such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
+Without an environment, each task starts on a fresh disposable machine. Use environments when you need persistent state, such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
 </Tip>
 
-**Reload:** Restart VS Code or reload the Cline extension.
+The per-task argument means you can keep one connection and still send one task to your logged-in shopping profile and the next to a clean machine.
 
 ---
 
@@ -98,14 +222,28 @@ Execute a single browser automation task. Creates a session, runs the task, and 
 - Quick data extraction
 - Simple automations that don't require follow-up
 
+<Warning>
+Do not use `browser_task` to run or test a saved workflow — use [`trigger_workflow`](#trigger_workflow). Only a workflow run carries the workflow's own rules, tracking and memory.
+</Warning>
+
 **Parameters:**
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
 | `prompt` | string | Yes | - | Natural language description of the task |
 | `startingUrl` | string | No | null | URL to start from (e.g., "https://google.com") |
-| `maxDuration` | number | No | 300000 | Max task duration in milliseconds |
-| `reach_out_mode` | string | No | `"guardrail_only"` | Controls proactive chat messages to a user (Telegram/WhatsApp/Slack/Discord/Teams) connected to the same environment. One of `"off"`, `"guardrail_only"`, or `"full"`. Use `"off"` for sessions handling private data |
+| `environmentId` | string | No | connection default | Environment to run in. Without one, a disposable instance is used |
+| `maxDuration` | number | No | 20 | Max task duration **in minutes** (max 60) |
+| `outputType` | string | No | `"text"` | `"text"`, `"structured_json"`, or `"structured_csv"` |
+| `outputSchema` | object | Conditional | - | JSON Schema for the output. Required when `outputType` is `"structured_json"` |
+| `files` | string[] | No | - | File IDs to attach (from `/files/upload`). Max 5 |
+| `secrets` | object[] | No | - | Domain-matched secrets `[{match, fields}]`, passed to the instance and not stored |
+| `proxy` | object | No | none | Proxy configuration — see [Proxies](/usage-guides/proxies) |
+| `policyId` | string | No | - | Policy to apply automation guardrails (domain restrictions, capability controls) |
+| `model` | string | No | account default | Model name or profile key |
+| `timezone` | string | No | `"UTC"` | IANA timezone name. Date-sensitive instructions ("tomorrow morning") are interpreted in it |
+| `webhook` | object | No | - | Completion notification — see [Webhooks](/usage-guides/webhooks) |
+| `reach_out_mode` | string | No | `"off"` | Proactive chat messages. `"off"`, `"guardrail_only"`, or `"full"` |
 
 **Example Usage:**
 
@@ -116,7 +254,7 @@ Claude uses browser_task:
 {
   "prompt": "Go to google.com, search for 'Anthropic Claude', and summarize the first result",
   "startingUrl": "https://google.com",
-  "maxDuration": 120000
+  "maxDuration": 10
 }
 ```
 
@@ -140,7 +278,7 @@ Claude uses browser_task:
 
 ### create_session
 
-Create a persistent browser session for multi-step workflows.
+Create a persistent browser session for multi-step workflows. Returns a `sessionId` for subsequent commands.
 
 **When to use:**
 - Multi-step automations (search → click → extract)
@@ -151,10 +289,16 @@ Create a persistent browser session for multi-step workflows.
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
-| `prompt` | string | No | "" | Initial task (can be empty to just create session) |
-| `startingUrl` | string | No | null | Starting URL |
-| `maxDuration` | number | No | 300000 | Max task duration in ms |
-| `reach_out_mode` | string | No | `"guardrail_only"` | Controls proactive chat messages to a user (Telegram/WhatsApp/Slack/Discord/Teams) connected to the same environment. One of `"off"`, `"guardrail_only"`, or `"full"`. Locked at session creation |
+| `task` | object | No | - | Initial task. Omit it to create an idle session |
+| `environmentId` | string | No | connection default | Environment to run in. Without one, a disposable instance is used |
+| `mode` | string | No | `"default"` | Session mode |
+| `model` | string | No | account default | Model name or profile key |
+| `policyId` | string | No | - | Policy to apply automation guardrails |
+| `proxy` | object | No | none | Proxy configuration — see [Proxies](/usage-guides/proxies) |
+| `timezone` | string | No | `"UTC"` | IANA timezone name for the session |
+| `reach_out_mode` | string | No | `"off"` | `"off"`, `"guardrail_only"`, or `"full"` |
+
+The nested `task` object accepts `prompt`, `startingUrl`, `maxDuration` (minutes), `outputType`, `outputSchema`, `files`, `secrets`, `terminateOnCompletion`, and `webhook`.
 
 **Example Usage:**
 
@@ -163,9 +307,11 @@ User: "Create a browser session and go to amazon.com"
 
 Claude uses create_session:
 {
-  "prompt": "Go to amazon.com",
-  "startingUrl": "https://amazon.com",
-  "maxDuration": 300000
+  "task": {
+    "prompt": "Go to amazon.com",
+    "startingUrl": "https://amazon.com",
+    "maxDuration": 20
+  }
 }
 ```
 
@@ -181,12 +327,12 @@ Claude uses create_session:
 ```
 
 <Tip>
-Save the `sessionId` to send follow-up tasks with `send_task_to_session`.
+Save the `sessionId` to send follow-up tasks with [`send_task`](#send_task).
 </Tip>
 
 ---
 
-### send_task_to_session
+### send_task
 
 Send a new task to an existing session.
 
@@ -201,14 +347,23 @@ Send a new task to an existing session.
 |-----------|------|----------|---------|-------------|
 | `sessionId` | string | Yes | - | ID from `create_session` |
 | `prompt` | string | Yes | - | Task description |
+| `startingUrl` | string | No | - | URL to navigate to before starting this task |
+| `maxDuration` | number | No | session value | Max duration for this task **in minutes** (3–60) |
+| `maxInputTokens` | number | No | session value | Max input tokens (100–3,000,000) |
+| `maxOutputTokens` | number | No | session value | Max output tokens (100–1,000,000) |
+| `outputType` | string | No | `"text"` | `"text"`, `"structured_json"`, or `"structured_csv"` |
+| `outputSchema` | object | Conditional | - | Required when `outputType` is `"structured_json"` |
+| `files` | string[] | No | - | File IDs to attach. Max 5 |
+| `secrets` | object[] | No | - | Domain-matched secrets, not stored |
 | `terminateOnCompletion` | boolean | No | false | Auto-close session after this task |
+| `webhook` | object | No | - | Completion notification |
 
 **Example Usage:**
 
 ```
 User: "Now search for wireless keyboards"
 
-Claude uses send_task_to_session:
+Claude uses send_task:
 {
   "sessionId": "a1b2c3d4e5f6",
   "prompt": "Search for wireless keyboards and list the top 3 results with prices",
@@ -237,12 +392,12 @@ Set `terminateOnCompletion: true` on your final task to avoid idle session charg
 
 ### get_task_status
 
-Check the status of a running task.
+Check the status of a running task. Read-only — it reports on the task without affecting it.
 
 **When to use:**
 - Monitoring long-running tasks
+- Detecting when a guardrail needs an answer
 - Checking if a task completed while doing other work
-- Debugging task execution
 
 **Parameters:**
 
@@ -250,16 +405,6 @@ Check the status of a running task.
 |-----------|------|----------|-------------|
 | `sessionId` | string | Yes | Session ID |
 | `taskId` | string | Yes | Task ID from previous task |
-
-**Example Usage:**
-
-```
-Claude uses get_task_status:
-{
-  "sessionId": "a1b2c3d4e5f6",
-  "taskId": "x9y8z7w6v5u4"
-}
-```
 
 **Response (still running):**
 ```json
@@ -295,97 +440,254 @@ Claude uses get_task_status:
 }
 ```
 
+<Tip>
+When the status reports that input is awaited, answer with [`guardrail_response`](#guardrail_response).
+</Tip>
+
 ---
 
-### control_session
+### screenshot
 
-Control task execution (pause, resume, stop, terminate).
+Capture the current browser page of an active session and return it as an inline image. Read-only.
 
 **When to use:**
-- Pausing a task to inspect the browser state
-- Stopping an incorrect task
-- Terminating a session when done
-- Resuming a paused task
+- Seeing what the agent sees before deciding the next step
+- Confirming a page loaded as expected
+- Debugging a task that is behaving unexpectedly
 
 **Parameters:**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `sessionId` | string | Yes | Session ID |
-| `action` | string | Yes | `"pause"`, `"resume"`, `"stop"`, or `"terminate"` |
-
-**Actions:**
-
-| Action | Description | Use Case |
-|--------|-------------|----------|
-| `pause` | Pause current task | Temporarily halt execution |
-| `resume` | Resume paused task | Continue after pausing |
-| `stop` | Stop current task, keep session alive | Cancel task but continue session |
-| `terminate` | End session completely | Close session and free resources |
-
-**Example Usage:**
-
-```
-User: "Stop the current task"
-
-Claude uses control_session:
-{
-  "sessionId": "a1b2c3d4e5f6",
-  "action": "stop"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Session control command sent successfully",
-  "action": "stop"
-}
-```
 
 ---
 
-### take_over_session
+### list_sessions
 
-Enable manual browser control for human intervention.
+List all active browser sessions for the account. Read-only. Takes no parameters.
 
-**When to use:**
-- CAPTCHA solving
-- Complex form inputs that need human verification
-- Debugging what the agent sees
-- Manual credential entry
+---
+
+### terminate_session
+
+End a session and free its resources.
 
 **Parameters:**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `sessionId` | string | Yes | Session ID |
-| `action` | string | Yes | `"takeover"` or `"release"` |
+
+<Warning>
+The session and any task running in it cannot be resumed afterwards.
+</Warning>
+
+---
+
+### pause_session_task
+
+Pause the task currently running in a session. Resume it later with `resume_session_task`.
+
+**Parameters:** `sessionId` (string, required).
+
+---
+
+### resume_session_task
+
+Resume a previously paused task.
+
+**Parameters:** `sessionId` (string, required).
+
+---
+
+### stop_session_task
+
+Cancel the task currently running, keeping the session alive for new tasks.
+
+**Parameters:** `sessionId` (string, required).
+
+---
+
+### guardrail_response
+
+Respond when the browser agent needs human input — credentials, a CAPTCHA or 2FA prompt, a clarification, or an approval. The response is handed to the live agent, which continues acting on it.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `sessionId` | string | Yes | - | Session ID |
+| `response` | string | Conditional | - | Your response or instructions to the agent. Required when `newState` is `"resume"` |
+| `newState` | string | No | `"resume"` | `"resume"` provides the input and continues; `"deny"` declines the request |
+| `files` | string[] | No | - | File IDs to attach. Max 5 |
 
 **Example Usage:**
 
 ```
-User: "Let me control the browser manually to solve the CAPTCHA"
+Claude uses get_task_status and sees the agent is waiting on a login code.
 
-Claude uses take_over_session:
+Claude uses guardrail_response:
 {
   "sessionId": "a1b2c3d4e5f6",
-  "action": "takeover"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Manual control enabled. Agent paused.",
-  "streamingUrl": "https://a1b2c3d4e5f6.webrun.ai"
+  "response": "The verification code is 481920",
+  "newState": "resume"
 }
 ```
 
 <Note>
-After taking over, use the `streamingUrl` to view and control the browser. When done, use `action: "release"` to return control to the AI agent.
+MCP has no manual-takeover tool. For hands-on control of the browser — clicking and typing yourself — use the REST or WebSocket [manual interaction](/usage-guides/manual-interaction) actions alongside the [video stream](/usage-guides/video-streaming).
+</Note>
+
+See [Handling Guardrails](/usage-guides/handling-guardrails) for the full flow.
+
+---
+
+### list_environments
+
+List available persistent environments for the account and show which one the connection is using. Read-only. Takes no parameters.
+
+Use it to find the `environmentId` for a persistent session. Workflows and agents use the connection's environment automatically.
+
+---
+
+### list_workflows
+
+List saved workflows — prompt-templated browser automations — with each one's title, schedule, `{{variables}}`, and run stats. Read-only.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `scope` | string | No | `"environment"` | `"environment"` lists workflows in the bound environment; `"all"` lists every workflow on the account |
+
+---
+
+### get_workflow
+
+Full detail of one workflow: prompt template, variables and defaults, trigger and schedule, run settings, memory state, and any pending logins. Read-only; proxy credentials are masked.
+
+**Parameters:** `workflowId` (24-hex ID) or `title` (exact, case-insensitive).
+
+---
+
+### create_workflow
+
+Create a new saved workflow.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `title` | string | Yes | Workflow title shown on the dashboard |
+| `promptTemplate` | string | Yes | The task, written as a browsing runbook: `Goal:`, ground rules, one `Stage N` per site, and an `Output —` contract |
+| `memoryContract` | object | Conditional | Required whenever the task must handle each item exactly once. Three plain-English fields: `groundRules`, `memoryInstruction`, `itemIdentity` |
+| `startingUrl` | string | No | Page Chrome opens at the start of each run |
+| `outputType` | string | No | `"text"`, `"structured"`, or `"structured_csv"` |
+| `outputSchema` | object \| array | No | JSON Schema, or column names for `structured_csv` |
+| `schedule` | object | No | Saved setting only — see the warning below |
+| `templateVariables` | array | No | Metadata for `{{variables}}`, only for deliberately reusable templates |
+| `environmentId` | string | No | Rarely needed; the connection's environment is applied automatically |
+
+Presentation and run settings — `model`, `proxy`, `timezone`, `policyId`, `requiredFiles`, `shortDescription`, `triggerPhrase` and others — are all optional and default sensibly.
+
+<Warning>
+A `schedule` on a workflow is recorded as a setting only. The workflow does not run on a timer until it is deployed as a scheduled agent with [`create_agent`](#create_agent).
+</Warning>
+
+<Tip>
+Write concrete values (group names, URLs, numbers) directly into `promptTemplate`. Use `{{variables}}` only for a reusable template whose inputs genuinely change per run.
+</Tip>
+
+---
+
+### update_workflow
+
+Update an existing workflow. Supply `workflowId` (required) plus only the fields to change. Object and array fields are replaced whole; pass `null` to clear an optional field. Renaming via `title` keeps the slug stable.
+
+`memoryContract` is the exception to whole-replacement: supplying its three fields updates them while platform tracking details are preserved.
+
+---
+
+### trigger_workflow
+
+Run a workflow now in its deployed environment. Returns a `sessionId` — poll `get_task_status` for the result.
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `workflowId` | string | Conditional | 24-hex workflow ID — or use `title` |
+| `title` | string | Conditional | Exact workflow title, case-insensitive |
+| `variables` | object | No | Values for the workflow's `{{variables}}`, merged over stored defaults |
+| `force` | boolean | No | Work-list workflows only: re-open a completed list for a fresh full pass |
+
+<Warning>
+This is the only correct way to run or test a saved workflow. A run started with `browser_task` or `create_session` does not carry the workflow's rules, tracking or memory, so it will behave differently.
+</Warning>
+
+---
+
+### create_agent
+
+Create a scheduled agent — a recurring or one-time automation that runs on a timer.
+
+**Two modes:**
+
+| Mode | How | What happens |
+|------|-----|--------------|
+| Workflow | Pass `workflowId` + `schedule` | Prompt, starting URL, output contract, model, proxy, policy and files are copied from the workflow; results and memory stay centralised on it |
+| Standalone | Omit `workflowId`; pass `name`, `prompt`, `schedule` | Runs on its own in the connection's environment |
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `schedule` | object | Yes | `{ type: "at" \| "every" \| "cron", ... }` — see below |
+| `workflowId` | string | Conditional | Workflow mode: the workflow to deploy |
+| `name` | string | Conditional | Required standalone; defaults to the workflow title otherwise |
+| `prompt` | string | Conditional | Required standalone: the browsing runbook to run |
+| `variables` | object | No | Workflow mode: values baked in at deploy time and reused every run |
+| `startingUrl` | string | No | Standalone: page Chrome opens each run |
+| `outputType` / `outputSchema` | - | No | Standalone: output contract |
+| `expiresAt` | string | No | ISO 8601 date-time after which the agent auto-pauses |
+
+**Schedule shapes:**
+
+| `type` | Field | Meaning |
+|--------|-------|---------|
+| `"at"` | `at` | ISO 8601 date-time — fires once |
+| `"every"` | `interval` | Repeat interval in ms (minimum 60000) |
+| `"cron"` | `cron` | 5-field cron expression |
+
+All three accept `timezone` (IANA name, default UTC), which drives both the fire times and the browser session.
+
+---
+
+### list_agents
+
+List the account's scheduled agents: schedule, status, next and last run, and whether each is standalone or deployed from a workflow. Read-only.
+
+**Parameters:** `scope` — `"environment"` (default when bound) or `"all"`.
+
+---
+
+### pause_agent
+
+Pause an active scheduled agent — it stops firing until resumed.
+
+**Parameters:** `agentId` (24-hex, required).
+
+---
+
+### resume_agent
+
+Resume a paused agent, recomputing its next run. A completed work-list agent restarts with a fresh full pass.
+
+**Parameters:** `agentId` (24-hex, required).
+
+<Note>
+`resume_agent` refuses if the agent's expiry has already passed. Extend it on the dashboard first.
 </Note>
 
 ---
@@ -400,19 +702,21 @@ User: "Research wireless keyboards on Amazon. First go to Amazon, search for wir
 Claude's execution:
 1. Uses create_session:
    {
-     "prompt": "Go to amazon.com",
-     "startingUrl": "https://amazon.com"
+     "task": {
+       "prompt": "Go to amazon.com",
+       "startingUrl": "https://amazon.com"
+     }
    }
    → Gets sessionId: "abc123"
 
-2. Uses send_task_to_session:
+2. Uses send_task:
    {
      "sessionId": "abc123",
      "prompt": "Search for wireless keyboards"
    }
    → Gets search results
 
-3. Uses send_task_to_session:
+3. Uses send_task:
    {
      "sessionId": "abc123",
      "prompt": "Extract the names, prices, and ratings of the top 3 results",
@@ -423,7 +727,7 @@ Claude's execution:
 
 ---
 
-### Pattern 2: Guardrail Handling with Manual Takeover
+### Pattern 2: Guardrail Handling
 
 ```
 User: "Log in to example.com and extract my dashboard data"
@@ -431,34 +735,28 @@ User: "Log in to example.com and extract my dashboard data"
 Claude's execution:
 1. Uses create_session:
    {
-     "prompt": "Go to example.com and attempt to log in",
-     "startingUrl": "https://example.com"
+     "task": {
+       "prompt": "Go to example.com and log in",
+       "startingUrl": "https://example.com"
+     }
    }
-   → Encounters login form
+   → Agent reaches the login form and raises a guardrail
 
-2. Detects guardrail (needs credentials)
+2. Uses get_task_status:
+   { "sessionId": "abc123", "taskId": "task456" }
+   → Reports the agent is awaiting input
 
-3. Claude asks: "I need login credentials for example.com. Would you like to enter them manually?"
+3. Claude asks the user for the one-time code
 
-4. User says: "Yes"
-
-5. Uses take_over_session:
+4. Uses guardrail_response:
    {
      "sessionId": "abc123",
-     "action": "takeover"
+     "response": "The verification code is 481920",
+     "newState": "resume"
    }
-   → User manually enters credentials
+   → Agent continues
 
-6. User says: "Done, credentials entered"
-
-7. Uses take_over_session:
-   {
-     "sessionId": "abc123",
-     "action": "release"
-   }
-   → Control returns to agent
-
-8. Uses send_task_to_session:
+5. Uses send_task:
    {
      "sessionId": "abc123",
      "prompt": "Extract all dashboard data",
@@ -466,6 +764,10 @@ Claude's execution:
    }
    → Completes task
 ```
+
+<Tip>
+Use an environment for sites you log into repeatedly. The session stays authenticated, so later tasks skip the login entirely.
+</Tip>
 
 ---
 
@@ -475,9 +777,9 @@ Claude's execution:
 User: "Scrape all product listings from this marketplace (might take a while)"
 
 Claude's execution:
-1. Uses create_session and send_task_to_session
+1. Uses create_session, then send_task with maxDuration: 45
 
-2. While task is running, uses get_task_status every 30 seconds:
+2. While the task runs, uses get_task_status every 30 seconds:
    {
      "sessionId": "abc123",
      "taskId": "task456"
@@ -491,51 +793,47 @@ Claude's execution:
 
 ---
 
-### Pattern 4: Error Recovery
+### Pattern 4: Inspect, Then Correct
 
 ```
 User: "Go to example.com and extract all links"
 
 Claude's execution:
-1. Uses browser_task:
-   {
-     "prompt": "Go to example.com and extract all links"
-   }
-   → Fails with timeout error
+1. Uses create_session with the task
+   → Result looks wrong: far fewer links than expected
 
-2. Claude analyzes error and retries with adjusted parameters:
-   Uses browser_task:
+2. Uses screenshot:
+   { "sessionId": "abc123" }
+   → Sees a cookie banner covering the page
+
+3. Uses send_task:
    {
-     "prompt": "Go to example.com, wait for page to fully load, then extract all links",
-     "maxDuration": 120000
+     "sessionId": "abc123",
+     "prompt": "Dismiss the cookie banner, then extract all links",
+     "terminateOnCompletion": true
    }
    → Succeeds
 ```
 
 ---
 
-### Pattern 5: Streaming for Long Tasks
-
-For tasks that might take longer than the MCP timeout, Claude can use streaming:
+### Pattern 5: Run a Saved Workflow on a Schedule
 
 ```
-User: "Research the top 10 AI companies and compile detailed information about each"
+User: "Run my 'Daily competitor prices' workflow every weekday at 8am UK time."
 
 Claude's execution:
-1. Uses create_session
+1. Uses list_workflows to find it
+   → workflowId: "65f0a1b2c3d4e5f60718293b"
 
-2. For each company (1-10):
-   Uses send_task_to_session:
-   {
-     "sessionId": "abc123",
-     "prompt": "Search for [Company Name] and extract: founded date, CEO, main products, revenue"
-   }
-   → Streams results back as each completes
+2. Uses trigger_workflow once to check it works:
+   { "workflowId": "65f0a1b2c3d4e5f60718293b" }
+   → Polls get_task_status for the result
 
-3. Uses control_session to terminate when done:
+3. Uses create_agent to put it on a timer:
    {
-     "sessionId": "abc123",
-     "action": "terminate"
+     "workflowId": "65f0a1b2c3d4e5f60718293b",
+     "schedule": { "type": "cron", "cron": "0 8 * * 1-5", "timezone": "Europe/London" }
    }
 ```
 
@@ -543,66 +841,52 @@ Claude's execution:
 
 ## Troubleshooting
 
-### Tools Not Appearing in Claude Desktop
+### Tools Not Appearing
 
-**Symptoms:**
-- MCP tools don't show up in Claude Desktop
-- No browser automation options available
+**Symptoms:** MCP tools don't show up, or no browser automation options are available.
 
 **Solutions:**
 
-1. **Verify config file location:**
-   - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+1. **Claude Code:** run `claude mcp get webrun`. The most common cause is a missing `"type": "http"` — without it the entry is treated as a local command.
 
-2. **Check JSON syntax:**
+2. **Cursor and VS Code:** confirm the top-level key. Cursor uses `mcpServers`, VS Code uses `servers`.
+
+3. **Cline:** confirm `"type": "streamableHttp"` — camelCase, no hyphen. `streamable-http` or a missing `type` falls back to SSE and fails with a 405.
+
+4. **Claude Desktop:** the config file only accepts local (stdio) servers. Use **Settings → Connectors**, or bridge with `mcp-remote` as shown above.
+
+5. **Check JSON syntax:**
    ```bash
-   # Validate JSON on macOS/Linux
-   cat ~/Library/Application\ Support/Claude/claude_desktop_config.json | jq .
-
+   cat .mcp.json | jq .
    # Should output valid JSON without errors
    ```
 
-3. **Ensure API key format:**
-   - API key should start with `wr_`
-   - No extra spaces or quotes
-   - Example: `"url": "https://api.webrun.ai/mcp/wr_xxxxxxxxxxxx"`
-
-4. **Restart Claude Desktop completely:**
-   - Quit Claude Desktop (don't just close window)
-   - Reopen Claude Desktop
-   - Wait 10 seconds for MCP servers to initialize
-
-5. **Check Claude Desktop logs:**
+6. **Claude Desktop logs:**
    - macOS: `~/Library/Logs/Claude/mcp*.log`
    - Windows: `%APPDATA%\Claude\logs\mcp*.log`
 
+<Note>
+Claude Code, Cursor and VS Code pick up config changes without a restart. Only Claude Desktop needs a full quit and reopen.
+</Note>
+
 ---
 
-### Authentication Errors
+### It Connects but Every Task Fails
 
-**Error:** `"Invalid API key"` or `"Unauthorized"`
+The server lists its tools without a key, so a connection with a missing or wrong key looks perfectly healthy until the first task runs.
 
 **Solutions:**
 
-1. **Verify API key is active:**
-   - Go to [webrun.ai/settings](https://webrun.ai/settings)
-   - Check that API key exists and is not revoked
-   - Generate new API key if needed
+1. **Check the header name and value.** It is `API-Key`, and the value is the key on its own — no `Bearer` prefix.
 
-2. **Check URL format:**
-   ```json
-   // Wrong
-   "url": "https://api.webrun.ai/mcp/"
+2. **Confirm the key is active:** open the dashboard, check the key exists and has not been revoked, and generate a new one if needed.
 
-   // Correct
-   "url": "https://api.webrun.ai/mcp/wr_xxxxxxxxxxxx"
-   ```
+3. **Check the account has balance.**
 
-3. **Test API key via curl:**
+4. **Test the key against the REST API:**
    ```bash
    curl -X POST https://api.webrun.ai/start/run-task \
-     -H "Authorization: Bearer wr_xxxxxxxxxxxx" \
+     -H "Authorization: Bearer YOUR_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"task": {"prompt": "Go to google.com"}}'
 
@@ -611,15 +895,40 @@ Claude's execution:
 
 ---
 
+### Authentication Errors
+
+**Error:** `"Invalid API key"` or `"Unauthorized"`
+
+Keys start with `wr_` or `enig_`. Confirm the key is active in the dashboard and that the account has balance. Check for stray spaces or quotes around the header value.
+
+---
+
+### "Environment not found"
+
+The `Environment-Id` must be a 24-character hex string belonging to your account. Ask the assistant to list your environments, or copy the ID from the Environment page in the dashboard.
+
+If you meant to run on a disposable machine, remove the header entirely rather than leaving it blank.
+
+---
+
 ### Session Timeout Errors
 
 **Error:** `"Session not found"` or `"Session expired"`
 
-**Cause:** WebRun sessions expire after 5 minutes of inactivity (fixed, not configurable).
+**Cause:** sessions expire after **5 minutes of inactivity** (fixed, not configurable). Separately, a single task runs for up to **20 minutes** by default.
 
 **Solutions:**
 
-1. **Break long tasks into smaller chunks:**
+1. **Raise the task cap** — pass `maxDuration` in minutes, up to 60:
+   ```json
+   {
+     "sessionId": "abc123",
+     "prompt": "Complex task",
+     "maxDuration": 45
+   }
+   ```
+
+2. **Break long work into chunks:**
    ```
    // Bad: One huge task
    "Extract data from all 100 pages"
@@ -627,27 +936,9 @@ Claude's execution:
    // Good: Chunked tasks
    "Extract data from pages 1-10"
    "Extract data from pages 11-20"
-   ...
    ```
 
-2. **Use get_task_status for monitoring:**
-   - Check task progress periodically
-   - Detect timeouts early
-
-3. **Adjust maxDuration:**
-   ```json
-   {
-     "prompt": "Complex task",
-     "maxDuration": 180000  // 3 minutes instead of 5
-   }
-   ```
-
-4. **For very long tasks, create new sessions:**
-   ```
-   Session 1: Research companies 1-5
-   Session 2: Research companies 6-10
-   Session 3: Research companies 11-15
-   ```
+3. **Use `get_task_status`** to check progress and detect stalls early.
 
 ---
 
@@ -666,47 +957,17 @@ Claude's execution:
    "Find the product price displayed near the 'Add to Cart' button"
    ```
 
-2. **Add wait instructions:**
-   ```
-   "Go to example.com, wait for the page to fully load, then extract all links"
-   ```
+2. **Use `screenshot`** to see what the agent sees before guessing at a fix.
 
-3. **Use startingUrl for known websites:**
+3. **Use `startingUrl` for known websites:**
    ```json
    {
      "prompt": "Search for wireless keyboards",
-     "startingUrl": "https://amazon.com"  // Faster than "Go to amazon.com"
+     "startingUrl": "https://amazon.com"
    }
    ```
 
-4. **Check for CAPTCHAs or login requirements:**
-   - Use `take_over_session` for manual intervention
-   - Consider providing credentials via guardrail response
-
----
-
-### Tools Not Working in Cline
-
-**Symptoms:**
-- Tools appear but fail when used
-- Connection errors in VS Code
-
-**Solutions:**
-
-1. **Reload VS Code:**
-   - `Cmd/Ctrl + Shift + P` → "Reload Window"
-
-2. **Check Cline extension version:**
-   - Update to latest version
-   - Cline → Settings → Check for updates
-
-3. **Verify MCP server configuration:**
-   - Cline Settings → MCP Servers
-   - Ensure JSON is valid
-
-4. **Check VS Code network proxy settings:**
-   - If behind corporate proxy, configure VS Code proxy
-   - File → Preferences → Settings → Search "proxy"
+4. **Check for CAPTCHAs or login requirements** — answer with `guardrail_response`, or use an environment that is already logged in.
 
 ---
 
@@ -714,158 +975,82 @@ Claude's execution:
 
 ### Quick Reference Table
 
-| Tool | Required Parameters | Optional Parameters |
-|------|---------------------|---------------------|
-| `browser_task` | `prompt` | `startingUrl`, `maxDuration`, `reach_out_mode` |
-| `create_session` | - | `prompt`, `startingUrl`, `maxDuration`, `reach_out_mode` |
-| `send_task_to_session` | `sessionId`, `prompt` | `terminateOnCompletion` |
+| Tool | Required Parameters | Key Optional Parameters |
+|------|---------------------|-------------------------|
+| `browser_task` | `prompt` | `startingUrl`, `environmentId`, `maxDuration`, `outputType`, `outputSchema`, `files`, `secrets`, `proxy`, `policyId`, `model`, `timezone`, `webhook`, `reach_out_mode` |
+| `create_session` | - | `task`, `environmentId`, `mode`, `model`, `policyId`, `proxy`, `timezone`, `reach_out_mode` |
+| `send_task` | `sessionId`, `prompt` | `startingUrl`, `maxDuration`, `maxInputTokens`, `maxOutputTokens`, `outputType`, `outputSchema`, `files`, `secrets`, `terminateOnCompletion`, `webhook` |
 | `get_task_status` | `sessionId`, `taskId` | - |
-| `control_session` | `sessionId`, `action` | - |
-| `take_over_session` | `sessionId`, `action` | - |
+| `screenshot` | `sessionId` | - |
+| `list_sessions` | - | - |
+| `terminate_session` | `sessionId` | - |
+| `pause_session_task` | `sessionId` | - |
+| `resume_session_task` | `sessionId` | - |
+| `stop_session_task` | `sessionId` | - |
+| `guardrail_response` | `sessionId` | `response`, `newState`, `files` |
+| `list_environments` | - | - |
+| `list_workflows` | - | `scope` |
+| `get_workflow` | `workflowId` or `title` | - |
+| `create_workflow` | `title`, `promptTemplate` | `memoryContract`, `startingUrl`, `outputType`, `outputSchema`, `schedule`, `templateVariables` |
+| `update_workflow` | `workflowId` | any field to change |
+| `trigger_workflow` | `workflowId` or `title` | `variables`, `force` |
+| `create_agent` | `schedule` | `workflowId`, `name`, `prompt`, `variables`, `startingUrl`, `expiresAt` |
+| `list_agents` | - | `scope` |
+| `pause_agent` | `agentId` | - |
+| `resume_agent` | `agentId` | - |
 
 ### Parameter Details
 
 **prompt** (string)
 - Natural language description of the task
 - Be specific for better results
-- Examples:
-  - Good: "Search Google for 'Anthropic' and summarize the first result"
-  - Good: "Extract all product names and prices from this page"
-  - Avoid: "Search" (too vague)
+- Good: "Search Google for 'Anthropic' and summarize the first result"
+- Good: "Extract all product names and prices from this page"
+- Avoid: "Search" (too vague)
 
 **startingUrl** (string)
-- Must be valid HTTP/HTTPS URL
-- Optional but speeds up navigation
-- Examples:
-  - `"https://google.com"`
-  - `"https://amazon.com"`
-  - `"https://example.com/products"`
+- Must be a valid HTTP/HTTPS URL
+- Optional, but speeds up navigation compared to "go to amazon.com"
+
+**environmentId** (string)
+- 24-character hex ID of a persistent environment
+- Overrides the connection's `Environment-Id` header for this one call
+- Omit it on a connection with no environment to get a disposable machine
 
 **maxDuration** (number)
-- Maximum task duration in milliseconds
-- Default: 300000 (5 minutes)
-- Maximum: 300000 (5 minutes)
-- Examples:
-  - `60000` = 1 minute max task duration
-  - `120000` = 2 minutes max task duration
-  - `300000` = 5 minutes max task duration (default)
+- Maximum task duration **in minutes**
+- Default: 20 · Maximum: 60 · On `send_task`, minimum 3
+- Examples: `10` = 10 minutes, `45` = 45 minutes
+
+<Warning>
+The MCP tools take `maxDuration` in **minutes**. The [REST API](/api-reference/parameters#maxduration) takes the same parameter in milliseconds — do not copy a value from one to the other.
+</Warning>
 
 **sessionId** (string)
-- Returned from `create_session`
-- Format: 12-character alphanumeric
-- Example: `"a1b2c3d4e5f6"`
+- Returned from `create_session`, `browser_task` and `trigger_workflow`
 
 **taskId** (string)
-- Returned from task execution
-- Format: 12-character alphanumeric
-- Example: `"x9y8z7w6v5u4"`
-
-**action** (string)
-- For `control_session`: `"pause"`, `"resume"`, `"stop"`, `"terminate"`
-- For `take_over_session`: `"takeover"`, `"release"`
+- Returned from task execution, and required by `get_task_status`
 
 **terminateOnCompletion** (boolean)
-- `true`: Auto-close session after task completes
-- `false`: Keep session alive for follow-up tasks
-- Default: `false`
+- `true`: auto-close the session after the task completes
+- `false` (default): keep the session alive for follow-up tasks
+
+**newState** (string, `guardrail_response`)
+- `"resume"` (default): provides the requested input and continues the task. `response` is required
+- `"deny"`: declines the request. `response` is optional
+
+**outputType** (string) and **outputSchema**
+- `"text"` (default), `"structured_json"`, or `"structured_csv"`
+- `outputSchema` is required for `"structured_json"` — see [Structured Output](/usage-guides/structured-output)
 
 **reach_out_mode** (string)
 - Controls proactive chat messages to a user (Telegram, WhatsApp, Slack, Discord, Teams) connected to the same environment when no one is watching the session live
-- One of:
-  - `"off"`: No proactive messages. Guardrails and results stay on the MCP channel only. Useful for sessions handling private data.
-  - `"guardrail_only"`: Bot pings the chat user only on guardrails (CAPTCHA, 2FA, verification, login, etc.).
-  - `"full"`: Bot pings on guardrails **and** delivers the task result to chat when the task completes.
-- Default: `"guardrail_only"`
-- Available on `browser_task` and `create_session` only; locked at session creation
-- See [Routing Guardrails to a Chat User](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user) for the full flow
-
----
-
-## Example Conversations
-
-### Example 1: Simple Research
-
-**User:** "Use WebRun to search for 'Claude AI features' on Google and tell me what you find."
-
-**Claude's Response:**
-```
-I'll search Google for Claude AI features using the browser automation tool.
-
-[Uses browser_task with prompt: "Go to google.com, search for 'Claude AI features', and summarize the top 3 results"]
-
-Based on the search results, here are the key features of Claude AI:
-
-1. **Long Context Window**: Claude can handle up to 200K tokens...
-2. **Vision Capabilities**: Can analyze images and documents...
-3. **Code Generation**: Strong capabilities in writing and debugging code...
-
-[Full summary based on actual search results]
-```
-
----
-
-### Example 2: Multi-Step E-commerce
-
-**User:** "Create a browser session, go to Amazon, search for wireless keyboards under $50, and tell me the top 3 results with prices."
-
-**Claude's Response:**
-```
-I'll create a browser session and research wireless keyboards on Amazon for you.
-
-[Uses create_session with startingUrl: "https://amazon.com"]
-Session created.
-
-[Uses send_task_to_session with prompt: "Search for wireless keyboards under $50 and extract the top 3 results with names, prices, and ratings"]
-
-Here are the top 3 wireless keyboards under $50:
-
-1. **Logitech K380** - $29.99
-   - Rating: 4.5/5 stars
-   - Features: Multi-device connectivity, compact design
-
-2. **Keychron K2** - $49.00
-   - Rating: 4.7/5 stars
-   - Features: Mechanical switches, Mac/Windows compatible
-
-3. **Microsoft Wireless Desktop** - $39.99
-   - Rating: 4.3/5 stars
-   - Features: Full keyboard with numeric pad
-
-Would you like me to get more details on any of these?
-```
-
----
-
-### Example 3: Guardrail with Manual Takeover
-
-**User:** "Log in to my dashboard at example.com and show me my account balance."
-
-**Claude's Response:**
-```
-I'll navigate to example.com and attempt to access the dashboard.
-
-[Uses create_session with startingUrl: "https://example.com"]
-
-I've reached the login page, but I need your credentials to proceed. Would you prefer to:
-1. Provide me with your username and password
-2. Take manual control to enter them yourself
-
-User: "I'll enter them manually"
-
-[Uses take_over_session with action: "takeover"]
-
-I've enabled manual control. You can now view and control the browser at this URL:
-https://abc123.webrun.ai
-
-Please log in, then let me know when you're done.
-
-User: "Done, I'm logged in"
-
-[Uses take_over_session with action: "release"]
-[Uses send_task_to_session with prompt: "Extract the account balance from the dashboard"]
-
-Your account balance is $1,234.56
-```
+- `"off"` (default): no proactive messages — guardrails and results stay on the MCP channel only. Best for sessions handling private data
+- `"guardrail_only"`: pings the chat user on guardrails (CAPTCHA, 2FA, verification, login) when the API caller is offline
+- `"full"`: pings on guardrails **and** delivers the task result on completion
+- Available on `browser_task` and `create_session`. Each bot user additionally filters by their own preference
+- See [Routing Guardrails to a Chat User](/usage-guides/handling-guardrails#routing-guardrails-to-a-chat-user)
 
 ---
 
@@ -875,9 +1060,10 @@ Your account balance is $1,234.56
 
 **Do:**
 - Use `browser_task` for one-off tasks
-- Use `create_session` + `send_task_to_session` for multi-step workflows
+- Use `create_session` + `send_task` for multi-step workflows
+- Use `trigger_workflow` — never `browser_task` — to run or test a saved workflow
 - Always set `terminateOnCompletion: true` on your final task
-- Terminate sessions explicitly when done
+- Terminate sessions explicitly with `terminate_session` when done
 
 **Don't:**
 - Create multiple sessions for related tasks
@@ -890,7 +1076,7 @@ Your account balance is $1,234.56
 
 **Do:**
 - Be specific and detailed
-- Include expected output format
+- Include the expected output format
 - Specify wait conditions if needed
 - Provide starting URLs when known
 
@@ -905,9 +1091,9 @@ Your account balance is $1,234.56
 
 **Do:**
 - Monitor long tasks with `get_task_status`
-- Retry failed tasks with adjusted parameters
-- Use `take_over_session` for CAPTCHAs
-- Check session expiration times
+- Use `screenshot` to see the real page state before retrying
+- Answer CAPTCHAs and 2FA prompts with `guardrail_response`
+- Raise `maxDuration` (in minutes) rather than letting a long task be cut off
 
 **Don't:**
 - Ignore timeout warnings
@@ -934,10 +1120,16 @@ Your account balance is $1,234.56
 <Accordion title="Related Guides">
   <CardGroup cols={2}>
     <Card title="MCP Quickstart" icon="rocket" href="/getting-started/mcp-quickstart">
-      Quick setup guide for Claude Desktop and Cline
+      Connect Claude, ChatGPT, Claude Code, Cursor, VS Code or Cline
     </Card>
     <Card title="Multi-Task Workflows" icon="list-check" href="/usage-guides/multi-task-workflows">
       Build complex automation sequences
+    </Card>
+    <Card title="Handling Guardrails" icon="shield-halved" href="/usage-guides/handling-guardrails">
+      Respond to human-in-the-loop requests
+    </Card>
+    <Card title="Environments" icon="server" href="/environments/overview">
+      Persistent machines that keep logins and files
     </Card>
   </CardGroup>
 </Accordion>

@@ -1,6 +1,6 @@
 ---
 title: "MCP Quickstart"
-description: "Add browser automation to Claude, ChatGPT and Cline via MCP"
+description: "Add browser automation to Claude, ChatGPT, Claude Code, Cursor, VS Code and Cline via MCP"
 icon: "puzzle-piece"
 ---
 
@@ -10,70 +10,212 @@ The Model Context Protocol (MCP) allows AI assistants like Claude, ChatGPT and C
 
 ---
 
-## Setup (2 minutes)
+## Choose your path
 
-### Claude Desktop
+There is one server URL for every client:
 
-**Step 1: Open Configuration File**
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
-
-**Step 2: Add WebRun Server**
-```json
-{
-  "mcpServers": {
-    "WebRun": {
-      "url": "https://api.webrun.ai/mcp/YOUR_API_KEY"
-    }
-  }
-}
+```
+https://api.webrun.ai/mcp
 ```
 
-To connect to a specific environment, append the environment ID to your API key. An environment is a persistent remote machine with its own browser, file system, and desktop: everything stays consistent across sessions, so you can pick up where you left off.
+- **Claude and ChatGPT** connect with that URL and no API key at all — you authorize WebRun once, in the browser. Start at [Connect with OAuth](#connect-with-oauth-claude-and-chatgpt).
+- **Everything with a config file** (Claude Code, Cursor, Claude Desktop, VS Code, Cline) uses the same URL plus two headers. Start at [Connect with an API key](#connect-with-an-api-key).
 
-```json
-{
-  "mcpServers": {
-    "WebRun": {
-      "url": "https://api.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
-    }
-  }
-}
-```
-
-**Step 3: Restart Claude Desktop**
-Close and reopen the application. You'll see WebRun tools available in the tool picker.
+<Tip>
+Your API key travels in a header, never in the URL. That keeps it out of browser history, shell history and proxy logs, and it means you can rotate the key without touching a URL you may have already copied somewhere else.
+</Tip>
 
 ---
 
-### Cline (VS Code Extension)
+## Connect with OAuth (Claude and ChatGPT)
 
-**Step 1: Open VS Code Settings**
-- Press `Cmd/Ctrl + Shift + P`
-- Search for "Cline: Settings"
+No API key needed.
 
-**Step 2: Add MCP Server**
-In the MCP Servers section, add:
+<Steps>
+  <Step title="Open connector settings">
+    In Claude or ChatGPT, go to **Settings → Connectors → Add custom connector**.
+  </Step>
+  <Step title="Paste the server URL">
+    ```
+    https://api.webrun.ai/mcp
+    ```
+  </Step>
+  <Step title="Authorize from WebRun">
+    Approve the connection when prompted. WebRun issues the credentials for you.
+  </Step>
+</Steps>
+
+If you have more than one environment, the one you pick during authorization becomes the connection's default — the assistant will use it without being told.
+
+---
+
+## Connect with an API key
+
+Every example below is complete: the same URL, your API key, and the environment you want the assistant to work in. Copy the whole block.
+
+### Claude Code
+
+```bash
+claude mcp add --transport http webrun https://api.webrun.ai/mcp --header "API-Key: YOUR_API_KEY" --header "Environment-Id: 65f0a1b2c3d4e5f60718293a"
+```
+
+`--header` is repeatable — that is how both values are passed in one command.
+
+Or, to share the connection with a project, add this to `.mcp.json` at the repo root:
+
 ```json
 {
-  "WebRun": {
-    "url": "https://api.webrun.ai/mcp/YOUR_API_KEY"
+  "mcpServers": {
+    "webrun": {
+      "type": "http",
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "${WEBRUN_API_KEY}",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
   }
 }
 ```
 
-To connect to a specific environment, append the environment ID to your API key. An environment is a persistent remote machine with its own browser, file system, and desktop: everything stays consistent across sessions, so you can pick up where you left off.
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+<Warning>
+`"type": "http"` is required. Claude Code reads a `url` entry with no `type` as a local command, and the server will not start.
+</Warning>
+
+`${WEBRUN_API_KEY}` is expanded from your environment when the file loads, so the file is safe to commit. The environment ID is not a secret and can stay inline.
+
+---
+
+### Cursor
+
+Add this to `~/.cursor/mcp.json`, or `.cursor/mcp.json` inside a project:
 
 ```json
 {
-  "WebRun": {
-    "url": "https://api.webrun.ai/mcp/YOUR_API_KEY:ENVIRONMENT_ID"
+  "mcpServers": {
+    "webrun": {
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "${env:WEBRUN_API_KEY}",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
   }
 }
 ```
 
-**Step 3: Reload Cline**
-Reload the extension or restart VS Code.
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+Cursor does not use a `type` field for remote servers, and its variable syntax is `${env:NAME}`.
+
+---
+
+### Claude Desktop
+
+Claude Desktop's configuration file only supports local (stdio) servers, so connect through **Settings → Connectors** using the [OAuth flow](#connect-with-oauth-claude-and-chatgpt) above — no key, no file editing, and you choose the environment during authorization.
+
+If you must use the config file, bridge it with `mcp-remote`:
+
+```json
+{
+  "mcpServers": {
+    "webrun": {
+      "command": "npx",
+      "args": [
+        "-y", "mcp-remote", "https://api.webrun.ai/mcp",
+        "--header", "API-Key:${WEBRUN_KEY}",
+        "--header", "Environment-Id:65f0a1b2c3d4e5f60718293a"
+      ],
+      "env": { "WEBRUN_KEY": "YOUR_API_KEY" }
+    }
+  }
+}
+```
+
+Delete the second `--header` pair to get a fresh disposable machine for every task.
+
+<Note>
+The headers are written without a space after the colon on purpose — `mcp-remote` splits `--header` arguments on spaces.
+</Note>
+
+After editing, quit Claude Desktop completely and reopen it.
+
+---
+
+### VS Code
+
+Add this to `.vscode/mcp.json` — note the top-level key is `servers`, not `mcpServers`:
+
+```json
+{
+  "servers": {
+    "webrun": {
+      "type": "http",
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "${input:webrun-api-key}",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
+  },
+  "inputs": [
+    { "type": "promptString", "id": "webrun-api-key", "description": "WebRun API key", "password": true }
+  ]
+}
+```
+
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+VS Code prompts for the key on first use and stores it securely rather than in the file.
+
+---
+
+### Cline
+
+Open the Cline panel, use the menu in its top-right corner, choose **MCP Servers**, and edit `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "webrun": {
+      "type": "streamableHttp",
+      "url": "https://api.webrun.ai/mcp",
+      "headers": {
+        "API-Key": "YOUR_API_KEY",
+        "Environment-Id": "65f0a1b2c3d4e5f60718293a"
+      }
+    }
+  }
+}
+```
+
+Delete the `Environment-Id` line to get a fresh disposable machine for every task.
+
+<Warning>
+`"type": "streamableHttp"` is camelCase with no hyphen. Writing `streamable-http`, or leaving `type` out, makes Cline fall back to SSE and the connection fails with a 405.
+</Warning>
+
+Cline does not expand environment variables in this file, so the key goes in literally — keep the file out of version control.
+
+---
+
+## Environments
+
+An environment is a persistent remote machine with its own browser, file system, and desktop, so logins, cookies, and downloaded files survive between tasks. Without one, each task gets a fresh disposable machine.
+
+**Where to find the ID:** ask the assistant to list your environments, or copy it from the Environment page in the dashboard. It is a 24-character hex string, and it is not a secret — it is safe to commit.
+
+**Three ways to choose one:**
+
+| How | When |
+|-----|------|
+| The `Environment-Id` header | A config file — sets the default for the whole connection |
+| Chosen during OAuth authorization | Claude and ChatGPT connectors, which have no config file |
+| The `environmentId` argument on any task tool | Per task, overriding whatever the connection uses |
+
+The per-task argument means you can keep one connection and still send one task to your logged-in shopping profile and the next to a clean machine.
 
 ---
 
@@ -93,72 +235,89 @@ Once configured, you can ask Claude to browse the web:
 4. Results are returned to Claude
 5. Claude presents the information to you
 
+For multi-step work, ask for a session instead of a one-off task — "Create a browser session, go to Amazon, search for wireless keyboards, and tell me the top 3 results." The assistant calls `create_session` once and then `send_task` for each follow-up, so the browser keeps its place between steps.
+
 ---
 
-## Available Tools (Summary)
+## Available Tools
 
-The WebRun MCP server provides several tools:
+The WebRun MCP server exposes 21 tools.
 
-| Tool | Description | Use Case |
-|------|-------------|----------|
-| `browser_task` | Execute a single browser task | Quick one-off automations |
-| `create_session` | Start a persistent browser session | Multi-step workflows |
-| `send_task_to_session` | Send a task to an existing session | Follow-up actions |
-| `get_task_status` | Check the status of a running task | Monitoring long tasks |
-| `control_session` | Pause, resume, or stop a session | Manual control |
-| `take_over_session` | Enable manual browser control | Human-in-the-loop |
+**Browser tasks**
+
+| Tool | What it does |
+|------|--------------|
+| `browser_task` | Run a one-off task in a real browser; creates a session, runs, cleans up |
+| `create_session` | Start a persistent session for multi-step work |
+| `send_task` | Send another task to an existing session |
+| `get_task_status` | Check a running task; reports when input is needed |
+| `screenshot` | Capture the current page of a live session |
+| `list_sessions` | List active sessions |
+| `terminate_session` | End a session and free its resources |
+
+**Controlling a running task**
+
+| Tool | What it does |
+|------|--------------|
+| `pause_session_task` | Pause the task currently running |
+| `resume_session_task` | Resume a paused task |
+| `stop_session_task` | Cancel the task, keep the session alive |
+| `guardrail_response` | Answer when the agent hits a CAPTCHA, 2FA prompt, or confirmation |
+
+**Environments**
+
+| Tool | What it does |
+|------|--------------|
+| `list_environments` | List persistent environments and show which one this connection uses |
+
+**Workflows** — saved, reusable automations
+
+| Tool | What it does |
+|------|--------------|
+| `list_workflows` · `get_workflow` | Browse saved workflows and inspect one |
+| `create_workflow` · `update_workflow` | Author and edit them |
+| `trigger_workflow` | Run one now |
+
+**Scheduled agents** — automations that run on a timer
+
+| Tool | What it does |
+|------|--------------|
+| `create_agent` | Schedule a recurring or one-time run |
+| `list_agents` · `pause_agent` · `resume_agent` | Manage them |
 
 [Full MCP Reference →](/integrations/mcp-server)
 
 ---
 
-## Example Conversations
-
-### Simple Research
-
-**You:** "Use WebRun to search for 'Claude AI features' on Google and tell me what you find."
-
-**Claude:** *(Uses `browser_task` tool)* "I've searched Google for 'Claude AI features'. Here's what I found: Claude is Anthropic's AI assistant with features including..."
-
-### Multi-Step Workflow
-
-**You:** "Create a browser session, go to Amazon, search for wireless keyboards, and tell me the top 3 results."
-
-**Claude:** *(Uses `create_session`, then `send_task_to_session`)* "I've navigated to Amazon and searched for wireless keyboards. Here are the top 3 results:
-1. Logitech K380 - $29.99
-2. Keychron K2 - $79.00
-3. ...
-
-Would you like me to get more details on any of these?"
-
----
-
 ## Troubleshooting
 
-### Tools not appearing in Claude Desktop?
+### Tools not appearing (Claude Code)
 
-1. **Check config file path:** Ensure you edited the correct file location
-2. **Verify JSON syntax:** Use a JSON validator to check for syntax errors
-3. **Restart Claude:** Fully quit and reopen the application
-4. **Check API key:** Ensure your API key is valid and starts with `wr_`
+Run `claude mcp get webrun`. The most common cause is a missing `"type": "http"` — without it the entry is treated as a local command.
 
-### Authentication errors?
+### Tools not appearing (Cursor / VS Code)
 
-- Verify your API key in the configuration
-- Check that you have sufficient balance in your WebRun account
-- Ensure the API key has not expired
+Confirm the top-level key: Cursor uses `mcpServers`, VS Code uses `servers`.
 
-### Session timeout errors?
+### It connects but every task fails
 
-- WebRun sessions expire after 5 minutes of inactivity (can run indefinitely while active)
-- For long tasks, break them into smaller sub-tasks
-- Use `get_task_status` to monitor progress
+The server lists its tools without a key, so a connection with a missing or wrong key looks healthy until the first task. Check the `API-Key` header value.
 
----
+### Authentication errors
 
-## Advanced Usage
+Keys start with `wr_` or `enig_`. Confirm the key is active in the dashboard and that the account has balance.
 
-For advanced MCP features like video streaming, manual control, and custom workflows, see the [Full MCP Server Documentation](/integrations/mcp-server).
+### "Environment not found"
+
+The ID must be a 24-character hex string belonging to your account. Ask the assistant to list your environments.
+
+### Session timeouts
+
+Sessions expire after **5 minutes idle**. A single task runs up to **20 minutes** by default — pass `maxDuration` for longer, or split the work.
+
+<Note>
+Claude Code, Cursor and VS Code pick up config changes without a restart. Only Claude Desktop needs a full quit and reopen.
+</Note>
 
 ---
 
