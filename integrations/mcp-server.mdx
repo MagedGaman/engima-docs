@@ -27,7 +27,7 @@ Authentication travels in headers, never in the URL.
 | Header | Required | Value |
 |--------|----------|-------|
 | `API-Key` | Yes, unless connecting by OAuth | Your WebRun API key |
-| `Environment-Id` | No | The 24-character hex ID of a persistent environment. Omit it and every task gets a fresh disposable machine |
+| `Environment-Id` | No | The 24-character hex ID of a persistent environment. Provide it and tasks run on that machine, keeping state between them. Omit it and every task gets its own temporary browser, discarded when the task ends |
 
 <Tip>
 A key in a header stays out of browser history, shell history and proxy logs, and can be rotated without editing a URL that may already have been copied elsewhere.
@@ -193,6 +193,15 @@ Cline does not expand environment variables in this file, so the key goes in lit
 
 An environment is a complete persistent remote machine. It maintains its own Chrome browser, file manager, and desktop state across sessions, so browser profiles, downloaded files, cookies, and any other local state are preserved between tasks and you can pick up exactly where you left off.
 
+**The `Environment-Id` header is optional.** Both ways of running are fully supported:
+
+| Environment ID | What you get |
+|----------------|--------------|
+| **Provided** | Every task runs on that persistent environment. Logins, cookies, downloaded files and browser profile carry over from one task to the next |
+| **Omitted** | Every task gets its own temporary browser, created when the task starts and discarded when it ends. Nothing carries over |
+
+Leaving the header out is a normal configuration, not a broken one. Omit it when every task should start from a clean slate, and add an environment when you need the browser to remember something — a logged-in account, a downloaded file, an installed extension.
+
 **Where to find the ID:** ask the assistant to list your environments, or copy it from the Environment page in the dashboard. It is a 24-character hex string, and it is not a secret — it is safe to commit.
 
 **Three ways to choose one:**
@@ -202,10 +211,6 @@ An environment is a complete persistent remote machine. It maintains its own Chr
 | The `Environment-Id` header | A config file — sets the default for the whole connection |
 | Chosen during OAuth authorization | Claude and ChatGPT connectors, which have no config file |
 | The `environmentId` argument on any task tool | Per task, overriding whatever the connection uses |
-
-<Tip>
-Without an environment, each task starts on a fresh disposable machine. Use environments when you need persistent state, such as staying logged into websites, keeping downloaded files, or maintaining browser bookmarks and extensions.
-</Tip>
 
 The per-task argument means you can keep one connection and still send one task to your logged-in shopping profile and the next to a clean machine.
 
@@ -232,7 +237,7 @@ Do not use `browser_task` to run or test a saved workflow — use [`trigger_work
 |-----------|------|----------|---------|-------------|
 | `prompt` | string | Yes | - | Natural language description of the task |
 | `startingUrl` | string | No | null | URL to start from (e.g., "https://google.com") |
-| `environmentId` | string | No | connection default | Environment to run in. Without one, a disposable instance is used |
+| `environmentId` | string | No | connection default | Environment to run in. Without one, the task gets its own temporary browser, discarded when it ends |
 | `maxDuration` | number | No | 20 | Max task duration **in minutes** (max 60) |
 | `outputType` | string | No | `"text"` | `"text"`, `"structured_json"`, or `"structured_csv"` |
 | `outputSchema` | object | Conditional | - | JSON Schema for the output. Required when `outputType` is `"structured_json"` |
@@ -290,7 +295,7 @@ Create a persistent browser session for multi-step workflows. Returns a `session
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
 | `task` | object | No | - | Initial task. Omit it to create an idle session |
-| `environmentId` | string | No | connection default | Environment to run in. Without one, a disposable instance is used |
+| `environmentId` | string | No | connection default | Environment to run in. Without one, the task gets its own temporary browser, discarded when it ends |
 | `mode` | string | No | `"default"` | Session mode |
 | `model` | string | No | account default | Model name or profile key |
 | `policyId` | string | No | - | Policy to apply automation guardrails |
@@ -1013,9 +1018,9 @@ If you meant to run on a disposable machine, remove the header entirely rather t
 - Optional, but speeds up navigation compared to "go to amazon.com"
 
 **environmentId** (string)
-- 24-character hex ID of a persistent environment
+- Optional. 24-character hex ID of a persistent environment
 - Overrides the connection's `Environment-Id` header for this one call
-- Omit it on a connection with no environment to get a disposable machine
+- Omit it on a connection with no environment and the task runs on its own temporary browser, discarded when the task ends
 
 **maxDuration** (number)
 - Maximum task duration **in minutes**

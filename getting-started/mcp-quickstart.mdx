@@ -19,7 +19,7 @@ https://api.webrun.ai/mcp
 ```
 
 - **Claude and ChatGPT** connect with that URL and no API key at all — you authorize WebRun once, in the browser. Start at [Connect with OAuth](#connect-with-oauth-claude-and-chatgpt).
-- **Everything with a config file** (Claude Code, Cursor, Claude Desktop, VS Code, Cline) uses the same URL plus two headers. Start at [Connect with an API key](#connect-with-an-api-key).
+- **Everything with a config file** (Claude Code, Cursor, Claude Desktop, VS Code, Cline) uses the same URL plus an `API-Key` header. A second header, `Environment-Id`, is optional — it decides whether tasks run on a persistent machine or a throwaway one. Start at [Connect with an API key](#connect-with-an-api-key).
 
 <Tip>
 Your API key travels in a header, never in the URL. That keeps it out of browser history, shell history and proxy logs, and it means you can rotate the key without touching a URL you may have already copied somewhere else.
@@ -203,7 +203,16 @@ Cline does not expand environment variables in this file, so the key goes in lit
 
 ## Environments
 
-An environment is a persistent remote machine with its own browser, file system, and desktop, so logins, cookies, and downloaded files survive between tasks. Without one, each task gets a fresh disposable machine.
+An environment is a persistent remote machine with its own browser, file system, and desktop, so logins, cookies, and downloaded files survive between tasks.
+
+**The `Environment-Id` header is optional.** Both ways of running are fully supported:
+
+| Environment ID | What you get |
+|----------------|--------------|
+| **Provided** | Every task runs on that persistent environment. Logins, cookies, downloaded files and browser profile carry over from one task to the next |
+| **Omitted** | Every task gets its own temporary browser, created when the task starts and discarded when it ends. Nothing carries over |
+
+Leaving the header out is a normal configuration, not a broken one. Omit it when every task should start from a clean slate, and add an environment when you need the browser to remember something — a logged-in account, a downloaded file, an installed extension.
 
 **Where to find the ID:** ask the assistant to list your environments, or copy it from the Environment page in the dashboard. It is a 24-character hex string, and it is not a secret — it is safe to commit.
 
